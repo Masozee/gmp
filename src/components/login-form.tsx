@@ -18,6 +18,7 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { logError } from "@/lib/logger"
+import { ErrorSeverity } from "@/lib/logger"
 
 const formSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
@@ -41,13 +42,16 @@ export function LoginForm() {
   })
 
   const onSubmit = async (values: FormValues) => {
+    let response: Response | undefined
+    let data: any
+    
     try {
       setIsLoading(true)
       setError(null)
 
       console.log("[Login Form] Attempting login...")
 
-      const response = await fetch("/api/auth/login", {
+      response = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(values),
@@ -56,14 +60,18 @@ export function LoginForm() {
 
       console.log("[Login Form] Response status:", response.status)
 
-      const data = await response.json()
+      data = await response.json()
       console.log("[Login Form] Response data:", {
         success: data.success,
         error: data.error,
       })
 
-      if (!response.ok || !data.success) {
-        throw new Error(data.error || "Login failed")
+      if (!response.ok) {
+        throw new Error(data.error || `Login failed with status ${response.status}`)
+      }
+
+      if (!data.success) {
+        throw new Error(data.error || "Login failed - Invalid credentials")
       }
 
       // Clear form
@@ -78,18 +86,21 @@ export function LoginForm() {
 
     } catch (error) {
       console.error("[Login Form] Error:", error)
-      setError(error instanceof Error ? error.message : "Login failed")
-      // Reset password field on error
+      const errorMessage = error instanceof Error ? error.message : "Login failed"
+      setError(errorMessage)
       form.setValue("password", "")
 
-      // Log the error
+      // Log the error with more details
       await logError({
-        message: error instanceof Error ? error.message : "Login failed",
+        message: errorMessage,
         path: "/api/auth/login",
         method: "POST",
         stack: error instanceof Error ? error.stack : undefined,
+        severity: ErrorSeverity.ERROR,
         metadata: {
           email: values.email,
+          statusCode: response?.status,
+          responseData: data,
         },
       })
     } finally {

@@ -23,6 +23,13 @@ enum UserStatus {
   ARCHIVED
 }
 
+enum UserCategory {
+  AUTHOR
+  BOARD
+  STAFF
+  RESEARCHER
+}
+
 enum ErrorSeverity {
   INFO
   WARNING
@@ -36,27 +43,30 @@ model User {
   password      String
   role          UserRole    @default(USER)
   status        UserStatus  @default(ACTIVE)
-  profile       UserProfile?
   errorLogs     ErrorLog[]
+  profile       Profile?    @relation("UserProfile")
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
 
   @@map("users")
 }
 
-model UserProfile {
-  id            String    @id @default(cuid())
-  userId        String    @unique
-  firstName     String?
-  lastName      String?
-  phoneNumber   String?
-  avatar        String?
-  bio          String?
-  user          User      @relation(fields: [userId], references: [id])
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+model Profile {
+  id           String       @id @default(cuid())
+  firstName    String
+  lastName     String
+  email        String?
+  phoneNumber  String?
+  organization String?
+  bio          String?      @db.Text
+  photoUrl     String?
+  category     UserCategory @default(STAFF)
+  userId       String       @unique
+  user         User         @relation("UserProfile", fields: [userId], references: [id], onDelete: Cascade)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
 
-  @@map("user_profiles")
+  @@map("profiles")
 }
 
 model ErrorLog {

@@ -21,7 +21,7 @@ export async function POST(request: Request) {
     if (!user) {
       console.log("[Login API] User not found")
       return NextResponse.json(
-        { error: "Invalid credentials" },
+        { error: "Invalid email or password", success: false },
         { status: 401 }
       )
     }
@@ -30,7 +30,7 @@ export async function POST(request: Request) {
     if (user.status === "ARCHIVED") {
       console.log("[Login API] User is archived")
       return NextResponse.json(
-        { error: "User account is archived" },
+        { error: "Account is archived. Please contact support.", success: false },
         { status: 401 }
       )
     }
@@ -41,7 +41,7 @@ export async function POST(request: Request) {
     if (!isValidPassword) {
       console.log("[Login API] Invalid password")
       return NextResponse.json(
-        { error: "Invalid credentials" },
+        { error: "Invalid email or password", success: false },
         { status: 401 }
       )
     }
@@ -93,7 +93,11 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error("[Login API] Error:", error)
     return NextResponse.json(
-      { error: "Login failed" },
+      { 
+        error: "An unexpected error occurred during login. Please try again.",
+        success: false,
+        details: process.env.NODE_ENV === "development" ? error : undefined
+      },
       { status: 500 }
     )
   }

@@ -3,7 +3,9 @@
 import * as React from "react"
 import {
   BookOpen,
+  BookOpenText,
   Bot,
+  CalendarDays,
   Command,
   Frame,
   LifeBuoy,
@@ -12,6 +14,7 @@ import {
   Send,
   Settings2,
   SquareTerminal,
+  Users,
 } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
@@ -56,43 +59,58 @@ const data = {
       ],
     },
     {
-      title: "Models",
-      url: "#",
-      icon: Bot,
+      title: "Users",
+      url: "/dashboard/users",
+      icon: Users,
       items: [
         {
-          title: "Genesis",
+          title: "All Users",
+          url: "/dashboard/users",
+        },
+        {
+          title: "Roles",
+          url: "/dashboard/users/roles",
+        },
+        {
+          title: "Permissions",
+          url: "/dashboard/users/permissions",
+        },
+      ],
+    },
+    {
+      title: "Publications",
+      url: "#",
+      icon: BookOpenText,
+      items: [
+        {
+          title: "List",
           url: "#",
         },
         {
-          title: "Explorer",
+          title: "Category",
           url: "#",
         },
         {
-          title: "Quantum",
+          title: "Tags",
           url: "#",
         },
       ],
     },
     {
-      title: "Documentation",
+      title: "Events",
       url: "#",
-      icon: BookOpen,
+      icon: CalendarDays,
       items: [
         {
-          title: "Introduction",
+          title: "All Events",
           url: "#",
         },
         {
-          title: "Get Started",
+          title: "Upcoming Events",
           url: "#",
         },
         {
-          title: "Tutorials",
-          url: "#",
-        },
-        {
-          title: "Changelog",
+          title: "Past Events",
           url: "#",
         },
       ],
@@ -107,8 +125,8 @@ const data = {
           url: "#",
         },
         {
-          title: "Team",
-          url: "#",
+          title: "Logs",
+          url: "/dashboard/logs",
         },
         {
           title: "Billing",

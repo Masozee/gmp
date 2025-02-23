@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server"
 import { hash } from "bcryptjs"
 import { prisma } from "@/lib/prisma"
-import { sign } from "jsonwebtoken"
-import { cookies } from "next/headers"
+import { signToken } from "@/lib/edge-jwt"
 
 export async function POST(request: Request) {
   try {
@@ -24,53 +23,52 @@ export async function POST(request: Request) {
     // Hash password
     const hashedPassword = await hash(password, 12)
 
-    // Create user and profile in a transaction
-    const user = await prisma.$transaction(async (tx) => {
-      const user = await tx.user.create({
-        data: {
-          email,
-          password: hashedPassword,
-          profile: {
-            create: {
-              firstName,
-              lastName,
-            },
+    // Create user with profile
+    const user = await prisma.user.create({
+      data: {
+        email,
+        password: hashedPassword,
+        profile: {
+          create: {
+            firstName,
+            lastName,
           },
         },
-        include: {
-          profile: true,
-        },
-      })
-
-      return user
+      },
+      include: {
+        profile: true,
+      },
     })
 
     // Generate JWT token
-    const token = sign(
-      {
-        id: user.id,
-        email: user.email,
-        role: user.role,
-      },
-      process.env.JWT_SECRET || "default-secret",
-      { expiresIn: "1d" }
-    )
+    const token = await signToken({
+      id: user.id,
+      email: user.email,
+      role: user.role,
+    })
 
     // Remove password from response
     const { password: _, ...userWithoutPassword } = user
 
-    // Create response
+    // Create response with cookie
     const response = NextResponse.json({
       user: userWithoutPassword,
+      success: true,
     })
 
-    // Set cookie
-    response.cookies.set("token", token, {
+    // Cookie settings
+    const cookieOptions = {
+      name: "token",
+      value: token,
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
+      sameSite: "lax" as const,
+      path: "/",
       expires: new Date(Date.now() + 24 * 60 * 60 * 1000), // 1 day
-    })
+    }
+
+    // Set cookie in response
+    response.cookies.set(cookieOptions)
 
     return response
   } catch (error) {

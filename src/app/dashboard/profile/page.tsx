@@ -20,10 +20,24 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Alert, AlertDescription } from "@/components/ui/alert"
+
+const UserCategory = {
+  AUTHOR: "AUTHOR",
+  BOARD: "BOARD",
+  STAFF: "STAFF",
+  RESEARCHER: "RESEARCHER",
+} as const
 
 const formSchema = z.object({
   firstName: z.string().min(2, "First name must be at least 2 characters"),
@@ -31,6 +45,7 @@ const formSchema = z.object({
   phoneNumber: z.string().optional(),
   bio: z.string().optional(),
   avatar: z.string().optional(),
+  category: z.enum(["AUTHOR", "BOARD", "STAFF", "RESEARCHER"]),
 })
 
 type FormValues = z.infer<typeof formSchema>
@@ -48,6 +63,7 @@ export default function ProfilePage() {
       phoneNumber: "",
       bio: "",
       avatar: "",
+      category: "STAFF",
     },
   })
 
@@ -66,6 +82,7 @@ export default function ProfilePage() {
           phoneNumber: data.profile?.phoneNumber || "",
           bio: data.profile?.bio || "",
           avatar: data.profile?.avatar || "",
+          category: data.profile?.category || "STAFF",
         })
       } catch (error) {
         console.error("Error fetching profile:", error)
@@ -142,6 +159,30 @@ export default function ProfilePage() {
                   )}
                 />
               </div>
+
+              <FormField
+                control={form.control}
+                name="category"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Category</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select your category" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value={UserCategory.AUTHOR}>Author</SelectItem>
+                        <SelectItem value={UserCategory.BOARD}>Board Member</SelectItem>
+                        <SelectItem value={UserCategory.STAFF}>Staff</SelectItem>
+                        <SelectItem value={UserCategory.RESEARCHER}>Researcher</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
               <FormField
                 control={form.control}
