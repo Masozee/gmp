@@ -6,44 +6,56 @@ export async function GET(req: NextRequest) {
   try {
     const session = await getServerSession()
 
-    // Only allow admins to access logs
-    if (!session?.user || session.user.role !== "ADMIN") {
+    // Check if user is authenticated
+    if (!session?.user) {
+      console.log("[Logs API] Unauthorized - No session")
       return NextResponse.json(
-        { error: "Unauthorized - Only administrators can access logs" },
-        { status: 403 }
+        { error: "Unauthorized" },
+        { status: 401 }
       )
     }
+
+    // Only allow admins to access all logs, users can only see their own
+    const isAdmin = session.user.role === "ADMIN"
+    console.log("[Logs API] User role:", session.user.role)
 
     const searchParams = req.nextUrl.searchParams
     const severity = searchParams.get("severity")
     const limit = parseInt(searchParams.get("limit") || "50")
     const offset = parseInt(searchParams.get("offset") || "0")
-    const userId = searchParams.get("userId") || undefined
+    const userId = isAdmin ? searchParams.get("userId") : session.user.id
 
-    const logs = await prisma.$transaction(async (tx) => {
-      return await tx.$queryRaw`
-        SELECT 
-          e.id,
-          e.path,
-          e.method,
-          e.message,
-          e.severity,
-          e.created_at as "createdAt",
-          e.user_id as "userId",
-          u.email as "userEmail"
-        FROM error_logs e
-        LEFT JOIN users u ON e.user_id = u.id
-        WHERE (${severity}::text IS NULL OR e.severity::text = ${severity}::text)
-          AND (${userId}::text IS NULL OR e.user_id = ${userId}::text)
-        ORDER BY e.created_at DESC
-        LIMIT ${limit}
-        OFFSET ${offset}
-      `
+    console.log("[Logs API] Fetching logs with params:", {
+      severity,
+      limit,
+      offset,
+      userId,
     })
+
+    const logs = await prisma.errorLog.findMany({
+      where: {
+        ...(severity && { severity }),
+        ...(userId && { userId }),
+      },
+      include: {
+        user: {
+          select: {
+            email: true,
+          },
+        },
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+      take: limit,
+      skip: offset,
+    })
+
+    console.log("[Logs API] Found", logs.length, "logs")
 
     return NextResponse.json(logs)
   } catch (error) {
-    console.error("Error fetching logs:", error)
+    console.error("[Logs API] Error fetching logs:", error)
     return NextResponse.json(
       { error: "Failed to fetch error logs" },
       { status: 500 }
@@ -56,6 +68,13 @@ export async function POST(req: NextRequest) {
     const session = await getServerSession()
     const body = await req.json()
 
+    console.log("[Logs API] Creating log entry:", {
+      userId: session?.user?.id,
+      path: body.path,
+      method: body.method,
+      severity: body.severity,
+    })
+
     const errorLog = await prisma.errorLog.create({
       data: {
         userId: session?.user?.id,
@@ -63,14 +82,16 @@ export async function POST(req: NextRequest) {
         method: body.method,
         message: body.message,
         stack: body.stack,
-        severity: body.severity || ErrorSeverity.ERROR,
+        severity: body.severity || "ERROR",
         metadata: body.metadata || {},
       },
     })
 
+    console.log("[Logs API] Created log entry:", errorLog.id)
+
     return NextResponse.json(errorLog)
   } catch (error) {
-    console.error("Error creating log:", error)
+    console.error("[Logs API] Error creating log:", error)
     return NextResponse.json(
       { error: "Failed to create error log" },
       { status: 500 }

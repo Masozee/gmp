@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Alert, AlertDescription } from "@/components/ui/alert"
 
 interface ErrorLog {
   id: string
@@ -28,7 +29,7 @@ interface ErrorLog {
   createdAt: string
   user?: {
     email: string
-  }
+  } | null
 }
 
 export function ErrorLogsTable() {
@@ -46,20 +47,23 @@ export function ErrorLogsTable() {
       setIsLoading(true)
       setError(null)
       
+      console.log("[Error Logs Table] Fetching logs with severity:", severity)
       const response = await fetch(`/api/logs?severity=${severity}`)
       const data = await response.json()
 
       if (!response.ok) {
-        throw new Error(typeof data === 'object' && data.error ? data.error : "Failed to fetch logs")
+        throw new Error(data.error || "Failed to fetch logs")
       }
 
       if (!Array.isArray(data)) {
+        console.error("[Error Logs Table] Invalid response format:", data)
         throw new Error("Invalid response format")
       }
 
+      console.log("[Error Logs Table] Fetched", data.length, "logs")
       setLogs(data)
     } catch (error) {
-      console.error("Error fetching logs:", error)
+      console.error("[Error Logs Table] Error:", error)
       setError(error instanceof Error ? error.message : "Failed to fetch logs")
     } finally {
       setIsLoading(false)
@@ -78,6 +82,21 @@ export function ErrorLogsTable() {
       <Badge variant={variants[severity]}>
         {severity}
       </Badge>
+    )
+  }
+
+  if (error) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Error Logs</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Alert variant="destructive">
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        </CardContent>
+      </Card>
     )
   }
 
@@ -104,12 +123,6 @@ export function ErrorLogsTable() {
           </Select>
         </div>
 
-        {error && (
-          <div className="text-red-500 mb-4">
-            {error}
-          </div>
-        )}
-
         <div className="rounded-md border">
           <Table>
             <TableHeader>
@@ -130,7 +143,7 @@ export function ErrorLogsTable() {
                 </TableRow>
               ) : logs.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={5} className="text-center">
+                  <TableCell colSpan={5} className="text-center text-muted-foreground">
                     No logs found
                   </TableCell>
                 </TableRow>
