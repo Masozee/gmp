@@ -1,6 +1,6 @@
-# GMP - Government Monitoring Platform
+# AI Agent Dashboard
 
-A comprehensive monitoring platform built with Next.js, TypeScript, and shadcn/ui components.
+A modern dashboard application built with Next.js 15, TypeScript, and shadcn components.
 
 ## Tech Stack
 
@@ -9,22 +9,23 @@ A comprehensive monitoring platform built with Next.js, TypeScript, and shadcn/u
 - PostgreSQL
 - shadcn/ui components
 - Tailwind CSS
+- Prisma ORM
 
 ## Features
 
-- User Authentication & Authorization
-- Dark Mode Support
-- Responsive Dashboard
+- User Authentication
+- Profile Management
 - Error Logging System
-- User Management
+- Dark Mode Support
+- Responsive Design
 - Calendar Integration
 
 ## Getting Started
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/Masozee/gmp.git
-cd gmp
+git clone [your-repo-url]
+cd [your-repo-name]
 ```
 
 2. Install dependencies:
@@ -33,10 +34,10 @@ npm install
 ```
 
 3. Set up environment variables:
-Create a `.env` file in the root directory and add:
+Create a `.env` file in the root directory and add the following:
 ```env
-DATABASE_URL="postgresql://username:password@localhost:5432/gmp"
-JWT_SECRET="your-secure-jwt-secret"
+DATABASE_URL="postgresql://[user]:[password]@[host]:[port]/[db-name]"
+NEXTAUTH_SECRET="your-secret-key"
 ```
 
 4. Run database migrations:
@@ -55,17 +56,18 @@ npm run dev
 src/
 ├── app/              # Next.js app directory
 ├── components/       # React components
-├── lib/             # Utility functions and configurations
-└── prisma/          # Database schema and migrations
+├── lib/             # Utility functions and shared logic
+├── styles/          # Global styles
+└── types/           # TypeScript type definitions
 ```
 
 ## Development Guidelines
 
 - Follow TypeScript best practices
-- Use shadcn components for UI
+- Use shadcn components for UI consistency
 - Implement proper error handling
-- Write comprehensive tests
-- Document new features
+- Write comprehensive documentation
+- Maintain test coverage
 
 ## Contributing
 
@@ -75,4 +77,4 @@ src/
 
 ## License
 
-MIT License
+MIT

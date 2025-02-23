@@ -50,7 +50,11 @@ export function ErrorLogsTable() {
       const data = await response.json()
 
       if (!response.ok) {
-        throw new Error(data.error || "Failed to fetch logs")
+        throw new Error(typeof data === 'object' && data.error ? data.error : "Failed to fetch logs")
+      }
+
+      if (!Array.isArray(data)) {
+        throw new Error("Invalid response format")
       }
 
       setLogs(data)

@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { getServerSession } from "@/lib/server-auth"
-import { ErrorSeverity } from "@prisma/client"
 
 export async function GET(req: NextRequest) {
   try {
@@ -10,34 +9,36 @@ export async function GET(req: NextRequest) {
     // Only allow admins to access logs
     if (!session?.user || session.user.role !== "ADMIN") {
       return NextResponse.json(
-        { error: "Unauthorized" },
+        { error: "Unauthorized - Only administrators can access logs" },
         { status: 403 }
       )
     }
 
     const searchParams = req.nextUrl.searchParams
-    const severity = searchParams.get("severity") as ErrorSeverity | undefined
+    const severity = searchParams.get("severity")
     const limit = parseInt(searchParams.get("limit") || "50")
     const offset = parseInt(searchParams.get("offset") || "0")
     const userId = searchParams.get("userId") || undefined
 
-    const logs = await prisma.errorLog.findMany({
-      where: {
-        userId: userId,
-        severity: severity,
-      },
-      orderBy: {
-        createdAt: "desc",
-      },
-      take: limit,
-      skip: offset,
-      include: {
-        user: {
-          select: {
-            email: true,
-          },
-        },
-      },
+    const logs = await prisma.$transaction(async (tx) => {
+      return await tx.$queryRaw`
+        SELECT 
+          e.id,
+          e.path,
+          e.method,
+          e.message,
+          e.severity,
+          e.created_at as "createdAt",
+          e.user_id as "userId",
+          u.email as "userEmail"
+        FROM error_logs e
+        LEFT JOIN users u ON e.user_id = u.id
+        WHERE (${severity}::text IS NULL OR e.severity::text = ${severity}::text)
+          AND (${userId}::text IS NULL OR e.user_id = ${userId}::text)
+        ORDER BY e.created_at DESC
+        LIMIT ${limit}
+        OFFSET ${offset}
+      `
     })
 
     return NextResponse.json(logs)
