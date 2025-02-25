@@ -1,7 +1,7 @@
 "use client"
 
-import { useState, useEffect, use } from "react"
-import { useRouter } from "next/navigation"
+import { useState, useEffect } from "react"
+import { useRouter, useParams } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
@@ -68,12 +68,8 @@ const formSchema = z.object({
   authors: z.array(z.string()).min(1, "At least one author is required"),
 })
 
-interface PageProps {
-  params: Promise<{ id: string }>
-}
-
-export default function EditPublicationPage({ params }: PageProps) {
-  const resolvedParams = use(params)
+export default function EditPublicationPage() {
+  const params = useParams()
   const router = useRouter()
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
@@ -115,7 +111,7 @@ export default function EditPublicationPage({ params }: PageProps) {
     const fetchPublication = async () => {
       try {
         setLoading(true)
-        const response = await fetch(`/api/publications/${resolvedParams.id}`)
+        const response = await fetch(`/api/publications/${params.id}`)
         if (!response.ok) throw new Error("Failed to fetch publication")
         const data = await response.json()
         setPublication(data)
@@ -137,7 +133,7 @@ export default function EditPublicationPage({ params }: PageProps) {
       }
     }
     fetchPublication()
-  }, [resolvedParams.id, form])
+  }, [params.id, form])
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
@@ -159,7 +155,7 @@ export default function EditPublicationPage({ params }: PageProps) {
         formData.append("coverImage", values.coverImage)
       }
 
-      const response = await fetch(`/api/publications/${resolvedParams.id}`, {
+      const response = await fetch(`/api/publications/${params.id}`, {
         method: "PATCH",
         body: formData,
       })
@@ -169,7 +165,7 @@ export default function EditPublicationPage({ params }: PageProps) {
         throw new Error(errorData.error || "Failed to update publication")
       }
 
-      router.push(`/dashboard/publications/${resolvedParams.id}`)
+      router.push(`/dashboard/publications/${params.id}`)
     } catch (error) {
       setError(error instanceof Error ? error.message : "An error occurred")
     } finally {
@@ -206,7 +202,7 @@ export default function EditPublicationPage({ params }: PageProps) {
             Make changes to your publication here
           </p>
         </div>
-        <Button variant="outline" onClick={() => router.push(`/dashboard/publications/${resolvedParams.id}`)}>
+        <Button variant="outline" onClick={() => router.push(`/dashboard/publications/${params.id}`)}>
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back to Details
         </Button>
@@ -416,7 +412,7 @@ export default function EditPublicationPage({ params }: PageProps) {
                 <Button
                   type="button"
                   variant="outline"
-                  onClick={() => router.push(`/dashboard/publications/${resolvedParams.id}`)}
+                  onClick={() => router.push(`/dashboard/publications/${params.id}`)}
                 >
                   Cancel
                 </Button>

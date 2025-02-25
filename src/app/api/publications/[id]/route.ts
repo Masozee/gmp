@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { getServerSession } from "@/lib/server-auth"
+import { writeFile } from "fs/promises"
+import { join } from "path"
+import { cwd } from "process"
 
 export async function GET(
   request: NextRequest,
@@ -70,18 +73,37 @@ export async function PATCH(
       )
     }
 
-    const body = await request.json()
-    const {
-      title,
-      description,
-      content,
-      status,
-      coverImage,
-      coverCredit,
-      authors,
-      tags,
-      images,
-    } = body
+    const formData = await request.formData()
+    const title = formData.get("title") as string
+    const description = formData.get("description") as string
+    const content = formData.get("content") as string
+    const status = formData.get("status") as "DRAFT" | "PUBLISHED" | "ARCHIVED"
+    const coverImage = formData.get("coverImage") as File | null
+    const coverCredit = formData.get("coverCredit") as string
+
+    // Get author IDs from form data
+    const authorIds: string[] = []
+    for (const [key, value] of formData.entries()) {
+      if (key.startsWith("authors[") && key.endsWith("]")) {
+        authorIds.push(value as string)
+      }
+    }
+
+    let coverImageUrl: string | undefined
+
+    // Handle cover image upload if provided
+    if (coverImage) {
+      const bytes = await coverImage.arrayBuffer()
+      const buffer = Buffer.from(bytes)
+
+      const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1E9)}`
+      const filename = `${uniqueSuffix}-${coverImage.name}`
+      const uploadDir = join(cwd(), "public", "uploads")
+      const filepath = join(uploadDir, filename)
+
+      await writeFile(filepath, buffer)
+      coverImageUrl = `/uploads/${filename}`
+    }
 
     // Update the publication
     const publication = await prisma.publication.update({
@@ -91,35 +113,15 @@ export async function PATCH(
         description,
         content,
         status,
-        coverImage,
+        ...(coverImageUrl && { coverImage: coverImageUrl }),
         coverCredit,
         // Update authors if provided
-        ...(authors && {
+        ...(authorIds.length > 0 && {
           authors: {
             deleteMany: {},
-            create: authors.map((author: any, index: number) => ({
+            create: authorIds.map((authorId, index) => ({
               order: index + 1,
-              profileId: author.profileId,
-            })),
-          },
-        }),
-        // Update tags if provided
-        ...(tags && {
-          tags: {
-            deleteMany: {},
-            create: tags.map((tagId: string) => ({
-              tagId,
-            })),
-          },
-        }),
-        // Update images if provided
-        ...(images && {
-          images: {
-            deleteMany: {},
-            create: images.map((image: any) => ({
-              url: image.url,
-              alt: image.alt,
-              credit: image.credit,
+              profileId: authorId,
             })),
           },
         }),
@@ -136,12 +138,7 @@ export async function PATCH(
             },
           },
         },
-        tags: {
-          include: {
-            tag: true,
-          },
-        },
-        images: true,
+        files: true,
       },
     })
 

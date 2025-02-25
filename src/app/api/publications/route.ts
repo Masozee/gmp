@@ -18,60 +18,50 @@ export async function GET(request: NextRequest) {
     }
 
     const { searchParams } = new URL(request.url)
-    const search = searchParams.get("search")
-    const status = searchParams.get("status")
-    const page = parseInt(searchParams.get("page") || "1")
-    const limit = parseInt(searchParams.get("limit") || "10")
-    const skip = (page - 1) * limit
+    const search = searchParams.get('search')
+    const status = searchParams.get('status')
+    const category = searchParams.get('category')
+    const sort = searchParams.get('sort') || 'updatedAt'
+    const order = searchParams.get('order') || 'desc'
 
-    const where = {
-      ...(search && {
-        OR: [
-          { title: { contains: search, mode: "insensitive" } },
-          { description: { contains: search, mode: "insensitive" } },
-        ],
-      }),
-      ...(status && status !== "all" && { status: status.toUpperCase() }),
+    const where: any = {}
+
+    if (search) {
+      where.OR = [
+        { title: { contains: search, mode: 'insensitive' } },
+        { description: { contains: search, mode: 'insensitive' } },
+      ]
     }
 
-    const [publications, total] = await Promise.all([
-      prisma.publication.findMany({
-        where,
-        include: {
-          authors: {
-            include: {
-              profile: {
-                select: {
-                  firstName: true,
-                  lastName: true,
-                  photoUrl: true,
-                },
+    if (status) {
+      where.status = status
+    }
+
+    if (category) {
+      where.category = category
+    }
+
+    const publications = await prisma.publication.findMany({
+      where,
+      include: {
+        authors: {
+          include: {
+            profile: {
+              select: {
+                firstName: true,
+                lastName: true,
+                photoUrl: true,
               },
             },
           },
-          tags: {
-            include: {
-              tag: true,
-            },
-          },
-          files: true,
         },
-        orderBy: { updatedAt: "desc" },
-        skip,
-        take: limit,
-      }),
-      prisma.publication.count({ where }),
-    ])
-
-    return NextResponse.json({
-      publications,
-      pagination: {
-        total,
-        pages: Math.ceil(total / limit),
-        page,
-        limit,
+      },
+      orderBy: {
+        [sort]: order,
       },
     })
+
+    return NextResponse.json({ publications })
   } catch (error) {
     console.error("Failed to fetch publications:", error)
     return NextResponse.json(

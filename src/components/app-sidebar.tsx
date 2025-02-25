@@ -87,12 +87,8 @@ const data = {
           url: "/dashboard/publications",
         },
         {
-          title: "Category",
-          url: "#",
-        },
-        {
-          title: "Tags",
-          url: "#",
+          title: "Categories",
+          url: "/dashboard/publications/categories",
         },
       ],
     },

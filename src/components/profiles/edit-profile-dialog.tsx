@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
@@ -74,15 +74,29 @@ export function EditProfileDialog({
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      firstName: profile?.firstName || "",
-      lastName: profile?.lastName || "",
-      email: profile?.email || "",
-      phoneNumber: profile?.phoneNumber || "",
-      organization: profile?.organization || "",
-      bio: profile?.bio || "",
-      category: profile?.category || "AUTHOR",
+      firstName: "",
+      lastName: "",
+      email: "",
+      phoneNumber: "",
+      organization: "",
+      bio: "",
+      category: "AUTHOR",
     },
   })
+
+  useEffect(() => {
+    if (profile && open) {
+      form.reset({
+        firstName: profile.firstName,
+        lastName: profile.lastName,
+        email: profile.email,
+        phoneNumber: profile.phoneNumber || "",
+        organization: profile.organization || "",
+        bio: profile.bio || "",
+        category: profile.category,
+      })
+    }
+  }, [profile, open, form])
 
   const onSubmit = async (data: FormData) => {
     if (!profile) return

@@ -80,6 +80,7 @@ interface Publication {
 interface PublicationTableProps {
   searchQuery: string
   statusFilter: string
+  categoryFilter?: string | null
 }
 
 type SortField = "title" | "status" | "updatedAt"
@@ -88,6 +89,7 @@ type SortOrder = "asc" | "desc"
 export function PublicationTable({
   searchQuery,
   statusFilter,
+  categoryFilter,
 }: PublicationTableProps) {
   const router = useRouter()
   const [publications, setPublications] = useState<Publication[]>([])
@@ -123,6 +125,10 @@ export function PublicationTable({
       if (statusFilter && statusFilter !== 'all') {
         params.append('status', statusFilter.toUpperCase())
       }
+
+      if (categoryFilter) {
+        params.append('category', categoryFilter)
+      }
       
       params.append('sort', sortField)
       params.append('order', sortOrder)
@@ -145,7 +151,7 @@ export function PublicationTable({
 
   useEffect(() => {
     fetchPublications()
-  }, [searchQuery, statusFilter, sortField, sortOrder])
+  }, [searchQuery, statusFilter, categoryFilter, sortField, sortOrder])
 
   const handleSort = (field: SortField) => {
     if (sortField === field) {

@@ -1,7 +1,7 @@
 "use client"
 
-import { useState, useEffect, use } from "react"
-import { useRouter } from "next/navigation"
+import { useState, useEffect } from "react"
+import { useRouter, useParams } from "next/navigation"
 import { Eye, Pencil, Trash2, ArrowLeft } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -52,12 +52,8 @@ interface Publication {
   }>
 }
 
-interface PageProps {
-  params: Promise<{ id: string }>
-}
-
-export default function PublicationDetailPage({ params }: PageProps) {
-  const resolvedParams = use(params)
+export default function PublicationDetailPage() {
+  const params = useParams()
   const router = useRouter()
   const [publication, setPublication] = useState<Publication | null>(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -73,7 +69,7 @@ export default function PublicationDetailPage({ params }: PageProps) {
     const fetchPublication = async () => {
       try {
         setIsLoading(true)
-        const response = await fetch(`/api/publications/${resolvedParams.id}`)
+        const response = await fetch(`/api/publications/${params.id}`)
         if (!response.ok) {
           throw new Error("Failed to fetch publication")
         }
@@ -87,11 +83,11 @@ export default function PublicationDetailPage({ params }: PageProps) {
       }
     }
     fetchPublication()
-  }, [resolvedParams.id])
+  }, [params.id])
 
   const handleDelete = async () => {
     try {
-      const response = await fetch(`/api/publications/${resolvedParams.id}`, {
+      const response = await fetch(`/api/publications/${params.id}`, {
         method: "DELETE",
       })
 
@@ -139,7 +135,7 @@ export default function PublicationDetailPage({ params }: PageProps) {
         <div className="flex gap-2">
           <Button
             variant="outline"
-            onClick={() => router.push(`/dashboard/publications/${resolvedParams.id}/edit`)}
+            onClick={() => router.push(`/dashboard/publications/${params.id}/edit`)}
           >
             <Pencil className="mr-2 h-4 w-4" />
             Edit
