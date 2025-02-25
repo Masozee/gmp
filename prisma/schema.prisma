@@ -92,22 +92,63 @@ model ErrorLog {
 }
 
 model Publication {
-  id          String               @id @default(cuid())
+  id          String   @id @default(cuid())
   title       String
-  slug        String               @unique
-  description String?              @db.Text
-  content     String?              @db.Text
-  status      PublicationStatus    @default(DRAFT)
+  slug        String   @unique
+  description String
+  content     String
+  status      String   @default("DRAFT")
   coverImage  String?
   coverCredit String?
-  images      Image[]
-  authors     PublicationAuthor[]
-  tags        TagsOnPublications[]
-  files       PublicationFile[]
-  createdAt   DateTime             @default(now())
-  updatedAt   DateTime             @updatedAt
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  authors      PublicationAuthor[]
+  tags         TagsOnPublications[]
+  categories   CategoriesOnPublications[]
+  files        PublicationFile[]
+  images       Image[]
 
   @@map("publications")
+}
+
+model PublicationFile {
+  id        String   @id @default(cuid())
+  name      String
+  url       String
+  size      Int
+  type      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  publication   Publication @relation(fields: [publicationId], references: [id], onDelete: Cascade)
+  publicationId String
+
+  @@index([publicationId])
+}
+
+model Category {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  publications CategoriesOnPublications[]
+}
+
+model CategoriesOnPublications {
+  publicationId String
+  categoryId    String
+  assignedAt    DateTime @default(now())
+
+  publication Publication @relation(fields: [publicationId], references: [id], onDelete: Cascade)
+  category    Category    @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@id([publicationId, categoryId])
+  @@index([categoryId])
+  @@index([publicationId])
 }
 
 model PublicationAuthor {
@@ -158,18 +199,4 @@ model Image {
   updatedAt     DateTime    @updatedAt
 
   @@map("images")
-}
-
-model PublicationFile {
-  id            String      @id @default(cuid())
-  name          String
-  url           String
-  size          Int
-  type          String
-  publication   Publication @relation(fields: [publicationId], references: [id], onDelete: Cascade)
-  publicationId String
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
-
-  @@map("publication_files")
 }

@@ -16,7 +16,7 @@ export async function GET(
       )
     }
 
-    const category = await prisma.tag.findUnique({
+    const category = await prisma.category.findUnique({
       where: { id: params.id },
       include: {
         publications: {
@@ -77,7 +77,7 @@ export async function PATCH(
       )
     }
 
-    const { name } = await request.json()
+    const { name, description } = await request.json()
 
     if (!name) {
       return NextResponse.json(
@@ -89,11 +89,12 @@ export async function PATCH(
     // Generate slug from name
     const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, "-")
 
-    const category = await prisma.tag.update({
+    const category = await prisma.category.update({
       where: { id: params.id },
       data: {
         name,
         slug,
+        description,
       },
       include: {
         _count: {
@@ -128,7 +129,7 @@ export async function DELETE(
       )
     }
 
-    await prisma.tag.delete({
+    await prisma.category.delete({
       where: { id: params.id },
     })
 

@@ -73,6 +73,40 @@ export async function PATCH(
       )
     }
 
+    // Check if the request is JSON
+    const contentType = request.headers.get('content-type') || '';
+    if (contentType.includes('application/json')) {
+      // Handle JSON request (for status updates)
+      const json = await request.json();
+      
+      if (json.status) {
+        // This is a status-only update
+        const updatedPublication = await prisma.publication.update({
+          where: { id: params.id },
+          data: {
+            status: json.status as "DRAFT" | "PUBLISHED" | "ARCHIVED",
+          },
+          include: {
+            authors: {
+              include: {
+                profile: {
+                  select: {
+                    firstName: true,
+                    lastName: true,
+                    photoUrl: true,
+                  },
+                },
+              },
+            },
+            files: true,
+          },
+        });
+        
+        return NextResponse.json(updatedPublication);
+      }
+    }
+
+    // Handle form data (for full publication updates)
     const formData = await request.formData()
     const title = formData.get("title") as string
     const description = formData.get("description") as string

@@ -16,6 +16,7 @@ import {
   RefreshCw,
   Download,
 } from "lucide-react"
+import { toast } from "sonner"
 
 import {
   Table,
@@ -234,6 +235,7 @@ export function PublicationTable({
 
   const handleSingleStatusUpdate = async (id: string, status: "DRAFT" | "PUBLISHED" | "ARCHIVED") => {
     try {
+      setIsLoading(true)
       setError(null)
 
       const response = await fetch(`/api/publications/${id}`, {
@@ -245,13 +247,22 @@ export function PublicationTable({
       })
 
       if (!response.ok) {
-        throw new Error("Failed to update publication status")
+        const errorData = await response.json()
+        throw new Error(errorData.error || "Failed to update publication status")
       }
 
-      await fetchPublications()
+      const updatedPublication = await response.json()
+      setPublications(prev =>
+        prev.map(pub => (pub.id === id ? updatedPublication : pub))
+      )
+
+      toast.success("Publication status updated successfully")
     } catch (error) {
       console.error("Error updating publication status:", error)
-      setError("Failed to update publication status. Please try again.")
+      setError(error instanceof Error ? error.message : "Failed to update publication status")
+      toast.error("Failed to update publication status")
+    } finally {
+      setIsLoading(false)
     }
   }
 

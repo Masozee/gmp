@@ -99,6 +99,14 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    // Get category IDs from form data
+    const categoryIds: string[] = []
+    for (const [key, value] of formData.entries()) {
+      if (key.startsWith("categories[") && key.endsWith("]")) {
+        categoryIds.push(value as string)
+      }
+    }
+
     if (authorIds.length === 0) {
       return NextResponse.json(
         { error: "At least one author is required" },
@@ -187,6 +195,14 @@ export async function POST(request: NextRequest) {
             profileId: authorId,
           })),
         },
+        categories: {
+          create: categoryIds.map((categoryId) => ({
+            assignedAt: new Date(),
+            category: {
+              connect: { id: categoryId },
+            },
+          })),
+        },
         files: {
           create: fileUploads,
         },
@@ -199,6 +215,17 @@ export async function POST(request: NextRequest) {
                 firstName: true,
                 lastName: true,
                 photoUrl: true,
+              },
+            },
+          },
+        },
+        categories: {
+          include: {
+            category: {
+              select: {
+                id: true,
+                name: true,
+                slug: true,
               },
             },
           },

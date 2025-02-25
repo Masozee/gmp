@@ -6,8 +6,10 @@ import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
-import { Check, ChevronsUpDown } from "lucide-react"
+import { Check, ChevronsUpDown, Plus } from "lucide-react"
+import { toast } from "sonner"
 
+import { Button } from "@/components/ui/button"
 import {
   Dialog,
   DialogContent,
@@ -19,13 +21,13 @@ import {
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import {
   Select,
@@ -59,6 +61,18 @@ interface Author {
   photoUrl?: string | null
 }
 
+interface Category {
+  id: string
+  name: string
+  slug: string
+}
+
+interface Tag {
+  id: string
+  name: string
+  slug: string
+}
+
 const formSchema = z.object({
   title: z.string().min(3, "Title must be at least 3 characters").max(100, "Title must be less than 100 characters"),
   description: z.string().min(10, "Description must be at least 10 characters").max(500, "Description must be less than 500 characters"),
@@ -66,6 +80,8 @@ const formSchema = z.object({
   status: z.enum(["DRAFT", "PUBLISHED"], {
     required_error: "Please select a status",
   }),
+  category: z.string().min(1, "Category is required"),
+  tags: z.array(z.string()).optional(),
   coverCredit: z.string().optional(),
   coverImage: z.any()
     .refine(
@@ -89,7 +105,10 @@ export function CreatePublicationDialog({
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [authors, setAuthors] = useState<Author[]>([])
+  const [categories, setCategories] = useState<Category[]>([])
+  const [tags, setTags] = useState<Tag[]>([])
   const [isLoadingAuthors, setIsLoadingAuthors] = useState(false)
+  const [createTagLoading, setCreateTagLoading] = useState(false)
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -98,28 +117,67 @@ export function CreatePublicationDialog({
       description: "",
       content: "",
       status: "DRAFT",
+      category: "",
+      tags: [],
       coverCredit: "",
+      coverImage: undefined,
       authors: [],
     },
   })
 
+  const watchDescription = form.watch("description")
+  const watchContent = form.watch("content")
+
   useEffect(() => {
-    const fetchAuthors = async () => {
+    const fetchData = async () => {
       try {
         setIsLoadingAuthors(true)
-        const response = await fetch("/api/authors")
-        if (!response.ok) throw new Error("Failed to fetch authors")
-        const data = await response.json()
-        setAuthors(data)
+        const authorsRes = await fetch("/api/authors")
+        if (!authorsRes.ok) {
+          throw new Error("Failed to fetch authors")
+        }
+        const authorsData = await authorsRes.json()
+        setAuthors(authorsData)
       } catch (error) {
         console.error("Error fetching authors:", error)
-        setError("Failed to load authors. Please try again.")
+        toast.error("Failed to fetch authors", {
+          description: "Please try again.",
+        })
       } finally {
         setIsLoadingAuthors(false)
       }
+
+      try {
+        const categoriesRes = await fetch("/api/categories")
+        if (!categoriesRes.ok) {
+          throw new Error("Failed to fetch categories")
+        }
+        const categoriesData = await categoriesRes.json()
+        setCategories(categoriesData)
+      } catch (error) {
+        console.error("Error fetching categories:", error)
+        toast.error("Failed to fetch categories", {
+          description: "Please try again.",
+        })
+      }
+
+      try {
+        const tagsRes = await fetch("/api/tags")
+        if (!tagsRes.ok) {
+          throw new Error("Failed to fetch tags")
+        }
+        const tagsData = await tagsRes.json()
+        setTags(tagsData)
+      } catch (error) {
+        console.error("Error fetching tags:", error)
+        toast.error("Failed to fetch tags", {
+          description: "Please try again.",
+        })
+      }
     }
+
     if (open) {
-      fetchAuthors()
+      fetchData()
     }
   }, [open])
 
@@ -135,12 +193,66 @@ export function CreatePublicationDialog({
       setLoading(true)
       setError(null)
 
+      // Validate required fields explicitly to show errors
+      if (!values.title) {
+        form.setError("title", { 
+          type: "required", 
+          message: "Title is required" 
+        })
+        setLoading(false)
+        return
+      }
+
+      if (!values.description) {
+        form.setError("description", { 
+          type: "required", 
+          message: "Description is required" 
+        })
+        setLoading(false)
+        return
+      }
+
+      if (!values.content) {
+        form.setError("content", { 
+          type: "required", 
+          message: "Content is required" 
+        })
+        setLoading(false)
+        return
+      }
+
+      if (!values.category) {
+        form.setError("category", { 
+          type: "required", 
+          message: "Category is required" 
+        })
+        setLoading(false)
+        return
+      }
+
+      if (!values.authors.length) {
+        form.setError("authors", { 
+          type: "required", 
+          message: "At least one author is required" 
+        })
+        setLoading(false)
+        return
+      }
+
       const formData = new FormData()
       for (const [key, value] of Object.entries(values)) {
         if (key === "authors") {
           value.forEach((authorId: string) => {
             formData.append("authors[]", authorId)
           })
+        } else if (key === "category") {
+          formData.append("categories[]", value)
+        } else if (key === "tags") {
+          if (value && Array.isArray(value)) {
+            value.forEach((tagId: string) => {
+              formData.append("tags[]", tagId)
+            })
+          }
         } else if (key !== "coverImage") {
           formData.append(key, value)
         }
@@ -166,9 +278,47 @@ export function CreatePublicationDialog({
       onSuccess?.()
       router.push(`/dashboard/publications/${data.id}`)
     } catch (error) {
+      console.error("Form submission error:", error)
       setError(error instanceof Error ? error.message : "An error occurred")
+      toast.error("Failed to create publication", {
+        description: error instanceof Error ? error.message : "Please try again",
+      })
     } finally {
       setLoading(false)
+    }
+  }
+
+  const createNewTag = async (name: string) => {
+    try {
+      setCreateTagLoading(true)
+      const response = await fetch("/api/tags", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name }),
+      })
+
+      if (!response.ok) {
+        throw new Error("Failed to create tag")
+      }
+
+      const newTag = await response.json()
+      setTags((prev) => [...prev, newTag])
+      
+      // Add the newly created tag to the selected tags
+      const currentValue = new Set(form.getValues("tags") || [])
+      currentValue.add(newTag.id)
+      form.setValue("tags", Array.from(currentValue), { shouldValidate: true })
+      
+      toast.success("Tag created successfully")
+    } catch (error) {
+      console.error("Error creating tag:", error)
+      toast.error("Failed to create tag", {
+        description: "Please try again.",
+      })
+    } finally {
+      setCreateTagLoading(false)
     }
   }
 
@@ -192,6 +342,9 @@ export function CreatePublicationDialog({
                   <FormControl>
                     <Input placeholder="Enter title" {...field} />
                   </FormControl>
+                  <FormDescription>
+                    The title of your publication. This will be displayed prominently.
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -204,8 +357,16 @@ export function CreatePublicationDialog({
                 <FormItem>
                   <FormLabel>Description</FormLabel>
                   <FormControl>
-                    <Textarea placeholder="Enter description" {...field} />
+                    <div className="relative">
+                      <Textarea placeholder="Enter description" {...field} />
+                      <div className="absolute bottom-2 right-2 text-xs text-muted-foreground">
+                        {watchDescription?.length || 0}/500
+                      </div>
+                    </div>
                   </FormControl>
+                  <FormDescription>
+                    A brief summary of the publication. This will appear in listings and previews.
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -218,41 +379,82 @@ export function CreatePublicationDialog({
                 <FormItem>
                   <FormLabel>Content</FormLabel>
                   <FormControl>
-                    <Textarea
-                      placeholder="Enter content"
-                      className="min-h-[200px]"
-                      {...field}
-                    />
+                    <div className="relative">
+                      <Textarea
+                        placeholder="Enter content"
+                        className="min-h-[200px]"
+                        {...field}
+                      />
+                      <div className="absolute bottom-2 right-2 text-xs text-muted-foreground">
+                        {watchContent?.length || 0} characters
+                      </div>
+                    </div>
                   </FormControl>
+                  <FormDescription>
+                    The main content of your publication. Minimum 50 characters required.
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
 
-            <FormField
-              control={form.control}
-              name="status"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Status</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select status" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="DRAFT">Draft</SelectItem>
-                      <SelectItem value="PUBLISHED">Published</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className="grid grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="status"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Status</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select status" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="DRAFT">Draft</SelectItem>
+                        <SelectItem value="PUBLISHED">Published</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormDescription>
+                      Draft publications are not visible to the public.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="category"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Category</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select a category" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {categories.map((category) => (
+                          <SelectItem key={category.id} value={category.id}>
+                            {category.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormDescription>
+                      Select a primary category for your publication.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
 
             <FormField
               control={form.control}
@@ -328,6 +530,9 @@ export function CreatePublicationDialog({
                       )
                     })}
                   </div>
+                  <FormDescription>
+                    Select one or more authors for this publication.
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -350,6 +555,9 @@ export function CreatePublicationDialog({
                       {...field}
                     />
                   </FormControl>
+                  <FormDescription>
+                    Upload an image (max 5MB). Recommended size: 1200x630 pixels.
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -364,13 +572,122 @@ export function CreatePublicationDialog({
                   <FormControl>
                     <Input placeholder="Enter cover image credit" {...field} />
                   </FormControl>
+                  <FormDescription>
+                    Credit the creator or source of the cover image if applicable.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="tags"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Tags</FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant="outline"
+                          role="combobox"
+                          className={cn(
+                            "w-full justify-between",
+                            !field.value?.length && "text-muted-foreground"
+                          )}
+                        >
+                          {field.value && field.value.length > 0
+                            ? `${field.value.length} tag${field.value.length > 1 ? "s" : ""} selected`
+                            : "Select tags"}
+                          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-[400px] p-0">
+                      <Command>
+                        <CommandInput 
+                          placeholder="Search tags..." 
+                          onValueChange={(value) => {
+                            const span = document.getElementById("new-tag-text");
+                            if (span) span.textContent = value;
+                          }}
+                        />
+                        <CommandList>
+                          <CommandEmpty>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="w-full justify-start mt-2"
+                              onClick={() => {
+                                const input = document.querySelector('[cmdk-input]') as HTMLInputElement;
+                                const value = input?.value;
+                                if (value && value.trim() !== "") {
+                                  createNewTag(value);
+                                }
+                              }}
+                            >
+                              <Plus className="mr-2 h-4 w-4" />
+                              Create "<span id="new-tag-text"></span>"
+                            </Button>
+                          </CommandEmpty>
+                          <CommandGroup>
+                            {tags.map((tag) => (
+                              <CommandItem
+                                key={tag.id}
+                                onSelect={() => {
+                                  const currentValue = new Set(field.value || [])
+                                  if (currentValue.has(tag.id)) {
+                                    currentValue.delete(tag.id)
+                                  } else {
+                                    currentValue.add(tag.id)
+                                  }
+                                  field.onChange(Array.from(currentValue))
+                                }}
+                              >
+                                <Check
+                                  className={cn(
+                                    "mr-2 h-4 w-4",
+                                    field.value?.includes(tag.id)
+                                      ? "opacity-100"
+                                      : "opacity-0"
+                                  )}
+                                />
+                                {tag.name}
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    {field.value?.map((tagId) => {
+                      const tag = tags.find((t) => t.id === tagId)
+                      if (!tag) return null
+                      return (
+                        <Badge
+                          key={tag.id}
+                          variant="secondary"
+                          className="text-sm"
+                        >
+                          {tag.name}
+                        </Badge>
+                      )
+                    })}
+                  </div>
+                  <FormDescription>
+                    Select existing tags or type to create new ones for better discoverability.
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
 
             {error && (
-              <div className="text-sm text-destructive">{error}</div>
+              <div className="text-sm font-medium text-destructive bg-destructive/10 p-3 rounded-md mb-4">
+                {error}
+              </div>
             )}
 
             <DialogFooter>
