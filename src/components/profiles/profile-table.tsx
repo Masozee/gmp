@@ -1,8 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { Edit2, Trash2 } from "lucide-react"
-
+import { useSession } from "@/hooks/use-session"
 import {
   Table,
   TableBody,
@@ -11,44 +10,49 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { EditProfileDialog } from "./edit-profile-dialog"
 import { DeleteProfileDialog } from "./delete-profile-dialog"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Badge } from "@/components/ui/badge"
+import { Skeleton } from "@/components/ui/skeleton"
+import { Alert, AlertDescription } from "@/components/ui/alert"
+import { Profile } from "@/types/profile"
 
-interface Profile {
-  id: string
-  firstName: string
-  lastName: string
-  email: string
-  phoneNumber?: string | null
-  photoUrl?: string | null
-  organization?: string | null
-  category: "AUTHOR" | "BOARD" | "STAFF" | "RESEARCHER"
+interface ProfileTableProps {
+  searchQuery?: string
+  categoryFilter?: string
 }
 
-export function ProfileTable() {
+export function ProfileTable({
+  searchQuery = "",
+  categoryFilter = "all",
+}: ProfileTableProps) {
   const [profiles, setProfiles] = useState<Profile[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
   const [selectedProfile, setSelectedProfile] = useState<Profile | null>(null)
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
 
   const fetchProfiles = async () => {
     try {
       setIsLoading(true)
       setError(null)
-      const response = await fetch("/api/profiles")
+
+      const params = new URLSearchParams()
+      if (searchQuery) params.set("search", searchQuery)
+      if (categoryFilter !== "all") params.set("category", categoryFilter)
+
+      const response = await fetch(`/api/authors?${params}`)
       if (!response.ok) {
         throw new Error("Failed to fetch profiles")
       }
+
       const data = await response.json()
       setProfiles(data)
     } catch (error) {
-      console.error("Failed to fetch profiles:", error)
-      setError("Failed to fetch profiles")
+      console.error("Error fetching profiles:", error)
+      setError(error instanceof Error ? error.message : "Failed to fetch profiles")
     } finally {
       setIsLoading(false)
     }
@@ -56,127 +60,124 @@ export function ProfileTable() {
 
   useEffect(() => {
     fetchProfiles()
-  }, [])
+  }, [searchQuery, categoryFilter])
 
   const getCategoryBadge = (category: Profile["category"]) => {
-    const variants = {
+    const variants: Record<Profile["category"], "default" | "secondary" | "outline" | "destructive"> = {
       AUTHOR: "default",
       BOARD: "secondary",
       STAFF: "outline",
-      RESEARCHER: "secondary",
-    } as const
+      RESEARCHER: "destructive",
+    }
 
     return (
       <Badge variant={variants[category]}>
-        {category}
+        {category.charAt(0) + category.slice(1).toLowerCase()}
       </Badge>
-    )
-  }
-
-  if (error) {
-    return (
-      <div className="p-4 text-center text-red-500">
-        {error}
-      </div>
     )
   }
 
   if (isLoading) {
     return (
-      <div className="p-4 text-center text-muted-foreground">
-        Loading profiles...
+      <div className="p-4">
+        {[...Array(5)].map((_, i) => (
+          <div key={i} className="flex items-center space-x-4 py-4">
+            <Skeleton className="h-12 w-12 rounded-full" />
+            <div className="space-y-2">
+              <Skeleton className="h-4 w-[250px]" />
+              <Skeleton className="h-4 w-[200px]" />
+            </div>
+          </div>
+        ))}
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="p-4">
+        <Alert variant="destructive">
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+        <Button 
+          onClick={fetchProfiles}
+          variant="outline"
+          className="mt-4"
+        >
+          Retry
+        </Button>
+      </div>
+    )
+  }
+
+  if (profiles.length === 0) {
+    return (
+      <div className="p-8 text-center">
+        <p className="text-muted-foreground">No profiles found</p>
       </div>
     )
   }
 
   return (
     <>
-      <div className="rounded-md border">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Profile</TableHead>
-              <TableHead>Email</TableHead>
-              <TableHead>Organization</TableHead>
-              <TableHead>Category</TableHead>
-              <TableHead>Phone</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+      <Table>
+        <TableHeader>
+          <TableRow  className="px-4">
+            <TableHead>Name</TableHead>
+            <TableHead>Email</TableHead>
+            <TableHead>Organization</TableHead>
+            <TableHead>Category</TableHead>
+            <TableHead className="text-right">Actions</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {profiles.map((profile) => (
+            <TableRow key={profile.id}>
+              <TableCell className="font-medium">
+                {profile.firstName} {profile.lastName}
+              </TableCell>
+              <TableCell>{profile.email}</TableCell>
+              <TableCell>{profile.organization || "-"}</TableCell>
+              <TableCell>{getCategoryBadge(profile.category)}</TableCell>
+              <TableCell className="text-right">
+                <Button
+                  variant="ghost"
+                  className="mr-2"
+                  onClick={() => {
+                    setSelectedProfile(profile)
+                    setIsEditDialogOpen(true)
+                  }}
+                >
+                  Edit
+                </Button>
+                <Button
+                  variant="ghost"
+                  onClick={() => {
+                    setSelectedProfile(profile)
+                    setIsDeleteDialogOpen(true)
+                  }}
+                >
+                  Delete
+                </Button>
+              </TableCell>
             </TableRow>
-          </TableHeader>
-          <TableBody>
-            {profiles.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={6} className="text-center text-muted-foreground">
-                  No profiles found
-                </TableCell>
-              </TableRow>
-            ) : (
-              profiles.map((profile) => (
-                <TableRow key={profile.id}>
-                  <TableCell>
-                    <div className="flex items-center gap-3">
-                      <Avatar>
-                        <AvatarImage src={profile.photoUrl || ""} />
-                        <AvatarFallback>
-                          {profile.firstName[0]}{profile.lastName[0]}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div>
-                        <div className="font-medium">
-                          {profile.firstName} {profile.lastName}
-                        </div>
-                      </div>
-                    </div>
-                  </TableCell>
-                  <TableCell>{profile.email}</TableCell>
-                  <TableCell>{profile.organization || "—"}</TableCell>
-                  <TableCell>{getCategoryBadge(profile.category)}</TableCell>
-                  <TableCell>{profile.phoneNumber || "—"}</TableCell>
-                  <TableCell className="text-right">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => {
-                        setSelectedProfile(profile)
-                        setIsEditDialogOpen(true)
-                      }}
-                    >
-                      <Edit2 className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => {
-                        setSelectedProfile(profile)
-                        setIsDeleteDialogOpen(true)
-                      }}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
-      </div>
+          ))}
+        </TableBody>
+      </Table>
 
-      {selectedProfile && (
-        <>
-          <EditProfileDialog
-            profile={selectedProfile}
-            open={isEditDialogOpen}
-            onOpenChange={setIsEditDialogOpen}
-            onSuccess={fetchProfiles}
-          />
-          <DeleteProfileDialog
-            profile={selectedProfile}
-            open={isDeleteDialogOpen}
-            onOpenChange={setIsDeleteDialogOpen}
-            onSuccess={fetchProfiles}
-          />
-        </>
-      )}
+      <EditProfileDialog
+        profile={selectedProfile}
+        open={isEditDialogOpen}
+        onOpenChange={setIsEditDialogOpen}
+        onSuccess={fetchProfiles}
+      />
+
+      <DeleteProfileDialog
+        profile={selectedProfile}
+        open={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+        onSuccess={fetchProfiles}
+      />
     </>
   )
 } 

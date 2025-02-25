@@ -1,14 +1,14 @@
 import { NextRequest, NextResponse } from "next/server"
-import { getServerSession } from "next-auth"
-import { authOptions } from "@/lib/auth"
+import { getServerSession } from "@/lib/server-auth"
 import { prisma } from "@/lib/prisma"
 import { writeFile } from "fs/promises"
 import { join } from "path"
 import { cwd } from "process"
+import { UserCategory, Prisma } from "@prisma/client"
 
 export async function GET(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions)
+    const session = await getServerSession()
 
     if (!session?.user) {
       return NextResponse.json(
@@ -17,10 +17,33 @@ export async function GET(request: NextRequest) {
       )
     }
 
+    const { searchParams } = new URL(request.url)
+    const search = searchParams.get("search")
+    const categoryParam = searchParams.get("category")
+
+    const where: Prisma.ProfileWhereInput = {
+      ...(search && {
+        OR: [
+          { firstName: { contains: search, mode: "insensitive" as Prisma.QueryMode } },
+          { lastName: { contains: search, mode: "insensitive" as Prisma.QueryMode } },
+          { email: { contains: search, mode: "insensitive" as Prisma.QueryMode } },
+        ],
+      }),
+      ...(categoryParam && categoryParam !== "all" && {
+        category: categoryParam as UserCategory,
+      }),
+    }
+
     const profiles = await prisma.profile.findMany({
-      orderBy: {
-        createdAt: "desc",
+      where,
+      include: {
+        user: {
+          select: {
+            email: true,
+          },
+        },
       },
+      orderBy: { createdAt: "desc" },
     })
 
     return NextResponse.json(profiles)
@@ -35,7 +58,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions)
+    const session = await getServerSession()
 
     if (!session?.user) {
       return NextResponse.json(
@@ -51,7 +74,7 @@ export async function POST(request: NextRequest) {
     const phoneNumber = formData.get("phoneNumber") as string | null
     const organization = formData.get("organization") as string | null
     const bio = formData.get("bio") as string | null
-    const category = formData.get("category") as "AUTHOR" | "BOARD" | "STAFF" | "RESEARCHER"
+    const category = formData.get("category") as UserCategory
     const photo = formData.get("photo") as File | null
 
     let photoUrl: string | undefined
@@ -70,16 +93,33 @@ export async function POST(request: NextRequest) {
       photoUrl = `/uploads/${filename}`
     }
 
+    // Check if user already has a profile
+    const existingProfile = await prisma.profile.findUnique({
+      where: { userId: session.user.id },
+    })
+
+    if (existingProfile) {
+      return NextResponse.json(
+        { error: "User already has a profile" },
+        { status: 400 }
+      )
+    }
+
     const profile = await prisma.profile.create({
       data: {
         firstName,
         lastName,
         email,
-        phoneNumber: phoneNumber || undefined,
-        organization: organization || undefined,
-        bio: bio || undefined,
+        phoneNumber: phoneNumber || null,
+        organization: organization || null,
+        bio: bio || null,
         category,
-        photoUrl,
+        photoUrl: photoUrl || null,
+        user: {
+          connect: {
+            id: session.user.id,
+          },
+        },
       },
     })
 

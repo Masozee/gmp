@@ -12,46 +12,45 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-
-interface Profile {
-  id: string
-  firstName: string
-  lastName: string
-  email: string
-}
+import { Profile } from "@/types/profile"
 
 interface DeleteProfileDialogProps {
   profile: Profile | null
   open: boolean
   onOpenChange: (open: boolean) => void
+  onSuccess: () => void
 }
 
 export function DeleteProfileDialog({
   profile,
   open,
   onOpenChange,
+  onSuccess,
 }: DeleteProfileDialogProps) {
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
 
-  const onDelete = async () => {
+  const handleDelete = async () => {
     if (!profile) return
 
     try {
       setIsLoading(true)
       setError(null)
 
-      const response = await fetch(`/api/profiles/${profile.id}`, {
+      const response = await fetch(`/api/authors/${profile.id}`, {
         method: "DELETE",
       })
 
       if (!response.ok) {
-        throw new Error("Failed to delete profile")
+        const error = await response.json()
+        throw new Error(error.error || "Failed to delete profile")
       }
 
+      onSuccess()
       onOpenChange(false)
     } catch (error) {
-      setError(error instanceof Error ? error.message : "Something went wrong")
+      console.error("Error deleting profile:", error)
+      setError(error instanceof Error ? error.message : "Failed to delete profile")
     } finally {
       setIsLoading(false)
     }
@@ -64,8 +63,10 @@ export function DeleteProfileDialog({
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
           <AlertDialogDescription>
             This action cannot be undone. This will permanently delete{" "}
-            {profile?.firstName} {profile?.lastName}&apos;s profile and remove all
-            associated data.
+            <span className="font-medium">
+              {profile?.firstName} {profile?.lastName}
+            </span>
+            's profile and remove their data from the system.
           </AlertDialogDescription>
         </AlertDialogHeader>
         {error && (
@@ -75,8 +76,8 @@ export function DeleteProfileDialog({
         )}
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={onDelete} disabled={isLoading}>
-            {isLoading ? "Deleting..." : "Delete Profile"}
+          <AlertDialogAction onClick={handleDelete} disabled={isLoading}>
+            {isLoading ? "Deleting..." : "Delete"}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

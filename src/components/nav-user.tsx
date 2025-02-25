@@ -33,12 +33,9 @@ import {
 } from "@/components/ui/sidebar"
 
 interface UserProfile {
-  email: string
-  profile?: {
-    firstName?: string | null
-    lastName?: string | null
-    avatar?: string | null
-  } | null
+  email: string | null
+  name: string | null
+  image: string | null
 }
 
 export function NavUser() {
@@ -75,10 +72,7 @@ export function NavUser() {
     }
   }
 
-  const fullName = user?.profile?.firstName && user?.profile?.lastName
-    ? `${user.profile.firstName} ${user.profile.lastName}`
-    : "User"
-
+  const fullName = user?.name || "User"
   const initials = fullName
     .split(" ")
     .map(n => n[0])
@@ -95,45 +89,52 @@ export function NavUser() {
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarImage src={user?.profile?.avatar || ""} alt={fullName} />
+                <AvatarImage src={user?.image || ""} alt={fullName} />
                 <AvatarFallback className="rounded-lg">{initials}</AvatarFallback>
               </Avatar>
-              <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">{fullName}</span>
-                <span className="truncate text-xs">{user?.email}</span>
-              </div>
-              <ChevronsUpDown className="ml-auto size-4" />
-            </SidebarMenuButton>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent
-            className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
-            side={isMobile ? "bottom" : "right"}
-            align="end"
-            sideOffset={4}
-          >
-            <DropdownMenuLabel className="p-0 font-normal">
-              <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={user?.profile?.avatar || ""} alt={fullName} />
-                  <AvatarFallback className="rounded-lg">{initials}</AvatarFallback>
-                </Avatar>
+              {!isMobile && (
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-semibold">{fullName}</span>
-                  <span className="truncate text-xs">{user?.email}</span>
+                  <span className="truncate text-xs text-muted-foreground">
+                    {user?.email || ""}
+                  </span>
                 </div>
+              )}
+              {!isMobile && <ChevronsUpDown className="h-4 w-4 shrink-0 opacity-50" />}
+            </SidebarMenuButton>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-56" align="start" side="right">
+            <DropdownMenuLabel className="font-normal">
+              <div className="flex flex-col space-y-1">
+                <p className="text-sm font-medium leading-none">{fullName}</p>
+                <p className="text-xs leading-none text-muted-foreground">
+                  {user?.email || ""}
+                </p>
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem onClick={() => router.push("/dashboard/profile")}>
+              <DropdownMenuItem>
                 <BadgeCheck className="mr-2 h-4 w-4" />
-                Profile Settings
+                <span>Status</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <CreditCard className="mr-2 h-4 w-4" />
+                <span>Billing</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Bell className="mr-2 h-4 w-4" />
+                <span>Notifications</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Sparkles className="mr-2 h-4 w-4" />
+                <span>What's New</span>
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={handleLogout}>
               <LogOut className="mr-2 h-4 w-4" />
-              Log out
+              <span>Log out</span>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

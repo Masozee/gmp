@@ -13,24 +13,29 @@ export async function GET() {
       )
     }
 
-    const user = await prisma.user.findUnique({
-      where: { id: session.user.id },
-      include: {
-        profile: true,
-      },
-    })
-
-    if (!user) {
+    if (!session.user.email) {
       return NextResponse.json(
-        { error: "User not found" },
-        { status: 404 }
+        { error: "User email not found" },
+        { status: 400 }
       )
     }
 
-    // Remove password from response
-    const { password: _, ...userWithoutPassword } = user
+    // Fetch the user's profile
+    const profile = await prisma.profile.findFirst({
+      where: {
+        email: {
+          equals: session.user.email,
+          mode: "insensitive",
+        },
+      },
+    })
 
-    return NextResponse.json(userWithoutPassword)
+    // Return profile data or default values
+    return NextResponse.json({
+      email: session.user.email,
+      name: profile ? `${profile.firstName} ${profile.lastName}` : null,
+      image: profile?.photoUrl || null,
+    })
   } catch (error) {
     console.error("Failed to fetch profile:", error)
     return NextResponse.json(
@@ -51,40 +56,50 @@ export async function PATCH(request: NextRequest) {
       )
     }
 
-    const body = await request.json()
-    const { firstName, lastName, phoneNumber, bio, avatar } = body
+    if (!session.user.email) {
+      return NextResponse.json(
+        { error: "User email not found" },
+        { status: 400 }
+      )
+    }
 
-    const user = await prisma.user.update({
-      where: { id: session.user.id },
-      data: {
-        profile: {
-          upsert: {
-            create: {
-              firstName,
-              lastName,
-              phoneNumber,
-              bio,
-              avatar,
-            },
-            update: {
-              firstName,
-              lastName,
-              phoneNumber,
-              bio,
-              avatar,
-            },
-          },
+    const body = await request.json()
+    const { firstName, lastName, photoUrl } = body
+
+    // First find the profile
+    const existingProfile = await prisma.profile.findFirst({
+      where: {
+        email: {
+          equals: session.user.email,
+          mode: "insensitive",
         },
-      },
-      include: {
-        profile: true,
       },
     })
 
-    // Remove password from response
-    const { password: _, ...userWithoutPassword } = user
+    if (!existingProfile) {
+      return NextResponse.json(
+        { error: "Profile not found" },
+        { status: 404 }
+      )
+    }
 
-    return NextResponse.json(userWithoutPassword)
+    // Update profile data
+    const profile = await prisma.profile.update({
+      where: {
+        id: existingProfile.id,
+      },
+      data: {
+        firstName,
+        lastName,
+        photoUrl,
+      },
+    })
+
+    return NextResponse.json({
+      email: session.user.email,
+      name: `${profile.firstName} ${profile.lastName}`,
+      image: profile.photoUrl,
+    })
   } catch (error) {
     console.error("Failed to update profile:", error)
     return NextResponse.json(

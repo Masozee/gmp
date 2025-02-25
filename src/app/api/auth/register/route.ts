@@ -1,12 +1,11 @@
 import { NextResponse } from "next/server"
-import { hash } from "bcryptjs"
 import { prisma } from "@/lib/prisma"
 import { signToken } from "@/lib/edge-jwt"
 
 export async function POST(request: Request) {
   try {
     const body = await request.json()
-    const { email, password, firstName, lastName } = body
+    const { email, firstName, lastName } = body
 
     // Check if user already exists
     const existingUser = await prisma.user.findUnique({
@@ -20,23 +19,19 @@ export async function POST(request: Request) {
       )
     }
 
-    // Hash password
-    const hashedPassword = await hash(password, 12)
-
-    // Create user with profile
+    // Create user and profile
     const user = await prisma.user.create({
       data: {
         email,
-        password: hashedPassword,
-        profile: {
-          create: {
-            firstName,
-            lastName,
-          },
-        },
       },
-      include: {
-        profile: true,
+    })
+
+    const profile = await prisma.profile.create({
+      data: {
+        firstName,
+        lastName,
+        email,
+        category: "STAFF",
       },
     })
 
@@ -44,15 +39,13 @@ export async function POST(request: Request) {
     const token = await signToken({
       id: user.id,
       email: user.email,
-      role: user.role,
+      role: "USER",
     })
-
-    // Remove password from response
-    const { password: _, ...userWithoutPassword } = user
 
     // Create response with cookie
     const response = NextResponse.json({
-      user: userWithoutPassword,
+      user,
+      profile,
       success: true,
     })
 

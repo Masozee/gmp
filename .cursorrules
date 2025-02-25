@@ -179,3 +179,5 @@ Before marking a feature as complete:
 - DONT BREAK THE EXISTING LIBRARIES
 - DONT BREAK THE EXISTING STRUCTURE
 - DONT CHANGE THE SIDEBAR
+- please inspect all code that related to the project and make sure its working before you make any changes
+- always test the project after each changes

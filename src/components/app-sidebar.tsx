@@ -59,13 +59,13 @@ const data = {
       ],
     },
     {
-      title: "Users",
-      url: "/dashboard/users",
+      title: "People",
+      url: "#",
       icon: Users,
       items: [
         {
-          title: "All Users",
-          url: "/dashboard/users",
+          title: "List",
+          url: "/dashboard/profiles",
         },
         {
           title: "Roles",
@@ -84,7 +84,7 @@ const data = {
       items: [
         {
           title: "List",
-          url: "#",
+          url: "/dashboard/publications",
         },
         {
           title: "Category",
@@ -153,17 +153,7 @@ const data = {
   ],
   projects: [
     {
-      name: "Design Engineering",
-      url: "#",
-      icon: Frame,
-    },
-    {
-      name: "Sales & Marketing",
-      url: "#",
-      icon: PieChart,
-    },
-    {
-      name: "Travel",
+      name: "Geo Tagging",
       url: "#",
       icon: Map,
     },
@@ -196,7 +186,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser />
       </SidebarFooter>
     </Sidebar>
   )

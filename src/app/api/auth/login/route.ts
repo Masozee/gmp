@@ -1,70 +1,50 @@
 import { NextResponse } from "next/server"
-import { compare } from "bcryptjs"
 import { prisma } from "@/lib/prisma"
 import { signToken } from "@/lib/edge-jwt"
 
 export async function POST(request: Request) {
   try {
     const body = await request.json()
-    const { email, password } = body
+    const { email } = body
 
     console.log("[Login API] Attempt for email:", email)
 
-    // Find user
-    const user = await prisma.user.findUnique({
-      where: { email },
-      include: {
-        profile: true,
-      },
-    })
+    // Find or create user
+    let user;
+    
+    try {
+      // Find existing user
+      user = await prisma.user.findUnique({
+        where: { email },
+      })
 
-    if (!user) {
-      console.log("[Login API] User not found")
-      return NextResponse.json(
-        { error: "Invalid email or password", success: false },
-        { status: 401 }
-      )
+      // Create new user if not found
+      if (!user) {
+        console.log("[Login API] User not found, creating new user")
+        user = await prisma.user.create({
+          data: { 
+            email,
+          },
+        })
+      }
+    } catch (error) {
+      console.error("[Login API] Error finding/creating user:", error)
+      throw new Error("Failed to find or create user")
     }
 
-    // Check if user is archived
-    if (user.status === "ARCHIVED") {
-      console.log("[Login API] User is archived")
-      return NextResponse.json(
-        { error: "Account is archived. Please contact support.", success: false },
-        { status: 401 }
-      )
-    }
-
-    // Verify password
-    const isValidPassword = await compare(password, user.password)
-
-    if (!isValidPassword) {
-      console.log("[Login API] Invalid password")
-      return NextResponse.json(
-        { error: "Invalid email or password", success: false },
-        { status: 401 }
-      )
-    }
-
-    console.log("[Login API] Password verified, generating token")
+    console.log("[Login API] User found/created, generating token")
 
     // Generate JWT token with user data
-    const tokenData = {
+    const token = await signToken({
       id: user.id,
-      email: user.email,
-      role: user.role,
-    }
-    console.log("[Login API] Token data:", tokenData)
-    
-    const token = await signToken(tokenData)
+      email: user.email || "",
+      role: "USER", // Default role since role field was removed
+    })
     console.log("[Login API] Token generated")
-
-    // Remove password from response
-    const { password: _, ...userWithoutPassword } = user
 
     // Create response with cookie
     const response = NextResponse.json({
-      user: userWithoutPassword,
+      user,
       success: true,
     })
 

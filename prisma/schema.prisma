@@ -37,53 +37,139 @@ enum ErrorSeverity {
   CRITICAL
 }
 
+enum PublicationStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
 model User {
-  id            String      @id @default(cuid())
-  email         String      @unique
-  password      String
-  role          UserRole    @default(USER)
-  status        UserStatus  @default(ACTIVE)
-  errorLogs     ErrorLog[]
-  profile       Profile?    @relation("UserProfile")
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
+  id         String     @id @default(cuid())
+  name       String?
+  email      String?    @unique
+  image      String?
+  errorLogs  ErrorLog[]
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
 
   @@map("users")
 }
 
 model Profile {
-  id           String       @id @default(cuid())
-  firstName    String
-  lastName     String
-  email        String?
-  phoneNumber  String?
-  organization String?
-  bio          String?      @db.Text
-  photoUrl     String?
-  category     UserCategory @default(STAFF)
-  userId       String       @unique
-  user         User         @relation("UserProfile", fields: [userId], references: [id], onDelete: Cascade)
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @updatedAt
+  id            String       @id @default(cuid())
+  firstName     String
+  lastName      String
+  email         String       @unique
+  phoneNumber   String?
+  organization  String?
+  bio          String?
+  category      UserCategory
+  photoUrl      String?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  PublicationAuthor PublicationAuthor[]
 
   @@map("profiles")
 }
 
 model ErrorLog {
-  id          String        @id @default(cuid())
-  userId      String?
-  path        String
-  method      String
-  message     String
-  stack       String?
-  severity    ErrorSeverity @default(ERROR)
-  metadata    Json?
-  user        User?         @relation(fields: [userId], references: [id])
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
+  id        String        @id @default(cuid())
+  userId    String?
+  path      String
+  method    String
+  message   String
+  stack     String?
+  severity  ErrorSeverity @default(ERROR)
+  metadata  Json?
+  user      User?         @relation(fields: [userId], references: [id])
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
 
-  @@map("error_logs")
   @@index([userId])
   @@index([severity])
   @@index([createdAt])
+  @@map("error_logs")
+}
+
+model Publication {
+  id          String               @id @default(cuid())
+  title       String
+  slug        String               @unique
+  description String?              @db.Text
+  content     String?              @db.Text
+  status      PublicationStatus    @default(DRAFT)
+  coverImage  String?
+  coverCredit String?
+  images      Image[]
+  authors     PublicationAuthor[]
+  tags        TagsOnPublications[]
+  files       PublicationFile[]
+  createdAt   DateTime             @default(now())
+  updatedAt   DateTime             @updatedAt
+
+  @@map("publications")
+}
+
+model PublicationAuthor {
+  id            String      @id @default(cuid())
+  order         Int
+  publication   Publication @relation(fields: [publicationId], references: [id], onDelete: Cascade)
+  publicationId String
+  profile       Profile     @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  profileId     String
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  @@unique([publicationId, profileId])
+  @@unique([publicationId, order])
+  @@map("publication_authors")
+}
+
+model Tag {
+  id           String               @id @default(cuid())
+  name         String               @unique
+  slug         String               @unique
+  publications TagsOnPublications[]
+  createdAt    DateTime             @default(now())
+  updatedAt    DateTime             @updatedAt
+
+  @@map("tags")
+}
+
+model TagsOnPublications {
+  publication   Publication @relation(fields: [publicationId], references: [id], onDelete: Cascade)
+  publicationId String
+  tag           Tag         @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  tagId         String
+  createdAt     DateTime    @default(now())
+
+  @@id([publicationId, tagId])
+  @@map("tags_on_publications")
+}
+
+model Image {
+  id            String      @id @default(cuid())
+  url           String
+  alt           String?
+  credit        String?
+  publication   Publication @relation(fields: [publicationId], references: [id], onDelete: Cascade)
+  publicationId String
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  @@map("images")
+}
+
+model PublicationFile {
+  id            String      @id @default(cuid())
+  name          String
+  url           String
+  size          Int
+  type          String
+  publication   Publication @relation(fields: [publicationId], references: [id], onDelete: Cascade)
+  publicationId String
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  @@map("publication_files")
 }
