@@ -25,6 +25,15 @@ const formSchema = z.object({
   password: z.string().min(8, "Password must be at least 8 characters"),
 })
 
+interface LoginResponse {
+  success: boolean
+  error?: string
+  user?: {
+    id: string
+    email: string
+  }
+}
+
 type FormValues = z.infer<typeof formSchema>
 
 export function LoginForm() {
@@ -43,7 +52,7 @@ export function LoginForm() {
 
   const onSubmit = async (values: FormValues) => {
     let response: Response | undefined
-    let data: any
+    let data: LoginResponse | null = null
     
     try {
       setIsLoading(true)
@@ -62,12 +71,12 @@ export function LoginForm() {
 
       data = await response.json()
       console.log("[Login Form] Response data:", {
-        success: data.success,
-        error: data.error,
+        success: data?.success,
+        error: data?.error,
       })
 
-      if (!response.ok) {
-        throw new Error(data.error || `Login failed with status ${response.status}`)
+      if (!response.ok || !data) {
+        throw new Error(data?.error || `Login failed with status ${response.status}`)
       }
 
       if (!data.success) {
@@ -126,7 +135,13 @@ export function LoginForm() {
               <FormItem>
                 <FormLabel>Email</FormLabel>
                 <FormControl>
-                  <Input {...field} type="email" placeholder="Enter your email" />
+                  <Input 
+                    {...field} 
+                    type="email" 
+                    placeholder="Enter your email"
+                    autoComplete="email"
+                    disabled={isLoading}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -140,7 +155,13 @@ export function LoginForm() {
               <FormItem>
                 <FormLabel>Password</FormLabel>
                 <FormControl>
-                  <Input {...field} type="password" placeholder="Enter your password" />
+                  <Input 
+                    {...field} 
+                    type="password" 
+                    placeholder="Enter your password"
+                    autoComplete="current-password"
+                    disabled={isLoading}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>

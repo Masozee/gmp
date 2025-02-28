@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { getServerSession } from "@/lib/server-auth"
-import { prisma } from "@/lib/prisma"
+import prisma from "@/lib/prisma"
 import { writeFile } from "fs/promises"
 import { join } from "path"
 import { cwd } from "process"
@@ -36,13 +36,6 @@ export async function GET(request: NextRequest) {
 
     const profiles = await prisma.profile.findMany({
       where,
-      include: {
-        user: {
-          select: {
-            email: true,
-          },
-        },
-      },
       orderBy: { createdAt: "desc" },
     })
 
@@ -93,14 +86,19 @@ export async function POST(request: NextRequest) {
       photoUrl = `/uploads/${filename}`
     }
 
-    // Check if user already has a profile
-    const existingProfile = await prisma.profile.findUnique({
-      where: { userId: session.user.id },
+    // Check if email already exists
+    const existingProfile = await prisma.profile.findFirst({
+      where: {
+        email: {
+          equals: email,
+          mode: "insensitive",
+        },
+      },
     })
 
     if (existingProfile) {
       return NextResponse.json(
-        { error: "User already has a profile" },
+        { error: "Email already exists" },
         { status: 400 }
       )
     }
@@ -115,11 +113,6 @@ export async function POST(request: NextRequest) {
         bio: bio || null,
         category,
         photoUrl: photoUrl || null,
-        user: {
-          connect: {
-            id: session.user.id,
-          },
-        },
       },
     })
 

@@ -12,6 +12,7 @@ import {
   SortDesc,
   Download,
 } from "lucide-react"
+import { useRouter } from "next/navigation"
 
 import {
   Table,
@@ -60,6 +61,7 @@ export function ProfileTable({
   searchQuery = "",
   categoryFilter = "all",
 }: ProfileTableProps) {
+  const router = useRouter()
   const [profiles, setProfiles] = useState<Profile[]>([])
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
   const [isLoading, setIsLoading] = useState(true)
@@ -89,9 +91,19 @@ export function ProfileTable({
       params.append('sort', sortField)
       params.append('order', sortOrder)
 
-      const response = await fetch(`/api/authors?${params}`)
+      const response = await fetch(`/api/authors?${params}`, {
+        credentials: 'include',
+      })
+
+      if (response.status === 401) {
+        // Redirect to login page if unauthorized
+        router.push('/auth/login')
+        return
+      }
+
       if (!response.ok) {
-        throw new Error("Failed to fetch profiles")
+        const errorData = await response.json()
+        throw new Error(errorData.error || "Failed to fetch profiles")
       }
 
       const data = await response.json()

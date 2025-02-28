@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
-import { prisma } from "@/lib/prisma"
 import { getServerSession } from "@/lib/server-auth"
+import prisma from "@/lib/prisma"
 
 export async function GET() {
   try {
@@ -13,14 +13,6 @@ export async function GET() {
       )
     }
 
-    if (!session.user.email) {
-      return NextResponse.json(
-        { error: "User email not found" },
-        { status: 400 }
-      )
-    }
-
-    // Fetch the user's profile
     const profile = await prisma.profile.findFirst({
       where: {
         email: {
@@ -28,16 +20,29 @@ export async function GET() {
           mode: "insensitive",
         },
       },
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+        email: true,
+        photoUrl: true,
+      },
     })
 
-    // Return profile data or default values
+    if (!profile) {
+      return NextResponse.json(
+        { error: "Profile not found" },
+        { status: 404 }
+      )
+    }
+
     return NextResponse.json({
-      email: session.user.email,
-      name: profile ? `${profile.firstName} ${profile.lastName}` : null,
-      image: profile?.photoUrl || null,
+      email: profile.email,
+      name: `${profile.firstName} ${profile.lastName}`.trim(),
+      image: profile.photoUrl,
     })
   } catch (error) {
-    console.error("Failed to fetch profile:", error)
+    console.error("Error fetching profile:", error)
     return NextResponse.json(
       { error: "Failed to fetch profile" },
       { status: 500 }

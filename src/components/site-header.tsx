@@ -2,12 +2,13 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Moon, Sun } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { SidebarTrigger } from "@/components/ui/sidebar"
 import { ModeToggle } from "@/components/mode-toggle"
+import { WeatherCompact } from "@/components/weather-compact"
+import { Separator } from "@/components/ui/separator"
 
 export function SiteHeader() {
   const pathname = usePathname()
@@ -28,7 +29,7 @@ export function SiteHeader() {
             </>
           )}
         </div>
-        <div className="ml-auto flex items-center gap-4">
+        <div className="ml-auto flex items-center gap-2">
           <form className="w-full lg:w-[240px]">
             <Input
               type="search"
@@ -36,6 +37,8 @@ export function SiteHeader() {
               className="h-9 lg:w-[240px]"
             />
           </form>
+          <WeatherCompact />
+          <Separator orientation="vertical" className="h-6" />
           <ModeToggle />
         </div>
       </div>

@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server"
-import { prisma } from "@/lib/prisma"
+import prisma from "@/lib/prisma"
 import { getServerSession } from "@/lib/server-auth"
 import slugify from "slugify"
+import { Prisma } from "@prisma/client"
 
 export async function GET(request: NextRequest) {
   try {
@@ -17,11 +18,11 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url)
     const search = searchParams.get("search")
 
-    const where = search
+    const where: Prisma.TagWhereInput = search
       ? {
           OR: [
-            { name: { contains: search, mode: "insensitive" } },
-            { slug: { contains: search, mode: "insensitive" } },
+            { name: { contains: search, mode: "insensitive" as Prisma.QueryMode } },
+            { slug: { contains: search, mode: "insensitive" as Prisma.QueryMode } },
           ],
         }
       : {}

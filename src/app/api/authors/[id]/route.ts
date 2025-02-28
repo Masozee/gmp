@@ -6,13 +6,17 @@ import { join } from "path"
 import { cwd } from "process"
 import { existsSync } from "fs"
 
+type RouteContext = {
+  params: { id: string }
+}
+
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: RouteContext
 ) {
   try {
     const profile = await prisma.profile.findUnique({
-      where: { id: params.id },
+      where: { id: context.params.id },
     })
 
     if (!profile) {
@@ -34,7 +38,7 @@ export async function GET(
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: RouteContext
 ) {
   try {
     const session = await getServerSession()
@@ -64,7 +68,7 @@ export async function PATCH(
           mode: "insensitive"
         },
         NOT: {
-          id: params.id
+          id: context.params.id
         }
       }
     })
@@ -101,7 +105,7 @@ export async function PATCH(
 
       // Delete old photo if exists
       const currentProfile = await prisma.profile.findUnique({
-        where: { id: params.id },
+        where: { id: context.params.id },
         select: { photoUrl: true }
       })
 
@@ -116,7 +120,7 @@ export async function PATCH(
     }
 
     const profile = await prisma.profile.update({
-      where: { id: params.id },
+      where: { id: context.params.id },
       data: {
         firstName,
         lastName,
@@ -141,7 +145,7 @@ export async function PATCH(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: RouteContext
 ) {
   try {
     const session = await getServerSession()
@@ -154,7 +158,7 @@ export async function DELETE(
     }
 
     await prisma.profile.delete({
-      where: { id: params.id },
+      where: { id: context.params.id },
     })
 
     return NextResponse.json({ success: true })

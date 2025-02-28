@@ -1,11 +1,32 @@
 import { NextResponse } from "next/server"
-import { prisma } from "@/lib/prisma"
+import prisma from "@/lib/prisma"
 import { signToken } from "@/lib/edge-jwt"
+import bcrypt from "bcryptjs"
+import { z } from "zod"
+import { Prisma, UserRole, UserCategory } from "@prisma/client"
+
+// Validation schema
+const registerSchema = z.object({
+  email: z.string().email("Invalid email address"),
+  password: z.string().min(8, "Password must be at least 8 characters"),
+  firstName: z.string().min(2, "First name must be at least 2 characters"),
+  lastName: z.string().min(2, "Last name must be at least 2 characters"),
+})
 
 export async function POST(request: Request) {
   try {
     const body = await request.json()
-    const { email, firstName, lastName } = body
+    
+    // Validate input
+    const validationResult = registerSchema.safeParse(body)
+    if (!validationResult.success) {
+      return NextResponse.json(
+        { error: validationResult.error.errors[0].message },
+        { status: 400 }
+      )
+    }
+
+    const { email, password, firstName, lastName } = validationResult.data
 
     // Check if user already exists
     const existingUser = await prisma.user.findUnique({
@@ -19,32 +40,47 @@ export async function POST(request: Request) {
       )
     }
 
-    // Create user and profile
-    const user = await prisma.user.create({
-      data: {
-        email,
-      },
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, 12)
+
+    // Create user and profile in a transaction
+    const result = await prisma.$transaction(async (tx) => {
+      const user = await tx.user.create({
+        data: {
+          email,
+          password: hashedPassword,
+          name: `${firstName} ${lastName}`,
+        },
+      })
+
+      const profile = await tx.profile.create({
+        data: {
+          firstName,
+          lastName,
+          email,
+          category: UserCategory.STAFF,
+        },
+      })
+
+      return { user, profile }
     })
 
-    const profile = await prisma.profile.create({
-      data: {
-        firstName,
-        lastName,
-        email,
-        category: "STAFF",
-      },
-    })
+    const { user, profile } = result
 
     // Generate JWT token
     const token = await signToken({
       id: user.id,
-      email: user.email,
+      email: user.email || "",
       role: "USER",
     })
 
     // Create response with cookie
     const response = NextResponse.json({
-      user,
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+      },
       profile,
       success: true,
     })

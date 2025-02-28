@@ -1,83 +1,86 @@
-import { NextResponse } from "next/server"
-import { prisma } from "@/lib/prisma"
+import { NextRequest, NextResponse } from "next/server"
+import prisma from "@/lib/prisma"
+import { compare } from "bcryptjs"
 import { signToken } from "@/lib/edge-jwt"
+import { z } from "zod"
+import { Prisma } from "@prisma/client"
 
-export async function POST(request: Request) {
+// Validation schema
+const loginSchema = z.object({
+  email: z.string().email("Invalid email address"),
+  password: z.string().min(1, "Password is required"),
+})
+
+export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { email } = body
 
-    console.log("[Login API] Attempt for email:", email)
-
-    // Find or create user
-    let user;
-    
-    try {
-      // Find existing user
-      user = await prisma.user.findUnique({
-        where: { email },
-      })
-
-      // Create new user if not found
-      if (!user) {
-        console.log("[Login API] User not found, creating new user")
-        user = await prisma.user.create({
-          data: { 
-            email,
-          },
-        })
-      }
-    } catch (error) {
-      console.error("[Login API] Error finding/creating user:", error)
-      throw new Error("Failed to find or create user")
+    // Validate input
+    const validationResult = loginSchema.safeParse(body)
+    if (!validationResult.success) {
+      return NextResponse.json(
+        { error: validationResult.error.errors[0].message },
+        { status: 400 }
+      )
     }
 
-    console.log("[Login API] User found/created, generating token")
+    const { email, password } = validationResult.data
 
-    // Generate JWT token with user data
+    const user = await prisma.user.findUnique({
+      where: { email: email.toLowerCase() },
+      select: {
+        id: true,
+        email: true,
+        password: true,
+        name: true,
+      },
+    })
+
+    if (!user || !user.password) {
+      return NextResponse.json(
+        { error: "Invalid email or password" },
+        { status: 401 }
+      )
+    }
+
+    const isValidPassword = await compare(password, user.password)
+    if (!isValidPassword) {
+      return NextResponse.json(
+        { error: "Invalid email or password" },
+        { status: 401 }
+      )
+    }
+
+    // Create session token
     const token = await signToken({
       id: user.id,
       email: user.email || "",
-      role: "USER", // Default role since role field was removed
+      role: "USER",
     })
-    console.log("[Login API] Token generated")
 
-    // Create response with cookie
+    // Set cookie and return response
     const response = NextResponse.json({
-      user,
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+      },
       success: true,
     })
 
-    // Cookie settings
-    const cookieOptions = {
-      name: "token",
-      value: token,
+    response.cookies.set("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "lax" as const,
+      sameSite: "lax",
       path: "/",
       expires: new Date(Date.now() + 24 * 60 * 60 * 1000), // 1 day
-    }
-
-    console.log("[Login API] Setting cookie with options:", {
-      ...cookieOptions,
-      value: token.substring(0, 10) + "...",
     })
-
-    // Set cookie in response
-    response.cookies.set(cookieOptions)
-
-    console.log("[Login API] Cookie set, returning response")
 
     return response
   } catch (error) {
-    console.error("[Login API] Error:", error)
+    console.error("Login error:", error)
     return NextResponse.json(
-      { 
-        error: "An unexpected error occurred during login. Please try again.",
-        success: false,
-        details: process.env.NODE_ENV === "development" ? error : undefined
-      },
+      { error: "An error occurred during login" },
       { status: 500 }
     )
   }

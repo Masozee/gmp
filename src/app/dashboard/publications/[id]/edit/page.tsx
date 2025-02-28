@@ -166,6 +166,10 @@ export default function EditPublicationPage() {
         const data = await response.json()
         setPublication(data)
         
+        console.log("Publication authors:", data.authors);
+        const authorIds = data.authors.map((author: any) => author.profile.id);
+        console.log("Author IDs being set:", authorIds);
+        
         // Set form values
         form.reset({
           title: data.title,
@@ -175,8 +179,10 @@ export default function EditPublicationPage() {
           category: data.categories?.[0]?.category?.id || "",
           tags: data.tags?.map((tag: any) => tag.tag.id) || [],
           coverCredit: data.coverCredit || "",
-          authors: data.authors.map((author: any) => author.profile.id),
+          authors: authorIds,
         })
+        
+        console.log("Form values after reset:", form.getValues());
       } catch (error) {
         console.error("Error fetching publication:", error)
         setError("Failed to load publication. Please try again.")
@@ -284,16 +290,16 @@ export default function EditPublicationPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-screen">
-        <p className="text-muted-foreground">Loading...</p>
+      <div className="flex items-center justify-center h-screen p-6">
+        <p className="text-muted-foreground">Loading publication...</p>
       </div>
     )
   }
 
-  if (error || !publication) {
+  if (error) {
     return (
-      <div className="flex flex-col items-center justify-center h-screen gap-4">
-        <p className="text-destructive">{error || "Publication not found"}</p>
+      <div className="flex flex-col items-center justify-center h-screen gap-4 p-6">
+        <p className="text-destructive">{error}</p>
         <Button variant="outline" onClick={() => router.push("/dashboard/publications")}>
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back to Publications
@@ -303,17 +309,18 @@ export default function EditPublicationPage() {
   }
 
   return (
-    <div className="flex flex-col gap-8 p-8">
+    <div className="flex flex-col gap-6 p-6">
       <div className="flex items-center justify-between">
-        <div className="space-y-1">
-          <h1 className="text-3xl font-bold tracking-tight">Edit Publication</h1>
-          <p className="text-muted-foreground">
-            Make changes to your publication here
-          </p>
-        </div>
-        <Button variant="outline" onClick={() => router.push(`/dashboard/publications/${params.id}`)}>
+        <Button
+          variant="outline"
+          onClick={() => router.push(`/dashboard/publications/${params.id}`)}
+        >
           <ArrowLeft className="mr-2 h-4 w-4" />
-          Back to Details
+          Back to Publication
+        </Button>
+        <Button type="submit" form="publication-form">
+          <Check className="mr-2 h-4 w-4" />
+          Save Changes
         </Button>
       </div>
 
@@ -323,7 +330,7 @@ export default function EditPublicationPage() {
         </CardHeader>
         <CardContent>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            <form id="publication-form" onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
               <FormField
                 control={form.control}
                 name="title"
@@ -461,6 +468,7 @@ export default function EditPublicationPage() {
                             variant="outline"
                             role="combobox"
                             className="w-full justify-between"
+                            onClick={() => console.log("Current authors value:", field.value)}
                           >
                             {field.value.length > 0
                               ? `${field.value.length} author${field.value.length > 1 ? "s" : ""} selected`

@@ -3,7 +3,15 @@ import type { NextRequest } from "next/server"
 import { verifyToken } from "@/lib/edge-jwt"
 
 // List of paths that require authentication
-const protectedPaths = ["/dashboard", "/users"]
+const protectedPaths = [
+  "/dashboard",
+  "/users",
+  "/api/dashboard",
+  "/api/profile",
+  "/api/publications",
+  "/api/events",
+  "/api/auth/session"
+]
 
 // List of paths that are only accessible when not authenticated
 const authPaths = ["/login", "/register"]

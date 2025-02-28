@@ -13,7 +13,7 @@ import {
   PieChart,
   Send,
   Settings2,
-  SquareTerminal,
+  Terminal,
   Users,
 } from "lucide-react"
 
@@ -41,7 +41,7 @@ const data = {
     {
       title: "Playground",
       url: "#",
-      icon: SquareTerminal,
+      icon: Terminal,
       isActive: true,
       items: [
         {
@@ -99,16 +99,16 @@ const data = {
       items: [
         {
           title: "All Events",
-          url: "#",
+          url: "/dashboard/events",
         },
         {
-          title: "Upcoming Events",
-          url: "#",
+          title: "Add New",
+          url: "/dashboard/events/new",
         },
         {
-          title: "Past Events",
-          url: "#",
-        },
+          title: "Categories",
+          url: "/dashboard/event-categories",
+        }
       ],
     },
     {

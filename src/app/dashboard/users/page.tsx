@@ -30,7 +30,7 @@ export default function UsersPage() {
   const [statusFilter, setStatusFilter] = useState("all")
 
   return (
-    <div className="flex flex-col gap-8 p-8">
+    <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
         <div className="space-y-1">
           <h1 className="text-3xl font-bold tracking-tight">Users</h1>

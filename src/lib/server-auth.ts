@@ -1,6 +1,6 @@
 import { cookies } from "next/headers"
 import { RequestCookies } from "next/dist/server/web/spec-extension/cookies"
-import { verifyToken } from "./jwt"
+import { verifyToken } from "./edge-jwt"
 
 interface User {
   id: string
@@ -21,7 +21,7 @@ export async function getServerSession(): Promise<Session | null> {
       return null
     }
 
-    const decoded = verifyToken(token)
+    const decoded = await verifyToken(token)
 
     return {
       user: {

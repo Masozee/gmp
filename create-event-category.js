@@ -1,0 +1,1 @@
+const { PrismaClient } = require("@prisma/client"); const prisma = new PrismaClient(); async function main() { const category = await prisma.eventCategory.create({ data: { name: "Workshop", slug: "workshop", description: "Hands-on learning sessions" } }); console.log("Created category:", category); } main().catch(console.error).finally(() => prisma.$disconnect());

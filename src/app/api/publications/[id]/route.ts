@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server"
-import { prisma } from "@/lib/prisma"
+import prisma from "@/lib/prisma"
 import { getServerSession } from "@/lib/server-auth"
 import { writeFile } from "fs/promises"
 import { join } from "path"
 import { cwd } from "process"
+import { Prisma, PublicationStatus } from "@prisma/client"
 
 export async function GET(
   request: NextRequest,
@@ -31,6 +32,11 @@ export async function GET(
                 photoUrl: true,
               },
             },
+          },
+        },
+        categories: {
+          include: {
+            category: true,
           },
         },
         tags: {
@@ -84,7 +90,7 @@ export async function PATCH(
         const updatedPublication = await prisma.publication.update({
           where: { id: params.id },
           data: {
-            status: json.status as "DRAFT" | "PUBLISHED" | "ARCHIVED",
+            status: json.status as PublicationStatus,
           },
           include: {
             authors: {
@@ -96,6 +102,11 @@ export async function PATCH(
                     photoUrl: true,
                   },
                 },
+              },
+            },
+            categories: {
+              include: {
+                category: true,
               },
             },
             files: true,
@@ -111,7 +122,7 @@ export async function PATCH(
     const title = formData.get("title") as string
     const description = formData.get("description") as string
     const content = formData.get("content") as string
-    const status = formData.get("status") as "DRAFT" | "PUBLISHED" | "ARCHIVED"
+    const status = formData.get("status") as PublicationStatus
     const coverImage = formData.get("coverImage") as File | null
     const coverCredit = formData.get("coverCredit") as string
 
@@ -120,6 +131,14 @@ export async function PATCH(
     for (const [key, value] of formData.entries()) {
       if (key.startsWith("authors[") && key.endsWith("]")) {
         authorIds.push(value as string)
+      }
+    }
+
+    // Get category IDs from form data
+    const categoryIds: string[] = []
+    for (const [key, value] of formData.entries()) {
+      if (key.startsWith("categories[") && key.endsWith("]")) {
+        categoryIds.push(value as string)
       }
     }
 
@@ -159,6 +178,18 @@ export async function PATCH(
             })),
           },
         }),
+        // Update categories if provided
+        ...(categoryIds.length > 0 && {
+          categories: {
+            deleteMany: {},
+            create: categoryIds.map((categoryId) => ({
+              assignedAt: new Date(),
+              category: {
+                connect: { id: categoryId },
+              },
+            })),
+          },
+        }),
       },
       include: {
         authors: {
@@ -170,6 +201,11 @@ export async function PATCH(
                 photoUrl: true,
               },
             },
+          },
+        },
+        categories: {
+          include: {
+            category: true,
           },
         },
         files: true,
