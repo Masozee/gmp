@@ -15,6 +15,7 @@ import {
   Settings2,
   SquareTerminal,
   Users,
+  Briefcase,
 } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
@@ -39,22 +40,41 @@ const data = {
   },
   navMain: [
     {
-      title: "Playground",
-      url: "#",
-      icon: SquareTerminal,
+      title: "Dashboard",
+      url: "/dashboard",
+      icon: PieChart,
       isActive: true,
       items: [
         {
-          title: "History",
-          url: "#",
+          title: "Overview",
+          url: "/dashboard",
         },
         {
-          title: "Starred",
-          url: "#",
+          title: "Analytics",
+          url: "/dashboard/analytics",
         },
         {
-          title: "Settings",
-          url: "#",
+          title: "Reports",
+          url: "/dashboard/reports",
+        },
+      ],
+    },
+    {
+      title: "Projects",
+      url: "/dashboard/projects",
+      icon: Briefcase,
+      items: [
+        {
+          title: "All Projects",
+          url: "/dashboard/projects",
+        },
+        {
+          title: "Create New",
+          url: "/dashboard/projects/new",
+        },
+        {
+          title: "Categories",
+          url: "/dashboard/projects/categories",
         },
       ],
     },
@@ -94,20 +114,28 @@ const data = {
     },
     {
       title: "Events",
-      url: "#",
+      url: "/dashboard/events",
       icon: CalendarDays,
       items: [
         {
           title: "All Events",
-          url: "#",
+          url: "/dashboard/events",
         },
         {
-          title: "Upcoming Events",
-          url: "#",
+          title: "Create New",
+          url: "/dashboard/events/new",
         },
         {
-          title: "Past Events",
-          url: "#",
+          title: "Calendar View",
+          url: "/dashboard/events?view=calendar",
+        },
+        {
+          title: "Upcoming",
+          url: "/dashboard/events?status=UPCOMING",
+        },
+        {
+          title: "Completed",
+          url: "/dashboard/events?status=COMPLETED",
         },
       ],
     },
@@ -149,6 +177,11 @@ const data = {
   ],
   projects: [
     {
+      name: "Project Management",
+      url: "/dashboard/projects",
+      icon: Briefcase,
+    },
+    {
       name: "Geo Tagging",
       url: "#",
       icon: Map,
@@ -159,16 +192,16 @@ const data = {
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar variant="inset" {...props}>
-      <SidebarHeader>
+      <SidebarHeader className="border-b border-sidebar-border">
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
-              <a href="#">
-                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+              <a href="/dashboard">
+                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-accent text-sidebar-accent-foreground">
                   <Command className="size-4" />
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">Acme Inc</span>
+                  <span className="truncate font-semibold">AI Agent Dashboard</span>
                   <span className="truncate text-xs">Enterprise</span>
                 </div>
               </a>
@@ -181,7 +214,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavProjects projects={data.projects} />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
-      <SidebarFooter>
+      <SidebarFooter className="border-t border-sidebar-border">
         <NavUser />
       </SidebarFooter>
     </Sidebar>

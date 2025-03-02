@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,6 +5,373 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String     @id @default(cuid())
+  email     String?    @unique
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  image     String?
+  name      String?
+  password  String?
+  role      UserRole   @default(USER)
+  errorLogs ErrorLog[]
+
+  @@map("users")
+}
+
+model Profile {
+  id                String              @id @default(cuid())
+  firstName         String
+  lastName          String
+  email             String              @unique
+  phoneNumber       String?
+  organization      String?
+  bio               String?
+  photoUrl          String?
+  category          UserCategory
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  PublicationAuthor PublicationAuthor[]
+
+  @@map("profiles")
+}
+
+model ErrorLog {
+  id        String        @id @default(cuid())
+  userId    String?
+  path      String
+  method    String
+  message   String
+  stack     String?
+  severity  ErrorSeverity @default(ERROR)
+  metadata  Json?
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  user      User?         @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([severity])
+  @@index([createdAt])
+  @@map("error_logs")
+}
+
+model Publication {
+  id          String                     @id @default(cuid())
+  title       String
+  slug        String                     @unique
+  description String
+  content     String
+  coverImage  String?
+  coverCredit String?
+  createdAt   DateTime                   @default(now())
+  updatedAt   DateTime                   @updatedAt
+  status      PublicationStatus          @default(DRAFT)
+  categories  CategoriesOnPublications[]
+  files       PublicationFile[]
+  images      Image[]
+  authors     PublicationAuthor[]
+  tags        TagsOnPublications[]
+
+  @@map("publications")
+}
+
+model PublicationFile {
+  id            String      @id @default(cuid())
+  name          String
+  url           String
+  size          Int
+  type          String
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  publicationId String
+  publication   Publication @relation(fields: [publicationId], references: [id], onDelete: Cascade)
+
+  @@index([publicationId])
+}
+
+model Category {
+  id           String                     @id @default(cuid())
+  name         String
+  slug         String                     @unique
+  description  String?
+  createdAt    DateTime                   @default(now())
+  updatedAt    DateTime                   @updatedAt
+  publications CategoriesOnPublications[]
+}
+
+model CategoriesOnPublications {
+  publicationId String
+  categoryId    String
+  assignedAt    DateTime    @default(now())
+  category      Category    @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  publication   Publication @relation(fields: [publicationId], references: [id], onDelete: Cascade)
+
+  @@id([publicationId, categoryId])
+  @@index([categoryId])
+  @@index([publicationId])
+}
+
+model PublicationAuthor {
+  id            String      @id @default(cuid())
+  order         Int
+  publicationId String
+  profileId     String
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  profile       Profile     @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  publication   Publication @relation(fields: [publicationId], references: [id], onDelete: Cascade)
+
+  @@unique([publicationId, profileId])
+  @@unique([publicationId, order])
+  @@map("publication_authors")
+}
+
+model Tag {
+  id           String               @id @default(cuid())
+  name         String               @unique
+  slug         String               @unique
+  createdAt    DateTime             @default(now())
+  updatedAt    DateTime             @updatedAt
+  events       TagsOnEvents[]
+  publications TagsOnPublications[]
+
+  @@map("tags")
+}
+
+model TagsOnPublications {
+  publicationId String
+  tagId         String
+  createdAt     DateTime    @default(now())
+  publication   Publication @relation(fields: [publicationId], references: [id], onDelete: Cascade)
+  tag           Tag         @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([publicationId, tagId])
+  @@map("tags_on_publications")
+}
+
+model TagsOnEvents {
+  eventId   String
+  tagId     String
+  createdAt DateTime @default(now())
+  event     Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  tag       Tag      @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([eventId, tagId])
+  @@map("tags_on_events")
+}
+
+model Image {
+  id            String      @id @default(cuid())
+  url           String
+  alt           String?
+  credit        String?
+  publicationId String
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  publication   Publication @relation(fields: [publicationId], references: [id], onDelete: Cascade)
+
+  @@map("images")
+}
+
+model Event {
+  id            String           @id @default(cuid())
+  title         String
+  slug          String           @unique
+  description   String
+  content       String
+  status        EventStatus      @default(UPCOMING)
+  startDate     DateTime
+  endDate       DateTime
+  location      String?
+  venue         String?
+  posterImage   String?
+  posterCredit  String?
+  published     Boolean          @default(false)
+  categoryId    String
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+  speakers      EventSpeaker[]
+  category      event_categories @relation(fields: [categoryId], references: [id])
+  presentations Presentation[]
+  tags          TagsOnEvents[]
+
+  @@index([categoryId])
+  @@index([status])
+  @@index([startDate])
+  @@map("events")
+}
+
+model Speaker {
+  id            String         @id @default(cuid())
+  firstName     String
+  lastName      String
+  email         String         @unique
+  organization  String?
+  position      String?
+  bio           String?
+  photoUrl      String?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  events        EventSpeaker[]
+  presentations Presentation[]
+
+  @@map("speakers")
+}
+
+model EventSpeaker {
+  id        String   @id @default(cuid())
+  eventId   String
+  speakerId String
+  order     Int
+  role      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  event     Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  speaker   Speaker  @relation(fields: [speakerId], references: [id], onDelete: Cascade)
+
+  @@unique([eventId, speakerId])
+  @@unique([eventId, order])
+  @@index([eventId])
+  @@index([speakerId])
+  @@map("event_speakers")
+}
+
+model Presentation {
+  id        String    @id @default(cuid())
+  title     String
+  abstract  String?
+  slides    String?
+  videoUrl  String?
+  duration  Int?
+  speakerId String
+  eventId   String
+  startTime DateTime?
+  endTime   DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  event     Event     @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  speaker   Speaker   @relation(fields: [speakerId], references: [id])
+
+  @@index([eventId])
+  @@index([speakerId])
+  @@map("presentations")
+}
+
+model BudgetItem {
+  id          String    @id
+  name        String
+  amount      Float
+  category    String
+  description String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime
+  projectId   String
+  Project     Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  Expense     Expense[]
+}
+
+model Expense {
+  id           String      @id
+  title        String
+  amount       Float
+  date         DateTime
+  receipt      String?
+  status       String      @default("pending")
+  description  String?
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime
+  projectId    String
+  budgetItemId String?
+  submittedBy  String
+  approvedBy   String?
+  BudgetItem   BudgetItem? @relation(fields: [budgetItemId], references: [id])
+  Project      Project     @relation(fields: [projectId], references: [id], onDelete: Cascade)
+}
+
+model Goal {
+  id          String    @id
+  title       String
+  description String?
+  targetDate  DateTime?
+  status      String    @default("active")
+  progress    Int       @default(0)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime
+  projectId   String
+  Project     Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+}
+
+model Project {
+  id            String          @id
+  name          String
+  description   String?
+  startDate     DateTime
+  endDate       DateTime?
+  status        String          @default("planning")
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime
+  createdBy     String
+  managedBy     String
+  BudgetItem    BudgetItem[]
+  Expense       Expense[]
+  Goal          Goal[]
+  ProjectMember ProjectMember[]
+  ProjectReport ProjectReport[]
+  Task          Task[]
+}
+
+model ProjectMember {
+  id        String    @id
+  role      String
+  joinedAt  DateTime  @default(now())
+  leftAt    DateTime?
+  projectId String
+  userId    String
+  Project   Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  Task      Task[]    @relation("AssignedTasks")
+}
+
+model ProjectReport {
+  id        String   @id
+  title     String
+  content   String
+  type      String
+  period    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime
+  projectId String
+  createdBy String
+  Project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+}
+
+model Task {
+  id            String          @id
+  title         String
+  description   String?
+  priority      String          @default("medium")
+  status        String          @default("todo")
+  dueDate       DateTime?
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime
+  completedAt   DateTime?
+  projectId     String
+  parentTaskId  String?
+  Task          Task?           @relation("TaskToTask", fields: [parentTaskId], references: [id])
+  other_Task    Task[]          @relation("TaskToTask")
+  Project       Project         @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  ProjectMember ProjectMember[] @relation("AssignedTasks")
+}
+
+model event_categories {
+  id          String   @id
+  name        String
+  slug        String   @unique
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime
+  events      Event[]
 }
 
 enum UserRole {
@@ -43,160 +404,9 @@ enum PublicationStatus {
   ARCHIVED
 }
 
-model User {
-  id         String     @id @default(cuid())
-  name       String?
-  email      String?    @unique
-  image      String?
-  errorLogs  ErrorLog[]
-  createdAt  DateTime   @default(now())
-  updatedAt  DateTime   @updatedAt
-
-  @@map("users")
-}
-
-model Profile {
-  id            String       @id @default(cuid())
-  firstName     String
-  lastName      String
-  email         String       @unique
-  phoneNumber   String?
-  organization  String?
-  bio          String?
-  category      UserCategory
-  photoUrl      String?
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
-  PublicationAuthor PublicationAuthor[]
-
-  @@map("profiles")
-}
-
-model ErrorLog {
-  id        String        @id @default(cuid())
-  userId    String?
-  path      String
-  method    String
-  message   String
-  stack     String?
-  severity  ErrorSeverity @default(ERROR)
-  metadata  Json?
-  user      User?         @relation(fields: [userId], references: [id])
-  createdAt DateTime      @default(now())
-  updatedAt DateTime      @updatedAt
-
-  @@index([userId])
-  @@index([severity])
-  @@index([createdAt])
-  @@map("error_logs")
-}
-
-model Publication {
-  id          String   @id @default(cuid())
-  title       String
-  slug        String   @unique
-  description String
-  content     String
-  status      String   @default("DRAFT")
-  coverImage  String?
-  coverCredit String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  authors      PublicationAuthor[]
-  tags         TagsOnPublications[]
-  categories   CategoriesOnPublications[]
-  files        PublicationFile[]
-  images       Image[]
-
-  @@map("publications")
-}
-
-model PublicationFile {
-  id        String   @id @default(cuid())
-  name      String
-  url       String
-  size      Int
-  type      String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  publication   Publication @relation(fields: [publicationId], references: [id], onDelete: Cascade)
-  publicationId String
-
-  @@index([publicationId])
-}
-
-model Category {
-  id          String   @id @default(cuid())
-  name        String
-  slug        String   @unique
-  description String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  publications CategoriesOnPublications[]
-}
-
-model CategoriesOnPublications {
-  publicationId String
-  categoryId    String
-  assignedAt    DateTime @default(now())
-
-  publication Publication @relation(fields: [publicationId], references: [id], onDelete: Cascade)
-  category    Category    @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-
-  @@id([publicationId, categoryId])
-  @@index([categoryId])
-  @@index([publicationId])
-}
-
-model PublicationAuthor {
-  id            String      @id @default(cuid())
-  order         Int
-  publication   Publication @relation(fields: [publicationId], references: [id], onDelete: Cascade)
-  publicationId String
-  profile       Profile     @relation(fields: [profileId], references: [id], onDelete: Cascade)
-  profileId     String
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
-
-  @@unique([publicationId, profileId])
-  @@unique([publicationId, order])
-  @@map("publication_authors")
-}
-
-model Tag {
-  id           String               @id @default(cuid())
-  name         String               @unique
-  slug         String               @unique
-  publications TagsOnPublications[]
-  createdAt    DateTime             @default(now())
-  updatedAt    DateTime             @updatedAt
-
-  @@map("tags")
-}
-
-model TagsOnPublications {
-  publication   Publication @relation(fields: [publicationId], references: [id], onDelete: Cascade)
-  publicationId String
-  tag           Tag         @relation(fields: [tagId], references: [id], onDelete: Cascade)
-  tagId         String
-  createdAt     DateTime    @default(now())
-
-  @@id([publicationId, tagId])
-  @@map("tags_on_publications")
-}
-
-model Image {
-  id            String      @id @default(cuid())
-  url           String
-  alt           String?
-  credit        String?
-  publication   Publication @relation(fields: [publicationId], references: [id], onDelete: Cascade)
-  publicationId String
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
-
-  @@map("images")
+enum EventStatus {
+  UPCOMING
+  ONGOING
+  COMPLETED
+  CANCELLED
 }

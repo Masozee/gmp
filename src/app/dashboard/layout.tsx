@@ -12,10 +12,10 @@ export default function DashboardLayout({
   return (
     <SidebarProvider defaultOpen>
       <AppSidebar />
-      <SidebarInset>
+      <SidebarInset className="bg-background">
         <SiteHeader />
-        <div className="grid grid-cols-[1fr_350px] h-[calc(100vh-56px)]">
-          <main className="overflow-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_350px] h-[calc(100vh-56px)]">
+          <main className="overflow-auto p-6">
             {children}
           </main>
           <DashboardRightSidebar />

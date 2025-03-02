@@ -2,33 +2,27 @@ import { NextRequest, NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { getServerSession } from "@/lib/server-auth"
 import slugify from "slugify"
+import { db } from "@/lib/db"
 
 export async function GET(request: NextRequest) {
   try {
-    const session = await getServerSession()
-
-    if (!session?.user) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      )
-    }
-
-    const { searchParams } = new URL(request.url)
+    const searchParams = new URL(request.url).searchParams
     const search = searchParams.get("search")
+    const sort = searchParams.get("sort") || "name"
+    const order = searchParams.get("order") || "asc"
 
-    const where = search
-      ? {
+    const tags = await db.tag.findMany({
+      where: {
+        ...(search && {
           OR: [
             { name: { contains: search, mode: "insensitive" } },
             { slug: { contains: search, mode: "insensitive" } },
           ],
-        }
-      : {}
-
-    const tags = await prisma.tag.findMany({
-      where,
-      orderBy: { name: "asc" },
+        }),
+      },
+      orderBy: {
+        [sort]: order,
+      },
     })
 
     return NextResponse.json(tags)
