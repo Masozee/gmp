@@ -16,6 +16,7 @@ import {
   SquareTerminal,
   Users,
   Briefcase,
+  BarChart,
 } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
