@@ -2,43 +2,45 @@ import Database from 'better-sqlite3';
 import path from 'path';
 import fs from 'fs';
 
-// Use an in-memory database in production/Vercel environment
-const isServerless = process.env.VERCEL === '1';
-
-// Get the database file location from environment variable
-const dbPath = isServerless 
-  ? ':memory:' 
-  : (process.env.DATABASE_URL?.replace('file:', '') || './prisma/dev.db');
+// Always use in-memory database on Vercel
+const isVercel = process.env.VERCEL === '1';
+const dbPath = isVercel ? ':memory:' : './prisma/dev.db';
 
 let db: Database.Database | null = null;
 
 // Get sqlite connection
 export function getConnection(): Database.Database {
   if (!db) {
-    if (!isServerless) {
-      // Ensure the database file exists (for local development)
+    if (!isVercel) {
+      // Ensure the database directory exists for local development
       const dbDir = path.dirname(dbPath);
       if (!fs.existsSync(dbDir)) {
         fs.mkdirSync(dbDir, { recursive: true });
       }
     }
 
-    // Create database connection
-    db = new Database(dbPath, { 
-      verbose: process.env.NODE_ENV === 'development' ? console.log : undefined,
-      // Don't use WAL mode in serverless environment
-      fileMustExist: isServerless ? false : undefined
-    });
-    
-    // Enable foreign keys
-    db.pragma('foreign_keys = ON');
-    
-    // Optimize performance (only for file-based database)
-    if (!isServerless) {
-      db.pragma('journal_mode = WAL');
-      db.pragma('synchronous = NORMAL');
-      db.pragma('cache_size = 10000');
-      db.pragma('temp_store = MEMORY');
+    try {
+      // Create database connection - with reduced options for Vercel
+      db = new Database(dbPath, { 
+        verbose: process.env.NODE_ENV === 'development' ? console.log : undefined,
+      });
+      
+      // Basic pragmas that work in both environments
+      db.pragma('foreign_keys = ON');
+      
+      // Only apply optimizations in non-Vercel environments
+      if (!isVercel) {
+        db.pragma('journal_mode = WAL');
+        db.pragma('synchronous = NORMAL');
+        db.pragma('cache_size = 10000');
+        db.pragma('temp_store = MEMORY');
+      }
+    } catch (error) {
+      console.error('Error connecting to SQLite database:', error);
+      // Fallback to in-memory if file-based connection fails
+      db = new Database(':memory:');
+      console.log('Falling back to in-memory SQLite database');
+      db.pragma('foreign_keys = ON');
     }
   }
   
