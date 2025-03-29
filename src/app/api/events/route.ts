@@ -1,249 +1,313 @@
-import { NextRequest, NextResponse } from "next/server"
-import prisma from "@/lib/prisma"
-import { getServerSession } from "@/lib/server-auth"
-import slugify from "slugify"
-import { writeFile } from "fs/promises"
-import { join } from "path"
-import { mkdir, access } from "fs/promises"
-import { constants } from "fs"
-import { cwd } from "process"
+import { NextRequest, NextResponse } from "next/server";
+import { EventStatus } from "@prisma/client";
+import sqlite from "@/lib/sqlite";
+
+// Define types for the speakers and tags
+interface EventSpeaker {
+  id: string;
+  firstName: string;
+  lastName: string;
+  organization: string | null;
+  photoUrl: string | null;
+  order: number;
+  role: string | null;
+}
+
+interface EventTag {
+  id: string;
+  name: string;
+  slug: string;
+}
+
+export interface EventWithRelations {
+  id: string;
+  title: string;
+  slug: string;
+  description: string;
+  content: string;
+  location: string;
+  venue: string | null;
+  startDate: string;
+  endDate: string;
+  posterImage: string | null;
+  posterCredit: string | null;
+  status: string;
+  published: number;
+  categoryId: string;
+  createdAt: string;
+  updatedAt: string;
+  category: {
+    id: string;
+    name: string;
+  };
+  speakers: EventSpeaker[];
+  tags: EventTag[];
+}
+
+// Event without relations for database operations
+interface EventRecord {
+  id: string;
+  title: string;
+  slug: string;
+  description: string;
+  content: string;
+  location: string;
+  venue: string | null;
+  startDate: string;
+  endDate: string;
+  posterImage: string | null;
+  posterCredit: string | null;
+  status: string;
+  published: number;
+  categoryId: string;
+  createdAt: string;
+  updatedAt: string;
+  category_id: string;
+  category_name: string;
+}
 
 export async function GET(request: NextRequest) {
   try {
-    const session = await getServerSession()
+    const searchParams = new URL(request.url).searchParams;
+    const page = parseInt(searchParams.get("page") || "1");
+    const limit = parseInt(searchParams.get("limit") || "10");
+    const search = searchParams.get("search");
+    const status = searchParams.get("status") as EventStatus | null;
+    const categoryId = searchParams.get("categoryId");
+    const sort = searchParams.get("sort") || "createdAt";
+    const order = searchParams.get("order") || "desc";
 
-    if (!session?.user) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      )
+    const { offset, limit: validLimit } = sqlite.paginate(page, limit);
+    
+    // Build the where clause based on filters
+    let whereClause = "WHERE 1=1";
+    const params: any[] = [];
+    
+    if (status) {
+      whereClause += " AND e.status = ?";
+      params.push(status);
     }
-
-    const { searchParams } = new URL(request.url)
-    const search = searchParams.get('search')
-    const status = searchParams.get('status')
-    const category = searchParams.get('category')
-    const sort = searchParams.get('sort') || 'startDate'
-    const order = searchParams.get('order') || 'desc'
-    const page = parseInt(searchParams.get('page') || '1')
-    const pageSize = parseInt(searchParams.get('pageSize') || '10')
-
-    const where: any = {}
+    
+    if (categoryId) {
+      whereClause += " AND e.categoryId = ?";
+      params.push(categoryId);
+    }
 
     if (search) {
-      where.OR = [
-        { title: { contains: search, mode: 'insensitive' } },
-        { description: { contains: search, mode: 'insensitive' } },
-      ]
+      whereClause += " AND (e.title LIKE ? OR e.description LIKE ?)";
+      params.push(`%${search}%`, `%${search}%`);
     }
-
-    if (status) {
-      where.status = status
-    }
-
-    if (category) {
-      where.categoryId = category
-    }
-
-    const events = await prisma.event.findMany({
-      where,
-      include: {
-        category: {
-          select: {
-            id: true,
-            name: true,
-            slug: true,
-          }
-        },
-        speakers: {
-          include: {
-            speaker: {
-              select: {
-                id: true,
-                firstName: true,
-                lastName: true,
-                photoUrl: true,
-              },
-            },
-          },
-          orderBy: {
-            order: 'asc'
-          }
-        },
-        tags: {
-          include: {
-            tag: true,
-          },
-        },
-      },
-      orderBy: {
-        [sort]: order,
-      },
-      skip: (page - 1) * pageSize,
-      take: pageSize,
-    })
 
     // Get total count for pagination
-    const totalEvents = await prisma.event.count({ where })
+    const countQuery = `SELECT COUNT(*) as total FROM events e ${whereClause}`;
+    const countResult = sqlite.get<{ total: number }>(countQuery, params);
+    
+    const total = countResult?.total || 0;
 
-    return NextResponse.json({ 
-      events, 
+    // Build the ORDER BY clause
+    let orderByClause = "ORDER BY ";
+    
+    // Validate sort field to prevent SQL injection
+    const validSortColumns = ["title", "startDate", "createdAt", "updatedAt", "status"];
+    const validOrderValues = ["asc", "desc"];
+    
+    const sortField = validSortColumns.includes(sort) ? sort : "createdAt";
+    const orderDirection = validOrderValues.includes(order.toLowerCase()) ? order.toLowerCase() : "desc";
+    
+    orderByClause += `e.${sortField} ${orderDirection}`;
+
+    // Get events with pagination
+    const eventsQuery = `
+      SELECT 
+        e.id, e.title, e.slug, e.description, e.content, e.location, e.venue,
+        e.startDate, e.endDate, e.posterImage, e.posterCredit, e.status,
+        e.published, e.categoryId, e.createdAt, e.updatedAt,
+        c.id as category_id, c.name as category_name
+      FROM events e
+      LEFT JOIN event_categories c ON e.categoryId = c.id
+      ${whereClause}
+      ${orderByClause}
+      LIMIT ? OFFSET ?
+    `;
+    
+    const events = sqlite.all<EventRecord>(eventsQuery, [...params, validLimit, offset]);
+
+    // Prepare statements for related data to improve performance
+    const speakersStmt = sqlite.prepareStatement(`
+      SELECT 
+        s.id, s.firstName, s.lastName, s.organization, s.photoUrl,
+        es.order, es.role
+      FROM event_speakers es
+      JOIN speakers s ON es.speakerId = s.id
+      WHERE es.eventId = ?
+      ORDER BY es.order ASC
+    `);
+    
+    const tagsStmt = sqlite.prepareStatement(`
+      SELECT t.id, t.name, t.slug
+      FROM tags_on_events te
+      JOIN tags t ON te.tagId = t.id
+      WHERE te.eventId = ?
+    `);
+
+    // Fetch related data for each event
+    const eventsWithRelations = events.map((event) => {
+      // Get speakers for this event using better-sqlite3
+      const speakers = speakersStmt.all(event.id) as EventSpeaker[];
+      
+      // Get tags for this event using better-sqlite3
+      const tags = tagsStmt.all(event.id) as EventTag[];
+      
+      // Map to the expected format
+      return {
+        id: event.id,
+        title: event.title,
+        slug: event.slug,
+        description: event.description,
+        content: event.content,
+        location: event.location,
+        venue: event.venue,
+        startDate: event.startDate,
+        endDate: event.endDate,
+        posterImage: event.posterImage,
+        posterCredit: event.posterCredit,
+        status: event.status,
+        published: event.published,
+        categoryId: event.categoryId,
+        createdAt: event.createdAt,
+        updatedAt: event.updatedAt,
+        category: {
+          id: event.category_id,
+          name: event.category_name
+        },
+        speakers,
+        tags
+      } as EventWithRelations;
+    });
+
+    return NextResponse.json({
+      events: eventsWithRelations,
       pagination: {
-        total: totalEvents,
+        total,
         page,
-        pageSize,
-        totalPages: Math.ceil(totalEvents / pageSize)
-      }
-    })
+        limit: validLimit,
+        totalPages: Math.ceil(total / validLimit),
+      },
+    });
   } catch (error) {
-    console.error("Failed to fetch events:", error)
+    console.error("Error fetching events:", error);
     return NextResponse.json(
       { error: "Failed to fetch events" },
       { status: 500 }
-    )
+    );
   }
 }
 
 export async function POST(request: NextRequest) {
   try {
-    const session = await getServerSession()
-
-    if (!session?.user) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      )
-    }
-
-    const formData = await request.formData()
-    const title = formData.get("title") as string
-    const description = formData.get("description") as string
-    const content = formData.get("content") as string
-    const status = formData.get("status") as "UPCOMING" | "ONGOING" | "COMPLETED" | "CANCELLED"
-    const posterImage = formData.get("posterImage") as File | null
-    const posterCredit = formData.get("posterCredit") as string
-    const startDate = formData.get("startDate") as string
-    const endDate = formData.get("endDate") as string
-    const location = formData.get("location") as string
-    const venue = formData.get("venue") as string
-    const categoryId = formData.get("categoryId") as string
-    const published = formData.get("published") === "true"
+    const body = await request.json();
     
-    // Get speaker IDs from form data
-    const speakerIds: { id: string, order: number, role?: string }[] = []
-    for (const [key, value] of formData.entries()) {
-      if (key.startsWith("speakers[") && key.endsWith("][id]")) {
-        const match = key.match(/speakers\[(\d+)\]\[id\]/)
-        if (match) {
-          const index = parseInt(match[1])
-          const role = formData.get(`speakers[${index}][role]`) as string | undefined
-          speakerIds.push({ 
-            id: value as string, 
-            order: index + 1,
-            role
-          })
-        }
+    // Validate required fields
+    const requiredFields = ["title", "description", "location", "startDate", "endDate", "categoryId"];
+    for (const field of requiredFields) {
+      if (!body[field]) {
+        return NextResponse.json(
+          { error: `Missing required field: ${field}` },
+          { status: 400 }
+        );
       }
     }
 
-    // Get tag IDs from form data
-    const tagIds: string[] = []
-    for (const [key, value] of formData.entries()) {
-      if (key.startsWith("tags[") && key.endsWith("]")) {
-        tagIds.push(value as string)
-      }
-    }
+    // Generate slug from title
+    const slug = body.title
+      .toLowerCase()
+      .replace(/[^\w\s]/gi, "")
+      .replace(/\s+/g, "-");
 
-    // Generate a unique slug based on the title
-    let slug = slugify(title, { lower: true, strict: true })
-    
-    // Check if slug exists
-    const existingEvent = await prisma.event.findUnique({
-      where: { slug },
-    })
+    // Check if slug already exists
+    const existingEvent = sqlite.get(
+      "SELECT id FROM events WHERE slug = ?",
+      [slug]
+    );
 
-    // If slug exists, append a unique timestamp
     if (existingEvent) {
-      slug = `${slug}-${Date.now()}`
+      return NextResponse.json(
+        { error: "An event with this title already exists" },
+        { status: 400 }
+      );
     }
 
-    // Handle poster image upload
-    let posterImageUrl: string | undefined = undefined
-    if (posterImage) {
-      try {
-        // Create uploads directory if it doesn't exist
-        const uploadsDir = join(cwd(), "public", "uploads")
-        try {
-          await access(uploadsDir, constants.F_OK)
-        } catch (error) {
-          await mkdir(uploadsDir, { recursive: true })
-        }
-
-        // Generate a unique filename for the poster image
-        const filename = `${Date.now()}-${Math.floor(Math.random() * 1000000000)}-${posterImage.name}`
-        const filePath = join(uploadsDir, filename)
-        
-        // Write the file to disk
-        const buffer = Buffer.from(await posterImage.arrayBuffer())
-        await writeFile(filePath, buffer)
-        
-        // Set the poster image URL (relative to /public)
-        posterImageUrl = `/uploads/${filename}`
-      } catch (error) {
-        console.error("Error uploading poster image:", error)
-      }
-    }
-
-    // Create the event in the database
-    const event = await prisma.event.create({
-      data: {
-        title,
+    // Use transaction to ensure all operations succeed or fail together
+    return sqlite.transaction(() => {
+      // Insert the event
+      const now = new Date().toISOString();
+      
+      // Prepare insert statement for event
+      const insertEventStmt = sqlite.prepareStatement(`
+        INSERT INTO events (
+          title, slug, description, content, location, venue, 
+          startDate, endDate, status, categoryId, posterImage, 
+          published, createdAt, updatedAt
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `);
+      
+      const result = insertEventStmt.run(
+        body.title,
         slug,
-        description,
-        content,
-        status: status || "UPCOMING",
-        startDate: new Date(startDate),
-        endDate: new Date(endDate),
-        location,
-        venue,
-        posterImage: posterImageUrl,
-        posterCredit,
-        published,
-        categoryId,
-        speakers: {
-          create: speakerIds.map(({ id, order, role }) => ({
-            speakerId: id,
-            order,
-            role
-          }))
-        },
-        tags: {
-          create: tagIds.map(tagId => ({
-            tagId
-          }))
-        }
-      },
-      include: {
-        category: true,
-        speakers: {
-          include: {
-            speaker: true
-          }
-        },
-        tags: {
-          include: {
-            tag: true
-          }
+        body.description,
+        body.content || "",
+        body.location,
+        body.venue || null,
+        new Date(body.startDate).toISOString(),
+        new Date(body.endDate).toISOString(),
+        body.status || "UPCOMING",
+        body.categoryId,
+        body.imageUrl || null,
+        1, // published = true
+        now,
+        now
+      );
+
+      const eventId = result.lastInsertRowid;
+
+      // Add tags if provided
+      if (body.tags && Array.isArray(body.tags) && body.tags.length > 0) {
+        const insertTagStmt = sqlite.prepareStatement(
+          "INSERT INTO tags_on_events (eventId, tagId, createdAt) VALUES (?, ?, ?)"
+        );
+        
+        for (const tagId of body.tags) {
+          insertTagStmt.run(eventId, tagId, now);
         }
       }
-    })
 
-    return NextResponse.json(event)
+      // Add speakers if provided
+      if (body.speakers && Array.isArray(body.speakers) && body.speakers.length > 0) {
+        const insertSpeakerStmt = sqlite.prepareStatement(`
+          INSERT INTO event_speakers (
+            eventId, speakerId, order, createdAt, updatedAt
+          ) VALUES (?, ?, ?, ?, ?)
+        `);
+        
+        for (let i = 0; i < body.speakers.length; i++) {
+          const speakerId = body.speakers[i];
+          insertSpeakerStmt.run(eventId, speakerId, i + 1, now, now);
+        }
+      }
+
+      // Get the created event with its ID
+      const event = sqlite.get(
+        "SELECT * FROM events WHERE id = ?",
+        [eventId]
+      );
+
+      return NextResponse.json(event, { status: 201 });
+    });
   } catch (error) {
-    console.error("Failed to create event:", error)
+    console.error("Error creating event:", error);
     return NextResponse.json(
-      { error: "Failed to create event", details: error instanceof Error ? error.message : String(error) },
+      { error: "Failed to create event" },
       { status: 500 }
-    )
+    );
   }
 } 
