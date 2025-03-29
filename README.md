@@ -6,10 +6,9 @@ A modern dashboard application built with Next.js 15, TypeScript, and shadcn com
 
 - Next.js 15
 - TypeScript
-- SQLite (Development)
+- better-sqlite3 (optimized for performance)
 - shadcn/ui components
 - Tailwind CSS
-- Prisma ORM
 
 ## Features
 
@@ -19,6 +18,8 @@ A modern dashboard application built with Next.js 15, TypeScript, and shadcn com
 - Dark Mode Support
 - Responsive Design
 - Calendar Integration
+- Optimized Database Performance
+- Raw SQL Queries for Speed
 
 ## Getting Started
 
@@ -40,9 +41,9 @@ DATABASE_URL="file:./dev.db"
 NEXTAUTH_SECRET="your-secret-key"
 ```
 
-4. Run database migrations:
+4. Initialize database with performance optimizations:
 ```bash
-npx prisma migrate dev
+curl http://localhost:3000/api/init
 ```
 
 5. Start the development server:
@@ -56,9 +57,28 @@ npm run dev
 src/
 ├── app/              # Next.js app directory
 ├── components/       # React components
-├── lib/             # Utility functions and shared logic
-├── styles/          # Global styles
-└── types/           # TypeScript type definitions
+│   ├── sqlite.ts     # SQLite database utilities
+│   ├── api-helpers.ts # API route helpers
+│   └── init-database.ts # Database optimization
+├── styles/           # Global styles
+└── types/            # TypeScript type definitions
+```
+
+## Database Performance Optimizations
+
+This project uses better-sqlite3 instead of Prisma ORM for improved performance:
+
+- **Raw SQL Queries**: Direct SQL execution for faster response times
+- **Prepared Statements**: Pre-compiled SQL for repeated operations
+- **Transaction Support**: Atomic operations for data integrity
+- **WAL Mode**: Write-Ahead Logging for better concurrency
+- **Optimized Indices**: Strategic indices for common query patterns
+- **Memory Optimizations**: Efficient cache utilization
+
+To reinitialize performance settings after significant database changes:
+
+```bash
+curl http://localhost:3000/api/init
 ```
 
 ## Development Guidelines
@@ -68,6 +88,7 @@ src/
 - Implement proper error handling
 - Write comprehensive documentation
 - Maintain test coverage
+- Use prepared statements for better query performance
 
 ## Contributing
 

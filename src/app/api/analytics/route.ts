@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
-import db from "@/lib/db"
+import sqlite from "@/lib/sqlite"
 import { addDays, format, subDays, subMonths } from "date-fns"
 
 // Generate random number between min and max
@@ -51,12 +51,10 @@ const generateDeviceCategories = () => {
 // Generate random data for top pages
 const generateTopPages = async () => {
   try {
-    // Try to fetch real event titles from the database
-    const events = await db.$queryRaw`
-      SELECT title FROM events 
-      ORDER BY "createdAt" DESC 
-      LIMIT 5
-    ` as { title: string }[]
+    // Try to fetch real event titles from the database using raw SQL
+    const events = await sqlite.all<{ title: string }>(
+      `SELECT title FROM events ORDER BY createdAt DESC LIMIT 5`
+    );
     
     const topPages = [
       { path: "/", title: "Home Page", pageViews: randomNumber(5000, 15000), avgTimeOnPage: randomNumber(60, 180) },
@@ -103,13 +101,10 @@ const generateTopPages = async () => {
 // Generate random data for event engagement
 const generateEventEngagement = async () => {
   try {
-    // Try to fetch real event data from the database
-    const events = await db.$queryRaw`
-      SELECT id, title, status 
-      FROM events 
-      ORDER BY "startDate" DESC 
-      LIMIT 10
-    ` as { id: string, title: string, status: string }[]
+    // Try to fetch real event data from the database using raw SQL
+    const events = await sqlite.all<{ id: string, title: string, status: string }>(
+      `SELECT id, title, status FROM events ORDER BY startDate DESC LIMIT 10`
+    );
     
     if (events && events.length > 0) {
       return events.map(event => ({
@@ -183,10 +178,23 @@ const generateGeographicData = () => {
   ]
 }
 
+// Cache results for better performance 
+// This avoids generating random data on every request
+let cachedAnalytics: { [key: string]: any } = {};
+let cacheTime: { [key: string]: number } = {};
+const CACHE_TTL = 5 * 60 * 1000; // 5 minutes cache
+
 export async function GET(request: NextRequest) {
   try {
     const url = new URL(request.url)
     const period = url.searchParams.get("period") || "30d"
+    
+    // Check cache first
+    const now = Date.now();
+    if (cachedAnalytics[period] && cacheTime[period] && (now - cacheTime[period] < CACHE_TTL)) {
+      console.log("Returning cached analytics data for period:", period);
+      return NextResponse.json(cachedAnalytics[period]);
+    }
     
     let days = 30
     switch (period) {
@@ -203,6 +211,8 @@ export async function GET(request: NextRequest) {
         days = 90
         break
     }
+    
+    console.log("Generating fresh analytics data for period:", period);
     
     const [dailyData, trafficSources, deviceCategories, topPages, eventEngagement, monthlyComparison, geographicData] = await Promise.all([
       generateDailyData(days),
@@ -221,7 +231,7 @@ export async function GET(request: NextRequest) {
     const avgSessionDuration = Math.round(dailyData.reduce((sum, day) => sum + day.avgSessionDuration, 0) / dailyData.length)
     const totalNewUsers = dailyData.reduce((sum, day) => sum + day.newUsers, 0)
     
-    return NextResponse.json({
+    const result = {
       summary: {
         totalVisitors,
         totalPageViews,
@@ -236,7 +246,13 @@ export async function GET(request: NextRequest) {
       eventEngagement,
       monthlyComparison,
       geographicData
-    })
+    };
+    
+    // Save to cache
+    cachedAnalytics[period] = result;
+    cacheTime[period] = now;
+    
+    return NextResponse.json(result);
   } catch (error) {
     console.error("Failed to generate analytics data:", error)
     return NextResponse.json(

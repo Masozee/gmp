@@ -1,6 +1,70 @@
 import { NextRequest, NextResponse } from "next/server";
-import db from "@/lib/db";
 import { EventStatus } from "@prisma/client";
+import sqlite from "@/lib/sqlite";
+
+// Define types for the speakers and tags
+interface EventSpeaker {
+  id: string;
+  firstName: string;
+  lastName: string;
+  organization: string | null;
+  photoUrl: string | null;
+  order: number;
+  role: string | null;
+}
+
+interface EventTag {
+  id: string;
+  name: string;
+  slug: string;
+}
+
+export interface EventWithRelations {
+  id: string;
+  title: string;
+  slug: string;
+  description: string;
+  content: string;
+  location: string;
+  venue: string | null;
+  startDate: string;
+  endDate: string;
+  posterImage: string | null;
+  posterCredit: string | null;
+  status: string;
+  published: number;
+  categoryId: string;
+  createdAt: string;
+  updatedAt: string;
+  category: {
+    id: string;
+    name: string;
+  };
+  speakers: EventSpeaker[];
+  tags: EventTag[];
+}
+
+// Event without relations for database operations
+interface EventRecord {
+  id: string;
+  title: string;
+  slug: string;
+  description: string;
+  content: string;
+  location: string;
+  venue: string | null;
+  startDate: string;
+  endDate: string;
+  posterImage: string | null;
+  posterCredit: string | null;
+  status: string;
+  published: number;
+  categoryId: string;
+  createdAt: string;
+  updatedAt: string;
+  category_id: string;
+  category_name: string;
+}
 
 export async function GET(request: NextRequest) {
   try {
@@ -13,62 +77,121 @@ export async function GET(request: NextRequest) {
     const sort = searchParams.get("sort") || "createdAt";
     const order = searchParams.get("order") || "desc";
 
-    const skip = (page - 1) * limit;
-
+    const { offset, limit: validLimit } = sqlite.paginate(page, limit);
+    
     // Build the where clause based on filters
-    const where: any = {};
+    let whereClause = "WHERE 1=1";
+    const params: any[] = [];
     
     if (status) {
-      where.status = status;
+      whereClause += " AND e.status = ?";
+      params.push(status);
     }
     
     if (categoryId) {
-      where.categoryId = categoryId;
+      whereClause += " AND e.categoryId = ?";
+      params.push(categoryId);
     }
 
     if (search) {
-      where.OR = [
-        { title: { contains: search, mode: "insensitive" } },
-        { description: { contains: search, mode: "insensitive" } },
-      ];
+      whereClause += " AND (e.title LIKE ? OR e.description LIKE ?)";
+      params.push(`%${search}%`, `%${search}%`);
     }
 
+    // Get total count for pagination
+    const countQuery = `SELECT COUNT(*) as total FROM events e ${whereClause}`;
+    const countResult = sqlite.get<{ total: number }>(countQuery, params);
+    
+    const total = countResult?.total || 0;
+
+    // Build the ORDER BY clause
+    let orderByClause = "ORDER BY ";
+    
+    // Validate sort field to prevent SQL injection
+    const validSortColumns = ["title", "startDate", "createdAt", "updatedAt", "status"];
+    const validOrderValues = ["asc", "desc"];
+    
+    const sortField = validSortColumns.includes(sort) ? sort : "createdAt";
+    const orderDirection = validOrderValues.includes(order.toLowerCase()) ? order.toLowerCase() : "desc";
+    
+    orderByClause += `e.${sortField} ${orderDirection}`;
+
     // Get events with pagination
-    const events = await db.event.findMany({
-      where,
-      include: {
-        category: true,
-        tags: {
-          include: {
-            tag: true,
-          },
+    const eventsQuery = `
+      SELECT 
+        e.id, e.title, e.slug, e.description, e.content, e.location, e.venue,
+        e.startDate, e.endDate, e.posterImage, e.posterCredit, e.status,
+        e.published, e.categoryId, e.createdAt, e.updatedAt,
+        c.id as category_id, c.name as category_name
+      FROM events e
+      LEFT JOIN event_categories c ON e.categoryId = c.id
+      ${whereClause}
+      ${orderByClause}
+      LIMIT ? OFFSET ?
+    `;
+    
+    const events = sqlite.all<EventRecord>(eventsQuery, [...params, validLimit, offset]);
+
+    // Prepare statements for related data to improve performance
+    const speakersStmt = sqlite.prepareStatement(`
+      SELECT 
+        s.id, s.firstName, s.lastName, s.organization, s.photoUrl,
+        es.order, es.role
+      FROM event_speakers es
+      JOIN speakers s ON es.speakerId = s.id
+      WHERE es.eventId = ?
+      ORDER BY es.order ASC
+    `);
+    
+    const tagsStmt = sqlite.prepareStatement(`
+      SELECT t.id, t.name, t.slug
+      FROM tags_on_events te
+      JOIN tags t ON te.tagId = t.id
+      WHERE te.eventId = ?
+    `);
+
+    // Fetch related data for each event
+    const eventsWithRelations = events.map((event) => {
+      // Get speakers for this event using better-sqlite3
+      const speakers = speakersStmt.all(event.id) as EventSpeaker[];
+      
+      // Get tags for this event using better-sqlite3
+      const tags = tagsStmt.all(event.id) as EventTag[];
+      
+      // Map to the expected format
+      return {
+        id: event.id,
+        title: event.title,
+        slug: event.slug,
+        description: event.description,
+        content: event.content,
+        location: event.location,
+        venue: event.venue,
+        startDate: event.startDate,
+        endDate: event.endDate,
+        posterImage: event.posterImage,
+        posterCredit: event.posterCredit,
+        status: event.status,
+        published: event.published,
+        categoryId: event.categoryId,
+        createdAt: event.createdAt,
+        updatedAt: event.updatedAt,
+        category: {
+          id: event.category_id,
+          name: event.category_name
         },
-        speakers: {
-          include: {
-            speaker: true,
-          },
-          orderBy: {
-            order: "asc",
-          },
-        },
-      },
-      orderBy: {
-        [sort]: order,
-      },
-      skip,
-      take: limit,
+        speakers,
+        tags
+      } as EventWithRelations;
     });
 
-    // Get total count for pagination
-    const total = await db.event.count({ where });
-
     return NextResponse.json({
-      events,
+      events: eventsWithRelations,
       pagination: {
         total,
         page,
-        limit,
-        totalPages: Math.ceil(total / limit),
+        limit: validLimit,
+        totalPages: Math.ceil(total / validLimit),
       },
     });
   } catch (error) {
@@ -102,9 +225,10 @@ export async function POST(request: NextRequest) {
       .replace(/\s+/g, "-");
 
     // Check if slug already exists
-    const existingEvent = await db.event.findUnique({
-      where: { slug },
-    });
+    const existingEvent = sqlite.get(
+      "SELECT id FROM events WHERE slug = ?",
+      [slug]
+    );
 
     if (existingEvent) {
       return NextResponse.json(
@@ -113,50 +237,72 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Create the event
-    const event = await db.event.create({
-      data: {
-        title: body.title,
+    // Use transaction to ensure all operations succeed or fail together
+    return sqlite.transaction(() => {
+      // Insert the event
+      const now = new Date().toISOString();
+      
+      // Prepare insert statement for event
+      const insertEventStmt = sqlite.prepareStatement(`
+        INSERT INTO events (
+          title, slug, description, content, location, venue, 
+          startDate, endDate, status, categoryId, posterImage, 
+          published, createdAt, updatedAt
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `);
+      
+      const result = insertEventStmt.run(
+        body.title,
         slug,
-        description: body.description,
-        content: body.content || "",
-        location: body.location,
-        venue: body.venue || null,
-        startDate: new Date(body.startDate),
-        endDate: new Date(body.endDate),
-        status: body.status || "UPCOMING",
-        categoryId: body.categoryId,
-        posterImage: body.imageUrl || null,
-        published: true,
-      },
+        body.description,
+        body.content || "",
+        body.location,
+        body.venue || null,
+        new Date(body.startDate).toISOString(),
+        new Date(body.endDate).toISOString(),
+        body.status || "UPCOMING",
+        body.categoryId,
+        body.imageUrl || null,
+        1, // published = true
+        now,
+        now
+      );
+
+      const eventId = result.lastInsertRowid;
+
+      // Add tags if provided
+      if (body.tags && Array.isArray(body.tags) && body.tags.length > 0) {
+        const insertTagStmt = sqlite.prepareStatement(
+          "INSERT INTO tags_on_events (eventId, tagId, createdAt) VALUES (?, ?, ?)"
+        );
+        
+        for (const tagId of body.tags) {
+          insertTagStmt.run(eventId, tagId, now);
+        }
+      }
+
+      // Add speakers if provided
+      if (body.speakers && Array.isArray(body.speakers) && body.speakers.length > 0) {
+        const insertSpeakerStmt = sqlite.prepareStatement(`
+          INSERT INTO event_speakers (
+            eventId, speakerId, order, createdAt, updatedAt
+          ) VALUES (?, ?, ?, ?, ?)
+        `);
+        
+        for (let i = 0; i < body.speakers.length; i++) {
+          const speakerId = body.speakers[i];
+          insertSpeakerStmt.run(eventId, speakerId, i + 1, now, now);
+        }
+      }
+
+      // Get the created event with its ID
+      const event = sqlite.get(
+        "SELECT * FROM events WHERE id = ?",
+        [eventId]
+      );
+
+      return NextResponse.json(event, { status: 201 });
     });
-
-    // Add tags if provided
-    if (body.tags && Array.isArray(body.tags) && body.tags.length > 0) {
-      const tagConnections = body.tags.map((tagId: string) => ({
-        tagId,
-        eventId: event.id,
-      }));
-
-      await db.tagsOnEvents.createMany({
-        data: tagConnections,
-      });
-    }
-
-    // Add speakers if provided
-    if (body.speakers && Array.isArray(body.speakers) && body.speakers.length > 0) {
-      const speakerConnections = body.speakers.map((speakerId: string, index: number) => ({
-        speakerId: speakerId,
-        eventId: event.id,
-        order: index + 1,
-      }));
-
-      await db.eventSpeaker.createMany({
-        data: speakerConnections,
-      });
-    }
-
-    return NextResponse.json(event, { status: 201 });
   } catch (error) {
     console.error("Error creating event:", error);
     return NextResponse.json(
