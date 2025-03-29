@@ -1,41 +1,62 @@
 import type { Metadata } from "next";
-import { Inter as FontSans } from "next/font/google";
-import { Toaster } from "sonner";
+import { Inter } from "next/font/google";
+import { Plus_Jakarta_Sans, PT_Serif } from "next/font/google";
+import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "@/components/theme-provider";
+import { ThemeContextProvider } from "@/components/theme-context";
 import "./globals.css";
+import { cn } from "@/lib/utils";
 
-const fontSans = FontSans({
+const inter = Inter({
   subsets: ["latin"],
-  variable: "--font-sans",
+  variable: "--font-inter",
+});
+
+const plusJakartaSans = Plus_Jakarta_Sans({
+  variable: "--font-plus-jakarta-sans",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const ptSerif = PT_Serif({
+  variable: "--font-pt-serif",
+  weight: ["400", "700"],
+  subsets: ["latin"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "Dashboard",
-  description: "Modern dashboard application",
-  viewport: "width=device-width, initial-scale=1",
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "white" },
-    { media: "(prefers-color-scheme: dark)", color: "black" },
-  ],
+  title: "Generasi Melek Politik",
+  description: "Official website of Generasi Melek Politik",
+  icons: {
+    icon: "/logos/favicon.png",
+  },
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${fontSans.variable} min-h-screen bg-background font-sans antialiased`}>
+      <body
+        className={cn(
+          "min-h-screen bg-background font-sans antialiased",
+          inter.variable,
+          plusJakartaSans.variable,
+          ptSerif.variable
+        )}
+      >
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange
         >
-          <div className="relative flex min-h-screen flex-col">
+          <ThemeContextProvider>
             {children}
-          </div>
+          </ThemeContextProvider>
           <Toaster />
         </ThemeProvider>
       </body>

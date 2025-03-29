@@ -1,234 +1,191 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { format, startOfMonth, endOfMonth, isToday, isTomorrow, isThisWeek, isSameDay } from "date-fns"
 import { Calendar } from "@/components/ui/calendar"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { format, isSameDay } from "date-fns"
-import { Badge } from "@/components/ui/badge"
-import { cn } from "@/lib/utils"
-import { DayContentProps } from "react-day-picker"
+import Link from "next/link"
 
-interface Event {
+interface CalendarEvent {
   id: string
   title: string
-  startDate: string | Date
-  endDate: string | Date
+  startDate: string
+  endDate: string
   status: string
+  categoryId: string
+  location: string
 }
 
 export function DashboardRightSidebar() {
   const [date, setDate] = useState<Date | undefined>(new Date())
-  const [events, setEvents] = useState<Event[]>([])
-  const [loading, setLoading] = useState(true)
+  const [events, setEvents] = useState<CalendarEvent[]>([])
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
+  // Fetch events for the selected month
   useEffect(() => {
     const fetchEvents = async () => {
+      if (!date) return
+
+      setLoading(true)
+      setError(null)
+
       try {
-        const response = await fetch("/api/events", {
-          credentials: "include",
-        })
+        const start = format(startOfMonth(date), "yyyy-MM-dd")
+        const end = format(endOfMonth(date), "yyyy-MM-dd")
+        
+        const response = await fetch(`/api/calendar-events?startDate=${start}&endDate=${end}`)
         
         if (!response.ok) {
-          const errorData = await response.json()
-          throw new Error(errorData.error || "Failed to fetch events")
+          throw new Error("Failed to fetch events")
         }
         
         const data = await response.json()
-        setEvents(data.events || [])
-      } catch (error) {
-        console.error("Error fetching events:", error)
-        setEvents([])
+        
+        if (data.events && Array.isArray(data.events)) {
+          setEvents(data.events)
+        } else {
+          setEvents([])
+        }
+      } catch (err) {
+        console.error("Error fetching calendar events:", err)
+        setError("Could not load events")
       } finally {
         setLoading(false)
       }
     }
 
     fetchEvents()
-  }, [])
+  }, [date])
 
-  const getEventsForDate = (date: Date | undefined) => {
-    if (!date || !Array.isArray(events)) return []
-    return events.filter(event => {
-      try {
-        const eventDate = new Date(event.startDate)
-        return isSameDay(eventDate, date)
-      } catch (error) {
-        return false
-      }
-    })
-  }
+  // Filter events for today, tomorrow, and this week
+  const todayEvents = events.filter(event => 
+    isToday(new Date(event.startDate)) || 
+    (isToday(new Date()) && new Date(event.startDate) <= new Date() && new Date(event.endDate) >= new Date())
+  )
+  
+  const tomorrowEvents = events.filter(event => 
+    isTomorrow(new Date(event.startDate)) || 
+    (isTomorrow(new Date()) && new Date(event.startDate) <= new Date() && new Date(event.endDate) >= new Date())
+  )
+  
+  const thisWeekEvents = events.filter(event => 
+    isThisWeek(new Date(event.startDate)) && 
+    !isToday(new Date(event.startDate)) && 
+    !isTomorrow(new Date(event.startDate))
+  )
 
-  const getDaysWithEvents = () => {
-    if (!Array.isArray(events)) return []
-    return events.map(event => {
-      try {
-        return new Date(event.startDate)
-      } catch (error) {
-        return null
-      }
-    }).filter((date): date is Date => date !== null)
-  }
-
-  const getUpcomingEvents = () => {
-    if (!Array.isArray(events)) {
-      return {
-        todayEvents: [],
-        tomorrowEvents: [],
-        thisWeekEvents: []
-      }
+  // Function to get status color class
+  const getStatusColorClass = (status: string) => {
+    switch (status) {
+      case "UPCOMING":
+        return "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300"
+      case "ONGOING":
+        return "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300"
+      case "COMPLETED":
+        return "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300"
+      case "CANCELLED":
+        return "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300"
+      default:
+        return "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300"
     }
-
-    const today = new Date()
-    const tomorrow = new Date(today)
-    tomorrow.setDate(tomorrow.getDate() + 1)
-    const nextWeek = new Date(today)
-    nextWeek.setDate(nextWeek.getDate() + 7)
-
-    const todayEvents = events.filter(event => {
-      try {
-        const eventDate = new Date(event.startDate)
-        return isSameDay(eventDate, today)
-      } catch (error) {
-        return false
-      }
-    })
-
-    const tomorrowEvents = events.filter(event => {
-      try {
-        const eventDate = new Date(event.startDate)
-        return isSameDay(eventDate, tomorrow)
-      } catch (error) {
-        return false
-      }
-    })
-
-    const thisWeekEvents = events.filter(event => {
-      try {
-        const eventDate = new Date(event.startDate)
-        return eventDate > tomorrow && eventDate <= nextWeek
-      } catch (error) {
-        return false
-      }
-    })
-
-    return { todayEvents, tomorrowEvents, thisWeekEvents }
   }
 
-  const { todayEvents, tomorrowEvents, thisWeekEvents } = getUpcomingEvents()
+  // Function to check if a day has events
+  const hasEvents = (day: Date) => {
+    return events.some(event => {
+      const eventStart = new Date(event.startDate)
+      const eventEnd = new Date(event.endDate)
+      return (
+        isSameDay(day, eventStart) || 
+        isSameDay(day, eventEnd) || 
+        (day >= eventStart && day <= eventEnd)
+      )
+    })
+  }
 
-  const eventDates = getDaysWithEvents()
+  // Function to render event list
+  const renderEventList = (eventList: CalendarEvent[], title: string) => (
+    <div className="space-y-2">
+      <div className="text-sm font-medium">{title}</div>
+      {eventList.length === 0 ? (
+        <div className="text-sm text-muted-foreground">No events scheduled</div>
+      ) : (
+        <div className="space-y-2">
+          {eventList.map(event => (
+            <div key={event.id} className="block">
+              <a 
+                href={`/dashboard/events/${event.id}`}
+                className="block p-2 rounded-md hover:bg-accent"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="text-sm font-medium truncate">{event.title}</div>
+                  <div className={`text-xs px-2 py-1 rounded-full ${getStatusColorClass(event.status)}`}>
+                    {event.status.charAt(0) + event.status.slice(1).toLowerCase()}
+                  </div>
+                </div>
+                <div className="text-xs text-muted-foreground mt-1">
+                  {format(new Date(event.startDate), "MMM d, h:mm a")}
+                </div>
+              </a>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  )
 
   return (
-    <ScrollArea className="h-full">
-      <div className="p-4 space-y-4">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Calendar</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Calendar
-              mode="single"
-              selected={date}
-              onSelect={setDate}
-              className="rounded-md border"
-              components={{
-                DayContent: (props: DayContentProps) => {
-                  const hasEvents = eventDates.some(eventDate => 
-                    isSameDay(eventDate, props.date)
-                  )
-                  const events = getEventsForDate(props.date)
-                  const isSelected = date ? isSameDay(date, props.date) : false
-
-                  return (
-                    <div
-                      className={cn(
-                        "relative group h-8 w-8 p-0 flex items-center justify-center rounded-md transition-colors",
-                        hasEvents && !isSelected && "bg-primary/10 font-medium text-primary",
-                        isSelected && "bg-primary text-primary-foreground font-medium",
-                        !hasEvents && !isSelected && "hover:bg-muted"
-                      )}
-                    >
-                      <div>{props.date.getDate()}</div>
-                      {hasEvents && (
-                        <div className="absolute -top-8 left-1/2 -translate-x-1/2 w-max z-50">
-                          <div className="bg-popover text-popover-foreground text-xs rounded px-1 py-0.5 hidden group-hover:block shadow-sm">
-                            {events.length} event{events.length !== 1 ? 's' : ''}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  )
-                }
-              }}
-            />
-            {!loading && date && getEventsForDate(date).length > 0 && (
-              <div className="mt-4 space-y-3">
-                <div className="text-sm font-medium">Events on {format(date, "MMMM d, yyyy")}</div>
-                {getEventsForDate(date).map(event => (
-                  <div key={event.id} className="flex items-center space-x-2">
-                    <Badge variant="outline">{format(new Date(event.startDate), "HH:mm")}</Badge>
-                    <span className="text-sm">{event.title}</span>
-                  </div>
-                ))}
+    <div className="border-l h-full">
+      <ScrollArea className="h-full">
+        <div className="p-6 space-y-4">
+          <Card className="w-full">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium">Calendar</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex justify-center">
+                <Calendar
+                  mode="single"
+                  selected={date}
+                  onSelect={setDate}
+                  className="rounded-md border w-full"
+                  modifiers={{
+                    hasEvent: (date) => hasEvents(date)
+                  }}
+                  modifiersStyles={{
+                    hasEvent: {
+                      fontWeight: 'bold',
+                      textDecoration: 'underline',
+                      color: 'var(--primary)'
+                    }
+                  }}
+                />
               </div>
-            )}
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
 
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Upcoming Events</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-3">
-              <div className="text-sm font-medium">Today</div>
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium">Upcoming Events</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
               {loading ? (
-                <div className="text-sm text-muted-foreground">Loading...</div>
-              ) : todayEvents.length > 0 ? (
-                todayEvents.map(event => (
-                  <div key={event.id} className="flex items-center space-x-2">
-                    <Badge variant="outline">{format(new Date(event.startDate), "HH:mm")}</Badge>
-                    <span className="text-sm">{event.title}</span>
-                  </div>
-                ))
+                <div className="text-sm text-muted-foreground">Loading events...</div>
+              ) : error ? (
+                <div className="text-sm text-red-500">{error}</div>
               ) : (
-                <div className="text-sm text-muted-foreground">No events scheduled</div>
+                <>
+                  {renderEventList(todayEvents, "Today")}
+                  {renderEventList(tomorrowEvents, "Tomorrow")}
+                  {renderEventList(thisWeekEvents, "This Week")}
+                </>
               )}
-            </div>
-            <div className="space-y-3">
-              <div className="text-sm font-medium">Tomorrow</div>
-              {loading ? (
-                <div className="text-sm text-muted-foreground">Loading...</div>
-              ) : tomorrowEvents.length > 0 ? (
-                tomorrowEvents.map(event => (
-                  <div key={event.id} className="flex items-center space-x-2">
-                    <Badge variant="outline">{format(new Date(event.startDate), "HH:mm")}</Badge>
-                    <span className="text-sm">{event.title}</span>
-                  </div>
-                ))
-              ) : (
-                <div className="text-sm text-muted-foreground">No events scheduled</div>
-              )}
-            </div>
-            <div className="space-y-3">
-              <div className="text-sm font-medium">This Week</div>
-              {loading ? (
-                <div className="text-sm text-muted-foreground">Loading...</div>
-              ) : thisWeekEvents.length > 0 ? (
-                thisWeekEvents.map(event => (
-                  <div key={event.id} className="flex items-center space-x-2">
-                    <Badge variant="outline">{format(new Date(event.startDate), "HH:mm")}</Badge>
-                    <span className="text-sm">{event.title}</span>
-                  </div>
-                ))
-              ) : (
-                <div className="text-sm text-muted-foreground">No events scheduled</div>
-              )}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    </ScrollArea>
+            </CardContent>
+          </Card>
+        </div>
+      </ScrollArea>
+    </div>
   )
 } 
