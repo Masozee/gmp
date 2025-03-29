@@ -1,0 +1,7 @@
+README.md
+.git
+node_modules
+.next
+.vercel
+prisma/dev.db
+prisma/dev.db-journal 
