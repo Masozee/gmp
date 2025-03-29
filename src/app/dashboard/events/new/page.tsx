@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, Suspense } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
 import { ArrowLeft, Calendar, Loader2 } from "lucide-react"
@@ -76,7 +76,7 @@ interface Speaker {
   name: string;
 }
 
-export default function NewEventPage() {
+function NewEventPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [categories, setCategories] = useState<Category[]>([]);
@@ -522,5 +522,34 @@ export default function NewEventPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+// Wrap with Suspense for useSearchParams
+export default function NewEventPage() {
+  return (
+    <Suspense fallback={
+      <div className="container mx-auto py-6">
+        <div className="flex items-center mb-6">
+          <Button variant="ghost" size="sm" asChild className="mr-2">
+            <Link href="/dashboard/events">
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Back to Events
+            </Link>
+          </Button>
+        </div>
+        <Card>
+          <CardHeader>
+            <CardTitle>Loading...</CardTitle>
+            <CardDescription>Please wait while we load the form.</CardDescription>
+          </CardHeader>
+          <CardContent className="flex justify-center py-10">
+            <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+          </CardContent>
+        </Card>
+      </div>
+    }>
+      <NewEventPageContent />
+    </Suspense>
   );
 } 

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import { prisma } from "@/lib/prisma"
+import prisma from "@/lib/prisma"
 import { signToken } from "@/lib/edge-jwt"
 
 export async function POST(request: Request) {

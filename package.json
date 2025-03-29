@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "prisma:seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed-categories.ts"
+    "prisma:seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed-categories.ts",
+    "prisma:generate": "prisma generate"
   },
   "prisma": {
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"

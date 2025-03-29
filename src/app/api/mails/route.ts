@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
-import { db } from "@/lib/db"
+import db from "@/lib/db"
 
 // Function to convert month to Roman numerals
 function monthToRoman(month: number): string {

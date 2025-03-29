@@ -1,22 +1,20 @@
 import { NextRequest, NextResponse } from "next/server"
-import { prisma } from "@/lib/prisma"
+import prisma from "@/lib/prisma"
 import { getServerSession } from "@/lib/server-auth"
 import { writeFile, unlink, mkdir } from "fs/promises"
 import { join } from "path"
 import { cwd } from "process"
 import { existsSync } from "fs"
 
-type RouteContext = {
-  params: { id: string }
-}
-
-export async function GET(
-  request: NextRequest,
-  context: RouteContext
-) {
+export async function GET(request: NextRequest) {
   try {
+    // Extract id from path
+    const url = new URL(request.url);
+    const pathParts = url.pathname.split('/');
+    const id = pathParts[pathParts.length - 1];
+
     const profile = await prisma.profile.findUnique({
-      where: { id: context.params.id },
+      where: { id },
     })
 
     if (!profile) {
@@ -36,10 +34,7 @@ export async function GET(
   }
 }
 
-export async function PATCH(
-  request: NextRequest,
-  context: RouteContext
-) {
+export async function PATCH(request: NextRequest) {
   try {
     const session = await getServerSession()
 
@@ -49,6 +44,11 @@ export async function PATCH(
         { status: 401 }
       )
     }
+
+    // Extract id from path
+    const url = new URL(request.url);
+    const pathParts = url.pathname.split('/');
+    const id = pathParts[pathParts.length - 1];
 
     const formData = await request.formData()
     const firstName = formData.get("firstName") as string
@@ -68,7 +68,7 @@ export async function PATCH(
           mode: "insensitive"
         },
         NOT: {
-          id: context.params.id
+          id
         }
       }
     })
@@ -105,7 +105,7 @@ export async function PATCH(
 
       // Delete old photo if exists
       const currentProfile = await prisma.profile.findUnique({
-        where: { id: context.params.id },
+        where: { id },
         select: { photoUrl: true }
       })
 
@@ -120,7 +120,7 @@ export async function PATCH(
     }
 
     const profile = await prisma.profile.update({
-      where: { id: context.params.id },
+      where: { id },
       data: {
         firstName,
         lastName,
@@ -143,10 +143,7 @@ export async function PATCH(
   }
 }
 
-export async function DELETE(
-  request: NextRequest,
-  context: RouteContext
-) {
+export async function DELETE(request: NextRequest) {
   try {
     const session = await getServerSession()
 
@@ -157,8 +154,13 @@ export async function DELETE(
       )
     }
 
+    // Extract id from path
+    const url = new URL(request.url);
+    const pathParts = url.pathname.split('/');
+    const id = pathParts[pathParts.length - 1];
+
     await prisma.profile.delete({
-      where: { id: context.params.id },
+      where: { id },
     })
 
     return NextResponse.json({ success: true })

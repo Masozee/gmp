@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
-import { db } from "@/lib/db"
+import db from "@/lib/db"
 import { addDays, format, subDays, subMonths } from "date-fns"
 
 // Generate random number between min and max

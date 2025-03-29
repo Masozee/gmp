@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, Suspense } from "react"
 import Link from "next/link"
 import { useRouter, useSearchParams } from "next/navigation"
 import { Calendar as CalendarIcon, MapPin, Clock, Plus, Edit, Trash2, User, List, ArrowUpDown } from "lucide-react"
@@ -63,7 +63,7 @@ interface Category {
   name: string
 }
 
-export default function EventsPage() {
+function EventsPageContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [events, setEvents] = useState<Event[]>([])
@@ -440,5 +440,39 @@ export default function EventsPage() {
         </div>
       )}
     </div>
+  )
+}
+
+// Wrapper component with Suspense
+export default function EventsPage() {
+  return (
+    <Suspense fallback={
+      <div className="container mx-auto py-6">
+        <div className="flex items-center justify-between mb-6">
+          <h1 className="text-3xl font-bold">Events</h1>
+          <Skeleton className="h-10 w-32" />
+        </div>
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {[1, 2, 3, 4, 5, 6].map((i) => (
+            <Card key={i} className="overflow-hidden">
+              <Skeleton className="h-48 w-full" />
+              <CardHeader>
+                <Skeleton className="h-6 w-3/4 mb-2" />
+                <Skeleton className="h-4 w-full" />
+              </CardHeader>
+              <CardContent>
+                <Skeleton className="h-4 w-full mb-2" />
+                <Skeleton className="h-4 w-3/4" />
+              </CardContent>
+              <CardFooter>
+                <Skeleton className="h-10 w-full" />
+              </CardFooter>
+            </Card>
+          ))}
+        </div>
+      </div>
+    }>
+      <EventsPageContent />
+    </Suspense>
   )
 } 

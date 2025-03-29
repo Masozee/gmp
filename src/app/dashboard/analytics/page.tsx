@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, Suspense } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import {
   BarChart,
@@ -21,6 +21,7 @@ import {
   Share2,
   Eye,
   UserPlus,
+  Loader2
 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -120,6 +121,14 @@ interface AnalyticsData {
 }
 
 export default function AnalyticsPage() {
+  return (
+    <Suspense fallback={<AnalyticsPageSkeleton />}>
+      <AnalyticsPageContent />
+    </Suspense>
+  )
+}
+
+function AnalyticsPageContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [period, setPeriod] = useState<string>(searchParams.get("period") || "30d")
@@ -567,6 +576,40 @@ export default function AnalyticsPage() {
               ))}
             </TableBody>
           </Table>
+        </CardContent>
+      </Card>
+    </div>
+  )
+}
+
+function AnalyticsPageSkeleton() {
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <h1 className="text-3xl font-bold">Analytics Dashboard</h1>
+        <Skeleton className="h-10 w-32" />
+      </div>
+      
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        {[1, 2, 3, 4].map((i) => (
+          <Card key={i}>
+            <CardHeader className="pb-2">
+              <Skeleton className="h-4 w-24" />
+            </CardHeader>
+            <CardContent>
+              <Skeleton className="h-8 w-20 mb-2" />
+              <Skeleton className="h-4 w-full" />
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+      
+      <Card>
+        <CardHeader>
+          <Skeleton className="h-6 w-32" />
+        </CardHeader>
+        <CardContent className="flex justify-center items-center py-10">
+          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
         </CardContent>
       </Card>
     </div>

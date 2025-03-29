@@ -1,6 +1,30 @@
 import { NextRequest, NextResponse } from "next/server"
-import { db } from "@/lib/db"
+import db from "@/lib/db"
 import { Prisma } from "@prisma/client"
+
+// Helper function to handle BigInt serialization
+const serializeData = (data: any): any => {
+  if (data === null || data === undefined) {
+    return data;
+  }
+  
+  if (typeof data === 'bigint') {
+    return data.toString();
+  }
+  
+  if (Array.isArray(data)) {
+    return data.map(serializeData);
+  }
+  
+  if (typeof data === 'object') {
+    return Object.entries(data).reduce((acc, [key, value]) => {
+      acc[key] = serializeData(value);
+      return acc;
+    }, {} as Record<string, any>);
+  }
+  
+  return data;
+};
 
 export async function GET(request: NextRequest) {
   try {
@@ -18,10 +42,13 @@ export async function GET(request: NextRequest) {
       result = await db.$queryRaw`SELECT 1 as test`
     }
     
+    // Serialize the result to handle BigInt
+    const serializedResult = serializeData(result);
+    
     return NextResponse.json({
       status: "success",
       message: "Database connection successful",
-      result
+      result: serializedResult
     })
   } catch (error) {
     console.error("Database connection error:", error)

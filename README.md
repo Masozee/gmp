@@ -6,7 +6,7 @@ A modern dashboard application built with Next.js 15, TypeScript, and shadcn com
 
 - Next.js 15
 - TypeScript
-- PostgreSQL
+- SQLite (Development)
 - shadcn/ui components
 - Tailwind CSS
 - Prisma ORM
@@ -36,7 +36,7 @@ npm install
 3. Set up environment variables:
 Create a `.env` file in the root directory and add the following:
 ```env
-DATABASE_URL="postgresql://[user]:[password]@[host]:[port]/[db-name]"
+DATABASE_URL="file:./dev.db"
 NEXTAUTH_SECRET="your-secret-key"
 ```
 

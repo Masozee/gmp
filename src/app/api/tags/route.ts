@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server"
-import { prisma } from "@/lib/prisma"
+import prisma from "@/lib/prisma"
 import { getServerSession } from "@/lib/server-auth"
 import slugify from "slugify"
-import { db } from "@/lib/db"
+import db from "@/lib/db"
 
 export async function GET(request: NextRequest) {
   try {

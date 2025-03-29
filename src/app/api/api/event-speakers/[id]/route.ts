@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { getServerSession } from "@/lib/server-auth"
 import { z } from "zod"
 
-import { prisma } from "@/lib/prisma"
+import prisma from "@/lib/prisma"
 
 const updateEventSpeakerSchema = z.object({
   role: z.string().optional(),

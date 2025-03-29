@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { getServerSession } from "@/lib/server-auth"
-import { prisma } from "@/lib/prisma"
+import prisma from "@/lib/prisma"
 import { writeFile, unlink } from "fs/promises"
 import { join } from "path"
 import { cwd } from "process"
