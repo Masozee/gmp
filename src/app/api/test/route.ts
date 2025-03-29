@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import prisma from "@/lib/prisma"
+import sqlite from "@/lib/sqlite"
 import bcrypt from "bcryptjs"
 
 export async function POST(request: Request) {
@@ -18,7 +18,7 @@ export async function POST(request: Request) {
 
     console.log("[Test API] Checking for existing user...")
     // Check if user already exists
-    const existingUser = await prisma.user.findUnique({
+    const existingUser = await sqlite.get(`SELECT * FROM user WHERE({
       where: { email: email.toLowerCase() },
     })
 
@@ -46,7 +46,7 @@ export async function POST(request: Request) {
     }
 
     // Fetch the created user
-    const user = await prisma.user.findUnique({
+    const user = await sqlite.get(`SELECT * FROM user WHERE({
       where: { email: email.toLowerCase() },
       select: {
         id: true,

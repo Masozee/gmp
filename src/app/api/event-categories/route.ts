@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
-import { prisma } from "@/lib/prisma"
+import sqlite from "@/lib/sqlite"
 import { getServerSession } from "@/lib/server-auth"
 import slugify from "slugify"
 
@@ -28,7 +28,7 @@ export async function GET(request: NextRequest) {
       ]
     }
 
-    const categories = await prisma.eventCategory.findMany({
+    const categories = await sqlite.all(`SELECT * FROM eventCategory({
       where,
       orderBy: {
         [sort]: order,
@@ -77,7 +77,7 @@ export async function POST(request: NextRequest) {
     let slug = slugify(name, { lower: true, strict: true })
     
     // Check if slug exists
-    const existingCategory = await prisma.eventCategory.findUnique({
+    const existingCategory = await sqlite.get(`SELECT * FROM eventCategory WHERE({
       where: { slug },
     })
 
@@ -86,7 +86,7 @@ export async function POST(request: NextRequest) {
       slug = `${slug}-${Date.now()}`
     }
 
-    const category = await prisma.eventCategory.create({
+    const category = await sqlite.run(`INSERT INTO eventCategory({
       data: {
         name,
         slug,

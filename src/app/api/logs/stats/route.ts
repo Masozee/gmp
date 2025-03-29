@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
-import { prisma } from "@/lib/prisma"
+import sqlite from "@/lib/sqlite"
 import { getServerSession } from "@/lib/server-auth"
 
 export async function GET(req: NextRequest) {
@@ -23,28 +23,28 @@ export async function GET(req: NextRequest) {
 
     // Get counts for each severity level
     const [total, critical, error, warning, info] = await Promise.all([
-      prisma.errorLog.count({
+      sqlite.get(`SELECT COUNT(*) as count FROM errorLog({
         where: userId ? { userId } : undefined,
       }),
-      prisma.errorLog.count({
+      sqlite.get(`SELECT COUNT(*) as count FROM errorLog({
         where: {
           severity: "CRITICAL",
           ...(userId && { userId }),
         },
       }),
-      prisma.errorLog.count({
+      sqlite.get(`SELECT COUNT(*) as count FROM errorLog({
         where: {
           severity: "ERROR",
           ...(userId && { userId }),
         },
       }),
-      prisma.errorLog.count({
+      sqlite.get(`SELECT COUNT(*) as count FROM errorLog({
         where: {
           severity: "WARNING",
           ...(userId && { userId }),
         },
       }),
-      prisma.errorLog.count({
+      sqlite.get(`SELECT COUNT(*) as count FROM errorLog({
         where: {
           severity: "INFO",
           ...(userId && { userId }),

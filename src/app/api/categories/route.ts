@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
-import prisma from "@/lib/prisma"
+import sqlite from "@/lib/sqlite"
 import { getServerSession } from "@/lib/server-auth"
 
 export async function GET(request: NextRequest) {
@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
     const sort = searchParams.get("sort") || "name"
     const order = searchParams.get("order") || "asc"
 
-    const categories = await prisma.category.findMany({
+    const categories = await sqlite.all(`SELECT * FROM category({
       where: {
         ...(search && {
           OR: [
@@ -72,7 +72,7 @@ export async function POST(request: NextRequest) {
     // Generate slug from name
     const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, "-")
 
-    const category = await prisma.category.create({
+    const category = await sqlite.run(`INSERT INTO category({
       data: {
         name,
         slug,

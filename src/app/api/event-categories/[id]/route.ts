@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
-import { prisma } from "@/lib/prisma"
+import sqlite from "@/lib/sqlite"
 import { getServerSession } from "@/lib/server-auth"
 import slugify from "slugify"
 
@@ -26,7 +26,7 @@ export async function GET(
       )
     }
 
-    const category = await prisma.eventCategory.findUnique({
+    const category = await sqlite.get(`SELECT * FROM eventCategory WHERE({
       where: { id },
       include: {
         _count: {
@@ -88,7 +88,7 @@ export async function PATCH(
     }
 
     // Check if category exists
-    const existingCategory = await prisma.eventCategory.findUnique({
+    const existingCategory = await sqlite.get(`SELECT * FROM eventCategory WHERE({
       where: { id },
     })
 
@@ -109,7 +109,7 @@ export async function PATCH(
       let slug = slugify(name, { lower: true, strict: true })
       
       // Check if slug exists for another category
-      const slugExists = await prisma.eventCategory.findFirst({
+      const slugExists = await sqlite.get(`SELECT * FROM eventCategory({
         where: { 
           slug,
           id: { not: id }
@@ -124,7 +124,7 @@ export async function PATCH(
       updateData.slug = slug
     }
 
-    const updatedCategory = await prisma.eventCategory.update({
+    const updatedCategory = await sqlite.run(`UPDATE eventCategory SET({
       where: { id },
       data: updateData
     })
@@ -163,7 +163,7 @@ export async function DELETE(
     }
 
     // Check if category exists
-    const category = await prisma.eventCategory.findUnique({
+    const category = await sqlite.get(`SELECT * FROM eventCategory WHERE({
       where: { id },
       include: {
         events: true
@@ -185,7 +185,7 @@ export async function DELETE(
       )
     }
 
-    await prisma.eventCategory.delete({
+    await sqlite.run(`DELETE FROM eventCategory WHERE({
       where: { id },
     })
 

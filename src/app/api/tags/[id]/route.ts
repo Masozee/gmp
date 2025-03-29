@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
-import { prisma } from "@/lib/prisma"
+import sqlite from "@/lib/sqlite"
 import { getServerSession } from "@/lib/server-auth"
 import slugify from "slugify"
 
@@ -24,7 +24,7 @@ export async function PATCH(
     const slug = slugify(name, { lower: true, strict: true })
 
     // Check if tag exists
-    const existingTag = await prisma.tag.findUnique({
+    const existingTag = await sqlite.get(`SELECT * FROM tag WHERE({
       where: { id: params.id },
     })
 
@@ -36,7 +36,7 @@ export async function PATCH(
     }
 
     // Check if new name/slug would conflict with another tag
-    const conflictingTag = await prisma.tag.findFirst({
+    const conflictingTag = await sqlite.get(`SELECT * FROM tag({
       where: {
         OR: [
           { name: { equals: name, mode: "insensitive" } },
@@ -55,7 +55,7 @@ export async function PATCH(
       )
     }
 
-    const updatedTag = await prisma.tag.update({
+    const updatedTag = await sqlite.run(`UPDATE tag SET({
       where: { id: params.id },
       data: {
         name,
@@ -88,7 +88,7 @@ export async function DELETE(
     }
 
     // Check if tag exists
-    const existingTag = await prisma.tag.findUnique({
+    const existingTag = await sqlite.get(`SELECT * FROM tag WHERE({
       where: { id: params.id },
     })
 
@@ -99,7 +99,7 @@ export async function DELETE(
       )
     }
 
-    await prisma.tag.delete({
+    await sqlite.run(`DELETE FROM tag WHERE({
       where: { id: params.id },
     })
 

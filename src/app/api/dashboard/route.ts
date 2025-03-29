@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import prisma from "@/lib/prisma";
+import sqlite from "@/lib/sqlite";
 import { startOfDay, subDays } from "date-fns";
 import { getServerSession } from "@/lib/server-auth";
 
@@ -26,11 +26,11 @@ export async function GET(request: NextRequest) {
       recentPublications,
       upcomingEvents
     ] = await Promise.all([
-      prisma.user.count(),
-      prisma.publication.count(),
-      prisma.event.count(),
-      prisma.profile.count(),
-      prisma.errorLog.findMany({
+      sqlite.get(`SELECT COUNT(*) as count FROM user(),
+      sqlite.get(`SELECT COUNT(*) as count FROM publication(),
+      sqlite.get(`SELECT COUNT(*) as count FROM event(),
+      sqlite.get(`SELECT COUNT(*) as count FROM profile(),
+      sqlite.all(`SELECT * FROM errorLog({
         where: {
           createdAt: {
             gte: subDays(new Date(), 7)
@@ -49,7 +49,7 @@ export async function GET(request: NextRequest) {
         by: ['status'],
         _count: true
       }),
-      prisma.publication.findMany({
+      sqlite.all(`SELECT * FROM publication({
         orderBy: {
           createdAt: 'desc'
         },
@@ -62,7 +62,7 @@ export async function GET(request: NextRequest) {
           }
         }
       }),
-      prisma.event.findMany({
+      sqlite.all(`SELECT * FROM event({
         where: {
           startDate: {
             gte: new Date()

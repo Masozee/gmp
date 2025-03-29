@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { getServerSession } from "@/lib/server-auth"
 import { z } from "zod"
 
-import { prisma } from "@/lib/prisma"
+import sqlite from "@/lib/sqlite"
 
 const updateEventSpeakerSchema = z.object({
   role: z.string().optional(),
@@ -19,7 +19,7 @@ export async function GET(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    const eventSpeaker = await prisma.eventSpeaker.findUnique({
+    const eventSpeaker = await sqlite.get(`SELECT * FROM eventSpeaker WHERE({
       where: { id: params.id },
       include: {
         event: {
@@ -72,7 +72,7 @@ export async function PATCH(
     }
 
     // Check if the event speaker exists
-    const existingEventSpeaker = await prisma.eventSpeaker.findUnique({
+    const existingEventSpeaker = await sqlite.get(`SELECT * FROM eventSpeaker WHERE({
       where: { id: params.id },
     })
 
@@ -88,7 +88,7 @@ export async function PATCH(
     const validatedData = updateEventSpeakerSchema.parse(body)
 
     // Update the event speaker
-    const updatedEventSpeaker = await prisma.eventSpeaker.update({
+    const updatedEventSpeaker = await sqlite.run(`UPDATE eventSpeaker SET({
       where: { id: params.id },
       data: {
         role: validatedData.role,
@@ -132,7 +132,7 @@ export async function DELETE(
     }
 
     // Check if the event speaker exists
-    const existingEventSpeaker = await prisma.eventSpeaker.findUnique({
+    const existingEventSpeaker = await sqlite.get(`SELECT * FROM eventSpeaker WHERE({
       where: { id: params.id },
     })
 
@@ -144,7 +144,7 @@ export async function DELETE(
     }
 
     // Delete the event speaker
-    await prisma.eventSpeaker.delete({
+    await sqlite.run(`DELETE FROM eventSpeaker WHERE({
       where: { id: params.id },
     })
 

@@ -1,9 +1,25 @@
 import { NextResponse } from "next/server"
-import prisma from "@/lib/prisma"
+import sqlite from "@/lib/sqlite"
 import { signToken } from "@/lib/edge-jwt"
 import bcrypt from "bcryptjs"
 import { z } from "zod"
-import { Prisma, UserRole, UserCategory } from "@prisma/client"
+
+// UserRole enum
+export enum UserRole {
+  USER = 'USER',
+  ADMIN = 'ADMIN',
+  EDITOR = 'EDITOR',
+  CONTRIBUTOR = 'CONTRIBUTOR',
+}
+// UserCategory enum
+export enum UserCategory {
+  ACADEMIC = 'ACADEMIC',
+  PRACTITIONER = 'PRACTITIONER',
+  STUDENT = 'STUDENT',
+  OTHER = 'OTHER',
+}
+
+
 
 // Validation schema
 const registerSchema = z.object({
@@ -29,7 +45,7 @@ export async function POST(request: Request) {
     const { email, password, firstName, lastName } = validationResult.data
 
     // Check if user already exists
-    const existingUser = await prisma.user.findUnique({
+    const existingUser = await sqlite.get(`SELECT * FROM user WHERE({
       where: { email },
     })
 

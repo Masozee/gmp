@@ -1,6 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
-import { EventStatus } from "@prisma/client";
+;
 import sqlite from "@/lib/sqlite";
+
+// EventStatus enum
+export enum EventStatus {
+  UPCOMING = 'UPCOMING',
+  ONGOING = 'ONGOING',
+  COMPLETED = 'COMPLETED',
+  CANCELLED = 'CANCELLED',
+}
+
 
 // Define types for the speakers and tags
 interface EventSpeaker {

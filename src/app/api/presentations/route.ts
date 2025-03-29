@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
-import { prisma } from "@/lib/prisma"
+import sqlite from "@/lib/sqlite"
 import { getServerSession } from "@/lib/server-auth"
 import { writeFile } from "fs/promises"
 import { join } from "path"
@@ -44,7 +44,7 @@ export async function GET(request: NextRequest) {
       where.eventId = eventId
     }
 
-    const presentations = await prisma.presentation.findMany({
+    const presentations = await sqlite.all(`SELECT * FROM presentation({
       where,
       orderBy: {
         [sort]: order,
@@ -64,7 +64,7 @@ export async function GET(request: NextRequest) {
     })
 
     // Get total count for pagination
-    const totalPresentations = await prisma.presentation.count({ where })
+    const totalPresentations = await sqlite.get(`SELECT COUNT(*) as count FROM presentation({ where })
 
     return NextResponse.json({ 
       presentations, 
@@ -115,7 +115,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Check if speaker exists
-    const speaker = await prisma.speaker.findUnique({
+    const speaker = await sqlite.get(`SELECT * FROM speaker WHERE({
       where: { id: speakerId },
     })
 
@@ -128,7 +128,7 @@ export async function POST(request: NextRequest) {
 
     // Check if event exists if provided
     if (eventId) {
-      const event = await prisma.event.findUnique({
+      const event = await sqlite.get(`SELECT * FROM event WHERE({
         where: { id: eventId },
       })
 
@@ -168,7 +168,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Create the presentation
-    const presentation = await prisma.presentation.create({
+    const presentation = await sqlite.run(`INSERT INTO presentation({
       data: {
         title,
         abstract,

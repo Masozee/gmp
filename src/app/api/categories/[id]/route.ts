@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
-import { prisma } from "@/lib/prisma"
+import sqlite from "@/lib/sqlite"
 import { getServerSession } from "@/lib/server-auth"
 
 export async function GET(
@@ -16,7 +16,7 @@ export async function GET(
       )
     }
 
-    const category = await prisma.category.findUnique({
+    const category = await sqlite.get(`SELECT * FROM category WHERE({
       where: { id: params.id },
       include: {
         publications: {
@@ -89,7 +89,7 @@ export async function PATCH(
     // Generate slug from name
     const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, "-")
 
-    const category = await prisma.category.update({
+    const category = await sqlite.run(`UPDATE category SET({
       where: { id: params.id },
       data: {
         name,
@@ -129,7 +129,7 @@ export async function DELETE(
       )
     }
 
-    await prisma.category.delete({
+    await sqlite.run(`DELETE FROM category WHERE({
       where: { id: params.id },
     })
 

@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server"
-import prisma from "@/lib/prisma"
+import sqlite from "@/lib/sqlite"
 import { compare } from "bcryptjs"
 import { signToken } from "@/lib/edge-jwt"
 import { z } from "zod"
-import { Prisma } from "@prisma/client"
+
 
 // Validation schema
 const loginSchema = z.object({
@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
 
     const { email, password } = validationResult.data
 
-    const user = await prisma.user.findUnique({
+    const user = await sqlite.get(`SELECT * FROM user WHERE({
       where: { email: email.toLowerCase() },
       select: {
         id: true,

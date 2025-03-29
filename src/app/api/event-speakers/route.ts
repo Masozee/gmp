@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { getServerSession } from "@/lib/server-auth"
 import { z } from "zod"
 
-import { prisma } from "@/lib/prisma"
+import sqlite from "@/lib/sqlite"
 
 const eventSpeakerSchema = z.object({
   eventId: z.string().min(1, "Event ID is required"),
@@ -29,7 +29,7 @@ export async function GET(req: NextRequest) {
     if (speakerId) query.speakerId = speakerId
 
     // Get event speakers with related data
-    const eventSpeakers = await prisma.eventSpeaker.findMany({
+    const eventSpeakers = await sqlite.all(`SELECT * FROM eventSpeaker({
       where: query,
       include: {
         event: {
@@ -79,7 +79,7 @@ export async function POST(req: NextRequest) {
     const validatedData = eventSpeakerSchema.parse(body)
 
     // Check if event exists
-    const event = await prisma.event.findUnique({
+    const event = await sqlite.get(`SELECT * FROM event WHERE({
       where: { id: validatedData.eventId },
     })
     if (!event) {
@@ -87,7 +87,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Check if speaker exists
-    const speaker = await prisma.speaker.findUnique({
+    const speaker = await sqlite.get(`SELECT * FROM speaker WHERE({
       where: { id: validatedData.speakerId },
     })
     if (!speaker) {
@@ -95,7 +95,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Check if the relationship already exists
-    const existingRelation = await prisma.eventSpeaker.findFirst({
+    const existingRelation = await sqlite.get(`SELECT * FROM eventSpeaker({
       where: {
         eventId: validatedData.eventId,
         speakerId: validatedData.speakerId,
@@ -109,7 +109,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Create the event speaker relationship
-    const eventSpeaker = await prisma.eventSpeaker.create({
+    const eventSpeaker = await sqlite.run(`INSERT INTO eventSpeaker({
       data: {
         eventId: validatedData.eventId,
         speakerId: validatedData.speakerId,

@@ -1,10 +1,18 @@
 import { NextRequest, NextResponse } from "next/server"
-import prisma from "@/lib/prisma"
+import sqlite from "@/lib/sqlite"
 import { getServerSession } from "@/lib/server-auth"
 import { writeFile } from "fs/promises"
 import { join } from "path"
 import { cwd } from "process"
-import { Prisma, PublicationStatus } from "@prisma/client"
+
+// PublicationStatus enum
+export enum PublicationStatus {
+  DRAFT = 'DRAFT',
+  PUBLISHED = 'PUBLISHED',
+  ARCHIVED = 'ARCHIVED',
+}
+
+
 
 export async function GET(
   request: NextRequest,
@@ -20,7 +28,7 @@ export async function GET(
       )
     }
 
-    const publication = await prisma.publication.findUnique({
+    const publication = await sqlite.get(`SELECT * FROM publication WHERE({
       where: { id: params.id },
       include: {
         authors: {
@@ -87,7 +95,7 @@ export async function PATCH(
       
       if (json.status) {
         // This is a status-only update
-        const updatedPublication = await prisma.publication.update({
+        const updatedPublication = await sqlite.run(`UPDATE publication SET({
           where: { id: params.id },
           data: {
             status: json.status as PublicationStatus,
@@ -159,7 +167,7 @@ export async function PATCH(
     }
 
     // Update the publication
-    const publication = await prisma.publication.update({
+    const publication = await sqlite.run(`UPDATE publication SET({
       where: { id: params.id },
       data: {
         title,
@@ -236,7 +244,7 @@ export async function DELETE(
       )
     }
 
-    await prisma.publication.delete({
+    await sqlite.run(`DELETE FROM publication WHERE({
       where: { id: params.id },
     })
 

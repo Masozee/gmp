@@ -1,10 +1,19 @@
 import { NextRequest, NextResponse } from "next/server"
-import prisma from "@/lib/prisma"
+import sqlite from "@/lib/sqlite"
 import { getServerSession } from "@/lib/server-auth"
 import { writeFile } from "fs/promises"
 import { join } from "path"
 import { cwd } from "process"
-import { Prisma, UserCategory } from "@prisma/client"
+
+// UserCategory enum
+export enum UserCategory {
+  ACADEMIC = 'ACADEMIC',
+  PRACTITIONER = 'PRACTITIONER',
+  STUDENT = 'STUDENT',
+  OTHER = 'OTHER',
+}
+
+
 
 export async function GET(request: NextRequest) {
   try {
@@ -34,7 +43,7 @@ export async function GET(request: NextRequest) {
       }),
     }
 
-    const profiles = await prisma.profile.findMany({
+    const profiles = await sqlite.all(`SELECT * FROM profile({
       where,
       orderBy: { createdAt: "desc" },
     })
@@ -135,7 +144,7 @@ export async function POST(request: NextRequest) {
 
     // Check if email is already in use
     console.log("[Authors API] Checking for existing profile...")
-    const existingProfile = await prisma.profile.findFirst({
+    const existingProfile = await sqlite.get(`SELECT * FROM profile({
       where: {
         email: {
           equals: email,
@@ -153,7 +162,7 @@ export async function POST(request: NextRequest) {
     }
 
     console.log("[Authors API] Creating profile...")
-    const profile = await prisma.profile.create({
+    const profile = await sqlite.run(`INSERT INTO profile({
       data: {
         firstName,
         lastName,

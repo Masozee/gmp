@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
-import { prisma } from "@/lib/prisma"
+import sqlite from "@/lib/sqlite"
 import { getServerSession } from "@/lib/server-auth"
 import { writeFile, unlink } from "fs/promises"
 import { join } from "path"
@@ -31,7 +31,7 @@ export async function GET(
       )
     }
 
-    const event = await prisma.event.findUnique({
+    const event = await sqlite.get(`SELECT * FROM event WHERE({
       where: { id },
       include: {
         category: true,
@@ -97,7 +97,7 @@ export async function PATCH(
     }
 
     // Check if the event exists
-    const existingEvent = await prisma.event.findUnique({
+    const existingEvent = await sqlite.get(`SELECT * FROM event WHERE({
       where: { id },
       include: {
         speakers: true,
@@ -225,7 +225,7 @@ export async function PATCH(
       let slug = slugify(title, { lower: true, strict: true });
       
       // Check if slug exists for another event
-      const slugExists = await prisma.event.findFirst({
+      const slugExists = await sqlite.get(`SELECT * FROM event({
         where: { 
           slug,
           id: { not: id }
@@ -267,7 +267,7 @@ export async function PATCH(
     }
 
     // Update the event
-    const updatedEvent = await prisma.event.update({
+    const updatedEvent = await sqlite.run(`UPDATE event SET({
       where: { id },
       data: updateData,
       include: {
@@ -324,7 +324,7 @@ export async function DELETE(
     }
 
     // Check if the event exists
-    const event = await prisma.event.findUnique({
+    const event = await sqlite.get(`SELECT * FROM event WHERE({
       where: { id }
     })
 
@@ -336,7 +336,7 @@ export async function DELETE(
     }
 
     // Delete the event
-    await prisma.event.delete({
+    await sqlite.run(`DELETE FROM event WHERE({
       where: { id }
     })
 

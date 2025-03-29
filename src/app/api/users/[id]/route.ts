@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import { prisma } from "@/lib/prisma"
+import sqlite from "@/lib/sqlite"
 
 export async function PATCH(
   request: Request,
@@ -47,7 +47,7 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
-    const user = await prisma.user.update({
+    const user = await sqlite.run(`UPDATE user SET({
       where: { id: params.id },
       data: {
         status: "ARCHIVED",

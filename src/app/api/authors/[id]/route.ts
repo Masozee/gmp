@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
-import { prisma } from "@/lib/prisma"
+import sqlite from "@/lib/sqlite"
 import { getServerSession } from "@/lib/server-auth"
 import { writeFile, unlink, mkdir } from "fs/promises"
 import { join } from "path"
@@ -15,7 +15,7 @@ export async function GET(
   context: RouteContext
 ) {
   try {
-    const profile = await prisma.profile.findUnique({
+    const profile = await sqlite.get(`SELECT * FROM profile WHERE({
       where: { id: context.params.id },
     })
 
@@ -61,7 +61,7 @@ export async function PATCH(
     const photo = formData.get("photo") as File | null
 
     // Check if email is already in use by another profile
-    const existingProfile = await prisma.profile.findFirst({
+    const existingProfile = await sqlite.get(`SELECT * FROM profile({
       where: {
         email: {
           equals: email,
@@ -104,7 +104,7 @@ export async function PATCH(
       photoUrl = `/uploads/${uniqueFilename}`
 
       // Delete old photo if exists
-      const currentProfile = await prisma.profile.findUnique({
+      const currentProfile = await sqlite.get(`SELECT * FROM profile WHERE({
         where: { id: context.params.id },
         select: { photoUrl: true }
       })
@@ -119,7 +119,7 @@ export async function PATCH(
       }
     }
 
-    const profile = await prisma.profile.update({
+    const profile = await sqlite.run(`UPDATE profile SET({
       where: { id: context.params.id },
       data: {
         firstName,
@@ -157,7 +157,7 @@ export async function DELETE(
       )
     }
 
-    await prisma.profile.delete({
+    await sqlite.run(`DELETE FROM profile WHERE({
       where: { id: context.params.id },
     })
 

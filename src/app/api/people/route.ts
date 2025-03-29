@@ -1,10 +1,19 @@
 import { NextRequest, NextResponse } from "next/server"
-import { prisma } from "@/lib/prisma"
+import sqlite from "@/lib/sqlite"
 import { getServerSession } from "@/lib/server-auth"
 import { writeFile } from "fs/promises"
 import { join } from "path"
 import { cwd } from "process"
-import { UserCategory } from "@prisma/client"
+
+// UserCategory enum
+export enum UserCategory {
+  ACADEMIC = 'ACADEMIC',
+  PRACTITIONER = 'PRACTITIONER',
+  STUDENT = 'STUDENT',
+  OTHER = 'OTHER',
+}
+
+
 
 export async function GET(request: NextRequest) {
   try {
@@ -34,7 +43,7 @@ export async function GET(request: NextRequest) {
       }),
     }
 
-    const people = await prisma.profile.findMany({
+    const people = await sqlite.all(`SELECT * FROM profile({
       where,
       orderBy: { createdAt: "desc" },
     })
@@ -87,7 +96,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Check if user already has a profile
-    const existingProfile = await prisma.profile.findUnique({
+    const existingProfile = await sqlite.get(`SELECT * FROM profile WHERE({
       where: { userId: session.user.id },
     })
 
@@ -98,7 +107,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const person = await prisma.profile.create({
+    const person = await sqlite.run(`INSERT INTO profile({
       data: {
         firstName,
         lastName,

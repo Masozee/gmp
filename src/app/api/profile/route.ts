@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { getServerSession } from "@/lib/server-auth"
-import prisma from "@/lib/prisma"
+import sqlite from "@/lib/sqlite"
 
 export async function GET() {
   try {
@@ -13,7 +13,7 @@ export async function GET() {
       )
     }
 
-    const profile = await prisma.profile.findFirst({
+    const profile = await sqlite.get(`SELECT * FROM profile({
       where: {
         email: {
           equals: session.user.email,
@@ -72,7 +72,7 @@ export async function PATCH(request: NextRequest) {
     const { firstName, lastName, photoUrl } = body
 
     // First find the profile
-    const existingProfile = await prisma.profile.findFirst({
+    const existingProfile = await sqlite.get(`SELECT * FROM profile({
       where: {
         email: {
           equals: session.user.email,
@@ -89,7 +89,7 @@ export async function PATCH(request: NextRequest) {
     }
 
     // Update profile data
-    const profile = await prisma.profile.update({
+    const profile = await sqlite.run(`UPDATE profile SET({
       where: {
         id: existingProfile.id,
       },

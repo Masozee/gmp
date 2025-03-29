@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import prisma from "@/lib/prisma"
+import sqlite from "@/lib/sqlite"
 import bcrypt from "bcryptjs"
 
 export async function POST(request: Request) {
@@ -18,7 +18,7 @@ export async function POST(request: Request) {
     const hashedPassword = await bcrypt.hash(password, 10)
 
     // Create user
-    const user = await prisma.user.create({
+    const user = await sqlite.run(`INSERT INTO user({
       data: {
         email,
         password: hashedPassword,

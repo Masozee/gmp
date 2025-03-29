@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
-import { prisma } from "@/lib/prisma"
+import sqlite from "@/lib/sqlite"
 import { getServerSession } from "@/lib/server-auth"
 import { writeFile, unlink } from "fs/promises"
 import { join } from "path"
@@ -21,7 +21,7 @@ export async function GET(
       )
     }
 
-    const speaker = await prisma.speaker.findUnique({
+    const speaker = await sqlite.get(`SELECT * FROM speaker WHERE({
       where: { id: params.id },
       include: {
         events: {
@@ -80,7 +80,7 @@ export async function PATCH(
     }
 
     // Check if the speaker exists
-    const existingSpeaker = await prisma.speaker.findUnique({
+    const existingSpeaker = await sqlite.get(`SELECT * FROM speaker WHERE({
       where: { id: params.id },
     })
 
@@ -102,7 +102,7 @@ export async function PATCH(
 
     // If email is being changed, check if it's already in use
     if (email && email !== existingSpeaker.email) {
-      const emailExists = await prisma.speaker.findFirst({
+      const emailExists = await sqlite.get(`SELECT * FROM speaker({
         where: { 
           email,
           id: { not: params.id }
@@ -167,7 +167,7 @@ export async function PATCH(
     if (bio !== undefined) updateData.bio = bio
     if (photoUrl) updateData.photoUrl = photoUrl
 
-    const speaker = await prisma.speaker.update({
+    const speaker = await sqlite.run(`UPDATE speaker SET({
       where: { id: params.id },
       data: updateData,
       include: {
@@ -205,7 +205,7 @@ export async function DELETE(
     }
 
     // Check if the speaker exists
-    const existingSpeaker = await prisma.speaker.findUnique({
+    const existingSpeaker = await sqlite.get(`SELECT * FROM speaker WHERE({
       where: { id: params.id },
       include: {
         _count: {
@@ -237,7 +237,7 @@ export async function DELETE(
     }
 
     // Delete the speaker
-    await prisma.speaker.delete({
+    await sqlite.run(`DELETE FROM speaker WHERE({
       where: { id: params.id },
     })
 

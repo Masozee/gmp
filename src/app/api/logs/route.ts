@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
-import { prisma } from "@/lib/prisma"
+import sqlite from "@/lib/sqlite"
 import { getServerSession } from "@/lib/server-auth"
 
 export async function GET(req: NextRequest) {
@@ -32,7 +32,7 @@ export async function GET(req: NextRequest) {
       userId,
     })
 
-    const logs = await prisma.errorLog.findMany({
+    const logs = await sqlite.all(`SELECT * FROM errorLog({
       where: {
         ...(severity && { severity }),
         ...(userId && { userId }),
@@ -75,7 +75,7 @@ export async function POST(req: NextRequest) {
       severity: body.severity,
     })
 
-    const errorLog = await prisma.errorLog.create({
+    const errorLog = await sqlite.run(`INSERT INTO errorLog({
       data: {
         userId: session?.user?.id,
         path: body.path,

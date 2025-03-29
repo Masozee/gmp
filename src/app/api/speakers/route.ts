@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
-import { prisma } from "@/lib/prisma"
+import sqlite from "@/lib/sqlite"
 import { getServerSession } from "@/lib/server-auth"
 import { writeFile } from "fs/promises"
 import { join } from "path"
@@ -37,7 +37,7 @@ export async function GET(request: NextRequest) {
       ]
     }
 
-    const speakers = await prisma.speaker.findMany({
+    const speakers = await sqlite.all(`SELECT * FROM speaker({
       where,
       orderBy: {
         [sort]: order,
@@ -55,7 +55,7 @@ export async function GET(request: NextRequest) {
     })
 
     // Get total count for pagination
-    const totalSpeakers = await prisma.speaker.count({ where })
+    const totalSpeakers = await sqlite.get(`SELECT COUNT(*) as count FROM speaker({ where })
 
     return NextResponse.json({ 
       speakers, 
@@ -104,7 +104,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Check if email is already in use
-    const existingSpeaker = await prisma.speaker.findUnique({
+    const existingSpeaker = await sqlite.get(`SELECT * FROM speaker WHERE({
       where: { email },
     })
 
@@ -143,7 +143,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Create the speaker
-    const speaker = await prisma.speaker.create({
+    const speaker = await sqlite.run(`INSERT INTO speaker({
       data: {
         firstName,
         lastName,

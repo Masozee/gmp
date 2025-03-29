@@ -1,12 +1,20 @@
 import { NextRequest, NextResponse } from "next/server"
-import prisma from "@/lib/prisma"
+import sqlite from "@/lib/sqlite"
 import { getServerSession } from "@/lib/server-auth"
 import slugify from "slugify"
 import { writeFile } from "fs/promises"
 import { join } from "path"
 import { cwd } from "process"
-import { Prisma, PublicationStatus } from "@prisma/client"
+
 import { createId } from "@paralleldrive/cuid2"
+
+// PublicationStatus enum
+export enum PublicationStatus {
+  DRAFT = 'DRAFT',
+  PUBLISHED = 'PUBLISHED',
+  ARCHIVED = 'ARCHIVED',
+}
+
 
 export async function GET(request: NextRequest) {
   try {
@@ -49,7 +57,7 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    const publications = await prisma.publication.findMany({
+    const publications = await sqlite.all(`SELECT * FROM publication({
       where,
       include: {
         authors: {
@@ -140,7 +148,7 @@ export async function POST(request: NextRequest) {
     console.log("Category IDs:", categoryIds)
 
     // Get the user's profile
-    let profile = await prisma.profile.findFirst({
+    let profile = await sqlite.get(`SELECT * FROM profile({
       where: {
         email: {
           equals: session.user.email,
@@ -154,7 +162,7 @@ export async function POST(request: NextRequest) {
     // If profile doesn't exist, create one automatically
     if (!profile) {
       console.log("Creating new profile for user")
-      profile = await prisma.profile.create({
+      profile = await sqlite.run(`INSERT INTO profile({
         data: {
           email: session.user.email,
           firstName: session.user.email.split('@')[0],
@@ -299,7 +307,7 @@ export async function POST(request: NextRequest) {
     if (uniqueAuthorIds.length > 0) {
       await prisma.$transaction(
         uniqueAuthorIds.map((authorId, index) =>
-          prisma.publicationAuthor.create({
+          sqlite.run(`INSERT INTO publicationAuthor({
             data: {
               order: index + 1,
               publication: { connect: { id: (publication as any)[0].id } },
@@ -314,7 +322,7 @@ export async function POST(request: NextRequest) {
     if (categoryIds.length > 0) {
       await prisma.$transaction(
         categoryIds.map((categoryId) =>
-          prisma.categoriesOnPublications.create({
+          sqlite.run(`INSERT INTO categoriesOnPublications({
             data: {
               publication: { connect: { id: (publication as any)[0].id } },
               category: { connect: { id: categoryId } },
@@ -327,7 +335,7 @@ export async function POST(request: NextRequest) {
 
     // Add files if provided
     if (fileUploads.length > 0) {
-      await prisma.publicationFile.createMany({
+      await sqlite.run(`INSERT INTO publicationFileMany({
         data: fileUploads.map((file) => ({
           ...file,
           publicationId: (publication as any)[0].id,

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
-import { prisma } from "@/lib/prisma"
+import sqlite from "@/lib/sqlite"
 import { writeFile, unlink } from "fs/promises"
 import { join } from "path"
 import { cwd } from "process"
@@ -20,7 +20,7 @@ export async function PATCH(
       )
     }
 
-    const profile = await prisma.profile.findUnique({
+    const profile = await sqlite.get(`SELECT * FROM profile WHERE({
       where: { id: params.id },
     })
 
@@ -67,7 +67,7 @@ export async function PATCH(
       photoUrl = `/uploads/${filename}`
     }
 
-    const updatedProfile = await prisma.profile.update({
+    const updatedProfile = await sqlite.run(`UPDATE profile SET({
       where: { id: params.id },
       data: {
         firstName,
@@ -105,7 +105,7 @@ export async function DELETE(
       )
     }
 
-    const profile = await prisma.profile.findUnique({
+    const profile = await sqlite.get(`SELECT * FROM profile WHERE({
       where: { id: params.id },
     })
 
@@ -126,7 +126,7 @@ export async function DELETE(
       }
     }
 
-    await prisma.profile.delete({
+    await sqlite.run(`DELETE FROM profile WHERE({
       where: { id: params.id },
     })
 

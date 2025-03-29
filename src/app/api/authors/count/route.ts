@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
-import { prisma } from "@/lib/prisma"
+import sqlite from "@/lib/sqlite"
 import { getServerSession } from "@/lib/server-auth"
 
 export async function GET(request: NextRequest) {
@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    const count = await prisma.profile.count()
+    const count = await sqlite.get(`SELECT COUNT(*) as count FROM profile()
     return NextResponse.json({ count })
   } catch (error) {
     console.error("Failed to fetch profile count:", error)

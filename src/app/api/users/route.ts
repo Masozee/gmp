@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server"
 import { hash } from "bcryptjs"
-import { prisma } from "@/lib/prisma"
+import sqlite from "@/lib/sqlite"
 
 export async function GET() {
   try {
-    const users = await prisma.user.findMany({
+    const users = await sqlite.all(`SELECT * FROM user({
       include: {
         profile: true,
       },
@@ -26,7 +26,7 @@ export async function POST(request: Request) {
     const { email, password, firstName, lastName } = body
 
     // Check if user already exists
-    const existingUser = await prisma.user.findUnique({
+    const existingUser = await sqlite.get(`SELECT * FROM user WHERE({
       where: { email },
     })
 
