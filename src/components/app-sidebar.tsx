@@ -2,14 +2,31 @@
 
 import * as React from "react"
 import {
+  ActivitySquare,
+  AlignEndHorizontal,
+  Archive,
+  ArchiveX,
   BookOpen,
-  BookOpenText,
   Bot,
+  Boxes,
+  Building,
+  Calendar,
   CalendarDays,
+  CircleUser,
+  ClipboardCheck,
   Command,
+  Construction,
+  Edit,
+  FilePenLine,
+  FileText,
   Frame,
+  Home,
   LifeBuoy,
+  LineChart,
+  Mail,
   Map,
+  MessageSquare,
+  Newspaper,
   PieChart,
   Send,
   Settings2,
@@ -18,11 +35,15 @@ import {
   Briefcase,
   BarChart,
 } from "lucide-react"
+import Image from "next/image"
 
+import { cx } from "class-variance-authority"
 import { NavMain } from "@/components/nav-main"
 import { NavProjects } from "@/components/nav-projects"
 import { NavSecondary } from "@/components/nav-secondary"
 import { NavUser } from "@/components/nav-user"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { Separator } from "@/components/ui/separator"
 import {
   Sidebar,
   SidebarContent,
@@ -43,20 +64,49 @@ const data = {
     {
       title: "Dashboard",
       url: "/dashboard",
-      icon: PieChart,
+      icon: Home,
+      isActive: false,
+    },
+    {
+      title: "Publications",
+      url: "/publications",
+      icon: Newspaper,
       isActive: true,
       items: [
         {
-          title: "Overview",
-          url: "/dashboard",
+          title: "Browse Publications",
+          url: "/publications",
+        },
+        {
+          title: "Create Publication",
+          url: "/create-publication",
+        },
+        {
+          title: "Categories",
+          url: "/publications/categories",
         },
         {
           title: "Analytics",
-          url: "/dashboard/analytics",
+          url: "/publications/analytics",
+        },
+      ],
+    },
+    {
+      title: "Mail",
+      url: "/dashboard/mail",
+      icon: Mail,
+      items: [
+        {
+          title: "Overview",
+          url: "/dashboard/mail",
         },
         {
-          title: "Reports",
-          url: "/dashboard/reports",
+          title: "List",
+          url: "/dashboard/mail/list",
+        },
+        {
+          title: "Categories",
+          url: "/dashboard/mail/categories",
         },
       ],
     },
@@ -89,27 +139,16 @@ const data = {
           url: "/dashboard/profiles",
         },
         {
+          title: "User Profiles",
+          url: "/dashboard/users/profiles",
+        },
+        {
           title: "Roles",
           url: "/dashboard/users/roles",
         },
         {
           title: "Permissions",
           url: "/dashboard/users/permissions",
-        },
-      ],
-    },
-    {
-      title: "Publications",
-      url: "#",
-      icon: BookOpenText,
-      items: [
-        {
-          title: "List",
-          url: "/dashboard/publications",
-        },
-        {
-          title: "Categories",
-          url: "/dashboard/publications/categories",
         },
       ],
     },
@@ -199,11 +238,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <SidebarMenuButton size="lg" asChild>
               <a href="/dashboard">
                 <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-accent text-sidebar-accent-foreground">
-                  <Command className="size-4" />
+                  <Image src="/logos/logo.png" alt="GMP Logo" width={32} height={32} />
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">AI Agent Dashboard</span>
-                  <span className="truncate text-xs">Enterprise</span>
+                  <span className="truncate font-semibold">Generasi Melek Politik</span>
+                  <span className="truncate text-xs">Dashboard</span>
                 </div>
               </a>
             </SidebarMenuButton>

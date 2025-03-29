@@ -17,6 +17,7 @@ model User {
   password  String?
   role      UserRole   @default(USER)
   errorLogs ErrorLog[]
+  profile   Profile?
 
   @@map("users")
 }
@@ -33,8 +34,11 @@ model Profile {
   category          UserCategory
   createdAt         DateTime            @default(now())
   updatedAt         DateTime            @updatedAt
+  userId            String?             @unique
+  user              User?               @relation(fields: [userId], references: [id])
   PublicationAuthor PublicationAuthor[]
 
+  @@index([userId])
   @@map("profiles")
 }
 
@@ -374,6 +378,53 @@ model event_categories {
   events      Event[]
 }
 
+model MailCategory {
+  id          String   @id @default(cuid())
+  name        String
+  code        String   @unique
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  mails       Mail[]
+
+  @@map("mail_categories")
+}
+
+model Mail {
+  id              String       @id @default(cuid())
+  mailNumber      String       @unique
+  subject         String
+  description     String?
+  content         String?
+  type            MailType
+  status          MailStatus   @default(DRAFT)
+  date            DateTime
+  referenceNumber String?
+  sender          String?
+  recipient       String?
+  attachments     String?
+  categoryId      String
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+  category        MailCategory @relation(fields: [categoryId], references: [id])
+
+  @@index([categoryId])
+  @@index([type])
+  @@index([status])
+  @@index([date])
+  @@map("mails")
+}
+
+model MailCounter {
+  id        String   @id @default(cuid())
+  year      Int      @unique
+  counter   Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("mail_counters")
+}
+
 enum UserRole {
   USER
   ADMIN
@@ -409,4 +460,15 @@ enum EventStatus {
   ONGOING
   COMPLETED
   CANCELLED
+}
+
+enum MailType {
+  INCOMING
+  OUTGOING
+}
+
+enum MailStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
 }

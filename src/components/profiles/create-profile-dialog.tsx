@@ -38,6 +38,41 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5MB
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"]
 
+// Create a custom file validator that works in both server and client environments
+const fileValidator = z.any()
+  .optional()
+  .refine(
+    (files) => {
+      // Skip validation during SSR
+      if (typeof window === 'undefined') return true
+      // Check if files is a FileList or similar object with length property
+      return !files || !('length' in files) || files.length === 0 || files.length === 1
+    }, 
+    "Please upload a single file"
+  )
+  .refine(
+    (files) => {
+      // Skip validation during SSR
+      if (typeof window === 'undefined') return true
+      // Check if files is a FileList or similar object with items
+      if (!files || !('length' in files) || files.length === 0) return true
+      // Now we can safely access files[0]
+      return files[0].size <= MAX_FILE_SIZE
+    },
+    "Max file size is 5MB"
+  )
+  .refine(
+    (files) => {
+      // Skip validation during SSR
+      if (typeof window === 'undefined') return true
+      // Check if files is a FileList or similar object with items
+      if (!files || !('length' in files) || files.length === 0) return true
+      // Now we can safely access files[0]
+      return ACCEPTED_IMAGE_TYPES.includes(files[0].type)
+    },
+    "Only .jpg, .jpeg, .png and .webp formats are supported"
+  )
+
 const formSchema = z.object({
   firstName: z
     .string()
@@ -69,21 +104,7 @@ const formSchema = z.object({
   category: z.enum(["AUTHOR", "BOARD", "STAFF", "RESEARCHER"], {
     required_error: "Please select a category",
   }),
-  photo: z
-    .instanceof(FileList)
-    .optional()
-    .refine((files) => !files || files.length === 0 || files.length === 1, "Please upload a single file")
-    .refine(
-      (files) => !files || files.length === 0 || files[0].size <= MAX_FILE_SIZE,
-      "Max file size is 5MB"
-    )
-    .refine(
-      (files) =>
-        !files ||
-        files.length === 0 ||
-        ACCEPTED_IMAGE_TYPES.includes(files[0].type),
-      "Only .jpg, .jpeg, .png and .webp formats are supported"
-    ),
+  photo: fileValidator,
 })
 
 interface CreateProfileDialogProps {

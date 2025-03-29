@@ -1,6 +1,7 @@
 "use client"
 
 import Link from "next/link"
+import Image from "next/image"
 import { usePathname } from "next/navigation"
 import { Moon, Sun, Search } from "lucide-react"
 
@@ -20,8 +21,16 @@ export function SiteHeader() {
     <header className="sticky top-0 z-50 w-full border-b bg-background">
       <div className="flex h-14 items-center gap-4 px-6">
         <SidebarTrigger className="-ml-2 h-9 w-9" />
-        <div className="flex items-center gap-2 font-medium">
-          <Link href="/dashboard" className="text-lg font-semibold">Generasi Melek Politik</Link>
+        <div className="flex items-center gap-2">
+          <Link href="/dashboard" className="flex items-center">
+            <Image
+              src="/logos/Logo-name-stack.png"
+              alt="Generasi Melek Politik"
+              width={140}
+              height={32}
+              className="h-8 w-auto"
+            />
+          </Link>
           {paths.length > 0 && (
             <>
               <span className="text-muted-foreground">/</span>

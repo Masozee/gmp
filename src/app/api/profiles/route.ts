@@ -29,7 +29,7 @@ export async function GET(request: NextRequest) {
           { email: { contains: search, mode: "insensitive" as Prisma.QueryMode } },
         ],
       }),
-      ...(categoryParam && categoryParam !== "all" && {
+      ...(categoryParam && {
         category: categoryParam as UserCategory,
       }),
     }
@@ -39,11 +39,17 @@ export async function GET(request: NextRequest) {
       include: {
         user: {
           select: {
+            id: true,
             email: true,
-          },
-        },
+            name: true,
+            image: true,
+            role: true,
+          }
+        }
       },
-      orderBy: { createdAt: "desc" },
+      orderBy: {
+        firstName: "asc",
+      },
     })
 
     return NextResponse.json(profiles)

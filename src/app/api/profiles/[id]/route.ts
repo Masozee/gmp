@@ -1,17 +1,64 @@
 import { NextRequest, NextResponse } from "next/server"
-import { getServerSession } from "next-auth"
-import { authOptions } from "@/lib/auth"
+import { getServerSession } from "@/lib/server-auth"
 import { prisma } from "@/lib/prisma"
 import { writeFile, unlink } from "fs/promises"
 import { join } from "path"
 import { cwd } from "process"
+
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const session = await getServerSession()
+
+    if (!session?.user) {
+      return NextResponse.json(
+        { error: "Unauthorized" },
+        { status: 401 }
+      )
+    }
+
+    const profileId = params.id
+
+    const profile = await prisma.profile.findUnique({
+      where: { id: profileId },
+      include: {
+        user: {
+          select: {
+            id: true,
+            email: true,
+            name: true,
+            image: true,
+            role: true,
+          }
+        }
+      }
+    })
+
+    if (!profile) {
+      return NextResponse.json(
+        { error: "Profile not found" },
+        { status: 404 }
+      )
+    }
+
+    return NextResponse.json(profile)
+  } catch (error) {
+    console.error("Failed to fetch profile:", error)
+    return NextResponse.json(
+      { error: "Failed to fetch profile" },
+      { status: 500 }
+    )
+  }
+}
 
 export async function PATCH(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
-    const session = await getServerSession(authOptions)
+    const session = await getServerSession()
 
     if (!session?.user) {
       return NextResponse.json(
@@ -96,7 +143,7 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
-    const session = await getServerSession(authOptions)
+    const session = await getServerSession()
 
     if (!session?.user) {
       return NextResponse.json(
