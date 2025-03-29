@@ -1,388 +1,285 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
-import Image from "next/image"
+import { useEffect, useState } from "react"
+import Link from "next/link"
+import { useParams, useRouter } from "next/navigation"
+import { CalendarDays, Pencil, ArrowLeft, AlertCircle, Loader2, User } from "lucide-react"
 import { format } from "date-fns"
-import { ArrowLeft, Calendar, Clock, Globe, MapPin, Pencil, Users, Building, ExternalLink } from "lucide-react"
-import { toast } from "sonner"
+import Image from "next/image"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
+import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
-import { type Event, type EventCategory } from "@/types/events"
+interface Event {
+  id: string;
+  title: string;
+  slug: string;
+  description: string;
+  content: string;
+  status: string;
+  startDate: string;
+  endDate: string;
+  location: string;
+  venue?: string;
+  posterImage?: string;
+  posterCredit?: string;
+  published: boolean;
+  categoryId: string;
+  createdAt: string;
+  updatedAt: string;
+  category: {
+    id: string;
+    name: string;
+    slug: string;
+  };
+  tags: {
+    tag: {
+      id: string;
+      name: string;
+      slug: string;
+    };
+  }[];
+  speakers: {
+    id: string;
+    order: number;
+    speaker: {
+      id: string;
+      firstName: string;
+      lastName: string;
+      organization?: string;
+      position?: string;
+      photoUrl?: string;
+    };
+  }[];
+}
 
-export default function EventDetailPage({ params }: { params: { id: string } }) {
-  const router = useRouter()
-  const [event, setEvent] = useState<Event | null>(null)
-  const [category, setCategory] = useState<EventCategory | null>(null)
-  const [loading, setLoading] = useState(true)
-  
-  // Access params directly since we're in a client component
-  const id = params.id
+export default function EventDetailPage() {
+  const params = useParams<{ id: string }>();
+  const [event, setEvent] = useState<Event | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchEvent = async () => {
       try {
-        setLoading(true)
-        const response = await fetch(`/api/events/${id}`)
+        setIsLoading(true);
+        const response = await fetch(`/api/events/${params.id}`);
+        
         if (!response.ok) {
-          if (response.status === 404) {
-            toast.error("Event not found")
-            router.push("/dashboard/events")
-            return
-          }
-          throw new Error("Failed to fetch event")
+          throw new Error(`Failed to fetch event: ${response.statusText}`);
         }
-        const data = await response.json()
-        setEvent(data)
         
-        // Fetch category details
-        if (data.categoryId) {
-          const categoryResponse = await fetch(`/api/event-categories/${data.categoryId}`)
-          if (categoryResponse.ok) {
-            const categoryData = await categoryResponse.json()
-            setCategory(categoryData)
-          }
-        }
-      } catch (error) {
-        console.error("Error fetching event:", error)
-        toast.error("Failed to load event", {
-          description: "Please try again later.",
-        })
+        const data = await response.json();
+        setEvent(data);
+      } catch (err) {
+        console.error("Error fetching event:", err);
+        setError(err instanceof Error ? err.message : "Failed to load event");
       } finally {
-        setLoading(false)
+        setIsLoading(false);
       }
+    };
+
+    if (params.id) {
+      fetchEvent();
     }
-
-    fetchEvent()
-  }, [id, router])
-
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case "UPCOMING":
-        return (
-          <Badge className="bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300">
-            Upcoming
-          </Badge>
-        )
-      case "ONGOING":
-        return (
-          <Badge className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300">
-            Ongoing
-          </Badge>
-        )
-      case "COMPLETED":
-        return (
-          <Badge className="bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300">
-            Completed
-          </Badge>
-        )
-      case "CANCELLED":
-        return (
-          <Badge className="bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300">
-            Cancelled
-          </Badge>
-        )
-      default:
-        return <Badge>{status}</Badge>
-    }
-  }
-
-  const formatDate = (date: string | Date) => {
-    return format(new Date(date), "MMMM d, yyyy • h:mm a")
-  }
-
-  const renderLoading = () => (
-    <div className="flex flex-col gap-8">
-      <div className="flex items-center gap-4">
-        <Skeleton className="h-10 w-10 rounded-full" />
-        <div>
-          <Skeleton className="h-6 w-40 mb-2" />
-          <Skeleton className="h-4 w-20" />
-        </div>
-      </div>
-      
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 space-y-6">
-          <Card>
-            <CardHeader>
-              <Skeleton className="h-8 w-40 mb-2" />
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <Skeleton className="h-40 w-full" />
-              <Skeleton className="h-4 w-full" />
-              <Skeleton className="h-4 w-full" />
-              <Skeleton className="h-4 w-2/3" />
-            </CardContent>
-          </Card>
-        </div>
-        
-        <div className="space-y-6">
-          <Card>
-            <CardHeader>
-              <Skeleton className="h-6 w-32" />
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <Skeleton className="h-4 w-full" />
-              <Skeleton className="h-4 w-full" />
-              <Skeleton className="h-4 w-full" />
-            </CardContent>
-          </Card>
-        </div>
-      </div>
-    </div>
-  )
-
-  if (loading) {
-    return (
-      <div className="flex flex-col gap-6">
-        <div className="flex items-center gap-4">
-          <Button variant="outline" size="icon" disabled>
-            <ArrowLeft className="h-4 w-4" />
-          </Button>
-          <div className="space-y-1">
-            <h1 className="text-3xl font-bold tracking-tight">Event Details</h1>
-            <p className="text-muted-foreground">Loading event information...</p>
-          </div>
-        </div>
-        
-        {renderLoading()}
-      </div>
-    )
-  }
-
-  if (!event) {
-    return (
-      <div className="flex flex-col items-center justify-center p-8">
-        <h1 className="text-2xl font-bold mb-4">Event Not Found</h1>
-        <p className="text-muted-foreground mb-6">The event you are looking for does not exist or has been removed.</p>
-        <Button onClick={() => router.push("/dashboard/events")}>
-          Return to Events
-        </Button>
-      </div>
-    )
-  }
+  }, [params.id]);
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => router.push("/dashboard/events")}
-          >
-            <ArrowLeft className="h-4 w-4" />
-          </Button>
-          <div className="space-y-1">
-            <h1 className="text-3xl font-bold tracking-tight">{event.title}</h1>
-            <p className="text-muted-foreground">
-              View and manage event details
-            </p>
+    <div className="container mx-auto py-6 space-y-6">
+      {isLoading ? (
+        <div className="flex justify-center items-center min-h-[400px]">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </div>
+      ) : error ? (
+        <div className="flex justify-center items-center min-h-[400px]">
+          <div className="text-center">
+            <AlertCircle className="h-8 w-8 text-destructive mx-auto mb-2" />
+            <h3 className="font-semibold text-lg">Error loading event</h3>
+            <p className="text-muted-foreground">{error}</p>
           </div>
         </div>
-        <Button onClick={() => router.push(`/dashboard/events/${id}/edit`)}>
-          <Pencil className="mr-2 h-4 w-4" />
-          Edit Event
-        </Button>
-      </div>
+      ) : event ? (
+        <>
+          <div className="flex justify-between items-start">
+            <div>
+              <h1 className="text-3xl font-bold tracking-tight">{event.title}</h1>
+              <div className="flex items-center gap-2 mt-2">
+                <Badge variant={event.status === "UPCOMING" ? "default" : event.status === "ONGOING" ? "outline" : "secondary"}>
+                  {event.status}
+                </Badge>
+                <span className="text-muted-foreground">•</span>
+                <span className="text-muted-foreground">{event.category.name}</span>
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <Button variant="outline" asChild>
+                <Link href={`/dashboard/events/${event.id}/edit`}>
+                  <Pencil className="h-4 w-4 mr-2" />
+                  Edit
+                </Link>
+              </Button>
+              <Button variant="outline" asChild>
+                <Link href="/dashboard/events">
+                  <ArrowLeft className="h-4 w-4 mr-2" />
+                  Back
+                </Link>
+              </Button>
+            </div>
+          </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Main content - left side */}
-        <div className="lg:col-span-2 space-y-6">
-          <Tabs defaultValue="details">
-            <TabsList>
-              <TabsTrigger value="details">Details</TabsTrigger>
-              <TabsTrigger value="content">Full Content</TabsTrigger>
-            </TabsList>
-            
-            <TabsContent value="details" className="mt-6 space-y-6">
-              {/* Event poster/image */}
-              <Card>
-                <CardContent className="p-0 overflow-hidden">
-                  <div className="relative aspect-video w-full">
-                    {event.posterUrl ? (
-                      <>
-                        <Image
-                          src={event.posterUrl}
-                          alt={event.title}
-                          className="object-cover"
-                          fill
-                        />
-                        {event.posterCredit && (
-                          <div className="absolute right-2 bottom-2 bg-black/60 text-white text-xs px-2 py-1 rounded">
-                            {event.posterCredit}
-                          </div>
-                        )}
-                      </>
-                    ) : (
-                      <div className="flex items-center justify-center h-full bg-muted">
-                        <Calendar className="h-24 w-24 text-muted-foreground" />
-                      </div>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
+          <Separator />
 
-              {/* Event description */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="md:col-span-2 space-y-6">
               <Card>
                 <CardHeader>
                   <CardTitle>Description</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="whitespace-pre-line">{event.description}</p>
+                  <p>{event.description}</p>
+                  {event.content && (
+                    <div className="mt-4 prose prose-sm max-w-none">
+                      {event.content}
+                    </div>
+                  )}
                 </CardContent>
               </Card>
-            </TabsContent>
-            
-            <TabsContent value="content" className="mt-6 space-y-6">
+
               <Card>
                 <CardHeader>
-                  <CardTitle>Full Content</CardTitle>
+                  <CardTitle>Schedule</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  {event.content ? (
-                    <div className="prose prose-sm max-w-none">
-                      <div className="whitespace-pre-line">{event.content}</div>
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-2">
+                      <CalendarDays className="h-5 w-5 text-muted-foreground" />
+                      <div>
+                        <p className="font-medium">
+                          {new Date(event.startDate).toLocaleDateString()} - {new Date(event.endDate).toLocaleDateString()}
+                        </p>
+                        <p className="text-sm text-muted-foreground">
+                          {new Date(event.startDate).toLocaleTimeString()} - {new Date(event.endDate).toLocaleTimeString()}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Speakers</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {event.speakers.length > 0 ? (
+                    <div className="space-y-4">
+                      {event.speakers.map((speakerItem) => (
+                        <div key={speakerItem.id} className="flex items-center gap-3">
+                          <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center overflow-hidden">
+                            {speakerItem.speaker.photoUrl ? (
+                              <img 
+                                src={speakerItem.speaker.photoUrl} 
+                                alt={`${speakerItem.speaker.firstName} ${speakerItem.speaker.lastName}`}
+                                className="h-full w-full object-cover"
+                              />
+                            ) : (
+                              <User className="h-5 w-5 text-muted-foreground" />
+                            )}
+                          </div>
+                          <div>
+                            <p className="font-medium">{speakerItem.speaker.firstName} {speakerItem.speaker.lastName}</p>
+                            {(speakerItem.speaker.position || speakerItem.speaker.organization) && (
+                              <p className="text-sm text-muted-foreground">
+                                {speakerItem.speaker.position}
+                                {speakerItem.speaker.position && speakerItem.speaker.organization && " at "}
+                                {speakerItem.speaker.organization}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      ))}
                     </div>
                   ) : (
-                    <p className="text-muted-foreground">No detailed content available for this event.</p>
+                    <p className="text-muted-foreground">No speakers assigned to this event.</p>
                   )}
                 </CardContent>
               </Card>
-            </TabsContent>
-          </Tabs>
-        </div>
+            </div>
 
-        {/* Sidebar - right side */}
-        <div className="space-y-6">
-          {/* Event status */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Status</CardTitle>
-              <CardDescription>Current status of the event</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="flex justify-between items-center">
-                {getStatusBadge(event.status)}
-                {event.published ? (
-                  <Badge variant="outline" className="bg-green-50 text-green-700">
-                    Published
-                  </Badge>
-                ) : (
-                  <Badge variant="outline" className="bg-yellow-50 text-yellow-700">
-                    Draft
-                  </Badge>
-                )}
-              </div>
-              
-              {category && (
-                <div className="mt-4">
-                  <h4 className="text-sm font-medium mb-2">Category</h4>
-                  <Badge variant="outline">
-                    {category.name}
-                  </Badge>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-
-          {/* Event details */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Event Information</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <h4 className="text-sm font-medium mb-1">Date & Time</h4>
-                <div className="flex items-start gap-2">
-                  <Clock className="h-4 w-4 mt-0.5 text-muted-foreground" />
+            <div className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Event Information</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
                   <div>
-                    <p className="text-sm">
-                      {event.startDate && formatDate(event.startDate)}
-                    </p>
-                    <p className="text-sm text-muted-foreground">to</p>
-                    <p className="text-sm">
-                      {event.endDate && formatDate(event.endDate)}
-                    </p>
+                    <h4 className="text-sm font-medium text-muted-foreground mb-1">Location</h4>
+                    <p>{event.location}</p>
+                    {event.venue && <p className="text-sm text-muted-foreground">{event.venue}</p>}
                   </div>
-                </div>
-              </div>
 
-              {(event.location || event.venue) && (
-                <div>
-                  <h4 className="text-sm font-medium mb-1">Location</h4>
-                  {event.venue && (
-                    <div className="flex items-start gap-2 mb-1">
-                      <Building className="h-4 w-4 mt-0.5 text-muted-foreground" />
-                      <p className="text-sm">{event.venue}</p>
-                    </div>
-                  )}
-                  {event.location && (
-                    <div className="flex items-start gap-2">
-                      <MapPin className="h-4 w-4 mt-0.5 text-muted-foreground" />
-                      <p className="text-sm">{event.location}</p>
-                    </div>
-                  )}
-                </div>
-              )}
-            </CardContent>
-          </Card>
-
-          {/* Speakers section */}
-          {event.speakers && event.speakers.length > 0 && (
-            <Card>
-              <CardHeader>
-                <CardTitle>Speakers</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {event.speakers
-                    .sort((a, b) => (a.order || 0) - (b.order || 0))
-                    .map((eventSpeaker) => (
-                      <div key={eventSpeaker.id} className="flex items-start gap-3 p-3 border rounded-md">
-                        {eventSpeaker.speaker?.photoUrl ? (
-                          <div className="relative w-12 h-12 rounded-full overflow-hidden">
-                            <Image
-                              src={eventSpeaker.speaker.photoUrl}
-                              alt={`${eventSpeaker.speaker.firstName} ${eventSpeaker.speaker.lastName}`}
-                              fill
-                              className="object-cover"
-                            />
-                          </div>
-                        ) : (
-                          <div className="flex items-center justify-center w-12 h-12 rounded-full bg-muted">
-                            <Users className="h-6 w-6 text-muted-foreground" />
-                          </div>
-                        )}
-                        <div>
-                          <p className="font-medium">
-                            {eventSpeaker.speaker?.firstName} {eventSpeaker.speaker?.lastName}
-                          </p>
-                          {eventSpeaker.speaker?.organization && (
-                            <p className="text-sm text-muted-foreground">
-                              {eventSpeaker.speaker.organization}
-                            </p>
-                          )}
-                          {eventSpeaker.role && (
-                            <p className="text-sm mt-1">
-                              <span className="font-medium">Role:</span> {eventSpeaker.role}
-                            </p>
-                          )}
-                        </div>
+                  {event.tags.length > 0 && (
+                    <div>
+                      <h4 className="text-sm font-medium text-muted-foreground mb-1">Tags</h4>
+                      <div className="flex flex-wrap gap-1">
+                        {event.tags.map((tagItem) => (
+                          <Badge key={tagItem.tag.id} variant="outline">
+                            {tagItem.tag.name}
+                          </Badge>
+                        ))}
                       </div>
-                    ))}
-                </div>
-              </CardContent>
-            </Card>
-          )}
+                    </div>
+                  )}
+
+                  <div>
+                    <h4 className="text-sm font-medium text-muted-foreground mb-1">Created</h4>
+                    <p>{new Date(event.createdAt).toLocaleDateString()}</p>
+                  </div>
+
+                  <div>
+                    <h4 className="text-sm font-medium text-muted-foreground mb-1">Last Updated</h4>
+                    <p>{new Date(event.updatedAt).toLocaleDateString()}</p>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {event.posterImage && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Event Poster</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="aspect-video relative overflow-hidden rounded-md">
+                      <Image
+                        src={event.posterImage}
+                        alt={event.title}
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                    {event.posterCredit && (
+                      <p className="text-xs text-muted-foreground mt-2">
+                        Credit: {event.posterCredit}
+                      </p>
+                    )}
+                  </CardContent>
+                </Card>
+              )}
+            </div>
+          </div>
+        </>
+      ) : (
+        <div className="flex justify-center items-center min-h-[400px]">
+          <div className="text-center">
+            <h3 className="font-semibold text-lg">Event not found</h3>
+            <p className="text-muted-foreground">The event you're looking for doesn't exist or has been removed.</p>
+          </div>
         </div>
-      </div>
+      )}
     </div>
-  )
+  );
 } 

@@ -2,25 +2,48 @@
 
 import * as React from "react"
 import {
+  ActivitySquare,
+  AlignEndHorizontal,
+  Archive,
+  ArchiveX,
   BookOpen,
-  BookOpenText,
   Bot,
+  Boxes,
+  Building,
+  Calendar,
   CalendarDays,
+  CircleUser,
+  ClipboardCheck,
   Command,
+  Construction,
+  Edit,
+  FilePenLine,
+  FileText,
   Frame,
+  Home,
   LifeBuoy,
+  LineChart,
+  Mail,
   Map,
+  MessageSquare,
+  Newspaper,
   PieChart,
   Send,
   Settings2,
-  Terminal,
+  SquareTerminal,
   Users,
+  Briefcase,
+  BarChart,
 } from "lucide-react"
+import Image from "next/image"
 
+import { cx } from "class-variance-authority"
 import { NavMain } from "@/components/nav-main"
 import { NavProjects } from "@/components/nav-projects"
 import { NavSecondary } from "@/components/nav-secondary"
 import { NavUser } from "@/components/nav-user"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { Separator } from "@/components/ui/separator"
 import {
   Sidebar,
   SidebarContent,
@@ -39,22 +62,70 @@ const data = {
   },
   navMain: [
     {
-      title: "Playground",
-      url: "#",
-      icon: Terminal,
+      title: "Dashboard",
+      url: "/dashboard",
+      icon: Home,
+      isActive: false,
+    },
+    {
+      title: "Publications",
+      url: "/publications",
+      icon: Newspaper,
       isActive: true,
       items: [
         {
-          title: "History",
-          url: "#",
+          title: "Browse Publications",
+          url: "/publications",
         },
         {
-          title: "Starred",
-          url: "#",
+          title: "Create Publication",
+          url: "/create-publication",
         },
         {
-          title: "Settings",
-          url: "#",
+          title: "Categories",
+          url: "/publications/categories",
+        },
+        {
+          title: "Analytics",
+          url: "/publications/analytics",
+        },
+      ],
+    },
+    {
+      title: "Mail",
+      url: "/dashboard/mail",
+      icon: Mail,
+      items: [
+        {
+          title: "Overview",
+          url: "/dashboard/mail",
+        },
+        {
+          title: "List",
+          url: "/dashboard/mail/list",
+        },
+        {
+          title: "Categories",
+          url: "/dashboard/mail/categories",
+        },
+      ],
+    },
+    {
+      title: "Projects",
+      url: "/dashboard/projects",
+      icon: Briefcase,
+      items: [
+        {
+          title: "All Projects",
+          url: "/dashboard/projects",
+        },
+        {
+          title: "Create New",
+          url: "/dashboard/projects/new",
+        },
+        {
+          title: "Categories",
+          url: "/dashboard/projects/categories",
         },
       ],
     },
@@ -68,6 +139,10 @@ const data = {
           url: "/dashboard/profiles",
         },
         {
+          title: "User Profiles",
+          url: "/dashboard/users/profiles",
+        },
+        {
           title: "Roles",
           url: "/dashboard/users/roles",
         },
@@ -78,23 +153,8 @@ const data = {
       ],
     },
     {
-      title: "Publications",
-      url: "#",
-      icon: BookOpenText,
-      items: [
-        {
-          title: "List",
-          url: "/dashboard/publications",
-        },
-        {
-          title: "Categories",
-          url: "/dashboard/publications/categories",
-        },
-      ],
-    },
-    {
       title: "Events",
-      url: "#",
+      url: "/dashboard/events",
       icon: CalendarDays,
       items: [
         {
@@ -102,13 +162,21 @@ const data = {
           url: "/dashboard/events",
         },
         {
-          title: "Add New",
+          title: "Create New",
           url: "/dashboard/events/new",
         },
         {
-          title: "Categories",
-          url: "/dashboard/event-categories",
-        }
+          title: "Calendar View",
+          url: "/dashboard/events?view=calendar",
+        },
+        {
+          title: "Upcoming",
+          url: "/dashboard/events?status=UPCOMING",
+        },
+        {
+          title: "Completed",
+          url: "/dashboard/events?status=COMPLETED",
+        },
       ],
     },
     {
@@ -149,6 +217,11 @@ const data = {
   ],
   projects: [
     {
+      name: "Project Management",
+      url: "/dashboard/projects",
+      icon: Briefcase,
+    },
+    {
       name: "Geo Tagging",
       url: "#",
       icon: Map,
@@ -159,17 +232,17 @@ const data = {
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar variant="inset" {...props}>
-      <SidebarHeader>
+      <SidebarHeader className="border-b border-sidebar-border">
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
-              <a href="#">
-                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                  <Command className="size-4" />
+              <a href="/dashboard">
+                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-accent text-sidebar-accent-foreground">
+                  <Image src="/logos/logo.png" alt="GMP Logo" width={32} height={32} />
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">Acme Inc</span>
-                  <span className="truncate text-xs">Enterprise</span>
+                  <span className="truncate font-semibold">Generasi Melek Politik</span>
+                  <span className="truncate text-xs">Dashboard</span>
                 </div>
               </a>
             </SidebarMenuButton>
@@ -181,7 +254,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavProjects projects={data.projects} />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
-      <SidebarFooter>
+      <SidebarFooter className="border-t border-sidebar-border">
         <NavUser />
       </SidebarFooter>
     </Sidebar>

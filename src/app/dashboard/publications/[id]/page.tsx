@@ -104,7 +104,7 @@ export default function PublicationDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-screen p-6">
+      <div className="flex items-center justify-center h-screen">
         <p className="text-muted-foreground">Loading publication...</p>
       </div>
     )
@@ -112,7 +112,7 @@ export default function PublicationDetailPage() {
 
   if (error || !publication) {
     return (
-      <div className="flex flex-col items-center justify-center h-screen gap-4 p-6">
+      <div className="flex flex-col items-center justify-center h-screen gap-4">
         <p className="text-destructive">{error || "Publication not found"}</p>
         <Button variant="outline" onClick={() => router.push("/dashboard/publications")}>
           <ArrowLeft className="mr-2 h-4 w-4" />
@@ -123,7 +123,7 @@ export default function PublicationDetailPage() {
   }
 
   return (
-    <div className="flex flex-col gap-6 p-6">
+    <div className="flex flex-col gap-8 p-8">
       <div className="flex items-center justify-between">
         <Button
           variant="outline"
