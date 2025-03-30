@@ -141,34 +141,26 @@ export async function GET(request: NextRequest) {
     
     const events = sqlite.all<EventRecord>(eventsQuery, [...params, validLimit, offset]);
 
-    // Prepare statements for related data to improve performance
-    const speakersStmt = sqlite.prepareStatement(`
-      SELECT 
-        s.id, s.firstName, s.lastName, s.organization, s.photoUrl,
-        es.order, es.role
-      FROM event_speakers es
-      JOIN speakers s ON es.speakerId = s.id
-      WHERE es.eventId = ?
-      ORDER BY es.order ASC
-    `);
-    
-    const tagsStmt = sqlite.prepareStatement(`
-      SELECT t.id, t.name, t.slug
-      FROM tags_on_events te
-      JOIN tags t ON te.tagId = t.id
-      WHERE te.eventId = ?
-    `);
+    // Return empty results if no events found
+    if (events.length === 0) {
+      return NextResponse.json({
+        events: [],
+        pagination: {
+          total: 0,
+          page,
+          limit: validLimit,
+          totalPages: 0,
+        },
+      });
+    }
 
-    // Fetch related data for each event
+    // Using simple queries instead of prepared statements
+    const eventIds = events.map(e => `'${e.id}'`).join(',');
+
+    // Process the events to include relations
     const eventsWithRelations = events.map((event) => {
-      // Get speakers for this event using better-sqlite3
-      const speakers = speakersStmt.all(event.id) as EventSpeaker[];
-      
-      // Get tags for this event using better-sqlite3
-      const tags = tagsStmt.all(event.id) as EventTag[];
-      
-      // Map to the expected format
-      return {
+      // Map to the expected format for basic info
+      const eventWithRelations: EventWithRelations = {
         id: event.id,
         title: event.title,
         slug: event.slug,
@@ -189,10 +181,53 @@ export async function GET(request: NextRequest) {
           id: event.category_id,
           name: event.category_name
         },
-        speakers,
-        tags
-      } as EventWithRelations;
+        speakers: [],
+        tags: []
+      };
+      
+      return eventWithRelations;
     });
+
+    // For each event, fetch speakers and tags separately
+    for (const event of eventsWithRelations) {
+      try {
+        // Get speakers for this event
+        const speakersQuery = `
+          SELECT 
+            s.id, s.firstName, s.lastName, s.organization, s.photoUrl, 
+            es.displayOrder as orderNum, es.role
+          FROM event_speakers es
+          JOIN speakers s ON es.speakerId = s.id
+          WHERE es.eventId = ?
+          ORDER BY es.displayOrder ASC
+        `;
+        
+        const speakers = sqlite.all(speakersQuery, [event.id]).map(s => ({
+          id: s.id,
+          firstName: s.firstName,
+          lastName: s.lastName,
+          organization: s.organization,
+          photoUrl: s.photoUrl,
+          order: s.orderNum,
+          role: s.role
+        }));
+        
+        event.speakers = speakers;
+        
+        // Get tags for this event
+        const tagsQuery = `
+          SELECT t.id, t.name, t.slug
+          FROM tags_on_events te
+          JOIN tags t ON te.tagId = t.id
+          WHERE te.eventId = ?
+        `;
+        
+        event.tags = sqlite.all(tagsQuery, [event.id]);
+      } catch (error) {
+        console.error(`Error fetching relations for event ${event.id}:`, error);
+        // Keep empty arrays for speakers and tags if there's an error
+      }
+    }
 
     return NextResponse.json({
       events: eventsWithRelations,
@@ -205,8 +240,36 @@ export async function GET(request: NextRequest) {
     });
   } catch (error) {
     console.error("Error fetching events:", error);
+    
+    // Get more detailed error information
+    const errorDetails = error instanceof Error 
+      ? { 
+          name: error.name,
+          message: error.message,
+          stack: error.stack 
+        } 
+      : String(error);
+    
+    console.error("Detailed error info:", errorDetails);
+    
+    // Try to get database table information to help diagnose the issue
+    try {
+      const tablesInfo = sqlite.all("SELECT name FROM sqlite_master WHERE type='table'");
+      console.log("Available tables:", tablesInfo);
+      
+      if (tablesInfo.some(t => t.name === 'events')) {
+        const eventsColumns = sqlite.all("PRAGMA table_info(events)");
+        console.log("Events table schema:", eventsColumns);
+      }
+    } catch (dbError) {
+      console.error("Error getting database information:", dbError);
+    }
+    
     return NextResponse.json(
-      { error: "Failed to fetch events" },
+      { 
+        error: "Failed to fetch events", 
+        details: error instanceof Error ? error.message : String(error)
+      },
       { status: 500 }
     );
   }

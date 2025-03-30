@@ -1,257 +1,233 @@
 import sqlite from './sqlite';
+import fs from 'fs';
+import path from 'path';
+
+// Flag to track initialization
+let isInitialized = false;
 
 /**
  * Initialize the database with performance optimizations and indices
  */
 export async function initDatabase(): Promise<void> {
-  console.log('Initializing database with performance optimizations...');
-  
-  const isServerless = process.env.VERCEL === '1';
-  const db = sqlite.getConnection();
-  
-  // Set up performance pragmas (skip some in serverless/memory DB)
-  const pragmas = [
-    // Enable foreign keys for data integrity
-    'PRAGMA foreign_keys = ON',
-  ];
-  
-  // Add file-based optimizations only when not in serverless environment
-  if (!isServerless) {
-    pragmas.push(
-      // Use Write-Ahead Logging for better concurrency
-      'PRAGMA journal_mode = WAL',
-      
-      // Reduce fsync calls for better write performance
-      'PRAGMA synchronous = NORMAL',
-      
-      // Increase cache size for better read performance (10MB)
-      'PRAGMA cache_size = 10000',
-      
-      // Store temp tables in memory for better performance
-      'PRAGMA temp_store = MEMORY',
-      
-      // Memory-mapped I/O for database file (up to 1GB)
-      'PRAGMA mmap_size = 1073741824',
-      
-      // Set page size to 4KB (default for most file systems)
-      'PRAGMA page_size = 4096'
-    );
-  }
-  
-  // Execute all pragmas
-  pragmas.forEach(pragma => {
-    console.log(`Executing: ${pragma}`);
-    db.pragma(pragma.replace('PRAGMA ', '').replace(' = ', '='));
-  });
-  
-  // In serverless environment, we need to create the tables
-  if (isServerless) {
-    await createTablesIfNeeded();
-  }
-  
-  // Create indices for frequently queried columns
-  const indices = [
-    // Events table indices
-    'CREATE INDEX IF NOT EXISTS idx_events_status ON events(status)',
-    'CREATE INDEX IF NOT EXISTS idx_events_category_id ON events(categoryId)',
-    'CREATE INDEX IF NOT EXISTS idx_events_start_date ON events(startDate)',
-    'CREATE INDEX IF NOT EXISTS idx_events_slug ON events(slug)',
-    
-    // Tags and categories indices
-    'CREATE INDEX IF NOT EXISTS idx_tags_name ON tags(name)',
-    'CREATE INDEX IF NOT EXISTS idx_tags_slug ON tags(slug)',
-    'CREATE INDEX IF NOT EXISTS idx_categories_slug ON categories(slug)',
-    
-    // Relational table indices
-    'CREATE INDEX IF NOT EXISTS idx_event_speakers_event_id ON event_speakers(eventId)',
-    'CREATE INDEX IF NOT EXISTS idx_event_speakers_speaker_id ON event_speakers(speakerId)',
-    'CREATE INDEX IF NOT EXISTS idx_tags_on_events_event_id ON tags_on_events(eventId)',
-    'CREATE INDEX IF NOT EXISTS idx_tags_on_events_tag_id ON tags_on_events(tagId)',
-    
-    // User and profile indices
-    'CREATE INDEX IF NOT EXISTS idx_users_email ON users(email)',
-    'CREATE INDEX IF NOT EXISTS idx_users_role ON users(role)',
-    'CREATE INDEX IF NOT EXISTS idx_profiles_user_id ON profiles(userId)',
-    'CREATE INDEX IF NOT EXISTS idx_profiles_email ON profiles(email)',
-    
-    // Error logs indices
-    'CREATE INDEX IF NOT EXISTS idx_error_logs_created_at ON error_logs(createdAt)',
-    'CREATE INDEX IF NOT EXISTS idx_error_logs_severity ON error_logs(severity)',
-  ];
-  
-  // Execute all index creation statements
-  try {
-    sqlite.transaction(() => {
-      indices.forEach(indexSQL => {
-        console.log(`Creating index: ${indexSQL}`);
-        db.exec(indexSQL);
-      });
-      
-      console.log('All indices created successfully');
-      return true;
-    });
-  } catch (error) {
-    console.error('Error creating indices:', error);
-  }
-  
-  console.log('Database initialization completed');
-}
-
-/**
- * Create database tables when needed (for serverless environment)
- */
-async function createTablesIfNeeded(): Promise<void> {
-  const isServerless = process.env.VERCEL === '1';
-  
-  if (!isServerless) {
-    // Skip table creation in non-serverless environment
+  // Skip if already initialized
+  if (isInitialized) {
     return;
   }
   
-  console.log('Creating database tables for serverless environment...');
+  console.log('Initializing SQLite database...');
   
-  const db = sqlite.getConnection();
-  
-  // Define the table creation SQL statements
-  const tableCreationStatements = [
-    // Users table
-    `CREATE TABLE IF NOT EXISTS users (
+  try {
+    // Create tables if they don't exist
+    createTables();
+    
+    // Create indices for better performance
+    createIndices();
+    
+    isInitialized = true;
+    console.log('Database initialization complete');
+  } catch (error) {
+    console.error('Database initialization failed:', error);
+    throw error;
+  }
+}
+
+function createTables() {
+  // Users table
+  sqlite.run(`
+    CREATE TABLE IF NOT EXISTS users (
       id TEXT PRIMARY KEY,
+      name TEXT,
       email TEXT UNIQUE NOT NULL,
-      name TEXT,
-      password TEXT,
-      role TEXT DEFAULT 'USER',
-      createdAt TEXT NOT NULL,
-      updatedAt TEXT NOT NULL
-    )`,
-    
-    // Profiles table
-    `CREATE TABLE IF NOT EXISTS profiles (
-      id TEXT PRIMARY KEY,
-      userId TEXT,
-      email TEXT,
-      name TEXT,
-      bio TEXT,
+      emailVerified DATETIME,
       image TEXT,
-      createdAt TEXT NOT NULL,
-      updatedAt TEXT NOT NULL,
-      FOREIGN KEY (userId) REFERENCES users(id)
-    )`,
-    
-    // Categories table
-    `CREATE TABLE IF NOT EXISTS categories (
+      role TEXT,
+      createdAt DATETIME NOT NULL,
+      updatedAt DATETIME NOT NULL
+    )
+  `);
+
+  // Categories table
+  sqlite.run(`
+    CREATE TABLE IF NOT EXISTS event_categories (
       id TEXT PRIMARY KEY,
       name TEXT NOT NULL,
       slug TEXT UNIQUE NOT NULL,
       description TEXT,
-      createdAt TEXT NOT NULL,
-      updatedAt TEXT NOT NULL
-    )`,
-    
-    // Tags table
-    `CREATE TABLE IF NOT EXISTS tags (
+      createdAt DATETIME NOT NULL,
+      updatedAt DATETIME NOT NULL
+    )
+  `);
+
+  // Tags table
+  sqlite.run(`
+    CREATE TABLE IF NOT EXISTS tags (
       id TEXT PRIMARY KEY,
       name TEXT NOT NULL,
       slug TEXT UNIQUE NOT NULL,
-      createdAt TEXT NOT NULL,
-      updatedAt TEXT NOT NULL
-    )`,
-    
-    // Events table
-    `CREATE TABLE IF NOT EXISTS events (
+      createdAt DATETIME NOT NULL,
+      updatedAt DATETIME NOT NULL
+    )
+  `);
+
+  // Events table
+  sqlite.run(`
+    CREATE TABLE IF NOT EXISTS events (
       id TEXT PRIMARY KEY,
       title TEXT NOT NULL,
       slug TEXT UNIQUE NOT NULL,
-      description TEXT,
+      description TEXT NOT NULL,
       content TEXT,
-      location TEXT,
+      location TEXT NOT NULL,
       venue TEXT,
-      startDate TEXT,
-      endDate TEXT,
+      startDate DATETIME NOT NULL,
+      endDate DATETIME NOT NULL,
       posterImage TEXT,
       posterCredit TEXT,
-      status TEXT DEFAULT 'DRAFT',
-      published INTEGER DEFAULT 0,
+      status TEXT NOT NULL,
+      published INTEGER NOT NULL DEFAULT 0,
       categoryId TEXT,
-      createdAt TEXT NOT NULL,
-      updatedAt TEXT NOT NULL,
+      createdAt DATETIME NOT NULL,
+      updatedAt DATETIME NOT NULL,
       FOREIGN KEY (categoryId) REFERENCES event_categories(id)
-    )`,
-    
-    // Event categories table
-    `CREATE TABLE IF NOT EXISTS event_categories (
-      id TEXT PRIMARY KEY,
-      name TEXT NOT NULL,
-      slug TEXT UNIQUE NOT NULL,
-      description TEXT,
-      createdAt TEXT NOT NULL,
-      updatedAt TEXT NOT NULL
-    )`,
-    
-    // Speakers table
-    `CREATE TABLE IF NOT EXISTS speakers (
+    )
+  `);
+
+  // Speakers table
+  sqlite.run(`
+    CREATE TABLE IF NOT EXISTS speakers (
       id TEXT PRIMARY KEY,
       firstName TEXT NOT NULL,
       lastName TEXT NOT NULL,
-      organization TEXT,
+      title TEXT,
       bio TEXT,
+      organization TEXT,
       photoUrl TEXT,
-      createdAt TEXT NOT NULL,
-      updatedAt TEXT NOT NULL
-    )`,
-    
-    // Event speakers junction table
-    `CREATE TABLE IF NOT EXISTS event_speakers (
+      createdAt DATETIME NOT NULL,
+      updatedAt DATETIME NOT NULL
+    )
+  `);
+
+  // Event speakers pivot table
+  sqlite.run(`
+    CREATE TABLE IF NOT EXISTS event_speakers (
       id TEXT PRIMARY KEY,
       eventId TEXT NOT NULL,
       speakerId TEXT NOT NULL,
+      displayOrder INTEGER NOT NULL,
       role TEXT,
-      order INTEGER DEFAULT 0,
-      createdAt TEXT NOT NULL,
-      updatedAt TEXT NOT NULL,
-      FOREIGN KEY (eventId) REFERENCES events(id) ON DELETE CASCADE,
-      FOREIGN KEY (speakerId) REFERENCES speakers(id) ON DELETE CASCADE
-    )`,
-    
-    // Tags on events junction table
-    `CREATE TABLE IF NOT EXISTS tags_on_events (
-      id TEXT PRIMARY KEY,
+      createdAt DATETIME NOT NULL,
+      updatedAt DATETIME NOT NULL,
+      FOREIGN KEY (eventId) REFERENCES events(id),
+      FOREIGN KEY (speakerId) REFERENCES speakers(id),
+      UNIQUE(eventId, speakerId)
+    )
+  `);
+
+  // Tags on events pivot table
+  sqlite.run(`
+    CREATE TABLE IF NOT EXISTS tags_on_events (
       eventId TEXT NOT NULL,
       tagId TEXT NOT NULL,
-      createdAt TEXT NOT NULL,
-      FOREIGN KEY (eventId) REFERENCES events(id) ON DELETE CASCADE,
-      FOREIGN KEY (tagId) REFERENCES tags(id) ON DELETE CASCADE
-    )`,
-    
-    // Error logs table
-    `CREATE TABLE IF NOT EXISTS error_logs (
+      createdAt DATETIME NOT NULL,
+      PRIMARY KEY (eventId, tagId),
+      FOREIGN KEY (eventId) REFERENCES events(id),
+      FOREIGN KEY (tagId) REFERENCES tags(id)
+    )
+  `);
+
+  // Publications table
+  sqlite.run(`
+    CREATE TABLE IF NOT EXISTS publications (
       id TEXT PRIMARY KEY,
-      message TEXT NOT NULL,
-      stack TEXT,
-      path TEXT,
-      method TEXT,
-      userId TEXT,
-      severity TEXT DEFAULT 'ERROR',
-      metadata TEXT,
-      createdAt TEXT NOT NULL,
-      FOREIGN KEY (userId) REFERENCES users(id)
-    )`
-  ];
-  
-  // Execute all table creation statements
-  try {
-    sqlite.transaction(() => {
-      tableCreationStatements.forEach(statement => {
-        console.log(`Creating table: ${statement.split('\n')[0]}`);
-        db.exec(statement);
-      });
-      
-      console.log('All tables created successfully');
-      return true;
-    });
-  } catch (error) {
-    console.error('Error creating tables:', error);
-  }
+      title TEXT NOT NULL,
+      slug TEXT UNIQUE NOT NULL,
+      abstract TEXT NOT NULL,
+      content TEXT,
+      publicationDate DATETIME NOT NULL,
+      coverImage TEXT,
+      imageCredit TEXT,
+      published INTEGER NOT NULL DEFAULT 0,
+      categoryId TEXT,
+      createdAt DATETIME NOT NULL,
+      updatedAt DATETIME NOT NULL,
+      FOREIGN KEY (categoryId) REFERENCES event_categories(id)
+    )
+  `);
+
+  // Authors table
+  sqlite.run(`
+    CREATE TABLE IF NOT EXISTS authors (
+      id TEXT PRIMARY KEY,
+      firstName TEXT NOT NULL,
+      lastName TEXT NOT NULL,
+      title TEXT,
+      bio TEXT,
+      organization TEXT,
+      photoUrl TEXT,
+      createdAt DATETIME NOT NULL,
+      updatedAt DATETIME NOT NULL
+    )
+  `);
+
+  // Authors on publications pivot table
+  sqlite.run(`
+    CREATE TABLE IF NOT EXISTS authors_on_publications (
+      id TEXT PRIMARY KEY,
+      publicationId TEXT NOT NULL,
+      authorId TEXT NOT NULL,
+      displayOrder INTEGER NOT NULL,
+      role TEXT,
+      createdAt DATETIME NOT NULL,
+      updatedAt DATETIME NOT NULL,
+      FOREIGN KEY (publicationId) REFERENCES publications(id),
+      FOREIGN KEY (authorId) REFERENCES authors(id),
+      UNIQUE(publicationId, authorId)
+    )
+  `);
+
+  // Tags on publications pivot table
+  sqlite.run(`
+    CREATE TABLE IF NOT EXISTS tags_on_publications (
+      publicationId TEXT NOT NULL,
+      tagId TEXT NOT NULL,
+      createdAt DATETIME NOT NULL,
+      PRIMARY KEY (publicationId, tagId),
+      FOREIGN KEY (publicationId) REFERENCES publications(id),
+      FOREIGN KEY (tagId) REFERENCES tags(id)
+    )
+  `);
 }
+
+function createIndices() {
+  // Users indices
+  sqlite.run(`CREATE INDEX IF NOT EXISTS idx_users_email ON users(email)`);
+  
+  // Categories indices
+  sqlite.run(`CREATE INDEX IF NOT EXISTS idx_categories_slug ON event_categories(slug)`);
+  
+  // Events indices
+  sqlite.run(`CREATE INDEX IF NOT EXISTS idx_events_slug ON events(slug)`);
+  sqlite.run(`CREATE INDEX IF NOT EXISTS idx_events_category ON events(categoryId)`);
+  sqlite.run(`CREATE INDEX IF NOT EXISTS idx_events_status ON events(status)`);
+  sqlite.run(`CREATE INDEX IF NOT EXISTS idx_events_published ON events(published)`);
+  sqlite.run(`CREATE INDEX IF NOT EXISTS idx_events_date ON events(startDate, endDate)`);
+  
+  // Publications indices
+  sqlite.run(`CREATE INDEX IF NOT EXISTS idx_publications_slug ON publications(slug)`);
+  sqlite.run(`CREATE INDEX IF NOT EXISTS idx_publications_category ON publications(categoryId)`);
+  sqlite.run(`CREATE INDEX IF NOT EXISTS idx_publications_published ON publications(published)`);
+  sqlite.run(`CREATE INDEX IF NOT EXISTS idx_publications_date ON publications(publicationDate)`);
+  
+  // Event speakers indices
+  sqlite.run(`CREATE INDEX IF NOT EXISTS idx_event_speakers_event ON event_speakers(eventId)`);
+  sqlite.run(`CREATE INDEX IF NOT EXISTS idx_event_speakers_speaker ON event_speakers(speakerId)`);
+  
+  // Authors on publications indices
+  sqlite.run(`CREATE INDEX IF NOT EXISTS idx_authors_publications_pub ON authors_on_publications(publicationId)`);
+  sqlite.run(`CREATE INDEX IF NOT EXISTS idx_authors_publications_author ON authors_on_publications(authorId)`);
+}
+
+// Initialize database on import
+initDatabase().catch(console.error);
 
 export default initDatabase; 
