@@ -1,16 +1,21 @@
 import { NextResponse } from "next/server"
 import { hash } from "bcryptjs"
 import sqlite from "@/lib/sqlite"
+import { randomUUID } from "crypto"
 
 export async function GET() {
   try {
-    const users = await sqlite.all(`SELECT * FROM user({
-      include: {
-        profile: true,
-      },
-    })
+    const users = sqlite.all(`
+      SELECT * FROM users
+    `);
 
-    return NextResponse.json(users)
+    // Remove sensitive information before returning
+    const safeUsers = users.map(user => {
+      const { password, ...userWithoutPassword } = user;
+      return userWithoutPassword;
+    });
+
+    return NextResponse.json(safeUsers);
   } catch (error) {
     console.error("Failed to fetch users:", error)
     return NextResponse.json(
@@ -26,9 +31,10 @@ export async function POST(request: Request) {
     const { email, password, firstName, lastName } = body
 
     // Check if user already exists
-    const existingUser = await sqlite.get(`SELECT * FROM user WHERE({
-      where: { email },
-    })
+    const existingUser = sqlite.get(
+      "SELECT * FROM users WHERE email = ?",
+      [email]
+    );
 
     if (existingUser) {
       return NextResponse.json(
@@ -39,32 +45,27 @@ export async function POST(request: Request) {
 
     // Hash password
     const hashedPassword = await hash(password, 12)
+    
+    // Current timestamp
+    const now = new Date().toISOString();
+    const userId = randomUUID();
 
-    // Create user and profile in a transaction
-    const user = await prisma.$transaction(async (tx) => {
-      const user = await tx.user.create({
-        data: {
-          email,
-          password: hashedPassword,
-          profile: {
-            create: {
-              firstName,
-              lastName,
-            },
-          },
-        },
-        include: {
-          profile: true,
-        },
-      })
+    // Create user
+    sqlite.run(
+      "INSERT INTO users (id, email, name, role, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, ?)",
+      [userId, email, `${firstName} ${lastName}`, "USER", now, now]
+    );
 
-      return user
-    })
+    // Get the created user
+    const createdUser = sqlite.get(
+      "SELECT * FROM users WHERE id = ?",
+      [userId]
+    );
 
     // Remove password from response
-    const { password: _, ...userWithoutPassword } = user
+    const { password: _, ...userWithoutPassword } = createdUser;
 
-    return NextResponse.json(userWithoutPassword)
+    return NextResponse.json(userWithoutPassword);
   } catch (error) {
     console.error("Failed to create user:", error)
     return NextResponse.json(
