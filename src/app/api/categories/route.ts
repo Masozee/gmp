@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server"
 import sqlite from "@/lib/sqlite"
 import { getServerSession } from "@/lib/server-auth"
+// Import the database initialization module
+import "@/lib/initialize"
 
 export async function GET(request: NextRequest) {
   try {

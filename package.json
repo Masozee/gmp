@@ -6,17 +6,14 @@
     "dev": "next dev",
     "build": "NEXT_DISABLE_ESLINT=1 next build",
     "start": "next start",
-    "lint": "next lint"
-  },
-  "prisma": {
-    "seed": "node prisma/seed.js"
+    "lint": "next lint",
+    "db:init": "node scripts/initialize-database.js"
   },
   "dependencies": {
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.0",
     "@hookform/resolvers": "^4.1.1",
     "@paralleldrive/cuid2": "^2.2.2",
-    "@prisma/client": "^6.4.1",
     "@radix-ui/react-alert-dialog": "^1.1.6",
     "@radix-ui/react-avatar": "^1.1.3",
     "@radix-ui/react-checkbox": "^1.1.4",
@@ -48,7 +45,6 @@
     "next": "15.2.0",
     "next-auth": "^4.24.6",
     "next-themes": "^0.4.4",
-    "prisma": "^6.4.1",
     "react": "^18.2.0",
     "react-day-picker": "^8.10.1",
     "react-dom": "^18.2.0",
@@ -78,10 +74,7 @@
   },
   "pnpm": {
     "ignoredBuiltDependencies": [
-      "@prisma/client",
-      "@prisma/engines",
       "esbuild",
-      "prisma",
       "sharp"
     ]
   }

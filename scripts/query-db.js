@@ -5,7 +5,7 @@ const sqlite3 = require('better-sqlite3');
 const path = require('path');
 
 // Connect to the SQLite database
-const dbPath = path.join(__dirname, '../prisma/dev.db');
+const dbPath = path.join(__dirname, '../db/app.db');
 const db = sqlite3(dbPath);
 
 console.log(`Connected to SQLite database at ${dbPath}`);

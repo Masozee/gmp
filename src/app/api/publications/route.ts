@@ -6,6 +6,8 @@ import { writeFile } from "fs/promises"
 import { join } from "path"
 import { cwd } from "process"
 import { randomUUID } from "crypto"
+// Import the database initialization module
+import "@/lib/initialize"
 
 // PublicationStatus enum
 export enum PublicationStatus {

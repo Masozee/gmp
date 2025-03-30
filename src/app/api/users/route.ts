@@ -1,3 +1,6 @@
+// Import the database initialization module
+import "@/lib/initialize";
+
 import { NextResponse } from "next/server"
 import { hash } from "bcryptjs"
 import sqlite from "@/lib/sqlite"

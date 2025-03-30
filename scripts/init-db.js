@@ -7,7 +7,7 @@ const path = require('path');
 const fs = require('fs');
 
 // Connect to the SQLite database
-const dbPath = path.join(__dirname, '../prisma/dev.db');
+const dbPath = path.join(__dirname, '../db/app.db');
 
 // Delete existing database if it's empty or recreate from scratch
 if (fs.existsSync(dbPath)) {

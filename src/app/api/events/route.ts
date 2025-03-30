@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-;
+// Import the database initialization module
+import "@/lib/initialize";
 import sqlite from "@/lib/sqlite";
 
 // EventStatus enum
