@@ -40,7 +40,6 @@
     "axios": "^1.8.4",
     "axios-cookiejar-support": "^5.0.5",
     "bcryptjs": "^3.0.2",
-    "better-sqlite3": "^9.5.2",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.0.4",
@@ -69,7 +68,6 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
-    "@types/better-sqlite3": "^7.6.9",
     "@types/node": "^20.17.19",
     "@types/react": "^18",
     "@types/react-dom": "^18",

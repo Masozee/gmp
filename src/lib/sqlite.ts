@@ -1,4 +1,4 @@
-import Database from 'better-sqlite3';
+import { Database } from 'sqlite3';
 import path from 'path';
 import fs from 'fs';
 import { randomUUID } from 'crypto';
@@ -7,223 +7,191 @@ import { randomUUID } from 'crypto';
 const isVercel = process.env.VERCEL === '1';
 const dbPath = isVercel ? ':memory:' : './src/db.sqlite';
 
-// Set statement cache size - larger cache means better performance
-const STATEMENT_CACHE_SIZE = 100;
-
-// Connection pool (singleton)
-let db: Database.Database | null = null;
-
-// Statement cache for prepared statements
-const stmtCache = new Map<string, Database.Statement>();
+// For singleton pattern
+let db: Database | null = null;
 
 interface RunResult {
   lastInsertRowid: number;
   changes: number;
 }
 
+// Create a Promise-based wrapper around sqlite3
+function createConnection(): Promise<Database> {
+  return new Promise((resolve, reject) => {
+    try {
+      const database = new Database(dbPath, (err) => {
+        if (err) {
+          console.error('Error opening database:', err);
+          reject(err);
+          return;
+        }
+        
+        // Enable foreign keys
+        database.run('PRAGMA foreign_keys = ON', (pragmaErr) => {
+          if (pragmaErr) {
+            console.error('Error setting PRAGMA:', pragmaErr);
+            reject(pragmaErr);
+            return;
+          }
+          resolve(database);
+        });
+      });
+    } catch (error) {
+      reject(error);
+    }
+  });
+}
+
 const sqlite = {
-  // Get sqlite connection
-  async getConnection(): Promise<Database.Database> {
-    if (db) {
-      return db;
-    }
-    
-    // For connection retry logic
-    let retries = 3;
-    let lastError: Error | null = null;
-    
-    while (retries > 0) {
-      try {
-        // Check if running in Vercel
-        if (isVercel) {
-          // Create in-memory database for Vercel
-          console.log('Running in Vercel environment, using in-memory database');
-          db = Database(':memory:', { verbose: process.env.NODE_ENV !== 'production' ? console.log : undefined });
-        } else {
-          // Create file-based database for development/production
-          db = Database(dbPath, { 
-            verbose: process.env.NODE_ENV !== 'production' ? console.log : undefined,
-            fileMustExist: false
-          });
-        }
-        
-        // Enable Write-Ahead Logging for better concurrency
-        db.pragma('journal_mode = WAL');
-        
-        // Enable foreign keys for data integrity
-        db.pragma('foreign_keys = ON');
-        
-        // Optimize DB for better performance
-        db.pragma('cache_size = -64000'); // 64MB cache size
-        
-        return db;
-      } catch (error) {
-        lastError = error instanceof Error ? error : new Error(String(error));
-        console.error(`Error connecting to database (retries left: ${retries}):`, error);
-        retries--;
-        
-        // Wait for a short time before retrying
-        if (retries > 0) {
-          await new Promise(resolve => setTimeout(resolve, 500));
-        }
+  // Get database connection (singleton pattern)
+  async getConnection(): Promise<Database> {
+    if (!db) {
+      db = await createConnection();
+      
+      // Initialize in-memory database if on Vercel
+      if (isVercel) {
+        console.log('Running in Vercel environment, using in-memory database');
+        // Setup tables here or call setupDatabase
       }
     }
-    
-    // If we get here, all retries failed
-    throw new Error(`Failed to connect to database after multiple attempts: ${lastError?.message}`);
+    return db;
   },
-
-  // Execute a query that doesn't return data, optimized with prepared statements
+  
+  // Run a query that doesn't return data
   async run(sql: string, params: any[] = []): Promise<RunResult> {
-    try {
-      // Use cached statement if available
-      let stmt = stmtCache.get(sql);
-      if (!stmt) {
-        stmt = (await this.getConnection()).prepare(sql);
-        
-        // Cache statement if we haven't exceeded cache size
-        if (stmtCache.size < STATEMENT_CACHE_SIZE) {
-          stmtCache.set(sql, stmt);
+    return new Promise(async (resolve, reject) => {
+      const connection = await this.getConnection();
+      connection.run(sql, params, function(this: { lastID: number, changes: number }, err) {
+        if (err) {
+          console.error('SQL Error in run:', sql, 'Params:', JSON.stringify(params), 'Error:', err);
+          reject(err);
+          return;
         }
-      }
-      
-      const result = stmt.run(...params);
-      return {
-        lastInsertRowid: result.lastInsertRowid as number,
-        changes: result.changes,
-      };
-    } catch (error) {
-      console.error('SQL Error in run:', sql, 'Params:', JSON.stringify(params), 'Error:', error);
-      // Add query context to the error
-      if (error instanceof Error) {
-        error.message = `SQL Error [${sql.slice(0, 100)}]: ${error.message}`;
-      }
-      throw error;
-    }
+        resolve({
+          lastInsertRowid: this.lastID,
+          changes: this.changes
+        });
+      });
+    });
   },
-
-  // Execute a query and get a single row, optimized with prepared statements
+  
+  // Get a single row from a query
   async get<T = any>(sql: string, params: any[] = []): Promise<T | undefined> {
-    try {
-      // Use cached statement if available
-      let stmt = stmtCache.get(sql);
-      if (!stmt) {
-        stmt = (await this.getConnection()).prepare(sql);
-        
-        // Cache statement if we haven't exceeded cache size
-        if (stmtCache.size < STATEMENT_CACHE_SIZE) {
-          stmtCache.set(sql, stmt);
+    return new Promise(async (resolve, reject) => {
+      const connection = await this.getConnection();
+      connection.get(sql, params, (err, row) => {
+        if (err) {
+          console.error('SQL Error in get:', sql, 'Params:', JSON.stringify(params), 'Error:', err);
+          reject(err);
+          return;
         }
-      }
-      
-      return stmt.get(...params) as T | undefined;
-    } catch (error) {
-      console.error('SQL Error in get:', sql, 'Params:', JSON.stringify(params), 'Error:', error);
-      // Add query context to the error
-      if (error instanceof Error) {
-        error.message = `SQL Error [${sql.slice(0, 100)}]: ${error.message}`;
-      }
-      throw error;
-    }
+        resolve(row as T | undefined);
+      });
+    });
   },
-
-  // Execute a query and get all rows, optimized with prepared statements
+  
+  // Get all rows from a query
   async all<T = any>(sql: string, params: any[] = []): Promise<T[]> {
-    try {
-      // Use cached statement if available
-      let stmt = stmtCache.get(sql);
-      if (!stmt) {
-        stmt = (await this.getConnection()).prepare(sql);
-        
-        // Cache statement if we haven't exceeded cache size
-        if (stmtCache.size < STATEMENT_CACHE_SIZE) {
-          stmtCache.set(sql, stmt);
+    return new Promise(async (resolve, reject) => {
+      const connection = await this.getConnection();
+      connection.all(sql, params, (err, rows) => {
+        if (err) {
+          console.error('SQL Error in all:', sql, 'Params:', JSON.stringify(params), 'Error:', err);
+          reject(err);
+          return;
         }
-      }
-      
-      return stmt.all(...params) as T[];
-    } catch (error) {
-      console.error('SQL Error in all:', sql, 'Params:', JSON.stringify(params), 'Error:', error);
-      // Add query context to the error
-      if (error instanceof Error) {
-        error.message = `SQL Error [${sql.slice(0, 100)}]: ${error.message}`;
-      }
-      throw error;
-    }
+        resolve(rows as T[]);
+      });
+    });
   },
-
-  // Execute a query and iterate over rows, optimized for large datasets
+  
+  // Execute a query and process rows one at a time
   async each<T = any>(
     sql: string, 
     params: any[] = [], 
     callback: (row: T) => void
   ): Promise<number> {
-    try {
-      // Use cached statement if available
-      let stmt = stmtCache.get(sql);
-      if (!stmt) {
-        stmt = (await this.getConnection()).prepare(sql);
-        
-        // Cache statement if we haven't exceeded cache size
-        if (stmtCache.size < STATEMENT_CACHE_SIZE) {
-          stmtCache.set(sql, stmt);
-        }
-      }
-      
+    return new Promise(async (resolve, reject) => {
+      const connection = await this.getConnection();
       let count = 0;
       
-      const iterator = stmt.iterate(...params);
-      for (const row of iterator) {
-        callback(row as T);
-        count++;
-      }
-      
-      return count;
-    } catch (error) {
-      console.error('SQL Error in each:', sql, params, error);
-      throw error;
-    }
+      connection.each(sql, params, 
+        // Row callback
+        (err, row) => {
+          if (err) {
+            reject(err);
+            return;
+          }
+          callback(row as T);
+          count++;
+        },
+        // Completion callback
+        (err, totalRows) => {
+          if (err) {
+            reject(err);
+            return;
+          }
+          resolve(count);
+        }
+      );
+    });
   },
-
-  // Execute multiple statements in a transaction with improved error handling
-  async transaction<T>(
-    callback: () => Promise<T> | T
-  ): Promise<T> {
+  
+  // Execute a transaction
+  async transaction<T>(callback: () => Promise<T> | T): Promise<T> {
     const connection = await this.getConnection();
     
-    try {
-      connection.exec('BEGIN TRANSACTION');
-      const result = await Promise.resolve(callback());
-      connection.exec('COMMIT');
-      return result;
-    } catch (error) {
-      try {
-        connection.exec('ROLLBACK');
-        console.error('Transaction rolled back due to error:', error);
-      } catch (rollbackError) {
-        console.error('Critical error: Failed to roll back transaction:', rollbackError);
-        console.error('Original error:', error);
-      }
-      throw error;
-    }
+    return new Promise(async (resolve, reject) => {
+      connection.run('BEGIN TRANSACTION', async (beginErr) => {
+        if (beginErr) {
+          reject(beginErr);
+          return;
+        }
+        
+        try {
+          const result = await Promise.resolve(callback());
+          
+          connection.run('COMMIT', (commitErr) => {
+            if (commitErr) {
+              connection.run('ROLLBACK', () => {
+                reject(commitErr);
+              });
+              return;
+            }
+            resolve(result);
+          });
+        } catch (error) {
+          connection.run('ROLLBACK', (rollbackErr) => {
+            if (rollbackErr) {
+              console.error('Failed to roll back transaction:', rollbackErr);
+            }
+            reject(error);
+          });
+        }
+      });
+    });
   },
-
-  // Clear the statement cache
-  async clearStatementCache(): Promise<void> {
-    stmtCache.clear();
-  },
-
-  // Close the database connection and clear statement cache
+  
+  // Close the database connection
   async close(): Promise<void> {
-    await this.clearStatementCache();
-    
-    if (db) {
-      db.close();
-      db = null;
-    }
+    return new Promise((resolve, reject) => {
+      if (!db) {
+        resolve();
+        return;
+      }
+      
+      db.close((err) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        db = null;
+        resolve();
+      });
+    });
   },
-
-  // Utility to help with pagination
+  
+  // Utility for pagination
   async paginate(page: number, limit: number): Promise<{ offset: number, limit: number }> {
     const validPage = Math.max(1, page);
     const validLimit = Math.max(1, Math.min(100, limit));
@@ -231,26 +199,98 @@ const sqlite = {
     
     return { offset, limit: validLimit };
   },
-
-  // Utility to create a prepared statement that can be reused for better performance
-  async prepareStatement(sql: string): Promise<Database.Statement> {
-    // Use cached statement if available
-    let stmt = stmtCache.get(sql);
-    if (!stmt) {
-      stmt = (await this.getConnection()).prepare(sql);
+  
+  // Generate a unique ID
+  generateId(): string {
+    return randomUUID();
+  },
+  
+  // Setup database tables and schema
+  async setupDatabase(): Promise<void> {
+    const connection = await this.getConnection();
+    
+    // Define all your tables here
+    const tables = [
+      // Users table
+      `CREATE TABLE IF NOT EXISTS users (
+        id TEXT PRIMARY KEY,
+        name TEXT,
+        email TEXT UNIQUE NOT NULL,
+        emailVerified DATETIME,
+        image TEXT,
+        role TEXT,
+        password TEXT,
+        createdAt DATETIME NOT NULL,
+        updatedAt DATETIME NOT NULL
+      )`,
       
-      // Cache statement if we haven't exceeded cache size
-      if (stmtCache.size < STATEMENT_CACHE_SIZE) {
-        stmtCache.set(sql, stmt);
-      }
+      // Categories table
+      `CREATE TABLE IF NOT EXISTS event_categories (
+        id TEXT PRIMARY KEY,
+        name TEXT NOT NULL,
+        slug TEXT UNIQUE NOT NULL,
+        description TEXT,
+        createdAt DATETIME NOT NULL,
+        updatedAt DATETIME NOT NULL
+      )`,
+      
+      // Events table
+      `CREATE TABLE IF NOT EXISTS events (
+        id TEXT PRIMARY KEY,
+        title TEXT NOT NULL,
+        slug TEXT UNIQUE NOT NULL,
+        description TEXT NOT NULL,
+        content TEXT,
+        location TEXT NOT NULL,
+        venue TEXT,
+        startDate DATETIME NOT NULL,
+        endDate DATETIME NOT NULL,
+        posterImage TEXT,
+        posterCredit TEXT,
+        status TEXT NOT NULL,
+        published INTEGER NOT NULL DEFAULT 0,
+        categoryId TEXT,
+        createdAt DATETIME NOT NULL,
+        updatedAt DATETIME NOT NULL,
+        FOREIGN KEY (categoryId) REFERENCES event_categories(id)
+      )`
+    ];
+    
+    for (const tableSql of tables) {
+      await this.run(tableSql);
     }
     
-    return stmt;
-  },
-
-  // Generate a unique ID
-  async generateId(): Promise<string> {
-    return randomUUID();
+    // Create indices
+    const indices = [
+      `CREATE INDEX IF NOT EXISTS idx_users_email ON users(email)`,
+      `CREATE INDEX IF NOT EXISTS idx_events_slug ON events(slug)`,
+      `CREATE INDEX IF NOT EXISTS idx_events_category ON events(categoryId)`
+    ];
+    
+    for (const indexSql of indices) {
+      await this.run(indexSql);
+    }
+    
+    // Check for and create admin user if needed
+    const adminExists = await this.get(
+      "SELECT id FROM users WHERE email = ? AND role = ?",
+      ["admin@example.com", "ADMIN"]
+    );
+    
+    if (!adminExists) {
+      console.log('Creating admin user...');
+      
+      const now = new Date().toISOString();
+      const userId = this.generateId();
+      
+      // Create admin user
+      await this.run(
+        "INSERT INTO users (id, name, email, role, password, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, ?, ?)",
+        [userId, "Admin User", "admin@example.com", "ADMIN", "$2a$10$8r0aGeQoqQioRh8LQgB5Y.BwqR6EUQ2oe5YHBnwKDJ0K0UZnuoiC.", now, now]
+      );
+      
+      console.log('Admin user created with default password (admin123)');
+    }
   }
 };
 

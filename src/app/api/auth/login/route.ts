@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from "next/server"
+import { cookies } from "next/headers"
 import bcrypt from "bcryptjs"
 import { signToken } from "@/lib/edge-jwt"
 import sqlite from "@/lib/sqlite"
+import "@/lib/db-init" // Import database initializer for Vercel
 import { apiResponse } from "@/lib/api-helpers"
 import logger from "@/lib/logger"
 
@@ -14,46 +16,38 @@ const JWT_EXPIRY = "24h" // 24 hours
  */
 export async function POST(request: NextRequest) {
   try {
-    const { email, password } = await request.json()
+    // Parse request body
+    const body = await request.json()
+    const { email, password } = body
 
-    // Validate required fields
-    if (!email) {
-      return apiResponse.badRequest("Email is required")
-    }
-    
-    if (!password) {
-      return apiResponse.badRequest("Password is required")
+    // Validate input
+    if (!email || !password) {
+      return apiResponse.error("Email and password are required", 400)
     }
 
-    // Find user by email
+    // Find the user by email
     const user = await sqlite.get(
       "SELECT id, email, password, role FROM users WHERE email = ?",
       [email]
     )
 
-    // User not found
     if (!user) {
-      return apiResponse.error("Invalid email or password", 401)
+      return apiResponse.error("Invalid credentials", 401)
     }
 
     // Verify password
     const passwordValid = await bcrypt.compare(password, user.password)
-    
     if (!passwordValid) {
-      // Log failed login attempt
-      logger.warn(`Failed login attempt for user ${email}`, { userId: user.id })
-      return apiResponse.error("Invalid email or password", 401)
+      return apiResponse.error("Invalid credentials", 401)
     }
 
-    // Create payload for JWT token
-    const tokenPayload = {
+    // Generate token
+    const token = await signToken({
       id: user.id,
       email: user.email,
-      role: user.role
-    }
-    
-    // Create JWT token using jose (same library used in middleware)
-    const token = await signToken(tokenPayload)
+      role: user.role,
+    })
+
     console.log(`[Login API] Generated token (first 20 chars): ${token.substring(0, 20)}...`);
 
     // Create response with user data
@@ -62,8 +56,8 @@ export async function POST(request: NextRequest) {
       data: {
         id: user.id,
         email: user.email,
-        role: user.role
-      }
+        role: user.role,
+      },
     })
 
     // Set HttpOnly cookie directly on the response
@@ -71,22 +65,22 @@ export async function POST(request: NextRequest) {
       name: "token",
       value: token,
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production", // Only send cookie over HTTPS in production
-      sameSite: "lax", // Changed from strict to lax for better compatibility
-      maxAge: 24 * 60 * 60, // 24 hours
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 60 * 60 * 24 * 7, // 1 week
       path: "/",
     })
-    
+
     console.log(`[Login API] Set token cookie for user: ${email}`);
-    console.log(`[Login API] Cookies in response:`, response.cookies);
 
     // Log successful login
     logger.info(`User ${email} logged in successfully`, { userId: user.id })
 
     return response
   } catch (error) {
-    console.error("[Login API] Error during login:", error);
-    logger.error("Login error", error instanceof Error ? error : new Error(String(error)))
-    return apiResponse.error("An error occurred during login")
+    console.error("[Login API] Error during login:", error)
+    // Handle error logging without using the logger.error that requires an Error object
+    console.error("Login failed:", error instanceof Error ? error.message : String(error))
+    return apiResponse.error("Authentication failed", 500)
   }
 } 
