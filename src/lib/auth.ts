@@ -1,100 +1,19 @@
 "use client"
 
-import { NextAuthOptions } from "next-auth"
-import CredentialsProvider from "next-auth/providers/credentials"
 import { verifyToken } from "./jwt"
-import { compare } from "bcryptjs"
 import { signToken } from "./edge-jwt"
 import { jwtVerify } from "jose"
 
-// Extend the built-in types
-declare module "next-auth" {
-  interface User {
-    id: string
-    email: string
-    role: "USER" | "ADMIN"
-  }
-
-  interface Session {
-    user: User
-  }
-}
-
-declare module "next-auth/jwt" {
-  interface JWT {
-    id: string
-    email: string
-    role: "USER" | "ADMIN"
-  }
-}
-
 // User interface
-interface User {
-  id: string
+export interface User {
+  id: string | number
   email: string
-  role: "USER" | "ADMIN"
+  role: string
 }
 
-// Export the session interface to avoid TypeScript errors
+// Export the session interface for compatibility
 export interface Session {
   user?: User
-}
-
-export const authOptions: NextAuthOptions = {
-  providers: [
-    CredentialsProvider({
-      name: "Credentials",
-      credentials: {
-        email: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" }
-      },
-      async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
-          return null
-        }
-
-        try {
-          // Here you would typically verify credentials against your database
-          // For now, we'll use the JWT token verification
-          const token = credentials.password // This should be your JWT token
-          const decoded = verifyToken(token)
-
-          return {
-            id: decoded.id,
-            email: decoded.email,
-            role: decoded.role,
-          }
-        } catch (error) {
-          console.error("Auth error:", error)
-          return null
-        }
-      }
-    })
-  ],
-  session: {
-    strategy: "jwt",
-  },
-  pages: {
-    signIn: "/auth/signin",
-  },
-  callbacks: {
-    async jwt({ token, user }) {
-      if (user) {
-        token.id = user.id
-        token.email = user.email
-        token.role = user.role
-      }
-      return token
-    },
-    async session({ session, token }) {
-      if (token && session.user) {
-        session.user.id = token.id as string
-        session.user.email = token.email as string
-        session.user.role = token.role as "USER" | "ADMIN"
-      }
-      return session
-    }
-  }
 }
 
 // Client-side session getter
@@ -125,9 +44,9 @@ export async function getSession(): Promise<Session | null> {
   }
 }
 
-// Create a simple auth handler that depends on an API call instead of direct DB access
+// Sign in function that calls the API
 export async function signIn(email: string, password: string) {
-  // Call an API endpoint instead of directly accessing the database
+  // Call the API endpoint
   try {
     const response = await fetch('/api/auth/login', {
       method: 'POST',
@@ -138,25 +57,14 @@ export async function signIn(email: string, password: string) {
     });
 
     if (!response.ok) {
-      return null;
+      const errorData = await response.json();
+      throw new Error(errorData.error || 'Authentication failed');
     }
 
     return await response.json();
   } catch (error) {
     console.error("Login error:", error);
-    return null;
-  }
-}
-
-// Get server session from JWT token
-export async function getServerSession(): Promise<Session | null> {
-  try {
-    // This function would normally extract the token from cookies
-    // For now, we'll just return null
-    return null
-  } catch (error) {
-    console.error("Failed to get server session:", error)
-    return null
+    throw error;
   }
 }
 
@@ -166,7 +74,7 @@ const JWT_SECRET = new TextEncoder().encode(
 )
 
 export interface UserSession {
-  id: string
+  id: string | number
   email: string
   role: string
 }
@@ -177,7 +85,7 @@ export interface UserSession {
  */
 export async function getCurrentUser(): Promise<UserSession | null> {
   try {
-    // Use client-side cookie access instead of server-only cookies()
+    // Use client-side cookie access
     const token = document.cookie
       .split("; ")
       .find((row) => row.startsWith("token="))
