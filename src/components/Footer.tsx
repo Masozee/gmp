@@ -23,10 +23,10 @@ export function Footer() {
 
   // Programs
   const programs = [
-    { name: "Sekolah Politik Muda", href: "/programs#sekolah-politik" },
-    { name: "Digital Democracy Initiative", href: "/programs#digital-democracy" },
-    { name: "Lokalitas: Politik Daerah", href: "/programs#lokalitas" },
-    { name: "Youth Parliament", href: "/programs#youth-parliament" },
+    { name: "Diskusi", href: "/programs#diskusi" },
+    { name: "Temu Kandidat", href: "/program#temu-kandidat" },
+    { name: "Academia Politica", href: "/programs#academia-politica" },
+    { name: "Council of Gen Z", href: "/programs#council-of-gen-z" },
   ];
 
   return (
@@ -41,7 +41,7 @@ export function Footer() {
           <div className="space-y-6">
             <Link href="/" className="inline-block">
               <Image 
-                src="/logos/Logo-name-stack-white.png" 
+                src="/logos/Logo-white.png" 
                 alt="Generasi Melek Politik" 
                 width={180} 
                 height={50}
@@ -49,7 +49,7 @@ export function Footer() {
               />
             </Link>
             <p className="text-gray-300 text-sm">
-              Meningkatkan kesadaran dan partisipasi politik generasi muda Indonesia melalui edukasi, advokasi, dan aksi nyata.
+            Generasi Melek Politik (GMP) adalah sebuah organisasi non-profit yang bergerak untuk memberikan pendidikan politik untuk anak muda (17-25 tahun) dengan cara yang menyenangkan!
             </p>
             <div className="flex items-center gap-4">
               {socialLinks.map((link) => (
@@ -108,20 +108,20 @@ export function Footer() {
               <li className="flex items-start gap-3">
                 <MapPin className="h-5 w-5 text-emerald-500 flex-shrink-0 mt-0.5" />
                 <span className="text-gray-300">
-                  Jl. Tebet Raya No. 45, Jakarta Selatan, DKI Jakarta 12810
+                Menara Sentraya 18th Floor Unit B2 Jl. Iskandarsyah Raya No. 1A Blok M, Kebayoran Baru, Jakarta Selatan
                 </span>
               </li>
               <li className="flex items-center gap-3">
                 <Phone className="h-5 w-5 text-emerald-500 flex-shrink-0" />
-                <span className="text-gray-300">+62 21 5678 1234</span>
+                <span className="text-gray-300">+62 812-9231-0996</span>
               </li>
               <li className="flex items-center gap-3">
                 <Mail className="h-5 w-5 text-emerald-500 flex-shrink-0" />
                 <a 
-                  href="mailto:info@generasimelek.id" 
+                  href="mailto:admin@partisipasimuda.org" 
                   className="text-gray-300 hover:text-emerald-400 transition-colors duration-200"
                 >
-                  info@generasimelek.id
+                  admin@partisipasimuda.org
                 </a>
               </li>
             </ul>

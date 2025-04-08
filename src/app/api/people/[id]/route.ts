@@ -1,9 +1,52 @@
 import { NextRequest, NextResponse } from "next/server"
 import sqlite from "@/lib/sqlite"
 import { getServerSession } from "@/lib/server-auth"
-import { writeFile, unlink } from "fs/promises"
-import { join } from "path"
-import { cwd } from "process"
+
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const session = await getServerSession()
+
+    if (!session?.user) {
+      return NextResponse.json(
+        { error: "Unauthorized" },
+        { status: 401 }
+      )
+    }
+
+    const category = await sqlite.get(
+      "SELECT * FROM event_categories WHERE id = ?",
+      [params.id]
+    )
+
+    if (!category) {
+      return NextResponse.json(
+        { error: "Category not found" },
+        { status: 404 }
+      )
+    }
+
+    // Get publications count for this category
+    const publicationsCount = await sqlite.get(
+      "SELECT COUNT(*) as count FROM publications WHERE categoryId = ?",
+      [params.id]
+    )
+
+    // Add count to category
+    return NextResponse.json({
+      ...category,
+      publicationsCount: publicationsCount ? publicationsCount.count : 0
+    })
+  } catch (error) {
+    console.error("Failed to fetch category:", error)
+    return NextResponse.json(
+      { error: "Failed to fetch category" },
+      { status: 500 }
+    )
+  }
+}
 
 export async function PATCH(
   request: NextRequest,
@@ -19,72 +62,46 @@ export async function PATCH(
       )
     }
 
-    const person = await sqlite.get(`SELECT * FROM profile WHERE({
-      where: { id: params.id },
-    })
+    const { name, description } = await request.json()
 
-    if (!person) {
+    if (!name) {
       return NextResponse.json(
-        { error: "Person not found" },
-        { status: 404 }
+        { error: "Name is required" },
+        { status: 400 }
       )
     }
 
-    const formData = await request.formData()
-    const firstName = formData.get("firstName") as string
-    const lastName = formData.get("lastName") as string
-    const email = formData.get("email") as string
-    const phoneNumber = formData.get("phoneNumber") as string | null
-    const organization = formData.get("organization") as string | null
-    const bio = formData.get("bio") as string | null
-    const category = formData.get("category") as "AUTHOR" | "BOARD" | "STAFF" | "RESEARCHER"
-    const photo = formData.get("photo") as File | null
+    // Generate slug from name
+    const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, "-")
+    
+    const now = new Date().toISOString()
 
-    let photoUrl = person.photoUrl
+    // Update the category
+    await sqlite.run(
+      "UPDATE event_categories SET name = ?, slug = ?, description = ?, updatedAt = ? WHERE id = ?",
+      [name, slug, description, now, params.id]
+    )
+    
+    // Get the updated category
+    const category = await sqlite.get(
+      "SELECT * FROM event_categories WHERE id = ?",
+      [params.id]
+    )
+    
+    // Get publications count
+    const publicationsCount = await sqlite.get(
+      "SELECT COUNT(*) as count FROM publications WHERE categoryId = ?",
+      [params.id]
+    )
 
-    if (photo) {
-      // Delete old photo if it exists
-      if (person.photoUrl) {
-        const oldPhotoPath = join(cwd(), "public", person.photoUrl.replace(/^\/uploads\//, ""))
-        try {
-          await unlink(oldPhotoPath)
-        } catch (error) {
-          console.error("Failed to delete old photo:", error)
-        }
-      }
-
-      // Upload new photo
-      const bytes = await photo.arrayBuffer()
-      const buffer = Buffer.from(bytes)
-
-      const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1E9)}`
-      const filename = `${uniqueSuffix}-${photo.name}`
-      const uploadDir = join(cwd(), "public", "uploads")
-      const filepath = join(uploadDir, filename)
-
-      await writeFile(filepath, buffer)
-      photoUrl = `/uploads/${filename}`
-    }
-
-    const updatedPerson = await sqlite.run(`UPDATE profile SET({
-      where: { id: params.id },
-      data: {
-        firstName,
-        lastName,
-        email,
-        phoneNumber: phoneNumber || undefined,
-        organization: organization || undefined,
-        bio: bio || undefined,
-        category,
-        photoUrl,
-      },
+    return NextResponse.json({
+      ...category,
+      publicationsCount: publicationsCount ? publicationsCount.count : 0
     })
-
-    return NextResponse.json(updatedPerson)
   } catch (error) {
-    console.error("Failed to update person:", error)
+    console.error("Failed to update category:", error)
     return NextResponse.json(
-      { error: "Failed to update person" },
+      { error: "Failed to update category" },
       { status: 500 }
     )
   }
@@ -104,36 +121,16 @@ export async function DELETE(
       )
     }
 
-    const person = await sqlite.get(`SELECT * FROM profile WHERE({
-      where: { id: params.id },
-    })
+    await sqlite.run(
+      "DELETE FROM event_categories WHERE id = ?",
+      [params.id]
+    )
 
-    if (!person) {
-      return NextResponse.json(
-        { error: "Person not found" },
-        { status: 404 }
-      )
-    }
-
-    // Delete photo if it exists
-    if (person.photoUrl) {
-      const photoPath = join(cwd(), "public", person.photoUrl.replace(/^\/uploads\//, ""))
-      try {
-        await unlink(photoPath)
-      } catch (error) {
-        console.error("Failed to delete photo:", error)
-      }
-    }
-
-    await sqlite.run(`DELETE FROM profile WHERE({
-      where: { id: params.id },
-    })
-
-    return NextResponse.json({ success: true })
+    return new NextResponse(null, { status: 204 })
   } catch (error) {
-    console.error("Failed to delete person:", error)
+    console.error("Failed to delete category:", error)
     return NextResponse.json(
-      { error: "Failed to delete person" },
+      { error: "Failed to delete category" },
       { status: 500 }
     )
   }

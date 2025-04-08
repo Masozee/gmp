@@ -1,7 +1,52 @@
 import { NextRequest, NextResponse } from "next/server"
 import sqlite from "@/lib/sqlite"
 import { getServerSession } from "@/lib/server-auth"
-import slugify from "slugify"
+
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const session = await getServerSession()
+
+    if (!session?.user) {
+      return NextResponse.json(
+        { error: "Unauthorized" },
+        { status: 401 }
+      )
+    }
+
+    const category = await sqlite.get(
+      "SELECT * FROM event_categories WHERE id = ?",
+      [params.id]
+    )
+
+    if (!category) {
+      return NextResponse.json(
+        { error: "Category not found" },
+        { status: 404 }
+      )
+    }
+
+    // Get publications count for this category
+    const publicationsCount = await sqlite.get(
+      "SELECT COUNT(*) as count FROM publications WHERE categoryId = ?",
+      [params.id]
+    )
+
+    // Add count to category
+    return NextResponse.json({
+      ...category,
+      publicationsCount: publicationsCount ? publicationsCount.count : 0
+    })
+  } catch (error) {
+    console.error("Failed to fetch category:", error)
+    return NextResponse.json(
+      { error: "Failed to fetch category" },
+      { status: 500 }
+    )
+  }
+}
 
 export async function PATCH(
   request: NextRequest,
@@ -17,57 +62,46 @@ export async function PATCH(
       )
     }
 
-    const body = await request.json()
-    const { name } = body
+    const { name, description } = await request.json()
 
-    // Generate slug from name
-    const slug = slugify(name, { lower: true, strict: true })
-
-    // Check if tag exists
-    const existingTag = await sqlite.get(`SELECT * FROM tag WHERE({
-      where: { id: params.id },
-    })
-
-    if (!existingTag) {
+    if (!name) {
       return NextResponse.json(
-        { error: "Tag not found" },
-        { status: 404 }
-      )
-    }
-
-    // Check if new name/slug would conflict with another tag
-    const conflictingTag = await sqlite.get(`SELECT * FROM tag({
-      where: {
-        OR: [
-          { name: { equals: name, mode: "insensitive" } },
-          { slug: { equals: slug, mode: "insensitive" } },
-        ],
-        NOT: {
-          id: params.id,
-        },
-      },
-    })
-
-    if (conflictingTag) {
-      return NextResponse.json(
-        { error: "Tag with this name already exists" },
+        { error: "Name is required" },
         { status: 400 }
       )
     }
 
-    const updatedTag = await sqlite.run(`UPDATE tag SET({
-      where: { id: params.id },
-      data: {
-        name,
-        slug,
-      },
-    })
+    // Generate slug from name
+    const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, "-")
+    
+    const now = new Date().toISOString()
 
-    return NextResponse.json(updatedTag)
+    // Update the category
+    await sqlite.run(
+      "UPDATE event_categories SET name = ?, slug = ?, description = ?, updatedAt = ? WHERE id = ?",
+      [name, slug, description, now, params.id]
+    )
+    
+    // Get the updated category
+    const category = await sqlite.get(
+      "SELECT * FROM event_categories WHERE id = ?",
+      [params.id]
+    )
+    
+    // Get publications count
+    const publicationsCount = await sqlite.get(
+      "SELECT COUNT(*) as count FROM publications WHERE categoryId = ?",
+      [params.id]
+    )
+
+    return NextResponse.json({
+      ...category,
+      publicationsCount: publicationsCount ? publicationsCount.count : 0
+    })
   } catch (error) {
-    console.error("Failed to update tag:", error)
+    console.error("Failed to update category:", error)
     return NextResponse.json(
-      { error: "Failed to update tag" },
+      { error: "Failed to update category" },
       { status: 500 }
     )
   }
@@ -87,27 +121,16 @@ export async function DELETE(
       )
     }
 
-    // Check if tag exists
-    const existingTag = await sqlite.get(`SELECT * FROM tag WHERE({
-      where: { id: params.id },
-    })
+    await sqlite.run(
+      "DELETE FROM event_categories WHERE id = ?",
+      [params.id]
+    )
 
-    if (!existingTag) {
-      return NextResponse.json(
-        { error: "Tag not found" },
-        { status: 404 }
-      )
-    }
-
-    await sqlite.run(`DELETE FROM tag WHERE({
-      where: { id: params.id },
-    })
-
-    return NextResponse.json({ success: true })
+    return new NextResponse(null, { status: 204 })
   } catch (error) {
-    console.error("Failed to delete tag:", error)
+    console.error("Failed to delete category:", error)
     return NextResponse.json(
-      { error: "Failed to delete tag" },
+      { error: "Failed to delete category" },
       { status: 500 }
     )
   }

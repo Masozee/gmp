@@ -2,6 +2,95 @@ import { NextRequest, NextResponse } from 'next/server';
 import sqlite from './sqlite';
 
 /**
+ * Standardized API response type for better type safety across the application
+ */
+export interface ApiResponse<T = any> {
+  success: boolean;
+  data?: T;
+  error?: string;
+  message?: string;
+  pagination?: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  };
+}
+
+/**
+ * Utility functions for creating consistent API responses
+ */
+export const apiResponse = {
+  /**
+   * Create a successful response with optional data and pagination
+   */
+  success<T>(data?: T, pagination?: ApiResponse['pagination'], message?: string): NextResponse<ApiResponse<T>> {
+    return NextResponse.json({
+      success: true,
+      data,
+      message,
+      pagination
+    });
+  },
+
+  /**
+   * Create a success response with status 201 (Created) for resource creation
+   */
+  created<T>(data: T, message?: string): NextResponse<ApiResponse<T>> {
+    return NextResponse.json({
+      success: true,
+      data,
+      message: message || 'Resource created successfully'
+    }, { status: 201 });
+  },
+
+  /**
+   * Create an error response with custom status code
+   */
+  error(message: string, status: number = 500): NextResponse<ApiResponse> {
+    return NextResponse.json({
+      success: false,
+      error: message
+    }, { status });
+  },
+
+  /**
+   * Create a 400 Bad Request response
+   */
+  badRequest(message: string = 'Bad request'): NextResponse<ApiResponse> {
+    return this.error(message, 400);
+  },
+
+  /**
+   * Create a 401 Unauthorized response
+   */
+  unauthorized(message: string = 'Unauthorized'): NextResponse<ApiResponse> {
+    return this.error(message, 401);
+  },
+
+  /**
+   * Create a 403 Forbidden response
+   */
+  forbidden(message: string = 'Forbidden'): NextResponse<ApiResponse> {
+    return this.error(message, 403);
+  },
+
+  /**
+   * Create a 404 Not Found response
+   */
+  notFound(message: string = 'Resource not found'): NextResponse<ApiResponse> {
+    return this.error(message, 404);
+  },
+
+  /**
+   * Create a 204 No Content response for successful deletion
+   */
+  noContent(): NextResponse {
+    return new NextResponse(null, { status: 204 });
+  }
+};
+
+/**
  * API response utility that handles common operations for API routes
  */
 export const apiHandler = {
@@ -34,7 +123,7 @@ export const apiHandler = {
       // Pagination
       const page = Math.max(1, parseInt(searchParams.get('page') || '1'));
       const limit = Math.max(1, Math.min(100, parseInt(searchParams.get('limit') || '10')));
-      const { offset } = sqlite.paginate(page, limit);
+      const { offset } = await sqlite.paginate(page, limit);
       
       // Search
       const search = searchParams.get('search');
@@ -57,7 +146,7 @@ export const apiHandler = {
       
       // Get total count
       const countQuery = `SELECT COUNT(*) as total FROM ${tableName}${whereClause}`;
-      const countResult = sqlite.get<{ total: number }>(countQuery, params);
+      const countResult = await sqlite.get<{ total: number }>(countQuery, params);
       const total = countResult?.total || 0;
       
       // Build the query
@@ -81,7 +170,7 @@ export const apiHandler = {
       const allParams = [...params, limit, offset];
       
       // Get data
-      const data = sqlite.all(query, allParams);
+      const data = await sqlite.all(query, allParams);
       
       // Transform data if needed
       const transformedData = data.map(transform);
@@ -148,14 +237,14 @@ export const apiHandler = {
         const placeholders = fields.map(() => '?').join(', ');
         const values = fields.map(field => processedData[field]);
         
-        // Prepare the statement for better performance
-        const stmt = sqlite.prepareStatement(`
+        // Use direct query instead of prepared statement
+        const insertQuery = `
           INSERT INTO ${tableName} (${fields.join(', ')})
           VALUES (${placeholders})
-        `);
+        `;
         
-        // Execute the insert
-        const result = stmt.run(...values);
+        // Execute the insert directly
+        const result = await sqlite.run(insertQuery, values);
         
         // Process after insert - convert bigint to number if needed
         const rowId = typeof result.lastInsertRowid === 'bigint' 
@@ -201,9 +290,8 @@ export const apiHandler = {
         query = `SELECT * FROM ${tableName} WHERE ${idField} = ?`;
       }
       
-      // Prepare and execute the statement
-      const stmt = sqlite.prepareStatement(query);
-      const data = stmt.get(id);
+      // Execute the query directly instead of using a prepared statement
+      const data = await sqlite.get(query, [id]);
       
       if (!data) {
         return NextResponse.json(
@@ -250,8 +338,7 @@ export const apiHandler = {
   }) {
     try {
       // Check if record exists
-      const checkStmt = sqlite.prepareStatement(`SELECT ${idField} FROM ${tableName} WHERE ${idField} = ?`);
-      const existingRecord = checkStmt.get(id);
+      const existingRecord = await sqlite.get(`SELECT ${idField} FROM ${tableName} WHERE ${idField} = ?`, [id]);
       
       if (!existingRecord) {
         return NextResponse.json(
@@ -279,21 +366,19 @@ export const apiHandler = {
       const processedData = await beforeUpdate(transformedData);
       
       // Use a transaction for the update
-      return sqlite.transaction(async () => {
+      return await sqlite.transaction(async () => {
         // Get the fields and values for the update
         const fields = Object.keys(processedData);
         const setClause = fields.map(field => `${field} = ?`).join(', ');
         const values = [...fields.map(field => processedData[field]), id];
         
-        // Prepare the statement
-        const stmt = sqlite.prepareStatement(`
+        // Execute the update directly
+        const updateQuery = `
           UPDATE ${tableName}
           SET ${setClause}
           WHERE ${idField} = ?
-        `);
-        
-        // Execute the update
-        stmt.run(...values);
+        `;
+        await sqlite.run(updateQuery, values);
         
         // Process after update
         const finalData = await afterUpdate(id, processedData);
@@ -329,8 +414,7 @@ export const apiHandler = {
   }) {
     try {
       // Check if record exists
-      const checkStmt = sqlite.prepareStatement(`SELECT ${idField} FROM ${tableName} WHERE ${idField} = ?`);
-      const existingRecord = checkStmt.get(id);
+      const existingRecord = await sqlite.get(`SELECT ${idField} FROM ${tableName} WHERE ${idField} = ?`, [id]);
       
       if (!existingRecord) {
         return NextResponse.json(
@@ -350,12 +434,9 @@ export const apiHandler = {
       }
       
       // Use a transaction for the delete
-      return sqlite.transaction(async () => {
-        // Prepare the statement
-        const stmt = sqlite.prepareStatement(`DELETE FROM ${tableName} WHERE ${idField} = ?`);
-        
-        // Execute the delete
-        stmt.run(id);
+      return await sqlite.transaction(async () => {
+        // Execute the delete directly
+        await sqlite.run(`DELETE FROM ${tableName} WHERE ${idField} = ?`, [id]);
         
         // Process after delete
         const result = await afterDelete();

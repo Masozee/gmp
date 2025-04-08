@@ -1,41 +1,136 @@
-import { NextResponse } from "next/server"
+import { NextRequest, NextResponse } from "next/server"
 import sqlite from "@/lib/sqlite"
-import bcrypt from "bcryptjs"
+import { getServerSession } from "@/lib/server-auth"
 
-export async function POST(request: Request) {
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
   try {
-    const body = await request.json()
-    const { email, password } = body
+    const session = await getServerSession()
 
-    if (!email || !password) {
+    if (!session?.user) {
       return NextResponse.json(
-        { error: "Email and password are required" },
+        { error: "Unauthorized" },
+        { status: 401 }
+      )
+    }
+
+    const category = await sqlite.get(
+      "SELECT * FROM event_categories WHERE id = ?",
+      [params.id]
+    )
+
+    if (!category) {
+      return NextResponse.json(
+        { error: "Category not found" },
+        { status: 404 }
+      )
+    }
+
+    // Get publications count for this category
+    const publicationsCount = await sqlite.get(
+      "SELECT COUNT(*) as count FROM publications WHERE categoryId = ?",
+      [params.id]
+    )
+
+    // Add count to category
+    return NextResponse.json({
+      ...category,
+      publicationsCount: publicationsCount ? publicationsCount.count : 0
+    })
+  } catch (error) {
+    console.error("Failed to fetch category:", error)
+    return NextResponse.json(
+      { error: "Failed to fetch category" },
+      { status: 500 }
+    )
+  }
+}
+
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const session = await getServerSession()
+
+    if (!session?.user) {
+      return NextResponse.json(
+        { error: "Unauthorized" },
+        { status: 401 }
+      )
+    }
+
+    const { name, description } = await request.json()
+
+    if (!name) {
+      return NextResponse.json(
+        { error: "Name is required" },
         { status: 400 }
       )
     }
 
-    // Hash password
-    const hashedPassword = await bcrypt.hash(password, 10)
+    // Generate slug from name
+    const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, "-")
+    
+    const now = new Date().toISOString()
 
-    // Create user
-    const user = await sqlite.run(`INSERT INTO user({
-      data: {
-        email,
-        password: hashedPassword,
-      },
-    })
+    // Update the category
+    await sqlite.run(
+      "UPDATE event_categories SET name = ?, slug = ?, description = ?, updatedAt = ? WHERE id = ?",
+      [name, slug, description, now, params.id]
+    )
+    
+    // Get the updated category
+    const category = await sqlite.get(
+      "SELECT * FROM event_categories WHERE id = ?",
+      [params.id]
+    )
+    
+    // Get publications count
+    const publicationsCount = await sqlite.get(
+      "SELECT COUNT(*) as count FROM publications WHERE categoryId = ?",
+      [params.id]
+    )
 
     return NextResponse.json({
-      success: true,
-      user: {
-        id: user.id,
-        email: user.email,
-      },
+      ...category,
+      publicationsCount: publicationsCount ? publicationsCount.count : 0
     })
   } catch (error) {
-    console.error("Error creating test user:", error)
+    console.error("Failed to update category:", error)
     return NextResponse.json(
-      { error: "Failed to create test user" },
+      { error: "Failed to update category" },
+      { status: 500 }
+    )
+  }
+}
+
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const session = await getServerSession()
+
+    if (!session?.user) {
+      return NextResponse.json(
+        { error: "Unauthorized" },
+        { status: 401 }
+      )
+    }
+
+    await sqlite.run(
+      "DELETE FROM event_categories WHERE id = ?",
+      [params.id]
+    )
+
+    return new NextResponse(null, { status: 204 })
+  } catch (error) {
+    console.error("Failed to delete category:", error)
+    return NextResponse.json(
+      { error: "Failed to delete category" },
       { status: 500 }
     )
   }

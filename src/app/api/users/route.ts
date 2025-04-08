@@ -1,78 +1,136 @@
-// Import the database initialization module
-import "@/lib/initialize";
-
-import { NextResponse } from "next/server"
-import { hash } from "bcryptjs"
+import { NextRequest, NextResponse } from "next/server"
 import sqlite from "@/lib/sqlite"
-import { randomUUID } from "crypto"
+import { getServerSession } from "@/lib/server-auth"
 
-export async function GET() {
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
   try {
-    const users = sqlite.all(`
-      SELECT * FROM users
-    `);
+    const session = await getServerSession()
 
-    // Remove sensitive information before returning
-    const safeUsers = users.map(user => {
-      const { password, ...userWithoutPassword } = user;
-      return userWithoutPassword;
-    });
+    if (!session?.user) {
+      return NextResponse.json(
+        { error: "Unauthorized" },
+        { status: 401 }
+      )
+    }
 
-    return NextResponse.json(safeUsers);
+    const category = await sqlite.get(
+      "SELECT * FROM event_categories WHERE id = ?",
+      [params.id]
+    )
+
+    if (!category) {
+      return NextResponse.json(
+        { error: "Category not found" },
+        { status: 404 }
+      )
+    }
+
+    // Get publications count for this category
+    const publicationsCount = await sqlite.get(
+      "SELECT COUNT(*) as count FROM publications WHERE categoryId = ?",
+      [params.id]
+    )
+
+    // Add count to category
+    return NextResponse.json({
+      ...category,
+      publicationsCount: publicationsCount ? publicationsCount.count : 0
+    })
   } catch (error) {
-    console.error("Failed to fetch users:", error)
+    console.error("Failed to fetch category:", error)
     return NextResponse.json(
-      { error: "Failed to fetch users" },
+      { error: "Failed to fetch category" },
       { status: 500 }
     )
   }
 }
 
-export async function POST(request: Request) {
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
   try {
-    const body = await request.json()
-    const { email, password, firstName, lastName } = body
+    const session = await getServerSession()
 
-    // Check if user already exists
-    const existingUser = sqlite.get(
-      "SELECT * FROM users WHERE email = ?",
-      [email]
-    );
-
-    if (existingUser) {
+    if (!session?.user) {
       return NextResponse.json(
-        { error: "User already exists" },
+        { error: "Unauthorized" },
+        { status: 401 }
+      )
+    }
+
+    const { name, description } = await request.json()
+
+    if (!name) {
+      return NextResponse.json(
+        { error: "Name is required" },
         { status: 400 }
       )
     }
 
-    // Hash password
-    const hashedPassword = await hash(password, 12)
+    // Generate slug from name
+    const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, "-")
     
-    // Current timestamp
-    const now = new Date().toISOString();
-    const userId = randomUUID();
+    const now = new Date().toISOString()
 
-    // Create user
-    sqlite.run(
-      "INSERT INTO users (id, email, name, role, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, ?)",
-      [userId, email, `${firstName} ${lastName}`, "USER", now, now]
-    );
+    // Update the category
+    await sqlite.run(
+      "UPDATE event_categories SET name = ?, slug = ?, description = ?, updatedAt = ? WHERE id = ?",
+      [name, slug, description, now, params.id]
+    )
+    
+    // Get the updated category
+    const category = await sqlite.get(
+      "SELECT * FROM event_categories WHERE id = ?",
+      [params.id]
+    )
+    
+    // Get publications count
+    const publicationsCount = await sqlite.get(
+      "SELECT COUNT(*) as count FROM publications WHERE categoryId = ?",
+      [params.id]
+    )
 
-    // Get the created user
-    const createdUser = sqlite.get(
-      "SELECT * FROM users WHERE id = ?",
-      [userId]
-    );
-
-    // Remove password from response
-    const { password: _, ...userWithoutPassword } = createdUser;
-
-    return NextResponse.json(userWithoutPassword);
+    return NextResponse.json({
+      ...category,
+      publicationsCount: publicationsCount ? publicationsCount.count : 0
+    })
   } catch (error) {
-    console.error("Failed to create user:", error)
+    console.error("Failed to update category:", error)
     return NextResponse.json(
-      { error: "Failed to create user" },
+      { error: "Failed to update category" },
+      { status: 500 }
+    )
+  }
+}
+
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const session = await getServerSession()
+
+    if (!session?.user) {
+      return NextResponse.json(
+        { error: "Unauthorized" },
+        { status: 401 }
+      )
+    }
+
+    await sqlite.run(
+      "DELETE FROM event_categories WHERE id = ?",
+      [params.id]
+    )
+
+    return new NextResponse(null, { status: 204 })
+  } catch (error) {
+    console.error("Failed to delete category:", error)
+    return NextResponse.json(
+      { error: "Failed to delete category" },
       { status: 500 }
     )
   }

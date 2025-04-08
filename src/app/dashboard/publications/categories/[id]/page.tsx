@@ -1,7 +1,8 @@
 "use client"
 
+import React from "react"
 import { useState, useEffect } from "react"
-import { useRouter, useParams } from "next/navigation"
+import { useRouter } from "next/navigation"
 import { ArrowLeft, Eye } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -52,9 +53,10 @@ interface Category {
   }>
 }
 
-export default function CategoryDetailPage() {
+export default function CategoryDetailsPage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter()
-  const params = useParams()
+  const resolvedParams = React.use(params)
+  const categoryId = resolvedParams.id
   const [category, setCategory] = useState<Category | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -69,7 +71,7 @@ export default function CategoryDetailPage() {
     const fetchCategory = async () => {
       try {
         setLoading(true)
-        const response = await fetch(`/api/categories/${params.id}`)
+        const response = await fetch(`/api/categories/${categoryId}`)
         if (!response.ok) throw new Error("Failed to fetch category")
         const data = await response.json()
         setCategory(data)
@@ -81,7 +83,7 @@ export default function CategoryDetailPage() {
       }
     }
     fetchCategory()
-  }, [params.id])
+  }, [categoryId])
 
   if (loading) {
     return (

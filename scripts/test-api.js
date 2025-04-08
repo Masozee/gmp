@@ -3,9 +3,13 @@
 
 const http = require('http');
 const https = require('https');
+const { randomUUID } = require('crypto');
 
 // Base URL for local development
 const BASE_URL = 'http://localhost:3000';
+
+// Test authentication token (should be set via environment variable in real usage)
+const TEST_TOKEN = "test-auth-token";
 
 // Helper function to make HTTP requests
 async function makeRequest(endpoint, method = 'GET', data = null) {
@@ -16,7 +20,7 @@ async function makeRequest(endpoint, method = 'GET', data = null) {
   
   const url = new URL(endpoint, BASE_URL);
   
-  console.log(`Requesting ${url} with headers:`);
+  console.log(`\n[${method}] ${url.toString()}`);
   
   return new Promise((resolve, reject) => {
     const options = {
@@ -24,11 +28,10 @@ async function makeRequest(endpoint, method = 'GET', data = null) {
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
+        'Cookie': `token=${TEST_TOKEN}`,
         'X-API-Test': 'true'
       },
     };
-    
-    console.log(options.headers);
     
     // Choose http or https based on URL
     const client = url.protocol === 'https:' ? https : http;
@@ -47,7 +50,16 @@ async function makeRequest(endpoint, method = 'GET', data = null) {
         try {
           parsed = JSON.parse(body);
         } catch (e) {
-          parsed = body.substring(0, 500) + '...';
+          parsed = body;
+        }
+        
+        console.log(`✓ Status: ${res.statusCode} ${res.statusMessage}`);
+        
+        // Pretty print the response data
+        if (typeof parsed === 'object') {
+          console.log('Response:', JSON.stringify(parsed, null, 2));
+        } else {
+          console.log('Response:', parsed.substring(0, 200) + (parsed.length > 200 ? '...' : ''));
         }
         
         resolve({
@@ -60,6 +72,7 @@ async function makeRequest(endpoint, method = 'GET', data = null) {
     });
     
     req.on('error', (error) => {
+      console.error(`❌ Error: ${error.message}`);
       reject(error);
     });
     
@@ -71,69 +84,71 @@ async function makeRequest(endpoint, method = 'GET', data = null) {
   });
 }
 
+// Create an event for testing
+async function createTestEvent() {
+  const eventData = {
+    title: `Test Event ${new Date().toISOString().split('T')[0]}`,
+    description: "This is a test event created by the API test script",
+    location: "Test Location",
+    startDate: new Date(Date.now() + 86400000).toISOString(), // Tomorrow
+    endDate: new Date(Date.now() + 172800000).toISOString(), // Day after tomorrow
+    status: "DRAFT"
+  };
+  
+  console.log("\n=== Creating Test Event ===");
+  const response = await makeRequest('/events', 'POST', eventData);
+  
+  if (response.status === 201 && response.data.data && response.data.data.id) {
+    console.log(`✓ Test event created with ID: ${response.data.data.id}`);
+    return response.data.data.id;
+  } else {
+    console.error("❌ Failed to create test event");
+    return null;
+  }
+}
+
 // Function to test endpoints
 async function testEndpoints() {
   try {
     console.log('=== Testing API Endpoints ===\n');
     
-    // Test event-categories endpoint
-    console.log('Testing: GET /api/event-categories');
-    const categoriesResponse = await makeRequest('/event-categories');
-    console.log(`Status: ${categoriesResponse.status}`);
-    console.log(`Content-Type: ${categoriesResponse.headers['content-type'] || 'not specified'}`);
-    if (typeof categoriesResponse.data === 'object') {
-      console.log(`Data: ${JSON.stringify(categoriesResponse.data, null, 2)}`);
-    } else {
-      console.log(`Data: ${categoriesResponse.data.substring(0, 200)}...`);
-    }
-    console.log('\n----------------------------\n');
-    
-    // Test events endpoint
-    console.log('Testing: GET /api/events');
+    // Test events list endpoint
+    console.log('=== Testing: GET /api/events ===');
     const eventsResponse = await makeRequest('/events');
-    console.log(`Status: ${eventsResponse.status}`);
-    console.log(`Content-Type: ${eventsResponse.headers['content-type'] || 'not specified'}`);
-    if (typeof eventsResponse.data === 'object') {
-      console.log(`Data: ${JSON.stringify(eventsResponse.data, null, 2)}`);
-    } else {
-      console.log(`Data: ${eventsResponse.data.substring(0, 200)}...`);
-    }
-    console.log('\n----------------------------\n');
+    console.log(`✓ Success: ${eventsResponse.status === 200}`);
     
-    // Test publications endpoint
-    console.log('Testing: GET /api/publications');
-    const publicationsResponse = await makeRequest('/publications');
-    console.log(`Status: ${publicationsResponse.status}`);
-    console.log(`Content-Type: ${publicationsResponse.headers['content-type'] || 'not specified'}`);
-    if (typeof publicationsResponse.data === 'object') {
-      console.log(`Data: ${JSON.stringify(publicationsResponse.data, null, 2)}`);
-    } else {
-      console.log(`Data: ${publicationsResponse.data.substring(0, 200)}...`);
-    }
-    console.log('\n----------------------------\n');
+    // Create a test event
+    const eventId = await createTestEvent();
     
-    // Test users endpoint
-    console.log('Testing: GET /api/users');
-    const usersResponse = await makeRequest('/users');
-    console.log(`Status: ${usersResponse.status}`);
-    console.log(`Content-Type: ${usersResponse.headers['content-type'] || 'not specified'}`);
-    if (typeof usersResponse.data === 'object') {
-      console.log(`Data: ${JSON.stringify(usersResponse.data, null, 2)}`);
-    } else {
-      console.log(`Data: ${usersResponse.data.substring(0, 200)}...`);
+    if (eventId) {
+      // Test getting a single event
+      console.log(`\n=== Testing: GET /api/events/${eventId} ===`);
+      const eventResponse = await makeRequest(`/events/${eventId}`);
+      console.log(`✓ Success: ${eventResponse.status === 200}`);
+      
+      // Test updating the event
+      console.log(`\n=== Testing: PATCH /api/events/${eventId} ===`);
+      const updateData = {
+        title: `Updated Test Event ${new Date().toISOString().split('T')[0]}`,
+        description: "This event was updated by the API test script",
+        location: "Updated Location"
+      };
+      
+      const updateResponse = await makeRequest(`/events/${eventId}`, 'PATCH', updateData);
+      console.log(`✓ Success: ${updateResponse.status === 200}`);
+      
+      // Test deleting the event
+      console.log(`\n=== Testing: DELETE /api/events/${eventId} ===`);
+      const deleteResponse = await makeRequest(`/events/${eventId}`, 'DELETE');
+      console.log(`✓ Success: ${deleteResponse.status === 204}`);
     }
-    console.log('\n----------------------------\n');
     
-    console.log('API Tests Completed!');
+    console.log('\n=== API Tests Completed! ===');
     
   } catch (error) {
     console.error('Error testing API endpoints:', error);
   }
 }
 
-// Execute tests after a short delay to allow the server to start
-setTimeout(() => {
-  testEndpoints();
-}, 3000);
-
-console.log('Waiting for server to be ready...'); 
+// Run the tests
+testEndpoints(); 

@@ -1,22 +1,11 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import { Plus_Jakarta_Sans, PT_Serif } from "next/font/google";
-import { Toaster } from "@/components/ui/toaster";
+import { PT_Serif } from "next/font/google";
+import { Toaster } from "@/components/ui/toast";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ThemeContextProvider } from "@/components/theme-context";
 import "./globals.css";
 import { cn } from "@/lib/utils";
-
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-});
-
-const plusJakartaSans = Plus_Jakarta_Sans({
-  variable: "--font-plus-jakarta-sans",
-  subsets: ["latin"],
-  display: "swap",
-});
+import { sora } from "@/lib/fonts";
 
 const ptSerif = PT_Serif({
   variable: "--font-pt-serif",
@@ -40,11 +29,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head />
       <body
         className={cn(
           "min-h-screen bg-background font-sans antialiased",
-          inter.variable,
-          plusJakartaSans.variable,
+          sora.variable,
           ptSerif.variable
         )}
       >

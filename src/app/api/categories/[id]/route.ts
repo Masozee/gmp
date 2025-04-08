@@ -2,9 +2,12 @@ import { NextRequest, NextResponse } from "next/server"
 import sqlite from "@/lib/sqlite"
 import { getServerSession } from "@/lib/server-auth"
 
+// Define the context type outside of the function
+type RouteContext = { params: { id: string } };
+
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: RouteContext
 ) {
   try {
     const session = await getServerSession()
@@ -16,35 +19,10 @@ export async function GET(
       )
     }
 
-    const category = await sqlite.get(`SELECT * FROM category WHERE({
-      where: { id: params.id },
-      include: {
-        publications: {
-          include: {
-            publication: {
-              include: {
-                authors: {
-                  include: {
-                    profile: {
-                      select: {
-                        firstName: true,
-                        lastName: true,
-                        photoUrl: true,
-                      },
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
-        _count: {
-          select: {
-            publications: true,
-          },
-        },
-      },
-    })
+    const category = await sqlite.get(
+      "SELECT * FROM event_categories WHERE id = ?",
+      [params.id]
+    )
 
     if (!category) {
       return NextResponse.json(
@@ -53,7 +31,17 @@ export async function GET(
       )
     }
 
-    return NextResponse.json(category)
+    // Get publications count for this category
+    const publicationsCount = await sqlite.get(
+      "SELECT COUNT(*) as count FROM publications WHERE categoryId = ?",
+      [params.id]
+    )
+
+    // Add count to category
+    return NextResponse.json({
+      ...category,
+      publicationsCount: publicationsCount ? publicationsCount.count : 0
+    })
   } catch (error) {
     console.error("Failed to fetch category:", error)
     return NextResponse.json(
@@ -65,7 +53,7 @@ export async function GET(
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: RouteContext
 ) {
   try {
     const session = await getServerSession()
@@ -88,24 +76,31 @@ export async function PATCH(
 
     // Generate slug from name
     const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, "-")
+    
+    const now = new Date().toISOString()
 
-    const category = await sqlite.run(`UPDATE category SET({
-      where: { id: params.id },
-      data: {
-        name,
-        slug,
-        description,
-      },
-      include: {
-        _count: {
-          select: {
-            publications: true,
-          },
-        },
-      },
+    // Update the category
+    await sqlite.run(
+      "UPDATE event_categories SET name = ?, slug = ?, description = ?, updatedAt = ? WHERE id = ?",
+      [name, slug, description, now, params.id]
+    )
+    
+    // Get the updated category
+    const category = await sqlite.get(
+      "SELECT * FROM event_categories WHERE id = ?",
+      [params.id]
+    )
+    
+    // Get publications count
+    const publicationsCount = await sqlite.get(
+      "SELECT COUNT(*) as count FROM publications WHERE categoryId = ?",
+      [params.id]
+    )
+
+    return NextResponse.json({
+      ...category,
+      publicationsCount: publicationsCount ? publicationsCount.count : 0
     })
-
-    return NextResponse.json(category)
   } catch (error) {
     console.error("Failed to update category:", error)
     return NextResponse.json(
@@ -117,7 +112,7 @@ export async function PATCH(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: RouteContext
 ) {
   try {
     const session = await getServerSession()
@@ -129,9 +124,10 @@ export async function DELETE(
       )
     }
 
-    await sqlite.run(`DELETE FROM category WHERE({
-      where: { id: params.id },
-    })
+    await sqlite.run(
+      "DELETE FROM event_categories WHERE id = ?",
+      [params.id]
+    )
 
     return new NextResponse(null, { status: 204 })
   } catch (error) {

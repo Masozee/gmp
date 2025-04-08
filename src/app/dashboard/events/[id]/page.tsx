@@ -1,8 +1,9 @@
 "use client"
 
+import React from "react"
 import { useEffect, useState } from "react"
 import Link from "next/link"
-import { useParams, useRouter } from "next/navigation"
+import { useRouter } from "next/navigation"
 import { CalendarDays, Pencil, ArrowLeft, AlertCircle, Loader2, User } from "lucide-react"
 import { format } from "date-fns"
 import Image from "next/image"
@@ -57,8 +58,9 @@ interface Event {
   }[];
 }
 
-export default function EventDetailPage() {
-  const params = useParams<{ id: string }>();
+export default function EventDetailsPage({ params }: { params: Promise<{ id: string }> }) {
+  const resolvedParams = React.use(params);
+  const eventId = resolvedParams.id;
   const [event, setEvent] = useState<Event | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -67,7 +69,7 @@ export default function EventDetailPage() {
     const fetchEvent = async () => {
       try {
         setIsLoading(true);
-        const response = await fetch(`/api/events/${params.id}`);
+        const response = await fetch(`/api/events/${eventId}`);
         
         if (!response.ok) {
           throw new Error(`Failed to fetch event: ${response.statusText}`);
@@ -83,10 +85,10 @@ export default function EventDetailPage() {
       }
     };
 
-    if (params.id) {
+    if (eventId) {
       fetchEvent();
     }
-  }, [params.id]);
+  }, [eventId]);
 
   return (
     <div className="container mx-auto py-6 space-y-6">

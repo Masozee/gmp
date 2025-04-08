@@ -1,11 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import sqlite from "@/lib/sqlite"
 import { getServerSession } from "@/lib/server-auth"
-import { writeFile, unlink } from "fs/promises"
-import { join } from "path"
-import { cwd } from "process"
-import { mkdir, access } from "fs/promises"
-import { constants } from "fs"
 
 export async function GET(
   request: NextRequest,
@@ -21,45 +16,33 @@ export async function GET(
       )
     }
 
-    const speaker = await sqlite.get(`SELECT * FROM speaker WHERE({
-      where: { id: params.id },
-      include: {
-        events: {
-          include: {
-            event: true
-          },
-          orderBy: {
-            event: {
-              startDate: 'desc'
-            }
-          }
-        },
-        presentations: {
-          orderBy: {
-            startTime: 'desc'
-          }
-        },
-        _count: {
-          select: {
-            events: true,
-            presentations: true
-          }
-        }
-      }
-    })
+    const category = await sqlite.get(
+      "SELECT * FROM event_categories WHERE id = ?",
+      [params.id]
+    )
 
-    if (!speaker) {
+    if (!category) {
       return NextResponse.json(
-        { error: "Speaker not found" },
+        { error: "Category not found" },
         { status: 404 }
       )
     }
 
-    return NextResponse.json(speaker)
+    // Get publications count for this category
+    const publicationsCount = await sqlite.get(
+      "SELECT COUNT(*) as count FROM publications WHERE categoryId = ?",
+      [params.id]
+    )
+
+    // Add count to category
+    return NextResponse.json({
+      ...category,
+      publicationsCount: publicationsCount ? publicationsCount.count : 0
+    })
   } catch (error) {
-    console.error("Failed to fetch speaker:", error)
+    console.error("Failed to fetch category:", error)
     return NextResponse.json(
-      { error: "Failed to fetch speaker" },
+      { error: "Failed to fetch category" },
       { status: 500 }
     )
   }
@@ -79,112 +62,46 @@ export async function PATCH(
       )
     }
 
-    // Check if the speaker exists
-    const existingSpeaker = await sqlite.get(`SELECT * FROM speaker WHERE({
-      where: { id: params.id },
-    })
+    const { name, description } = await request.json()
 
-    if (!existingSpeaker) {
+    if (!name) {
       return NextResponse.json(
-        { error: "Speaker not found" },
-        { status: 404 }
+        { error: "Name is required" },
+        { status: 400 }
       )
     }
 
-    const formData = await request.formData()
-    const firstName = formData.get("firstName") as string
-    const lastName = formData.get("lastName") as string
-    const email = formData.get("email") as string
-    const organization = formData.get("organization") as string
-    const position = formData.get("position") as string
-    const bio = formData.get("bio") as string
-    const photo = formData.get("photo") as File | null
-
-    // If email is being changed, check if it's already in use
-    if (email && email !== existingSpeaker.email) {
-      const emailExists = await sqlite.get(`SELECT * FROM speaker({
-        where: { 
-          email,
-          id: { not: params.id }
-        },
-      })
-
-      if (emailExists) {
-        return NextResponse.json(
-          { error: "Email already in use" },
-          { status: 400 }
-        )
-      }
-    }
-
-    // Handle photo upload
-    let photoUrl: string | undefined = undefined
-    if (photo) {
-      try {
-        // Create uploads directory if it doesn't exist
-        const uploadsDir = join(cwd(), "public", "uploads")
-        try {
-          await access(uploadsDir, constants.F_OK)
-        } catch (error) {
-          await mkdir(uploadsDir, { recursive: true })
-        }
-
-        // Generate a unique filename for the photo
-        const filename = `${Date.now()}-${Math.floor(Math.random() * 1000000000)}-${photo.name}`
-        const filePath = join(uploadsDir, filename)
-        
-        // Write the file to disk
-        const buffer = Buffer.from(await photo.arrayBuffer())
-        await writeFile(filePath, buffer)
-        
-        // Set the photo URL (relative to /public)
-        photoUrl = `/uploads/${filename}`
-        
-        // Delete old photo if exists
-        if (existingSpeaker.photoUrl && existingSpeaker.photoUrl.startsWith('/uploads/')) {
-          try {
-            const oldFilePath = join(cwd(), "public", existingSpeaker.photoUrl)
-            await unlink(oldFilePath)
-          } catch (error) {
-            console.error("Error deleting old photo:", error)
-          }
-        }
-      } catch (error) {
-        console.error("Error uploading photo:", error)
-      }
-    }
-
-    // Update the speaker in the database
-    const updateData: any = {
-      updatedAt: new Date(),
-    }
+    // Generate slug from name
+    const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, "-")
     
-    if (firstName) updateData.firstName = firstName
-    if (lastName) updateData.lastName = lastName
-    if (email) updateData.email = email
-    if (organization !== undefined) updateData.organization = organization
-    if (position !== undefined) updateData.position = position
-    if (bio !== undefined) updateData.bio = bio
-    if (photoUrl) updateData.photoUrl = photoUrl
+    const now = new Date().toISOString()
 
-    const speaker = await sqlite.run(`UPDATE speaker SET({
-      where: { id: params.id },
-      data: updateData,
-      include: {
-        _count: {
-          select: {
-            events: true,
-            presentations: true
-          }
-        }
-      }
+    // Update the category
+    await sqlite.run(
+      "UPDATE event_categories SET name = ?, slug = ?, description = ?, updatedAt = ? WHERE id = ?",
+      [name, slug, description, now, params.id]
+    )
+    
+    // Get the updated category
+    const category = await sqlite.get(
+      "SELECT * FROM event_categories WHERE id = ?",
+      [params.id]
+    )
+    
+    // Get publications count
+    const publicationsCount = await sqlite.get(
+      "SELECT COUNT(*) as count FROM publications WHERE categoryId = ?",
+      [params.id]
+    )
+
+    return NextResponse.json({
+      ...category,
+      publicationsCount: publicationsCount ? publicationsCount.count : 0
     })
-
-    return NextResponse.json(speaker)
   } catch (error) {
-    console.error("Failed to update speaker:", error)
+    console.error("Failed to update category:", error)
     return NextResponse.json(
-      { error: "Failed to update speaker" },
+      { error: "Failed to update category" },
       { status: 500 }
     )
   }
@@ -204,58 +121,16 @@ export async function DELETE(
       )
     }
 
-    // Check if the speaker exists
-    const existingSpeaker = await sqlite.get(`SELECT * FROM speaker WHERE({
-      where: { id: params.id },
-      include: {
-        _count: {
-          select: {
-            events: true,
-            presentations: true
-          }
-        }
-      }
-    })
+    await sqlite.run(
+      "DELETE FROM event_categories WHERE id = ?",
+      [params.id]
+    )
 
-    if (!existingSpeaker) {
-      return NextResponse.json(
-        { error: "Speaker not found" },
-        { status: 404 }
-      )
-    }
-
-    // Check if there are events or presentations linked to this speaker
-    if (existingSpeaker._count.events > 0 || existingSpeaker._count.presentations > 0) {
-      return NextResponse.json(
-        { 
-          error: "Cannot delete speaker with associated events or presentations",
-          eventsCount: existingSpeaker._count.events,
-          presentationsCount: existingSpeaker._count.presentations
-        },
-        { status: 400 }
-      )
-    }
-
-    // Delete the speaker
-    await sqlite.run(`DELETE FROM speaker WHERE({
-      where: { id: params.id },
-    })
-
-    // Delete photo if exists
-    if (existingSpeaker.photoUrl && existingSpeaker.photoUrl.startsWith('/uploads/')) {
-      try {
-        const filePath = join(cwd(), "public", existingSpeaker.photoUrl)
-        await unlink(filePath)
-      } catch (error) {
-        console.error("Error deleting photo:", error)
-      }
-    }
-
-    return NextResponse.json({ success: true })
+    return new NextResponse(null, { status: 204 })
   } catch (error) {
-    console.error("Failed to delete speaker:", error)
+    console.error("Failed to delete category:", error)
     return NextResponse.json(
-      { error: "Failed to delete speaker" },
+      { error: "Failed to delete category" },
       { status: 500 }
     )
   }

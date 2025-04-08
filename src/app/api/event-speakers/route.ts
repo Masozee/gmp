@@ -1,144 +1,136 @@
 import { NextRequest, NextResponse } from "next/server"
-import { getServerSession } from "@/lib/server-auth"
-import { z } from "zod"
-
 import sqlite from "@/lib/sqlite"
+import { getServerSession } from "@/lib/server-auth"
 
-const eventSpeakerSchema = z.object({
-  eventId: z.string().min(1, "Event ID is required"),
-  speakerId: z.string().min(1, "Speaker ID is required"),
-  role: z.string().optional(),
-  order: z.number().int().min(1).default(1),
-})
-
-export async function GET(req: NextRequest) {
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
   try {
     const session = await getServerSession()
-    if (!session) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+
+    if (!session?.user) {
+      return NextResponse.json(
+        { error: "Unauthorized" },
+        { status: 401 }
+      )
     }
 
-    // Get query parameters
-    const url = new URL(req.url)
-    const eventId = url.searchParams.get("eventId")
-    const speakerId = url.searchParams.get("speakerId")
+    const category = await sqlite.get(
+      "SELECT * FROM event_categories WHERE id = ?",
+      [params.id]
+    )
 
-    // Build the query
-    const query: any = {}
-    if (eventId) query.eventId = eventId
-    if (speakerId) query.speakerId = speakerId
+    if (!category) {
+      return NextResponse.json(
+        { error: "Category not found" },
+        { status: 404 }
+      )
+    }
 
-    // Get event speakers with related data
-    const eventSpeakers = await sqlite.all(`SELECT * FROM eventSpeaker({
-      where: query,
-      include: {
-        event: {
-          select: {
-            id: true,
-            title: true,
-            startDate: true,
-            endDate: true,
-          },
-        },
-        speaker: {
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true,
-            organization: true,
-            position: true,
-            photoUrl: true,
-          },
-        },
-      },
-      orderBy: [
-        { order: "asc" },
-        { speaker: { firstName: "asc" } },
-      ],
+    // Get publications count for this category
+    const publicationsCount = await sqlite.get(
+      "SELECT COUNT(*) as count FROM publications WHERE categoryId = ?",
+      [params.id]
+    )
+
+    // Add count to category
+    return NextResponse.json({
+      ...category,
+      publicationsCount: publicationsCount ? publicationsCount.count : 0
     })
-
-    return NextResponse.json(eventSpeakers)
   } catch (error) {
-    console.error("Error fetching event speakers:", error)
+    console.error("Failed to fetch category:", error)
     return NextResponse.json(
-      { error: "Failed to fetch event speakers" },
+      { error: "Failed to fetch category" },
       { status: 500 }
     )
   }
 }
 
-export async function POST(req: NextRequest) {
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
   try {
     const session = await getServerSession()
-    if (!session) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-    }
 
-    // Parse and validate the request body
-    const body = await req.json()
-    const validatedData = eventSpeakerSchema.parse(body)
-
-    // Check if event exists
-    const event = await sqlite.get(`SELECT * FROM event WHERE({
-      where: { id: validatedData.eventId },
-    })
-    if (!event) {
-      return NextResponse.json({ error: "Event not found" }, { status: 404 })
-    }
-
-    // Check if speaker exists
-    const speaker = await sqlite.get(`SELECT * FROM speaker WHERE({
-      where: { id: validatedData.speakerId },
-    })
-    if (!speaker) {
-      return NextResponse.json({ error: "Speaker not found" }, { status: 404 })
-    }
-
-    // Check if the relationship already exists
-    const existingRelation = await sqlite.get(`SELECT * FROM eventSpeaker({
-      where: {
-        eventId: validatedData.eventId,
-        speakerId: validatedData.speakerId,
-      },
-    })
-    if (existingRelation) {
+    if (!session?.user) {
       return NextResponse.json(
-        { error: "Speaker is already assigned to this event" },
+        { error: "Unauthorized" },
+        { status: 401 }
+      )
+    }
+
+    const { name, description } = await request.json()
+
+    if (!name) {
+      return NextResponse.json(
+        { error: "Name is required" },
         { status: 400 }
       )
     }
 
-    // Create the event speaker relationship
-    const eventSpeaker = await sqlite.run(`INSERT INTO eventSpeaker({
-      data: {
-        eventId: validatedData.eventId,
-        speakerId: validatedData.speakerId,
-        role: validatedData.role,
-        order: validatedData.order,
-      },
-      include: {
-        speaker: {
-          select: {
-            firstName: true,
-            lastName: true,
-            organization: true,
-          },
-        },
-      },
-    })
+    // Generate slug from name
+    const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, "-")
+    
+    const now = new Date().toISOString()
 
-    return NextResponse.json(eventSpeaker, { status: 201 })
+    // Update the category
+    await sqlite.run(
+      "UPDATE event_categories SET name = ?, slug = ?, description = ?, updatedAt = ? WHERE id = ?",
+      [name, slug, description, now, params.id]
+    )
+    
+    // Get the updated category
+    const category = await sqlite.get(
+      "SELECT * FROM event_categories WHERE id = ?",
+      [params.id]
+    )
+    
+    // Get publications count
+    const publicationsCount = await sqlite.get(
+      "SELECT COUNT(*) as count FROM publications WHERE categoryId = ?",
+      [params.id]
+    )
+
+    return NextResponse.json({
+      ...category,
+      publicationsCount: publicationsCount ? publicationsCount.count : 0
+    })
   } catch (error) {
-    if (error instanceof z.ZodError) {
+    console.error("Failed to update category:", error)
+    return NextResponse.json(
+      { error: "Failed to update category" },
+      { status: 500 }
+    )
+  }
+}
+
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const session = await getServerSession()
+
+    if (!session?.user) {
       return NextResponse.json(
-        { error: "Invalid data", details: error.errors },
-        { status: 400 }
+        { error: "Unauthorized" },
+        { status: 401 }
       )
     }
 
-    console.error("Error creating event speaker:", error)
+    await sqlite.run(
+      "DELETE FROM event_categories WHERE id = ?",
+      [params.id]
+    )
+
+    return new NextResponse(null, { status: 204 })
+  } catch (error) {
+    console.error("Failed to delete category:", error)
     return NextResponse.json(
-      { error: "Failed to create event speaker" },
+      { error: "Failed to delete category" },
       { status: 500 }
     )
   }

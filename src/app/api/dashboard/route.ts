@@ -1,108 +1,137 @@
-import { NextRequest, NextResponse } from "next/server";
-import sqlite from "@/lib/sqlite";
-import { startOfDay, subDays } from "date-fns";
-import { getServerSession } from "@/lib/server-auth";
+import { NextRequest, NextResponse } from "next/server"
+import sqlite from "@/lib/sqlite"
+import { getServerSession } from "@/lib/server-auth"
 
-export async function GET(request: NextRequest) {
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
   try {
-    const session = await getServerSession();
+    const session = await getServerSession()
 
     if (!session?.user) {
       return NextResponse.json(
         { error: "Unauthorized" },
         { status: 401 }
-      );
+      )
     }
 
-    // Get total counts
-    const [
-      totalUsers,
-      totalPublications,
-      totalEvents,
-      totalProfiles,
-      recentErrorLogs,
-      publicationsByStatus,
-      eventsByStatus,
-      recentPublications,
-      upcomingEvents
-    ] = await Promise.all([
-      sqlite.get(`SELECT COUNT(*) as count FROM user(),
-      sqlite.get(`SELECT COUNT(*) as count FROM publication(),
-      sqlite.get(`SELECT COUNT(*) as count FROM event(),
-      sqlite.get(`SELECT COUNT(*) as count FROM profile(),
-      sqlite.all(`SELECT * FROM errorLog({
-        where: {
-          createdAt: {
-            gte: subDays(new Date(), 7)
-          }
-        },
-        orderBy: {
-          createdAt: 'desc'
-        },
-        take: 5
-      }),
-      prisma.publication.groupBy({
-        by: ['status'],
-        _count: true
-      }),
-      prisma.event.groupBy({
-        by: ['status'],
-        _count: true
-      }),
-      sqlite.all(`SELECT * FROM publication({
-        orderBy: {
-          createdAt: 'desc'
-        },
-        take: 5,
-        include: {
-          authors: {
-            include: {
-              profile: true
-            }
-          }
-        }
-      }),
-      sqlite.all(`SELECT * FROM event({
-        where: {
-          startDate: {
-            gte: new Date()
-          }
-        },
-        orderBy: {
-          startDate: 'asc'
-        },
-        take: 5,
-        include: {
-          category: true
-        }
-      })
-    ]);
+    const category = await sqlite.get(
+      "SELECT * FROM event_categories WHERE id = ?",
+      [params.id]
+    )
 
-    // Calculate error rate
-    const totalErrors = recentErrorLogs.length;
-    const errorRate = totalErrors > 0 ? ((totalErrors / 7).toFixed(2)) : 0;
+    if (!category) {
+      return NextResponse.json(
+        { error: "Category not found" },
+        { status: 404 }
+      )
+    }
+
+    // Get publications count for this category
+    const publicationsCount = await sqlite.get(
+      "SELECT COUNT(*) as count FROM publications WHERE categoryId = ?",
+      [params.id]
+    )
+
+    // Add count to category
+    return NextResponse.json({
+      ...category,
+      publicationsCount: publicationsCount ? publicationsCount.count : 0
+    })
+  } catch (error) {
+    console.error("Failed to fetch category:", error)
+    return NextResponse.json(
+      { error: "Failed to fetch category" },
+      { status: 500 }
+    )
+  }
+}
+
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const session = await getServerSession()
+
+    if (!session?.user) {
+      return NextResponse.json(
+        { error: "Unauthorized" },
+        { status: 401 }
+      )
+    }
+
+    const { name, description } = await request.json()
+
+    if (!name) {
+      return NextResponse.json(
+        { error: "Name is required" },
+        { status: 400 }
+      )
+    }
+
+    // Generate slug from name
+    const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, "-")
+    
+    const now = new Date().toISOString()
+
+    // Update the category
+    await sqlite.run(
+      "UPDATE event_categories SET name = ?, slug = ?, description = ?, updatedAt = ? WHERE id = ?",
+      [name, slug, description, now, params.id]
+    )
+    
+    // Get the updated category
+    const category = await sqlite.get(
+      "SELECT * FROM event_categories WHERE id = ?",
+      [params.id]
+    )
+    
+    // Get publications count
+    const publicationsCount = await sqlite.get(
+      "SELECT COUNT(*) as count FROM publications WHERE categoryId = ?",
+      [params.id]
+    )
 
     return NextResponse.json({
-      overview: {
-        totalUsers,
-        totalPublications,
-        totalEvents,
-        totalProfiles,
-        errorRate
-      },
-      publicationStats: publicationsByStatus,
-      eventStats: eventsByStatus,
-      recentActivity: {
-        publications: recentPublications,
-        events: upcomingEvents,
-        errorLogs: recentErrorLogs
-      }
-    });
+      ...category,
+      publicationsCount: publicationsCount ? publicationsCount.count : 0
+    })
   } catch (error) {
-    console.error('Dashboard data fetch error:', error);
+    console.error("Failed to update category:", error)
     return NextResponse.json(
-      { error: 'Failed to fetch dashboard data' },
+      { error: "Failed to update category" },
       { status: 500 }
-    );
+    )
+  }
+}
+
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const session = await getServerSession()
+
+    if (!session?.user) {
+      return NextResponse.json(
+        { error: "Unauthorized" },
+        { status: 401 }
+      )
+    }
+
+    await sqlite.run(
+      "DELETE FROM event_categories WHERE id = ?",
+      [params.id]
+    )
+
+    return new NextResponse(null, { status: 204 })
+  } catch (error) {
+    console.error("Failed to delete category:", error)
+    return NextResponse.json(
+      { error: "Failed to delete category" },
+      { status: 500 }
+    )
   }
 } 

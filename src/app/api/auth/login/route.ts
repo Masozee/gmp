@@ -1,87 +1,92 @@
 import { NextRequest, NextResponse } from "next/server"
-import sqlite from "@/lib/sqlite"
-import { compare } from "bcryptjs"
+import bcrypt from "bcryptjs"
 import { signToken } from "@/lib/edge-jwt"
-import { z } from "zod"
+import sqlite from "@/lib/sqlite"
+import { apiResponse } from "@/lib/api-helpers"
+import logger from "@/lib/logger"
 
+// This should be in an environment variable in a real application
+const JWT_SECRET = process.env.JWT_SECRET || "test_jwt_secret_for_development_only"
+const JWT_EXPIRY = "24h" // 24 hours
 
-// Validation schema
-const loginSchema = z.object({
-  email: z.string().email("Invalid email address"),
-  password: z.string().min(1, "Password is required"),
-})
-
+/**
+ * Handle user login
+ */
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json()
+    const { email, password } = await request.json()
 
-    // Validate input
-    const validationResult = loginSchema.safeParse(body)
-    if (!validationResult.success) {
-      return NextResponse.json(
-        { error: validationResult.error.errors[0].message },
-        { status: 400 }
-      )
+    // Validate required fields
+    if (!email) {
+      return apiResponse.badRequest("Email is required")
+    }
+    
+    if (!password) {
+      return apiResponse.badRequest("Password is required")
     }
 
-    const { email, password } = validationResult.data
+    // Find user by email
+    const user = await sqlite.get(
+      "SELECT id, email, password, role FROM users WHERE email = ?",
+      [email]
+    )
 
-    const user = await sqlite.get(`SELECT * FROM user WHERE({
-      where: { email: email.toLowerCase() },
-      select: {
-        id: true,
-        email: true,
-        password: true,
-        name: true,
-      },
-    })
-
-    if (!user || !user.password) {
-      return NextResponse.json(
-        { error: "Invalid email or password" },
-        { status: 401 }
-      )
+    // User not found
+    if (!user) {
+      return apiResponse.error("Invalid email or password", 401)
     }
 
-    const isValidPassword = await compare(password, user.password)
-    if (!isValidPassword) {
-      return NextResponse.json(
-        { error: "Invalid email or password" },
-        { status: 401 }
-      )
+    // Verify password
+    const passwordValid = await bcrypt.compare(password, user.password)
+    
+    if (!passwordValid) {
+      // Log failed login attempt
+      logger.warn(`Failed login attempt for user ${email}`, { userId: user.id })
+      return apiResponse.error("Invalid email or password", 401)
     }
 
-    // Create session token
-    const token = await signToken({
+    // Create payload for JWT token
+    const tokenPayload = {
       id: user.id,
-      email: user.email || "",
-      role: "USER",
-    })
+      email: user.email,
+      role: user.role
+    }
+    
+    // Create JWT token using jose (same library used in middleware)
+    const token = await signToken(tokenPayload)
+    console.log(`[Login API] Generated token (first 20 chars): ${token.substring(0, 20)}...`);
 
-    // Set cookie and return response
+    // Create response with user data
     const response = NextResponse.json({
-      user: {
+      success: true,
+      data: {
         id: user.id,
         email: user.email,
-        name: user.name,
-      },
-      success: true,
+        role: user.role
+      }
     })
 
-    response.cookies.set("token", token, {
+    // Set HttpOnly cookie directly on the response
+    response.cookies.set({
+      name: "token",
+      value: token,
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production", // Only send cookie over HTTPS in production
+      sameSite: "lax", // Changed from strict to lax for better compatibility
+      maxAge: 24 * 60 * 60, // 24 hours
       path: "/",
-      expires: new Date(Date.now() + 24 * 60 * 60 * 1000), // 1 day
     })
+    
+    console.log(`[Login API] Set token cookie for user: ${email}`);
+    console.log(`[Login API] Cookies in response:`, response.cookies);
+
+    // Log successful login
+    logger.info(`User ${email} logged in successfully`, { userId: user.id })
 
     return response
   } catch (error) {
-    console.error("Login error:", error)
-    return NextResponse.json(
-      { error: "An error occurred during login" },
-      { status: 500 }
-    )
+    console.error("[Login API] Error during login:", error);
+    logger.error("Login error", error instanceof Error ? error : new Error(String(error)))
+    return apiResponse.error("An error occurred during login")
   }
 } 

@@ -1,11 +1,13 @@
 import { NextRequest, NextResponse } from "next/server"
 import sqlite from "@/lib/sqlite"
 import { getServerSession } from "@/lib/server-auth"
-import slugify from "slugify"
+
+// Define the context type outside of the function
+type RouteContext = { params: { id: string } };
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: RouteContext
 ) {
   try {
     const session = await getServerSession()
@@ -17,25 +19,10 @@ export async function GET(
       )
     }
 
-    const id = params.id
-    
-    if (!id) {
-      return NextResponse.json(
-        { error: "Category ID is required" },
-        { status: 400 }
-      )
-    }
-
-    const category = await sqlite.get(`SELECT * FROM eventCategory WHERE({
-      where: { id },
-      include: {
-        _count: {
-          select: {
-            events: true
-          }
-        }
-      }
-    })
+    const category = await sqlite.get(
+      "SELECT * FROM event_categories WHERE id = ?",
+      [params.id]
+    )
 
     if (!category) {
       return NextResponse.json(
@@ -44,11 +31,21 @@ export async function GET(
       )
     }
 
-    return NextResponse.json(category)
+    // Get publications count for this category
+    const publicationsCount = await sqlite.get(
+      "SELECT COUNT(*) as count FROM publications WHERE categoryId = ?",
+      [params.id]
+    )
+
+    // Add count to category
+    return NextResponse.json({
+      ...category,
+      publicationsCount: publicationsCount ? publicationsCount.count : 0
+    })
   } catch (error) {
-    console.error("Failed to fetch event category:", error)
+    console.error("Failed to fetch category:", error)
     return NextResponse.json(
-      { error: "Failed to fetch event category" },
+      { error: "Failed to fetch category" },
       { status: 500 }
     )
   }
@@ -56,7 +53,7 @@ export async function GET(
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: RouteContext
 ) {
   try {
     const session = await getServerSession()
@@ -68,17 +65,7 @@ export async function PATCH(
       )
     }
 
-    const id = params.id
-    
-    if (!id) {
-      return NextResponse.json(
-        { error: "Category ID is required" },
-        { status: 400 }
-      )
-    }
-
-    const json = await request.json()
-    const { name, description } = json
+    const { name, description } = await request.json()
 
     if (!name) {
       return NextResponse.json(
@@ -87,53 +74,37 @@ export async function PATCH(
       )
     }
 
-    // Check if category exists
-    const existingCategory = await sqlite.get(`SELECT * FROM eventCategory WHERE({
-      where: { id },
+    // Generate slug from name
+    const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, "-")
+    
+    const now = new Date().toISOString()
+
+    // Update the category
+    await sqlite.run(
+      "UPDATE event_categories SET name = ?, slug = ?, description = ?, updatedAt = ? WHERE id = ?",
+      [name, slug, description, now, params.id]
+    )
+    
+    // Get the updated category
+    const category = await sqlite.get(
+      "SELECT * FROM event_categories WHERE id = ?",
+      [params.id]
+    )
+    
+    // Get publications count
+    const publicationsCount = await sqlite.get(
+      "SELECT COUNT(*) as count FROM publications WHERE categoryId = ?",
+      [params.id]
+    )
+
+    return NextResponse.json({
+      ...category,
+      publicationsCount: publicationsCount ? publicationsCount.count : 0
     })
-
-    if (!existingCategory) {
-      return NextResponse.json(
-        { error: "Category not found" },
-        { status: 404 }
-      )
-    }
-
-    // If name changed, update the slug too
-    let updateData: any = {
-      name,
-      description,
-    }
-
-    if (name !== existingCategory.name) {
-      let slug = slugify(name, { lower: true, strict: true })
-      
-      // Check if slug exists for another category
-      const slugExists = await sqlite.get(`SELECT * FROM eventCategory({
-        where: { 
-          slug,
-          id: { not: id }
-        },
-      })
-
-      // If slug exists for another category, append a unique timestamp
-      if (slugExists) {
-        slug = `${slug}-${Date.now()}`
-      }
-
-      updateData.slug = slug
-    }
-
-    const updatedCategory = await sqlite.run(`UPDATE eventCategory SET({
-      where: { id },
-      data: updateData
-    })
-
-    return NextResponse.json(updatedCategory)
   } catch (error) {
-    console.error("Failed to update event category:", error)
+    console.error("Failed to update category:", error)
     return NextResponse.json(
-      { error: "Failed to update event category" },
+      { error: "Failed to update category" },
       { status: 500 }
     )
   }
@@ -141,7 +112,7 @@ export async function PATCH(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: RouteContext
 ) {
   try {
     const session = await getServerSession()
@@ -153,47 +124,16 @@ export async function DELETE(
       )
     }
 
-    const id = params.id
-    
-    if (!id) {
-      return NextResponse.json(
-        { error: "Category ID is required" },
-        { status: 400 }
-      )
-    }
+    await sqlite.run(
+      "DELETE FROM event_categories WHERE id = ?",
+      [params.id]
+    )
 
-    // Check if category exists
-    const category = await sqlite.get(`SELECT * FROM eventCategory WHERE({
-      where: { id },
-      include: {
-        events: true
-      }
-    })
-
-    if (!category) {
-      return NextResponse.json(
-        { error: "Category not found" },
-        { status: 404 }
-      )
-    }
-
-    // Check if category has events
-    if (category.events.length > 0) {
-      return NextResponse.json(
-        { error: "Cannot delete category with associated events" },
-        { status: 400 }
-      )
-    }
-
-    await sqlite.run(`DELETE FROM eventCategory WHERE({
-      where: { id },
-    })
-
-    return NextResponse.json({ success: true })
+    return new NextResponse(null, { status: 204 })
   } catch (error) {
-    console.error("Failed to delete event category:", error)
+    console.error("Failed to delete category:", error)
     return NextResponse.json(
-      { error: "Failed to delete event category" },
+      { error: "Failed to delete category" },
       { status: 500 }
     )
   }

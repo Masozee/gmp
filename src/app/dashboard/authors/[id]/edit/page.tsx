@@ -1,7 +1,8 @@
 "use client"
 
+import React from "react"
 import { useState, useEffect } from "react"
-import { useRouter, useParams } from "next/navigation"
+import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
@@ -52,13 +53,16 @@ interface Author {
   photoUrl?: string | null
 }
 
-export default function EditAuthorPage() {
-  const params = useParams()
+export default function EditAuthorPage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter()
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [author, setAuthor] = useState<Author | null>(null)
   const [photo, setPhoto] = useState<File | null>(null)
+
+  // Unwrap the params object using React.use()
+  const resolvedParams = React.use(params);
+  const authorId = resolvedParams.id;
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -77,7 +81,7 @@ export default function EditAuthorPage() {
     const fetchAuthor = async () => {
       try {
         setLoading(true)
-        const response = await fetch(`/api/authors/${params.id}`)
+        const response = await fetch(`/api/authors/${authorId}`)
         if (!response.ok) throw new Error("Failed to fetch author")
         const data = await response.json()
         setAuthor(data)
@@ -100,7 +104,7 @@ export default function EditAuthorPage() {
       }
     }
     fetchAuthor()
-  }, [params.id, form])
+  }, [authorId, form])
 
   const handlePhotoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
@@ -123,7 +127,7 @@ export default function EditAuthorPage() {
         formData.append("photo", photo)
       }
 
-      const response = await fetch(`/api/authors/${params.id}`, {
+      const response = await fetch(`/api/authors/${authorId}`, {
         method: "PATCH",
         body: formData,
       })

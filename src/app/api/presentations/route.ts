@@ -1,13 +1,11 @@
 import { NextRequest, NextResponse } from "next/server"
 import sqlite from "@/lib/sqlite"
 import { getServerSession } from "@/lib/server-auth"
-import { writeFile } from "fs/promises"
-import { join } from "path"
-import { mkdir, access } from "fs/promises"
-import { constants } from "fs"
-import { cwd } from "process"
 
-export async function GET(request: NextRequest) {
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
   try {
     const session = await getServerSession()
 
@@ -18,73 +16,42 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    const { searchParams } = new URL(request.url)
-    const search = searchParams.get('search')
-    const speakerId = searchParams.get('speakerId')
-    const eventId = searchParams.get('eventId')
-    const sort = searchParams.get('sort') || 'startTime'
-    const order = searchParams.get('order') || 'desc'
-    const page = parseInt(searchParams.get('page') || '1')
-    const pageSize = parseInt(searchParams.get('pageSize') || '10')
+    const category = await sqlite.get(
+      "SELECT * FROM event_categories WHERE id = ?",
+      [params.id]
+    )
 
-    const where: any = {}
-
-    if (search) {
-      where.OR = [
-        { title: { contains: search, mode: 'insensitive' } },
-        { abstract: { contains: search, mode: 'insensitive' } },
-      ]
+    if (!category) {
+      return NextResponse.json(
+        { error: "Category not found" },
+        { status: 404 }
+      )
     }
 
-    if (speakerId) {
-      where.speakerId = speakerId
-    }
+    // Get publications count for this category
+    const publicationsCount = await sqlite.get(
+      "SELECT COUNT(*) as count FROM publications WHERE categoryId = ?",
+      [params.id]
+    )
 
-    if (eventId) {
-      where.eventId = eventId
-    }
-
-    const presentations = await sqlite.all(`SELECT * FROM presentation({
-      where,
-      orderBy: {
-        [sort]: order,
-      },
-      skip: (page - 1) * pageSize,
-      take: pageSize,
-      include: {
-        speaker: {
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true,
-            photoUrl: true,
-          }
-        }
-      }
-    })
-
-    // Get total count for pagination
-    const totalPresentations = await sqlite.get(`SELECT COUNT(*) as count FROM presentation({ where })
-
-    return NextResponse.json({ 
-      presentations, 
-      pagination: {
-        total: totalPresentations,
-        page,
-        pageSize,
-        totalPages: Math.ceil(totalPresentations / pageSize)
-      }
+    // Add count to category
+    return NextResponse.json({
+      ...category,
+      publicationsCount: publicationsCount ? publicationsCount.count : 0
     })
   } catch (error) {
-    console.error("Failed to fetch presentations:", error)
+    console.error("Failed to fetch category:", error)
     return NextResponse.json(
-      { error: "Failed to fetch presentations" },
+      { error: "Failed to fetch category" },
       { status: 500 }
     )
   }
 }
 
-export async function POST(request: NextRequest) {
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
   try {
     const session = await getServerSession()
 
@@ -95,108 +62,75 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const formData = await request.formData()
-    const title = formData.get("title") as string
-    const abstract = formData.get("abstract") as string
-    const speakerId = formData.get("speakerId") as string
-    const eventId = formData.get("eventId") as string
-    const slides = formData.get("slides") as File | null
-    const videoUrl = formData.get("videoUrl") as string
-    const duration = formData.get("duration") ? parseInt(formData.get("duration") as string) : null
-    const startTime = formData.get("startTime") as string
-    const endTime = formData.get("endTime") as string
+    const { name, description } = await request.json()
 
-    // Validate required fields
-    if (!title || !speakerId) {
+    if (!name) {
       return NextResponse.json(
-        { error: "Title and speaker ID are required" },
+        { error: "Name is required" },
         { status: 400 }
       )
     }
 
-    // Check if speaker exists
-    const speaker = await sqlite.get(`SELECT * FROM speaker WHERE({
-      where: { id: speakerId },
+    // Generate slug from name
+    const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, "-")
+    
+    const now = new Date().toISOString()
+
+    // Update the category
+    await sqlite.run(
+      "UPDATE event_categories SET name = ?, slug = ?, description = ?, updatedAt = ? WHERE id = ?",
+      [name, slug, description, now, params.id]
+    )
+    
+    // Get the updated category
+    const category = await sqlite.get(
+      "SELECT * FROM event_categories WHERE id = ?",
+      [params.id]
+    )
+    
+    // Get publications count
+    const publicationsCount = await sqlite.get(
+      "SELECT COUNT(*) as count FROM publications WHERE categoryId = ?",
+      [params.id]
+    )
+
+    return NextResponse.json({
+      ...category,
+      publicationsCount: publicationsCount ? publicationsCount.count : 0
     })
-
-    if (!speaker) {
-      return NextResponse.json(
-        { error: "Speaker not found" },
-        { status: 400 }
-      )
-    }
-
-    // Check if event exists if provided
-    if (eventId) {
-      const event = await sqlite.get(`SELECT * FROM event WHERE({
-        where: { id: eventId },
-      })
-
-      if (!event) {
-        return NextResponse.json(
-          { error: "Event not found" },
-          { status: 400 }
-        )
-      }
-    }
-
-    // Handle slides upload
-    let slidesUrl: string | undefined = undefined
-    if (slides) {
-      try {
-        // Create uploads directory if it doesn't exist
-        const uploadsDir = join(cwd(), "public", "uploads")
-        try {
-          await access(uploadsDir, constants.F_OK)
-        } catch (error) {
-          await mkdir(uploadsDir, { recursive: true })
-        }
-
-        // Generate a unique filename for the slides
-        const filename = `${Date.now()}-${Math.floor(Math.random() * 1000000000)}-${slides.name}`
-        const filePath = join(uploadsDir, filename)
-        
-        // Write the file to disk
-        const buffer = Buffer.from(await slides.arrayBuffer())
-        await writeFile(filePath, buffer)
-        
-        // Set the slides URL (relative to /public)
-        slidesUrl = `/uploads/${filename}`
-      } catch (error) {
-        console.error("Error uploading slides:", error)
-      }
-    }
-
-    // Create the presentation
-    const presentation = await sqlite.run(`INSERT INTO presentation({
-      data: {
-        title,
-        abstract,
-        speakerId,
-        eventId: eventId || null,
-        slides: slidesUrl,
-        videoUrl,
-        duration,
-        startTime: startTime ? new Date(startTime) : null,
-        endTime: endTime ? new Date(endTime) : null,
-      },
-      include: {
-        speaker: {
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true,
-            photoUrl: true,
-          }
-        }
-      }
-    })
-
-    return NextResponse.json(presentation)
   } catch (error) {
-    console.error("Failed to create presentation:", error)
+    console.error("Failed to update category:", error)
     return NextResponse.json(
-      { error: "Failed to create presentation" },
+      { error: "Failed to update category" },
+      { status: 500 }
+    )
+  }
+}
+
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const session = await getServerSession()
+
+    if (!session?.user) {
+      return NextResponse.json(
+        { error: "Unauthorized" },
+        { status: 401 }
+      )
+    }
+
+    await sqlite.run(
+      "DELETE FROM event_categories WHERE id = ?",
+      [params.id]
+    )
+
+    return new NextResponse(null, { status: 204 })
+  } catch (error) {
+    console.error("Failed to delete category:", error)
+    return NextResponse.json(
+      { error: "Failed to delete category" },
       { status: 500 }
     )
   }

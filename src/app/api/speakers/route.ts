@@ -1,13 +1,11 @@
 import { NextRequest, NextResponse } from "next/server"
 import sqlite from "@/lib/sqlite"
 import { getServerSession } from "@/lib/server-auth"
-import { writeFile } from "fs/promises"
-import { join } from "path"
-import { mkdir, access } from "fs/promises"
-import { constants } from "fs"
-import { cwd } from "process"
 
-export async function GET(request: NextRequest) {
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
   try {
     const session = await getServerSession()
 
@@ -18,64 +16,42 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    const { searchParams } = new URL(request.url)
-    const search = searchParams.get('search')
-    const sort = searchParams.get('sort') || 'lastName'
-    const order = searchParams.get('order') || 'asc'
-    const page = parseInt(searchParams.get('page') || '1')
-    const pageSize = parseInt(searchParams.get('pageSize') || '10')
+    const category = await sqlite.get(
+      "SELECT * FROM event_categories WHERE id = ?",
+      [params.id]
+    )
 
-    const where: any = {}
-
-    if (search) {
-      where.OR = [
-        { firstName: { contains: search, mode: 'insensitive' } },
-        { lastName: { contains: search, mode: 'insensitive' } },
-        { email: { contains: search, mode: 'insensitive' } },
-        { organization: { contains: search, mode: 'insensitive' } },
-        { position: { contains: search, mode: 'insensitive' } },
-      ]
+    if (!category) {
+      return NextResponse.json(
+        { error: "Category not found" },
+        { status: 404 }
+      )
     }
 
-    const speakers = await sqlite.all(`SELECT * FROM speaker({
-      where,
-      orderBy: {
-        [sort]: order,
-      },
-      skip: (page - 1) * pageSize,
-      take: pageSize,
-      include: {
-        _count: {
-          select: {
-            events: true,
-            presentations: true
-          }
-        }
-      }
-    })
+    // Get publications count for this category
+    const publicationsCount = await sqlite.get(
+      "SELECT COUNT(*) as count FROM publications WHERE categoryId = ?",
+      [params.id]
+    )
 
-    // Get total count for pagination
-    const totalSpeakers = await sqlite.get(`SELECT COUNT(*) as count FROM speaker({ where })
-
-    return NextResponse.json({ 
-      speakers, 
-      pagination: {
-        total: totalSpeakers,
-        page,
-        pageSize,
-        totalPages: Math.ceil(totalSpeakers / pageSize)
-      }
+    // Add count to category
+    return NextResponse.json({
+      ...category,
+      publicationsCount: publicationsCount ? publicationsCount.count : 0
     })
   } catch (error) {
-    console.error("Failed to fetch speakers:", error)
+    console.error("Failed to fetch category:", error)
     return NextResponse.json(
-      { error: "Failed to fetch speakers" },
+      { error: "Failed to fetch category" },
       { status: 500 }
     )
   }
 }
 
-export async function POST(request: NextRequest) {
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
   try {
     const session = await getServerSession()
 
@@ -86,80 +62,75 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const formData = await request.formData()
-    const firstName = formData.get("firstName") as string
-    const lastName = formData.get("lastName") as string
-    const email = formData.get("email") as string
-    const organization = formData.get("organization") as string
-    const position = formData.get("position") as string
-    const bio = formData.get("bio") as string
-    const photo = formData.get("photo") as File | null
+    const { name, description } = await request.json()
 
-    // Validate required fields
-    if (!firstName || !lastName || !email) {
+    if (!name) {
       return NextResponse.json(
-        { error: "First name, last name, and email are required" },
+        { error: "Name is required" },
         { status: 400 }
       )
     }
 
-    // Check if email is already in use
-    const existingSpeaker = await sqlite.get(`SELECT * FROM speaker WHERE({
-      where: { email },
+    // Generate slug from name
+    const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, "-")
+    
+    const now = new Date().toISOString()
+
+    // Update the category
+    await sqlite.run(
+      "UPDATE event_categories SET name = ?, slug = ?, description = ?, updatedAt = ? WHERE id = ?",
+      [name, slug, description, now, params.id]
+    )
+    
+    // Get the updated category
+    const category = await sqlite.get(
+      "SELECT * FROM event_categories WHERE id = ?",
+      [params.id]
+    )
+    
+    // Get publications count
+    const publicationsCount = await sqlite.get(
+      "SELECT COUNT(*) as count FROM publications WHERE categoryId = ?",
+      [params.id]
+    )
+
+    return NextResponse.json({
+      ...category,
+      publicationsCount: publicationsCount ? publicationsCount.count : 0
     })
-
-    if (existingSpeaker) {
-      return NextResponse.json(
-        { error: "Email already in use" },
-        { status: 400 }
-      )
-    }
-
-    // Handle photo upload
-    let photoUrl: string | undefined = undefined
-    if (photo) {
-      try {
-        // Create uploads directory if it doesn't exist
-        const uploadsDir = join(cwd(), "public", "uploads")
-        try {
-          await access(uploadsDir, constants.F_OK)
-        } catch (error) {
-          await mkdir(uploadsDir, { recursive: true })
-        }
-
-        // Generate a unique filename for the photo
-        const filename = `${Date.now()}-${Math.floor(Math.random() * 1000000000)}-${photo.name}`
-        const filePath = join(uploadsDir, filename)
-        
-        // Write the file to disk
-        const buffer = Buffer.from(await photo.arrayBuffer())
-        await writeFile(filePath, buffer)
-        
-        // Set the photo URL (relative to /public)
-        photoUrl = `/uploads/${filename}`
-      } catch (error) {
-        console.error("Error uploading photo:", error)
-      }
-    }
-
-    // Create the speaker
-    const speaker = await sqlite.run(`INSERT INTO speaker({
-      data: {
-        firstName,
-        lastName,
-        email,
-        organization,
-        position,
-        bio,
-        photoUrl,
-      },
-    })
-
-    return NextResponse.json(speaker)
   } catch (error) {
-    console.error("Failed to create speaker:", error)
+    console.error("Failed to update category:", error)
     return NextResponse.json(
-      { error: "Failed to create speaker" },
+      { error: "Failed to update category" },
+      { status: 500 }
+    )
+  }
+}
+
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const session = await getServerSession()
+
+    if (!session?.user) {
+      return NextResponse.json(
+        { error: "Unauthorized" },
+        { status: 401 }
+      )
+    }
+
+    await sqlite.run(
+      "DELETE FROM event_categories WHERE id = ?",
+      [params.id]
+    )
+
+    return new NextResponse(null, { status: 204 })
+  } catch (error) {
+    console.error("Failed to delete category:", error)
+    return NextResponse.json(
+      { error: "Failed to delete category" },
       { status: 500 }
     )
   }

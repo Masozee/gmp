@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import { useParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import Image from "next/image";
@@ -157,18 +158,19 @@ const publications = [
   }
 ];
 
-export default function PublicationDetailPage() {
-  const params = useParams();
+export default function PublicationDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  // Unwrap the params object using React.use()
+  const resolvedParams = React.use(params);
+  const publicationId = resolvedParams.id;
+
   const [publication, setPublication] = useState<typeof publications[0] | null>(null);
   const [relatedPubs, setRelatedPubs] = useState<typeof publications>([]);
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
   
   useEffect(() => {
-    const id = params.id as string;
-    
     // Find the publication by ID
-    const pub = publications.find(p => p.id === id);
+    const pub = publications.find(p => p.id === publicationId);
     setPublication(pub || null);
     
     // Find related publications
@@ -176,7 +178,7 @@ export default function PublicationDetailPage() {
       const related = publications.filter(p => pub.relatedPublications.includes(p.id));
       setRelatedPubs(related);
     }
-  }, [params.id]);
+  }, [publicationId]);
   
   // Format the content with paragraphs
   const formatContent = (content: string) => {

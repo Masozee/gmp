@@ -1,72 +1,138 @@
 import { NextRequest, NextResponse } from "next/server"
 import sqlite from "@/lib/sqlite"
 import { getServerSession } from "@/lib/server-auth"
+import { apiResponse } from "@/lib/api-helpers"
+import logger from "@/lib/logger"
 
-export async function GET(req: NextRequest) {
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
   try {
     const session = await getServerSession()
 
-    // Check if user is authenticated
     if (!session?.user) {
-      console.log("[Logs Stats API] Unauthorized - No session")
       return NextResponse.json(
         { error: "Unauthorized" },
         { status: 401 }
       )
     }
 
-    // Only allow admins to access all logs, users can only see their own
-    const isAdmin = session.user.role === "ADMIN"
-    const userId = isAdmin ? undefined : session.user.id
+    const category = await sqlite.get(
+      "SELECT * FROM event_categories WHERE id = ?",
+      [params.id]
+    )
 
-    console.log("[Logs Stats API] Fetching stats for user:", session.user.email)
-
-    // Get counts for each severity level
-    const [total, critical, error, warning, info] = await Promise.all([
-      sqlite.get(`SELECT COUNT(*) as count FROM errorLog({
-        where: userId ? { userId } : undefined,
-      }),
-      sqlite.get(`SELECT COUNT(*) as count FROM errorLog({
-        where: {
-          severity: "CRITICAL",
-          ...(userId && { userId }),
-        },
-      }),
-      sqlite.get(`SELECT COUNT(*) as count FROM errorLog({
-        where: {
-          severity: "ERROR",
-          ...(userId && { userId }),
-        },
-      }),
-      sqlite.get(`SELECT COUNT(*) as count FROM errorLog({
-        where: {
-          severity: "WARNING",
-          ...(userId && { userId }),
-        },
-      }),
-      sqlite.get(`SELECT COUNT(*) as count FROM errorLog({
-        where: {
-          severity: "INFO",
-          ...(userId && { userId }),
-        },
-      }),
-    ])
-
-    const stats = {
-      total,
-      critical,
-      error,
-      warning,
-      info,
+    if (!category) {
+      return NextResponse.json(
+        { error: "Category not found" },
+        { status: 404 }
+      )
     }
 
-    console.log("[Logs Stats API] Stats:", stats)
+    // Get publications count for this category
+    const publicationsCount = await sqlite.get(
+      "SELECT COUNT(*) as count FROM publications WHERE categoryId = ?",
+      [params.id]
+    )
 
-    return NextResponse.json(stats)
+    // Add count to category
+    return NextResponse.json({
+      ...category,
+      publicationsCount: publicationsCount ? publicationsCount.count : 0
+    })
   } catch (error) {
-    console.error("[Logs Stats API] Error:", error)
+    console.error("Failed to fetch category:", error)
     return NextResponse.json(
-      { error: "Failed to fetch log statistics" },
+      { error: "Failed to fetch category" },
+      { status: 500 }
+    )
+  }
+}
+
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const session = await getServerSession()
+
+    if (!session?.user) {
+      return NextResponse.json(
+        { error: "Unauthorized" },
+        { status: 401 }
+      )
+    }
+
+    const { name, description } = await request.json()
+
+    if (!name) {
+      return NextResponse.json(
+        { error: "Name is required" },
+        { status: 400 }
+      )
+    }
+
+    // Generate slug from name
+    const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, "-")
+    
+    const now = new Date().toISOString()
+
+    // Update the category
+    await sqlite.run(
+      "UPDATE event_categories SET name = ?, slug = ?, description = ?, updatedAt = ? WHERE id = ?",
+      [name, slug, description, now, params.id]
+    )
+    
+    // Get the updated category
+    const category = await sqlite.get(
+      "SELECT * FROM event_categories WHERE id = ?",
+      [params.id]
+    )
+    
+    // Get publications count
+    const publicationsCount = await sqlite.get(
+      "SELECT COUNT(*) as count FROM publications WHERE categoryId = ?",
+      [params.id]
+    )
+
+    return NextResponse.json({
+      ...category,
+      publicationsCount: publicationsCount ? publicationsCount.count : 0
+    })
+  } catch (error) {
+    console.error("Failed to update category:", error)
+    return NextResponse.json(
+      { error: "Failed to update category" },
+      { status: 500 }
+    )
+  }
+}
+
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const session = await getServerSession()
+
+    if (!session?.user) {
+      return NextResponse.json(
+        { error: "Unauthorized" },
+        { status: 401 }
+      )
+    }
+
+    await sqlite.run(
+      "DELETE FROM event_categories WHERE id = ?",
+      [params.id]
+    )
+
+    return new NextResponse(null, { status: 204 })
+  } catch (error) {
+    console.error("Failed to delete category:", error)
+    return NextResponse.json(
+      { error: "Failed to delete category" },
       { status: 500 }
     )
   }

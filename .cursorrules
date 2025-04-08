@@ -1,9 +1,9 @@
 # AI Agent Dashboard Development Rules
 
 ## Technology Stack Requirements
-- Next.js 15
+- Next.js 15.4.2
 - TypeScript
-- PostgreSQL
+- Sqlite
 - shadcn components (using `npx shadcn@latest init`)
 - Proper type safety across all implementations
 - Tailwind CSS 
@@ -53,7 +53,7 @@
 #### Phase 2: Implementation
 1. Database
    - Implement schema migrations
-   - Create/modify PostgreSQL tables
+   - Create/modify sqlite tables
    - Set up relationships
    - Add indices and constraints
 

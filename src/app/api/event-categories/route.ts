@@ -1,54 +1,43 @@
+
 import { NextRequest, NextResponse } from "next/server"
 import sqlite from "@/lib/sqlite"
 import { getServerSession } from "@/lib/server-auth"
-import slugify from "slugify"
 
 export async function GET(request: NextRequest) {
   try {
-    // Temporarily disable authentication for testing
-    // const session = await getServerSession()
-    // if (!session?.user) {
-    //   return NextResponse.json(
-    //     { error: "Unauthorized" },
-    //     { status: 401 }
-    //   )
-    // }
+    const session = await getServerSession()
 
-    const { searchParams } = new URL(request.url)
-    const search = searchParams.get('search')
-    const sort = searchParams.get('sort') || 'name'
-    const order = searchParams.get('order') || 'asc'
-
-    // Create base query
-    let query = "SELECT c.*, COUNT(e.id) as eventsCount FROM event_categories c LEFT JOIN events e ON c.id = e.categoryId";
-    const params: any[] = [];
-    
-    // Add WHERE clause if search is provided
-    if (search) {
-      query += " WHERE c.name LIKE ? OR c.description LIKE ?";
-      params.push(`%${search}%`, `%${search}%`);
+    if (!session?.user) {
+      return NextResponse.json(
+        { error: "Unauthorized" },
+        { status: 401 }
+      )
     }
-    
-    // Add GROUP BY
-    query += " GROUP BY c.id";
-    
-    // Add ORDER BY clause (with sanitization to prevent SQL injection)
-    const validSortColumns = ["name", "slug", "createdAt", "updatedAt"];
-    const validOrderValues = ["asc", "desc"];
-    
-    const sortColumn = validSortColumns.includes(sort) ? sort : "name";
-    const orderDirection = validOrderValues.includes(order.toLowerCase()) ? order.toLowerCase() : "asc";
-    
-    query += ` ORDER BY c.${sortColumn} ${orderDirection}`;
-    
-    // Execute query
-    const categories = sqlite.all(query, params);
 
-    return NextResponse.json(categories)
+    const categories = await sqlite.all(
+      "SELECT * FROM event_categories ORDER BY name ASC"
+    )
+
+    // Get publications count for each category
+    const categoriesWithCount = await Promise.all(
+      categories.map(async (category) => {
+        const publicationsCount = await sqlite.get(
+          "SELECT COUNT(*) as count FROM publications WHERE categoryId = ?",
+          [category.id]
+        )
+        
+        return {
+          ...category,
+          publicationsCount: publicationsCount ? publicationsCount.count : 0
+        }
+      })
+    )
+
+    return NextResponse.json(categoriesWithCount)
   } catch (error) {
-    console.error("Failed to fetch event categories:", error)
+    console.error("Failed to fetch categories:", error)
     return NextResponse.json(
-      { error: "Failed to fetch event categories" },
+      { error: "Failed to fetch categories" },
       { status: 500 }
     )
   }
@@ -65,8 +54,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const json = await request.json()
-    const { name, description } = json
+    const { name, description } = await request.json()
 
     if (!name) {
       return NextResponse.json(
@@ -75,40 +63,27 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Generate a unique slug based on the name
-    let slug = slugify(name, { lower: true, strict: true })
+    // Generate slug from name
+    const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, "-")
     
-    // Check if slug exists
-    const existingCategory = sqlite.get(
-      "SELECT * FROM event_categories WHERE slug = ?",
-      [slug]
-    );
+    const now = new Date().toISOString()
 
-    // If slug exists, append a unique timestamp
-    if (existingCategory) {
-      slug = `${slug}-${Date.now()}`
-    }
-
-    // Current timestamp
-    const now = new Date().toISOString();
-    
-    // Insert the category
-    const result = sqlite.run(
+    // Create the category
+    const result = await sqlite.run(
       "INSERT INTO event_categories (name, slug, description, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?)",
-      [name, slug, description || null, now, now]
-    );
+      [name, slug, description, now, now]
+    )
     
-    // Get the created category
-    const category = sqlite.get(
-      "SELECT c.*, COUNT(e.id) as eventsCount FROM event_categories c LEFT JOIN events e ON c.id = e.categoryId WHERE c.id = ? GROUP BY c.id", 
+    const category = await sqlite.get(
+      "SELECT * FROM event_categories WHERE id = ?",
       [result.lastInsertRowid]
-    );
-
+    )
+    
     return NextResponse.json(category)
   } catch (error) {
-    console.error("Failed to create event category:", error)
+    console.error("Failed to create category:", error)
     return NextResponse.json(
-      { error: "Failed to create event category" },
+      { error: "Failed to create category" },
       { status: 500 }
     )
   }

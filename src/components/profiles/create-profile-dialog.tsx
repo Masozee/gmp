@@ -38,7 +38,8 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5MB
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"]
 
-const formSchema = z.object({
+// Create a basic schema without FileList for server-side
+const baseSchema = {
   firstName: z
     .string()
     .min(2, "First name must be at least 2 characters")
@@ -69,22 +70,28 @@ const formSchema = z.object({
   category: z.enum(["AUTHOR", "BOARD", "STAFF", "RESEARCHER"], {
     required_error: "Please select a category",
   }),
-  photo: z
-    .instanceof(FileList)
-    .optional()
-    .refine((files) => !files || files.length === 0 || files.length === 1, "Please upload a single file")
-    .refine(
-      (files) => !files || files.length === 0 || files[0].size <= MAX_FILE_SIZE,
-      "Max file size is 5MB"
-    )
-    .refine(
-      (files) =>
-        !files ||
-        files.length === 0 ||
-        ACCEPTED_IMAGE_TYPES.includes(files[0].type),
-      "Only .jpg, .jpeg, .png and .webp formats are supported"
-    ),
-})
+};
+
+// Create the form schema dynamically based on whether we're in a browser
+const formSchema = z.object({
+  ...baseSchema,
+  photo: typeof FileList !== 'undefined' 
+    ? z.instanceof(FileList)
+      .optional()
+      .refine((files) => !files || files.length === 0 || files.length === 1, "Please upload a single file")
+      .refine(
+        (files) => !files || files.length === 0 || files[0].size <= MAX_FILE_SIZE,
+        "Max file size is 5MB"
+      )
+      .refine(
+        (files) =>
+          !files ||
+          files.length === 0 ||
+          ACCEPTED_IMAGE_TYPES.includes(files[0].type),
+        "Only .jpg, .jpeg, .png and .webp formats are supported"
+      )
+    : z.any().optional()
+});
 
 interface CreateProfileDialogProps {
   open: boolean

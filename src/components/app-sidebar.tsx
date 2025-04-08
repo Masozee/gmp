@@ -180,6 +180,25 @@ const data = {
       ],
     },
     {
+      title: "Presentations",
+      url: "/dashboard/presentations",
+      icon: FileText,
+      items: [
+        {
+          title: "All Presentations",
+          url: "/dashboard/presentations",
+        },
+        {
+          title: "Public List",
+          url: "/presentations",
+        },
+        {
+          title: "Create New",
+          url: "/dashboard/presentations/new",
+        },
+      ],
+    },
+    {
       title: "Settings",
       url: "#",
       icon: Settings2,

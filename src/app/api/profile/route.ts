@@ -1,8 +1,11 @@
 import { NextRequest, NextResponse } from "next/server"
-import { getServerSession } from "@/lib/server-auth"
 import sqlite from "@/lib/sqlite"
+import { getServerSession } from "@/lib/server-auth"
 
-export async function GET() {
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
   try {
     const session = await getServerSession()
 
@@ -13,44 +16,42 @@ export async function GET() {
       )
     }
 
-    const profile = await sqlite.get(`SELECT * FROM profile({
-      where: {
-        email: {
-          equals: session.user.email,
-          mode: "insensitive",
-        },
-      },
-      select: {
-        id: true,
-        firstName: true,
-        lastName: true,
-        email: true,
-        photoUrl: true,
-      },
-    })
+    const category = await sqlite.get(
+      "SELECT * FROM event_categories WHERE id = ?",
+      [params.id]
+    )
 
-    if (!profile) {
+    if (!category) {
       return NextResponse.json(
-        { error: "Profile not found" },
+        { error: "Category not found" },
         { status: 404 }
       )
     }
 
+    // Get publications count for this category
+    const publicationsCount = await sqlite.get(
+      "SELECT COUNT(*) as count FROM publications WHERE categoryId = ?",
+      [params.id]
+    )
+
+    // Add count to category
     return NextResponse.json({
-      email: profile.email,
-      name: `${profile.firstName} ${profile.lastName}`.trim(),
-      image: profile.photoUrl,
+      ...category,
+      publicationsCount: publicationsCount ? publicationsCount.count : 0
     })
   } catch (error) {
-    console.error("Error fetching profile:", error)
+    console.error("Failed to fetch category:", error)
     return NextResponse.json(
-      { error: "Failed to fetch profile" },
+      { error: "Failed to fetch category" },
       { status: 500 }
     )
   }
 }
 
-export async function PATCH(request: NextRequest) {
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
   try {
     const session = await getServerSession()
 
@@ -61,54 +62,75 @@ export async function PATCH(request: NextRequest) {
       )
     }
 
-    if (!session.user.email) {
+    const { name, description } = await request.json()
+
+    if (!name) {
       return NextResponse.json(
-        { error: "User email not found" },
+        { error: "Name is required" },
         { status: 400 }
       )
     }
 
-    const body = await request.json()
-    const { firstName, lastName, photoUrl } = body
+    // Generate slug from name
+    const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, "-")
+    
+    const now = new Date().toISOString()
 
-    // First find the profile
-    const existingProfile = await sqlite.get(`SELECT * FROM profile({
-      where: {
-        email: {
-          equals: session.user.email,
-          mode: "insensitive",
-        },
-      },
+    // Update the category
+    await sqlite.run(
+      "UPDATE event_categories SET name = ?, slug = ?, description = ?, updatedAt = ? WHERE id = ?",
+      [name, slug, description, now, params.id]
+    )
+    
+    // Get the updated category
+    const category = await sqlite.get(
+      "SELECT * FROM event_categories WHERE id = ?",
+      [params.id]
+    )
+    
+    // Get publications count
+    const publicationsCount = await sqlite.get(
+      "SELECT COUNT(*) as count FROM publications WHERE categoryId = ?",
+      [params.id]
+    )
+
+    return NextResponse.json({
+      ...category,
+      publicationsCount: publicationsCount ? publicationsCount.count : 0
     })
+  } catch (error) {
+    console.error("Failed to update category:", error)
+    return NextResponse.json(
+      { error: "Failed to update category" },
+      { status: 500 }
+    )
+  }
+}
 
-    if (!existingProfile) {
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const session = await getServerSession()
+
+    if (!session?.user) {
       return NextResponse.json(
-        { error: "Profile not found" },
-        { status: 404 }
+        { error: "Unauthorized" },
+        { status: 401 }
       )
     }
 
-    // Update profile data
-    const profile = await sqlite.run(`UPDATE profile SET({
-      where: {
-        id: existingProfile.id,
-      },
-      data: {
-        firstName,
-        lastName,
-        photoUrl,
-      },
-    })
+    await sqlite.run(
+      "DELETE FROM event_categories WHERE id = ?",
+      [params.id]
+    )
 
-    return NextResponse.json({
-      email: session.user.email,
-      name: `${profile.firstName} ${profile.lastName}`,
-      image: profile.photoUrl,
-    })
+    return new NextResponse(null, { status: 204 })
   } catch (error) {
-    console.error("Failed to update profile:", error)
+    console.error("Failed to delete category:", error)
     return NextResponse.json(
-      { error: "Failed to update profile" },
+      { error: "Failed to delete category" },
       { status: 500 }
     )
   }

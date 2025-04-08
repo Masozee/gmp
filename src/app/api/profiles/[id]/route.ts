@@ -1,17 +1,13 @@
 import { NextRequest, NextResponse } from "next/server"
-import { getServerSession } from "next-auth"
-import { authOptions } from "@/lib/auth"
 import sqlite from "@/lib/sqlite"
-import { writeFile, unlink } from "fs/promises"
-import { join } from "path"
-import { cwd } from "process"
+import { getServerSession } from "@/lib/server-auth"
 
-export async function PATCH(
+export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
-    const session = await getServerSession(authOptions)
+    const session = await getServerSession()
 
     if (!session?.user) {
       return NextResponse.json(
@@ -20,72 +16,92 @@ export async function PATCH(
       )
     }
 
-    const profile = await sqlite.get(`SELECT * FROM profile WHERE({
-      where: { id: params.id },
-    })
+    const category = await sqlite.get(
+      "SELECT * FROM event_categories WHERE id = ?",
+      [params.id]
+    )
 
-    if (!profile) {
+    if (!category) {
       return NextResponse.json(
-        { error: "Profile not found" },
+        { error: "Category not found" },
         { status: 404 }
       )
     }
 
-    const formData = await request.formData()
-    const firstName = formData.get("firstName") as string
-    const lastName = formData.get("lastName") as string
-    const email = formData.get("email") as string
-    const phoneNumber = formData.get("phoneNumber") as string | null
-    const organization = formData.get("organization") as string | null
-    const bio = formData.get("bio") as string | null
-    const category = formData.get("category") as "AUTHOR" | "BOARD" | "STAFF" | "RESEARCHER"
-    const photo = formData.get("photo") as File | null
+    // Get publications count for this category
+    const publicationsCount = await sqlite.get(
+      "SELECT COUNT(*) as count FROM publications WHERE categoryId = ?",
+      [params.id]
+    )
 
-    let photoUrl = profile.photoUrl
+    // Add count to category
+    return NextResponse.json({
+      ...category,
+      publicationsCount: publicationsCount ? publicationsCount.count : 0
+    })
+  } catch (error) {
+    console.error("Failed to fetch category:", error)
+    return NextResponse.json(
+      { error: "Failed to fetch category" },
+      { status: 500 }
+    )
+  }
+}
 
-    if (photo) {
-      // Delete old photo if it exists
-      if (profile.photoUrl) {
-        const oldPhotoPath = join(cwd(), "public", profile.photoUrl.replace(/^\/uploads\//, ""))
-        try {
-          await unlink(oldPhotoPath)
-        } catch (error) {
-          console.error("Failed to delete old photo:", error)
-        }
-      }
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const session = await getServerSession()
 
-      // Upload new photo
-      const bytes = await photo.arrayBuffer()
-      const buffer = Buffer.from(bytes)
-
-      const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1E9)}`
-      const filename = `${uniqueSuffix}-${photo.name}`
-      const uploadDir = join(cwd(), "public", "uploads")
-      const filepath = join(uploadDir, filename)
-
-      await writeFile(filepath, buffer)
-      photoUrl = `/uploads/${filename}`
+    if (!session?.user) {
+      return NextResponse.json(
+        { error: "Unauthorized" },
+        { status: 401 }
+      )
     }
 
-    const updatedProfile = await sqlite.run(`UPDATE profile SET({
-      where: { id: params.id },
-      data: {
-        firstName,
-        lastName,
-        email,
-        phoneNumber: phoneNumber || undefined,
-        organization: organization || undefined,
-        bio: bio || undefined,
-        category,
-        photoUrl,
-      },
-    })
+    const { name, description } = await request.json()
 
-    return NextResponse.json(updatedProfile)
+    if (!name) {
+      return NextResponse.json(
+        { error: "Name is required" },
+        { status: 400 }
+      )
+    }
+
+    // Generate slug from name
+    const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, "-")
+    
+    const now = new Date().toISOString()
+
+    // Update the category
+    await sqlite.run(
+      "UPDATE event_categories SET name = ?, slug = ?, description = ?, updatedAt = ? WHERE id = ?",
+      [name, slug, description, now, params.id]
+    )
+    
+    // Get the updated category
+    const category = await sqlite.get(
+      "SELECT * FROM event_categories WHERE id = ?",
+      [params.id]
+    )
+    
+    // Get publications count
+    const publicationsCount = await sqlite.get(
+      "SELECT COUNT(*) as count FROM publications WHERE categoryId = ?",
+      [params.id]
+    )
+
+    return NextResponse.json({
+      ...category,
+      publicationsCount: publicationsCount ? publicationsCount.count : 0
+    })
   } catch (error) {
-    console.error("Failed to update profile:", error)
+    console.error("Failed to update category:", error)
     return NextResponse.json(
-      { error: "Failed to update profile" },
+      { error: "Failed to update category" },
       { status: 500 }
     )
   }
@@ -96,7 +112,7 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
-    const session = await getServerSession(authOptions)
+    const session = await getServerSession()
 
     if (!session?.user) {
       return NextResponse.json(
@@ -105,36 +121,16 @@ export async function DELETE(
       )
     }
 
-    const profile = await sqlite.get(`SELECT * FROM profile WHERE({
-      where: { id: params.id },
-    })
+    await sqlite.run(
+      "DELETE FROM event_categories WHERE id = ?",
+      [params.id]
+    )
 
-    if (!profile) {
-      return NextResponse.json(
-        { error: "Profile not found" },
-        { status: 404 }
-      )
-    }
-
-    // Delete photo if it exists
-    if (profile.photoUrl) {
-      const photoPath = join(cwd(), "public", profile.photoUrl.replace(/^\/uploads\//, ""))
-      try {
-        await unlink(photoPath)
-      } catch (error) {
-        console.error("Failed to delete photo:", error)
-      }
-    }
-
-    await sqlite.run(`DELETE FROM profile WHERE({
-      where: { id: params.id },
-    })
-
-    return NextResponse.json({ message: "Profile deleted successfully" })
+    return new NextResponse(null, { status: 204 })
   } catch (error) {
-    console.error("Failed to delete profile:", error)
+    console.error("Failed to delete category:", error)
     return NextResponse.json(
-      { error: "Failed to delete profile" },
+      { error: "Failed to delete category" },
       { status: 500 }
     )
   }

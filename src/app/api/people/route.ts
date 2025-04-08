@@ -1,21 +1,11 @@
 import { NextRequest, NextResponse } from "next/server"
 import sqlite from "@/lib/sqlite"
 import { getServerSession } from "@/lib/server-auth"
-import { writeFile } from "fs/promises"
-import { join } from "path"
-import { cwd } from "process"
 
-// UserCategory enum
-export enum UserCategory {
-  ACADEMIC = 'ACADEMIC',
-  PRACTITIONER = 'PRACTITIONER',
-  STUDENT = 'STUDENT',
-  OTHER = 'OTHER',
-}
-
-
-
-export async function GET(request: NextRequest) {
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
   try {
     const session = await getServerSession()
 
@@ -26,39 +16,42 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    const { searchParams } = new URL(request.url)
-    const search = searchParams.get("search")
-    const categoryParam = searchParams.get("category")
+    const category = await sqlite.get(
+      "SELECT * FROM event_categories WHERE id = ?",
+      [params.id]
+    )
 
-    const where = {
-      ...(search && {
-        OR: [
-          { firstName: { contains: search } },
-          { lastName: { contains: search } },
-          { email: { contains: search } },
-        ],
-      }),
-      ...(categoryParam && categoryParam !== "all" && {
-        category: categoryParam as UserCategory,
-      }),
+    if (!category) {
+      return NextResponse.json(
+        { error: "Category not found" },
+        { status: 404 }
+      )
     }
 
-    const people = await sqlite.all(`SELECT * FROM profile({
-      where,
-      orderBy: { createdAt: "desc" },
-    })
+    // Get publications count for this category
+    const publicationsCount = await sqlite.get(
+      "SELECT COUNT(*) as count FROM publications WHERE categoryId = ?",
+      [params.id]
+    )
 
-    return NextResponse.json(people)
+    // Add count to category
+    return NextResponse.json({
+      ...category,
+      publicationsCount: publicationsCount ? publicationsCount.count : 0
+    })
   } catch (error) {
-    console.error("Failed to fetch people:", error)
+    console.error("Failed to fetch category:", error)
     return NextResponse.json(
-      { error: "Failed to fetch people" },
+      { error: "Failed to fetch category" },
       { status: 500 }
     )
   }
 }
 
-export async function POST(request: NextRequest) {
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
   try {
     const session = await getServerSession()
 
@@ -69,67 +62,75 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const formData = await request.formData()
-    const firstName = formData.get("firstName") as string
-    const lastName = formData.get("lastName") as string
-    const email = formData.get("email") as string
-    const phoneNumber = formData.get("phoneNumber") as string | null
-    const organization = formData.get("organization") as string | null
-    const bio = formData.get("bio") as string | null
-    const category = formData.get("category") as UserCategory
-    const photo = formData.get("photo") as File | null
+    const { name, description } = await request.json()
 
-    let photoUrl: string | undefined
-
-    if (photo) {
-      const bytes = await photo.arrayBuffer()
-      const buffer = Buffer.from(bytes)
-
-      // Create unique filename
-      const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1E9)}`
-      const filename = `${uniqueSuffix}-${photo.name}`
-      const uploadDir = join(cwd(), "public", "uploads")
-      const filepath = join(uploadDir, filename)
-
-      await writeFile(filepath, buffer)
-      photoUrl = `/uploads/${filename}`
-    }
-
-    // Check if user already has a profile
-    const existingProfile = await sqlite.get(`SELECT * FROM profile WHERE({
-      where: { userId: session.user.id },
-    })
-
-    if (existingProfile) {
+    if (!name) {
       return NextResponse.json(
-        { error: "User already has a profile" },
+        { error: "Name is required" },
         { status: 400 }
       )
     }
 
-    const person = await sqlite.run(`INSERT INTO profile({
-      data: {
-        firstName,
-        lastName,
-        email,
-        phoneNumber: phoneNumber || null,
-        organization: organization || null,
-        bio: bio || null,
-        category,
-        photoUrl: photoUrl || null,
-        user: {
-          connect: {
-            id: session.user.id,
-          },
-        },
-      },
-    })
+    // Generate slug from name
+    const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, "-")
+    
+    const now = new Date().toISOString()
 
-    return NextResponse.json(person)
+    // Update the category
+    await sqlite.run(
+      "UPDATE event_categories SET name = ?, slug = ?, description = ?, updatedAt = ? WHERE id = ?",
+      [name, slug, description, now, params.id]
+    )
+    
+    // Get the updated category
+    const category = await sqlite.get(
+      "SELECT * FROM event_categories WHERE id = ?",
+      [params.id]
+    )
+    
+    // Get publications count
+    const publicationsCount = await sqlite.get(
+      "SELECT COUNT(*) as count FROM publications WHERE categoryId = ?",
+      [params.id]
+    )
+
+    return NextResponse.json({
+      ...category,
+      publicationsCount: publicationsCount ? publicationsCount.count : 0
+    })
   } catch (error) {
-    console.error("Failed to create person:", error)
+    console.error("Failed to update category:", error)
     return NextResponse.json(
-      { error: "Failed to create person" },
+      { error: "Failed to update category" },
+      { status: 500 }
+    )
+  }
+}
+
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const session = await getServerSession()
+
+    if (!session?.user) {
+      return NextResponse.json(
+        { error: "Unauthorized" },
+        { status: 401 }
+      )
+    }
+
+    await sqlite.run(
+      "DELETE FROM event_categories WHERE id = ?",
+      [params.id]
+    )
+
+    return new NextResponse(null, { status: 204 })
+  } catch (error) {
+    console.error("Failed to delete category:", error)
+    return NextResponse.json(
+      { error: "Failed to delete category" },
       { status: 500 }
     )
   }

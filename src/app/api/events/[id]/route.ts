@@ -1,13 +1,12 @@
-import { NextRequest, NextResponse } from "next/server"
+import { NextRequest } from "next/server"
 import sqlite from "@/lib/sqlite"
 import { getServerSession } from "@/lib/server-auth"
-import { writeFile, unlink } from "fs/promises"
-import { join } from "path"
-import { cwd } from "process"
-import { access, mkdir } from "fs/promises"
-import { constants } from "fs"
-import slugify from "slugify"
+import { apiResponse } from "@/lib/api-helpers"
+import logger from "@/lib/logger"
 
+/**
+ * Get a single event by ID
+ */
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
@@ -16,63 +15,68 @@ export async function GET(
     const session = await getServerSession()
 
     if (!session?.user) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      )
+      return apiResponse.unauthorized()
     }
 
-    const id = params.id
-    
-    if (!id) {
-      return NextResponse.json(
-        { error: "Event ID is required" },
-        { status: 400 }
-      )
-    }
-
-    const event = await sqlite.get(`SELECT * FROM event WHERE({
-      where: { id },
-      include: {
-        category: true,
-        speakers: {
-          include: {
-            speaker: true
-          },
-          orderBy: {
-            order: 'asc'
-          }
-        },
-        tags: {
-          include: {
-            tag: true
-          }
-        },
-        presentations: {
-          include: {
-            speaker: true
-          }
-        }
-      }
-    })
+    // Get the event with category name
+    const event = await sqlite.get(
+      `SELECT e.*, c.name as categoryName 
+       FROM events e
+       LEFT JOIN event_categories c ON e.categoryId = c.id
+       WHERE e.id = ?`,
+      [params.id]
+    )
 
     if (!event) {
-      return NextResponse.json(
-        { error: "Event not found" },
-        { status: 404 }
-      )
+      return apiResponse.notFound("Event not found")
     }
 
-    return NextResponse.json(event)
-  } catch (error) {
-    console.error("Failed to fetch event:", error)
-    return NextResponse.json(
-      { error: "Failed to fetch event", details: error instanceof Error ? error.message : String(error) },
-      { status: 500 }
+    // Get event speakers
+    const speakers = await sqlite.all(
+      `SELECT s.*, es.role, es.displayOrder
+       FROM speakers s
+       JOIN event_speakers es ON s.id = es.speakerId
+       WHERE es.eventId = ?
+       ORDER BY es.displayOrder ASC`,
+      [params.id]
     )
+
+    // Get event tags
+    const tags = await sqlite.all(
+      `SELECT t.*
+       FROM tags t
+       JOIN tags_on_events te ON t.id = te.tagId
+       WHERE te.eventId = ?
+       ORDER BY t.name ASC`,
+      [params.id]
+    )
+
+    // Get event presentations
+    const presentations = await sqlite.all(
+      `SELECT p.*, s.firstName, s.lastName, s.organization
+       FROM presentation p
+       JOIN speakers s ON p.speakerId = s.id
+       WHERE p.eventId = ?
+       ORDER BY p.startTime ASC`,
+      [params.id]
+    )
+
+    // Return event with related data
+    return apiResponse.success({
+      ...event,
+      speakers,
+      tags,
+      presentations
+    })
+  } catch (error) {
+    logger.error("Failed to fetch event", error instanceof Error ? error : new Error(String(error)))
+    return apiResponse.error("Failed to fetch event")
   }
 }
 
+/**
+ * Update an event by ID
+ */
 export async function PATCH(
   request: NextRequest,
   { params }: { params: { id: string } }
@@ -81,225 +85,135 @@ export async function PATCH(
     const session = await getServerSession()
 
     if (!session?.user) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      )
+      return apiResponse.unauthorized()
     }
 
-    const id = params.id
-    
-    if (!id) {
-      return NextResponse.json(
-        { error: "Event ID is required" },
-        { status: 400 }
-      )
-    }
-
-    // Check if the event exists
-    const existingEvent = await sqlite.get(`SELECT * FROM event WHERE({
-      where: { id },
-      include: {
-        speakers: true,
-        tags: true
-      }
-    })
+    // Verify event exists
+    const existingEvent = await sqlite.get(
+      "SELECT id FROM events WHERE id = ?",
+      [params.id]
+    )
 
     if (!existingEvent) {
-      return NextResponse.json(
-        { error: "Event not found" },
-        { status: 404 }
-      )
+      return apiResponse.notFound("Event not found")
     }
 
-    // Handle both JSON and FormData requests
-    let formData: FormData | null = null;
-    let jsonData: any = null;
-    
-    const contentType = request.headers.get("content-type") || "";
-    
-    if (contentType.includes("multipart/form-data")) {
-      formData = await request.formData();
-    } else {
-      try {
-        jsonData = await request.json();
-      } catch (error) {
-        return NextResponse.json(
-          { error: "Invalid request format" },
-          { status: 400 }
-        );
-      }
-    }
-
-    // Extract data from either formData or jsonData
-    const title = formData ? formData.get("title") as string : jsonData.title;
-    const description = formData ? formData.get("description") as string : jsonData.description;
-    const content = formData ? formData.get("content") as string : jsonData.content;
-    const status = formData ? formData.get("status") as string : jsonData.status;
-    const posterImage = formData ? formData.get("posterImage") as File | null : null;
-    const posterCredit = formData ? formData.get("posterCredit") as string : jsonData.posterCredit;
-    const startDate = formData ? formData.get("startDate") as string : jsonData.startDate;
-    const endDate = formData ? formData.get("endDate") as string : jsonData.endDate;
-    const location = formData ? formData.get("location") as string : jsonData.location;
-    const venue = formData ? formData.get("venue") as string : jsonData.venue;
-    const categoryId = formData ? formData.get("categoryId") as string : jsonData.categoryId;
-    const published = formData 
-      ? formData.get("published") === "true" 
-      : jsonData.published !== undefined ? jsonData.published : existingEvent.published;
-    const presentations = formData 
-      ? JSON.parse(formData.get("presentations") as string || "[]") 
-      : jsonData.presentations || [];
+    const body = await request.json()
+    const { title, description, location, startDate, endDate, categoryId, status, published } = body
 
     // Validate required fields
     if (!title) {
-      return NextResponse.json(
-        { error: "Title is required" },
-        { status: 400 }
-      )
+      return apiResponse.badRequest("Title is required")
     }
-
     if (!description) {
-      return NextResponse.json(
-        { error: "Description is required" },
-        { status: 400 }
-      )
+      return apiResponse.badRequest("Description is required")
+    }
+    if (!location) {
+      return apiResponse.badRequest("Location is required")
     }
 
-    if (!startDate) {
-      return NextResponse.json(
-        { error: "Start date is required" },
-        { status: 400 }
-      )
-    }
-
-    if (!endDate) {
-      return NextResponse.json(
-        { error: "End date is required" },
-        { status: 400 }
-      )
-    }
-
-    if (!categoryId) {
-      return NextResponse.json(
-        { error: "Category is required" },
-        { status: 400 }
-      )
-    }
-
-    // Prepare update data
-    const updateData: any = {
-      title,
-      description,
-      status: status || existingEvent.status,
-      published,
-      updatedAt: new Date()
-    }
-
-    // Only update these fields if they are provided
-    if (content) updateData.content = content;
-    if (startDate) updateData.startDate = new Date(startDate);
-    if (endDate) updateData.endDate = new Date(endDate);
-    if (location !== undefined) updateData.location = location;
-    if (venue !== undefined) updateData.venue = venue;
-    if (categoryId) updateData.categoryId = categoryId;
-    if (posterCredit !== undefined) updateData.posterCredit = posterCredit;
-
-    // Handle presentations
-    if (presentations && Array.isArray(presentations)) {
-      updateData.presentations = {
-        deleteMany: {},
-        create: presentations.map((presentation: any) => ({
-          title: presentation.title,
-          abstract: presentation.abstract || null,
-          slides: presentation.slides || null,
-          videoUrl: presentation.videoUrl || null,
-          duration: presentation.duration || null,
-          startTime: presentation.startTime ? new Date(presentation.startTime) : null,
-          endTime: presentation.endTime ? new Date(presentation.endTime) : null
-        }))
-      };
-    }
-
-    // Update slug if title changed
-    if (title && title !== existingEvent.title) {
-      let slug = slugify(title, { lower: true, strict: true });
+    // Generate slug from title if title changed
+    let slug = null
+    if (title) {
+      slug = title.toLowerCase().replace(/[^a-z0-9]+/g, "-")
       
-      // Check if slug exists for another event
-      const slugExists = await sqlite.get(`SELECT * FROM event({
-        where: { 
-          slug,
-          id: { not: id }
-        },
-      });
+      // Check if slug already exists for another event
+      const existingEventWithSlug = await sqlite.get(
+        "SELECT id FROM events WHERE slug = ? AND id != ?",
+        [slug, params.id]
+      )
 
-      // If slug exists, append a unique timestamp
-      if (slugExists) {
-        slug = `${slug}-${Date.now()}`;
+      if (existingEventWithSlug) {
+        return apiResponse.badRequest("An event with this title already exists")
+      }
+    }
+    
+    const now = new Date().toISOString()
+
+    // Use a transaction to ensure data consistency
+    return await sqlite.transaction(async () => {
+      // Build update query dynamically based on provided fields
+      const updateFields = []
+      const updateValues = []
+      
+      if (title) {
+        updateFields.push("title = ?")
+        updateValues.push(title)
       }
       
-      updateData.slug = slug;
-    }
-
-    // Handle poster image upload
-    if (posterImage && posterImage instanceof File) {
-      try {
-        // Create uploads directory if it doesn't exist
-        const uploadsDir = join(cwd(), "public", "uploads");
-        try {
-          await access(uploadsDir, constants.F_OK);
-        } catch (error) {
-          await mkdir(uploadsDir, { recursive: true });
-        }
-
-        // Generate a unique filename for the poster image
-        const filename = `${Date.now()}-${Math.floor(Math.random() * 1000000000)}-${posterImage.name}`;
-        const filePath = join(uploadsDir, filename);
-        
-        // Write the file to disk
-        const buffer = Buffer.from(await posterImage.arrayBuffer());
-        await writeFile(filePath, buffer);
-        
-        // Set the poster image URL (relative to /public)
-        updateData.posterImage = `/uploads/${filename}`;
-      } catch (error) {
-        console.error("Error uploading poster image:", error);
+      if (slug) {
+        updateFields.push("slug = ?")
+        updateValues.push(slug)
       }
-    }
-
-    // Update the event
-    const updatedEvent = await sqlite.run(`UPDATE event SET({
-      where: { id },
-      data: updateData,
-      include: {
-        category: true,
-        speakers: {
-          include: {
-            speaker: true
-          }
-        },
-        tags: {
-          include: {
-            tag: true
-          }
-        },
-        presentations: {
-          include: {
-            speaker: true
-          }
-        }
+      
+      if (description) {
+        updateFields.push("description = ?")
+        updateValues.push(description)
       }
-    });
-
-    return NextResponse.json(updatedEvent);
+      
+      if (location) {
+        updateFields.push("location = ?")
+        updateValues.push(location)
+      }
+      
+      if (startDate) {
+        updateFields.push("startDate = ?")
+        updateValues.push(new Date(startDate).toISOString())
+      }
+      
+      if (endDate) {
+        updateFields.push("endDate = ?")
+        updateValues.push(new Date(endDate).toISOString())
+      }
+      
+      if (status) {
+        updateFields.push("status = ?")
+        updateValues.push(status)
+      }
+      
+      if (published !== undefined) {
+        updateFields.push("published = ?")
+        updateValues.push(published ? 1 : 0)
+      }
+      
+      if (categoryId !== undefined) {
+        updateFields.push("categoryId = ?")
+        updateValues.push(categoryId || null)
+      }
+      
+      // Always update the updatedAt timestamp
+      updateFields.push("updatedAt = ?")
+      updateValues.push(now)
+      
+      // Add the id to the values array
+      updateValues.push(params.id)
+      
+      // Execute the update
+      await sqlite.run(
+        `UPDATE events SET ${updateFields.join(", ")} WHERE id = ?`,
+        updateValues
+      )
+      
+      // Get the updated event with category name
+      const updatedEvent = await sqlite.get(
+        `SELECT e.*, c.name as categoryName 
+         FROM events e
+         LEFT JOIN event_categories c ON e.categoryId = c.id
+         WHERE e.id = ?`,
+        [params.id]
+      )
+      
+      return apiResponse.success(updatedEvent)
+    })
   } catch (error) {
-    console.error("Failed to update event:", error);
-    return NextResponse.json(
-      { error: "Failed to update event", details: error instanceof Error ? error.message : String(error) },
-      { status: 500 }
-    );
+    logger.error("Failed to update event", error instanceof Error ? error : new Error(String(error)))
+    return apiResponse.error("Failed to update event")
   }
 }
 
+/**
+ * Delete an event by ID
+ */
 export async function DELETE(
   request: NextRequest,
   { params }: { params: { id: string } }
@@ -308,44 +222,33 @@ export async function DELETE(
     const session = await getServerSession()
 
     if (!session?.user) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      )
+      return apiResponse.unauthorized()
     }
 
-    const id = params.id
-    
-    if (!id) {
-      return NextResponse.json(
-        { error: "Event ID is required" },
-        { status: 400 }
-      )
-    }
-
-    // Check if the event exists
-    const event = await sqlite.get(`SELECT * FROM event WHERE({
-      where: { id }
-    })
-
-    if (!event) {
-      return NextResponse.json(
-        { error: "Event not found" },
-        { status: 404 }
-      )
-    }
-
-    // Delete the event
-    await sqlite.run(`DELETE FROM event WHERE({
-      where: { id }
-    })
-
-    return NextResponse.json({ success: true })
-  } catch (error) {
-    console.error("Failed to delete event:", error)
-    return NextResponse.json(
-      { error: "Failed to delete event", details: error instanceof Error ? error.message : String(error) },
-      { status: 500 }
+    // Verify event exists
+    const existingEvent = await sqlite.get(
+      "SELECT id FROM events WHERE id = ?",
+      [params.id]
     )
+
+    if (!existingEvent) {
+      return apiResponse.notFound("Event not found")
+    }
+
+    // Use a transaction to ensure data consistency
+    return await sqlite.transaction(async () => {
+      // Delete associated records first
+      await sqlite.run("DELETE FROM tags_on_events WHERE eventId = ?", [params.id])
+      await sqlite.run("DELETE FROM event_speakers WHERE eventId = ?", [params.id])
+      await sqlite.run("DELETE FROM presentation WHERE eventId = ?", [params.id])
+      
+      // Delete the event
+      await sqlite.run("DELETE FROM events WHERE id = ?", [params.id])
+      
+      return apiResponse.noContent()
+    })
+  } catch (error) {
+    logger.error("Failed to delete event", error instanceof Error ? error : new Error(String(error)))
+    return apiResponse.error("Failed to delete event")
   }
 } 

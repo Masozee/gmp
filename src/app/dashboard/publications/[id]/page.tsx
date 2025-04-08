@@ -1,7 +1,8 @@
 "use client"
 
+import React from "react"
 import { useState, useEffect } from "react"
-import { useRouter, useParams } from "next/navigation"
+import { useRouter } from "next/navigation"
 import { Eye, Pencil, Trash2, ArrowLeft } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -52,12 +53,15 @@ interface Publication {
   }>
 }
 
-export default function PublicationDetailPage() {
-  const params = useParams()
+export default function PublicationDetailsPage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter()
   const [publication, setPublication] = useState<Publication | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+
+  // Unwrap the params object using React.use()
+  const resolvedParams = React.use(params);
+  const publicationId = resolvedParams.id;
 
   const statusMap = {
     DRAFT: { label: "Draft", variant: "secondary" },
@@ -69,7 +73,7 @@ export default function PublicationDetailPage() {
     const fetchPublication = async () => {
       try {
         setIsLoading(true)
-        const response = await fetch(`/api/publications/${params.id}`)
+        const response = await fetch(`/api/publications/${publicationId}`)
         if (!response.ok) {
           throw new Error("Failed to fetch publication")
         }
@@ -83,11 +87,11 @@ export default function PublicationDetailPage() {
       }
     }
     fetchPublication()
-  }, [params.id])
+  }, [publicationId])
 
   const handleDelete = async () => {
     try {
-      const response = await fetch(`/api/publications/${params.id}`, {
+      const response = await fetch(`/api/publications/${publicationId}`, {
         method: "DELETE",
       })
 
@@ -135,7 +139,7 @@ export default function PublicationDetailPage() {
         <div className="flex gap-2">
           <Button
             variant="outline"
-            onClick={() => router.push(`/dashboard/publications/${params.id}/edit`)}
+            onClick={() => router.push(`/dashboard/publications/${publicationId}/edit`)}
           >
             <Pencil className="mr-2 h-4 w-4" />
             Edit

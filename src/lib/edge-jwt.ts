@@ -1,60 +1,44 @@
-import { SignJWT, jwtVerify } from 'jose'
+import { SignJWT, jwtVerify } from "jose"
 
-const JWT_SECRET = process.env.JWT_SECRET || "default-secret"
-const JWT_EXPIRES_IN = "1d" // 1 day
+// This should be in an environment variable in a real application
+const JWT_SECRET = new TextEncoder().encode(
+  process.env.JWT_SECRET || "test_jwt_secret_for_development_only"
+)
 
-// Convert secret to Uint8Array for jose
-const secretKey = new TextEncoder().encode(JWT_SECRET)
-
-export interface JWTPayload {
-  id: string
+interface TokenPayload {
+  id: string | number
   email: string
-  role: "USER" | "ADMIN"
-  [key: string]: unknown
+  role: string
 }
 
-export async function signToken(payload: JWTPayload): Promise<string> {
-  try {
-    console.log("[JWT] Signing token with payload:", payload)
-
-    const token = await new SignJWT({ ...payload })
-      .setProtectedHeader({ alg: 'HS256' })
-      .setExpirationTime(JWT_EXPIRES_IN)
-      .setIssuedAt()
-      .sign(secretKey)
-
-    console.log("[JWT] Token signed successfully")
-    return token
-  } catch (error) {
-    console.error("[JWT] Error signing token:", error)
-    throw error
-  }
+/**
+ * Sign a JWT token with the given payload
+ * @param payload The data to include in the token
+ * @returns The signed JWT token
+ */
+export async function signToken(payload: TokenPayload): Promise<string> {
+  const token = await new SignJWT(payload as any)
+    .setProtectedHeader({ alg: "HS256" })
+    .setIssuedAt()
+    .setExpirationTime("8h")
+    .sign(JWT_SECRET)
+  
+  return token
 }
 
-export async function verifyToken(token: string): Promise<JWTPayload> {
+/**
+ * Verify a JWT token on the server
+ * @param token The JWT token to verify
+ * @returns The decoded payload if valid
+ */
+export async function verifyToken(token: string): Promise<TokenPayload> {
   try {
-    console.log("[JWT] Verifying token")
-    console.log("[JWT] Using secret:", JWT_SECRET.substring(0, 10) + "...")
-
-    const { payload } = await jwtVerify(token, secretKey, {
-      algorithms: ['HS256'],
-    })
-
-    const result = payload as unknown as JWTPayload
-
-    if (!result.id || !result.email || !result.role) {
-      throw new Error("Invalid token payload")
-    }
-
-    console.log("[JWT] Token verified successfully:", {
-      id: result.id,
-      email: result.email,
-      role: result.role,
-    })
-
-    return result
+    console.log("[JWT] Verifying token:", token.substring(0, 15) + "...");
+    const verified = await jwtVerify(token, JWT_SECRET)
+    console.log("[JWT] Token verified, payload:", verified.payload);
+    return verified.payload as unknown as TokenPayload
   } catch (error) {
-    console.error("[JWT] Token verification failed:", error)
+    console.error("Failed to verify token:", error)
     throw new Error("Invalid token")
   }
 } 

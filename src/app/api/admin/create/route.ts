@@ -1,58 +1,40 @@
-import { NextRequest, NextResponse } from "next/server"
-import { hash } from "bcryptjs"
-import sqlite from "@/lib/sqlite"
 
-export async function POST(request: Request) {
+import { NextRequest, NextResponse } from "next/server"
+import sqlite from "@/lib/sqlite"
+import { hash } from "bcryptjs"
+
+export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { email, password, firstName, lastName } = body
-
-    // Check if user already exists
-    const existingUser = await sqlite.get(`SELECT * FROM user WHERE({
-      where: { email },
-    })
-
-    if (existingUser) {
-      return NextResponse.json(
-        { error: "User already exists" },
-        { status: 400 }
-      )
+    const { email, password, name } = body
+    
+    // Simple validation
+    if (!email || !password || !name) {
+      return NextResponse.json({ 
+        error: "Missing required fields" 
+      }, { status: 400 })
     }
 
-    // Hash password
+    // Generate a timestamp
+    const now = new Date().toISOString()
+    
+    // Hash the password
     const hashedPassword = await hash(password, 12)
-
-    // Create admin user and profile in a transaction
-    const user = await prisma.$transaction(async (tx) => {
-      const user = await tx.user.create({
-        data: {
-          email,
-          password: hashedPassword,
-          role: "ADMIN",
-          profile: {
-            create: {
-              firstName,
-              lastName,
-            },
-          },
-        },
-        include: {
-          profile: true,
-        },
-      })
-
-      return user
-    })
-
-    // Remove password from response
-    const { password: _, ...userWithoutPassword } = user
-
-    return NextResponse.json(userWithoutPassword)
-  } catch (error) {
-    console.error("Failed to create admin user:", error)
-    return NextResponse.json(
-      { error: "Failed to create admin user" },
-      { status: 500 }
+    
+    // Create the user
+    const result = await sqlite.run(
+      "INSERT INTO users (email, password, name, role, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, ?)",
+      [email, hashedPassword, name, "ADMIN", now, now]
     )
+    
+    return NextResponse.json({ 
+      success: true,
+      id: result.lastInsertRowid
+    })
+  } catch (error) {
+    console.error("Error creating admin:", error)
+    return NextResponse.json({ 
+      error: "Failed to create admin user" 
+    }, { status: 500 })
   }
 } 

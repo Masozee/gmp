@@ -1,7 +1,8 @@
 "use client"
 
+import React from "react"
 import { useState, useEffect } from "react"
-import { useParams, useRouter } from "next/navigation"
+import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { ArrowLeft, Calendar, Loader2 } from "lucide-react"
 import { useForm } from "react-hook-form"
@@ -102,8 +103,11 @@ interface Event {
   }[];
 }
 
-export default function EditEventPage() {
-  const params = useParams();
+export default function EditEventPage({ params }: { params: Promise<{ id: string }> }) {
+  // Unwrap the params object using React.use()
+  const resolvedParams = React.use(params);
+  const eventId = resolvedParams.id;
+
   const router = useRouter();
   const [event, setEvent] = useState<Event | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
@@ -137,7 +141,7 @@ export default function EditEventPage() {
     const fetchEvent = async () => {
       try {
         setIsFetching(true);
-        const response = await fetch(`/api/events/${params.id}`);
+        const response = await fetch(`/api/events/${eventId}`);
         
         if (!response.ok) {
           throw new Error("Failed to fetch event");
@@ -174,10 +178,10 @@ export default function EditEventPage() {
       }
     };
 
-    if (params.id) {
+    if (eventId) {
       fetchEvent();
     }
-  }, [params.id, form]);
+  }, [eventId, form]);
 
   // Fetch categories, tags, and speakers
   useEffect(() => {
@@ -224,7 +228,7 @@ export default function EditEventPage() {
     try {
       setIsLoading(true);
       
-      const response = await fetch(`/api/events/${params.id}`, {
+      const response = await fetch(`/api/events/${eventId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -237,7 +241,7 @@ export default function EditEventPage() {
         throw new Error(error.error || "Failed to update event");
       }
 
-      router.push(`/dashboard/events/${params.id}`);
+      router.push(`/dashboard/events/${eventId}`);
     } catch (error) {
       console.error("Error updating event:", error);
       setIsLoading(false);
@@ -249,7 +253,7 @@ export default function EditEventPage() {
       <div className="container mx-auto py-6">
         <div className="flex items-center mb-6">
           <Button variant="ghost" size="sm" asChild>
-            <Link href={`/dashboard/events/${params.id}`}>
+            <Link href={`/dashboard/events/${eventId}`}>
               <ArrowLeft className="mr-2 h-4 w-4" />
               Back to Event
             </Link>
@@ -300,7 +304,7 @@ export default function EditEventPage() {
     <div className="container mx-auto py-6">
       <div className="flex items-center mb-6">
         <Button variant="ghost" size="sm" asChild>
-          <Link href={`/dashboard/events/${params.id}`}>
+          <Link href={`/dashboard/events/${eventId}`}>
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to Event
           </Link>

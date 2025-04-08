@@ -1,7 +1,8 @@
 "use client"
 
+import React from "react"
 import { useState, useEffect } from "react"
-import { useRouter, useParams } from "next/navigation"
+import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
@@ -84,8 +85,7 @@ const formSchema = z.object({
   authors: z.array(z.string()).min(1, "At least one author is required"),
 })
 
-export default function EditPublicationPage() {
-  const params = useParams()
+export default function EditPublicationPage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter()
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
@@ -95,6 +95,10 @@ export default function EditPublicationPage() {
   const [isLoadingAuthors, setIsLoadingAuthors] = useState(false)
   const [publication, setPublication] = useState<any>(null)
   const [createTagLoading, setCreateTagLoading] = useState(false)
+
+  // Unwrap the params object using React.use()
+  const resolvedParams = React.use(params);
+  const publicationId = resolvedParams.id;
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -161,7 +165,7 @@ export default function EditPublicationPage() {
     const fetchPublication = async () => {
       try {
         setLoading(true)
-        const response = await fetch(`/api/publications/${params.id}`)
+        const response = await fetch(`/api/publications/${publicationId}`)
         if (!response.ok) throw new Error("Failed to fetch publication")
         const data = await response.json()
         setPublication(data)
@@ -185,7 +189,7 @@ export default function EditPublicationPage() {
       }
     }
     fetchPublication()
-  }, [params.id, form])
+  }, [publicationId, form])
 
   // Add a new effect to sync available authors with form data
   useEffect(() => {
@@ -264,7 +268,7 @@ export default function EditPublicationPage() {
         formData.append("coverImage", values.coverImage)
       }
 
-      const response = await fetch(`/api/publications/${params.id}`, {
+      const response = await fetch(`/api/publications/${publicationId}`, {
         method: "PATCH",
         body: formData,
       })
@@ -274,7 +278,7 @@ export default function EditPublicationPage() {
         throw new Error(errorData.error || "Failed to update publication")
       }
 
-      router.push(`/dashboard/publications/${params.id}`)
+      router.push(`/dashboard/publications/${publicationId}`)
     } catch (error) {
       setError(error instanceof Error ? error.message : "An error occurred")
     } finally {
@@ -311,7 +315,7 @@ export default function EditPublicationPage() {
             Make changes to your publication here
           </p>
         </div>
-        <Button variant="outline" onClick={() => router.push(`/dashboard/publications/${params.id}`)}>
+        <Button variant="outline" onClick={() => router.push(`/dashboard/publications/${publicationId}`)}>
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back to Details
         </Button>
@@ -690,7 +694,7 @@ export default function EditPublicationPage() {
                 <Button
                   type="button"
                   variant="outline"
-                  onClick={() => router.push(`/dashboard/publications/${params.id}`)}
+                  onClick={() => router.push(`/dashboard/publications/${publicationId}`)}
                 >
                   Cancel
                 </Button>

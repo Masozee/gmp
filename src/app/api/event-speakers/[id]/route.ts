@@ -1,161 +1,136 @@
 import { NextRequest, NextResponse } from "next/server"
-import { getServerSession } from "@/lib/server-auth"
-import { z } from "zod"
-
 import sqlite from "@/lib/sqlite"
-
-const updateEventSpeakerSchema = z.object({
-  role: z.string().optional(),
-  order: z.number().int().min(1).optional(),
-})
+import { getServerSession } from "@/lib/server-auth"
 
 export async function GET(
-  req: NextRequest,
+  request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
     const session = await getServerSession()
-    if (!session) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+
+    if (!session?.user) {
+      return NextResponse.json(
+        { error: "Unauthorized" },
+        { status: 401 }
+      )
     }
 
-    const eventSpeaker = await sqlite.get(`SELECT * FROM eventSpeaker WHERE({
-      where: { id: params.id },
-      include: {
-        event: {
-          select: {
-            id: true,
-            title: true,
-            startDate: true,
-            endDate: true,
-          },
-        },
-        speaker: {
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true,
-            organization: true,
-            position: true,
-            photoUrl: true,
-            bio: true,
-          },
-        },
-      },
-    })
+    const category = await sqlite.get(
+      "SELECT * FROM event_categories WHERE id = ?",
+      [params.id]
+    )
 
-    if (!eventSpeaker) {
+    if (!category) {
       return NextResponse.json(
-        { error: "Event speaker not found" },
+        { error: "Category not found" },
         { status: 404 }
       )
     }
 
-    return NextResponse.json(eventSpeaker)
+    // Get publications count for this category
+    const publicationsCount = await sqlite.get(
+      "SELECT COUNT(*) as count FROM publications WHERE categoryId = ?",
+      [params.id]
+    )
+
+    // Add count to category
+    return NextResponse.json({
+      ...category,
+      publicationsCount: publicationsCount ? publicationsCount.count : 0
+    })
   } catch (error) {
-    console.error("Error fetching event speaker:", error)
+    console.error("Failed to fetch category:", error)
     return NextResponse.json(
-      { error: "Failed to fetch event speaker" },
+      { error: "Failed to fetch category" },
       { status: 500 }
     )
   }
 }
 
 export async function PATCH(
-  req: NextRequest,
+  request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
     const session = await getServerSession()
-    if (!session) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-    }
 
-    // Check if the event speaker exists
-    const existingEventSpeaker = await sqlite.get(`SELECT * FROM eventSpeaker WHERE({
-      where: { id: params.id },
-    })
-
-    if (!existingEventSpeaker) {
+    if (!session?.user) {
       return NextResponse.json(
-        { error: "Event speaker not found" },
-        { status: 404 }
+        { error: "Unauthorized" },
+        { status: 401 }
       )
     }
 
-    // Parse and validate the request body
-    const body = await req.json()
-    const validatedData = updateEventSpeakerSchema.parse(body)
+    const { name, description } = await request.json()
 
-    // Update the event speaker
-    const updatedEventSpeaker = await sqlite.run(`UPDATE eventSpeaker SET({
-      where: { id: params.id },
-      data: {
-        role: validatedData.role,
-        order: validatedData.order,
-      },
-      include: {
-        speaker: {
-          select: {
-            firstName: true,
-            lastName: true,
-          },
-        },
-      },
-    })
-
-    return NextResponse.json(updatedEventSpeaker)
-  } catch (error) {
-    if (error instanceof z.ZodError) {
+    if (!name) {
       return NextResponse.json(
-        { error: "Invalid data", details: error.errors },
+        { error: "Name is required" },
         { status: 400 }
       )
     }
 
-    console.error("Error updating event speaker:", error)
+    // Generate slug from name
+    const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, "-")
+    
+    const now = new Date().toISOString()
+
+    // Update the category
+    await sqlite.run(
+      "UPDATE event_categories SET name = ?, slug = ?, description = ?, updatedAt = ? WHERE id = ?",
+      [name, slug, description, now, params.id]
+    )
+    
+    // Get the updated category
+    const category = await sqlite.get(
+      "SELECT * FROM event_categories WHERE id = ?",
+      [params.id]
+    )
+    
+    // Get publications count
+    const publicationsCount = await sqlite.get(
+      "SELECT COUNT(*) as count FROM publications WHERE categoryId = ?",
+      [params.id]
+    )
+
+    return NextResponse.json({
+      ...category,
+      publicationsCount: publicationsCount ? publicationsCount.count : 0
+    })
+  } catch (error) {
+    console.error("Failed to update category:", error)
     return NextResponse.json(
-      { error: "Failed to update event speaker" },
+      { error: "Failed to update category" },
       { status: 500 }
     )
   }
 }
 
 export async function DELETE(
-  req: NextRequest,
+  request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
     const session = await getServerSession()
-    if (!session) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-    }
 
-    // Check if the event speaker exists
-    const existingEventSpeaker = await sqlite.get(`SELECT * FROM eventSpeaker WHERE({
-      where: { id: params.id },
-    })
-
-    if (!existingEventSpeaker) {
+    if (!session?.user) {
       return NextResponse.json(
-        { error: "Event speaker not found" },
-        { status: 404 }
+        { error: "Unauthorized" },
+        { status: 401 }
       )
     }
 
-    // Delete the event speaker
-    await sqlite.run(`DELETE FROM eventSpeaker WHERE({
-      where: { id: params.id },
-    })
-
-    return NextResponse.json(
-      { message: "Event speaker removed successfully" },
-      { status: 200 }
+    await sqlite.run(
+      "DELETE FROM event_categories WHERE id = ?",
+      [params.id]
     )
+
+    return new NextResponse(null, { status: 204 })
   } catch (error) {
-    console.error("Error deleting event speaker:", error)
+    console.error("Failed to delete category:", error)
     return NextResponse.json(
-      { error: "Failed to delete event speaker" },
+      { error: "Failed to delete category" },
       { status: 500 }
     )
   }

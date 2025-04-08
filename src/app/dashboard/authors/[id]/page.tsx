@@ -1,7 +1,8 @@
 "use client"
 
+import React from "react"
 import { useState, useEffect } from "react"
-import { useRouter, useParams } from "next/navigation"
+import { useRouter } from "next/navigation"
 import { ArrowLeft, Mail, Phone, Building, Pencil, Trash2 } from "lucide-react"
 import { toast } from "sonner"
 
@@ -32,19 +33,22 @@ interface Author {
   photoUrl?: string | null
 }
 
-export default function AuthorDetailPage() {
-  const params = useParams()
+export default function AuthorDetailsPage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter()
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [author, setAuthor] = useState<Author | null>(null)
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
 
+  // Unwrap the params object using React.use()
+  const resolvedParams = React.use(params);
+  const authorId = resolvedParams.id;
+
   useEffect(() => {
     const fetchAuthor = async () => {
       try {
         setLoading(true)
-        const response = await fetch(`/api/authors/${params.id}`)
+        const response = await fetch(`/api/authors/${authorId}`)
         if (!response.ok) throw new Error("Failed to fetch author")
         const data = await response.json()
         setAuthor(data)
@@ -56,12 +60,12 @@ export default function AuthorDetailPage() {
       }
     }
     fetchAuthor()
-  }, [params.id])
+  }, [authorId])
 
   const handleDelete = async () => {
     try {
       setLoading(true)
-      const response = await fetch(`/api/authors/${params.id}`, {
+      const response = await fetch(`/api/authors/${authorId}`, {
         method: "DELETE",
       })
 
