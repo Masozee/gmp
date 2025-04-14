@@ -60,3 +60,8 @@ src/db.sqlite
 *.pack
 **/*.pack
 **/*.node
+
+# Bun
+.bun-cache/
+node_modules/.cache/
+.bun-cache

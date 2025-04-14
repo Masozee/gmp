@@ -6,4 +6,9 @@ dev = true
 peer = true
 
 [test]
-coverage = true 
+coverage = true
+
+[jsx]
+auto-import-react = true
+fast-refresh = true
+runtime = "automatic" 

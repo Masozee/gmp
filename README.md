@@ -1,15 +1,15 @@
 # AI Agent Dashboard
 
-A modern dashboard application built with Next.js 15, TypeScript, and shadcn components.
+A modern dashboard application built with Next.js 15, TypeScript, and shadcn components, using Bun as the runtime and package manager.
 
 ## Tech Stack
 
 - Next.js 15
 - TypeScript
-- PostgreSQL
+- SQLite
 - shadcn/ui components
 - Tailwind CSS
-- Prisma ORM
+- Bun runtime
 
 ## Features
 
@@ -28,26 +28,27 @@ git clone [your-repo-url]
 cd [your-repo-name]
 ```
 
-2. Install dependencies:
+2. Install dependencies with Bun:
 ```bash
-npm install
+bun install
 ```
 
 3. Set up environment variables:
 Create a `.env` file in the root directory and add the following:
 ```env
-DATABASE_URL="postgresql://[user]:[password]@[host]:[port]/[db-name]"
-NEXTAUTH_SECRET="your-secret-key"
+DATABASE_URL=file:./data.db
+JWT_SECRET=your_jwt_secret_key
+NEXT_RUNTIME_BUN=true
 ```
 
-4. Run database migrations:
+4. Initialize the database:
 ```bash
-npx prisma migrate dev
+bun run db:init
 ```
 
 5. Start the development server:
 ```bash
-npm run dev
+bun run dev
 ```
 
 ## Project Structure
@@ -60,6 +61,24 @@ src/
 ├── styles/          # Global styles
 └── types/           # TypeScript type definitions
 ```
+
+## Using Bun
+
+This project uses [Bun](https://bun.sh) for faster dependency installation, development, and production builds.
+
+### Key Benefits:
+
+- Faster package installation
+- Improved development server performance
+- Native TypeScript support without transpilation
+- Built-in API for common tasks
+
+### Useful Bun Commands:
+
+- `bun install` - Install dependencies
+- `bun run dev` - Start development server
+- `bun run build` - Build for production
+- `bun run start` - Run production server
 
 ## Development Guidelines
 

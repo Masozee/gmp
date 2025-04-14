@@ -3,12 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "NEXT_DISABLE_ESLINT=1 NODE_OPTIONS=--max_old_space_size=4096 next build || echo 'Build completed with warnings'",
-    "start": "next start",
+    "dev": "bun --bun next dev",
+    "build": "NEXT_DISABLE_ESLINT=1 NODE_OPTIONS=--max_old_space_size=4096 bun --bun next build || echo 'Build completed with warnings'",
+    "start": "bun --bun next start",
     "lint": "next lint",
-    "db:init": "node scripts/initialize-database.js",
-    "setup:db": "tsx src/app/setup-db.ts"
+    "db:init": "bun scripts/initialize-database.js",
+    "setup:db": "bun tsx src/app/setup-db.ts"
   },
   "dependencies": {
     "@emotion/react": "^11.11.4",
