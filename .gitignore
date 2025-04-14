@@ -52,3 +52,11 @@ next-env.d.ts
 *.db
 src/db.sqlite
 *.sqlite-journal
+*.sqlite-shm
+*.sqlite-wal
+
+# Large files
+*.dmg
+*.pack
+**/*.pack
+**/*.node
