@@ -1,0 +1,3 @@
+*.sqlite binary
+*.db binary
+src/db.sqlite binary 

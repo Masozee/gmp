@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Menu, X, Facebook, Instagram, Youtube, Search, ChevronUp, Globe, Mail } from "lucide-react";
+import { Menu, X, Facebook, Instagram, Youtube, Search, ChevronUp, Globe } from "lucide-react";
 import { ModeToggle } from "@/components/mode-toggle";
 import {
   DropdownMenu,
@@ -17,9 +17,9 @@ import { Button } from "@/components/ui/button";
 
 // Define the youth-oriented color palette
 const YOUTH_COLORS = {
-  yellow: "rgb(247, 203, 87)",
-  pink: "rgb(237, 109, 148)",
-  blue: "rgb(90, 202, 244)",
+  yellow: "#fece5f",
+  pink: "#eb6d93",
+  blue: "#59c9f5",
   green: "#7baf3f"
 };
 
@@ -27,6 +27,7 @@ export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
+  const [deepScroll, setDeepScroll] = useState(false);
 
   // Handle scroll effect   
   useEffect(() => {
@@ -35,6 +36,13 @@ export function Navbar() {
         setScrolled(true);
       } else {
         setScrolled(false);
+      }
+
+      // Deep scroll for compact navbar
+      if (window.scrollY > 100) {
+        setDeepScroll(true);
+      } else {
+        setDeepScroll(false);
       }
 
       // Show scroll to top button when user scrolls down 300px
@@ -70,47 +78,19 @@ export function Navbar() {
       ]
     },
     { name: "Program", href: "/programs" },
-    { 
-      name: "Publikasi", 
-      href: "/publications",
-      hasDropdown: true,
-      hasMegaMenu: true,
-      dropdownItems: []
-    },
+    { name: "Publikasi", href: "/publications" },
     { name: "Acara", href: "/events" },
     { name: "Mitra Strategis", href: "/partners" },
   ];
 
-  // Latest publications for the mega menu
-  const latestPublications = [
-    {
-      id: "1",
-      title: "Memahami Sistem Pemilu Indonesia",
-      excerpt: "Panduan komprehensif tentang sistem pemilihan umum di Indonesia...",
-      image: "/images/boston-public-library-4yPHCb1SPR4-unsplash.jpg",
-      date: "15 Mei 2023",
-      category: "Pemilu",
-    },
-    {
-      id: "8",
-      title: "Peran Media dalam Pembentukan Opini Politik",
-      excerpt: "Analisis pengaruh media dalam membentuk persepsi dan opini publik...",
-      image: "/images/shubham-dhage-PACWvLRNzj8-unsplash.jpg",
-      date: "20 Januari 2024",
-      category: "Media dan Politik",
-    },
-  ];
-
-  // Publication categories
-  const publicationCategories = [
-    "Pemilu",
-    "Partisipasi Politik",
-    "Media Digital",
-    "Literasi Politik",
-    "Kebijakan Publik",
-    "Politik Lokal",
-    "Gender dan Politik",
-    "Media dan Politik"
+  // Clean navigation for compact mode (like the image)
+  const compactNavItems = [
+    { name: "Products", href: "#", hasDropdown: true },
+    { name: "Initiatives", href: "#", hasDropdown: true },
+    { name: "Community", href: "#" },
+    { name: "Stories", href: "#" },
+    { name: "Newsletter", href: "#", isNew: true },
+    { name: "About", href: "#", hasDropdown: true },
   ];
 
   // Language options
@@ -123,31 +103,34 @@ export function Navbar() {
 
   return (
     <>
-      {/* Single Navbar */}
+      {/* Default Navbar */}
       <nav
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
           scrolled
             ? "bg-white/80 backdrop-blur-md shadow-sm dark:bg-gray-900/80"
             : "bg-white/60 backdrop-blur-sm dark:bg-gray-900/60"
-        }`}
+        } ${deepScroll ? "transform -translate-y-full opacity-0" : "transform translate-y-0 opacity-100"}`}
       >
         {/* Top Navigation Bar */}
         <div className="container mx-auto px-6 max-w-7xl border-b border-gray-100 dark:border-gray-800">
           <div className="flex items-center justify-between h-12 md:h-14">
-            {/* Email as logo replacement */}
-            <div className="flex items-center">
-              <Link href="mailto:info@generasimelek.org" className="flex items-center gap-2 text-gray-700 hover:text-brand-blue dark:text-gray-200 dark:hover:text-brand-blue transition-colors group">
-                <Mail className="h-5 w-5 transition-all duration-300 group-hover:scale-105" />
-                <span className="text-sm font-medium hidden sm:inline">info@generasimelek.org</span>
-              </Link>
-            </div>
+            {/* Logo */}
+            <Link href="/" className="flex items-center group">
+              <Image 
+                src="/logos/Logo-name-stack.png" 
+                alt="Generasi Melek Politik" 
+                width={120} 
+                height={28}
+                className="h-6 md:h-7 w-auto transition-all duration-300 group-hover:scale-105"
+              />
+            </Link>
 
             {/* Right section: Donate, Language, Dark Mode */}
             <div className="hidden md:flex items-center gap-6">
               <div className="flex items-center gap-4">
                 <Link 
                   href="/donate" 
-                  className="text-sm font-medium text-gray-700 hover:text-brand-blue dark:text-gray-200 dark:hover:text-brand-blue transition-colors hover:scale-105 transform duration-200"
+                  className="text-sm font-medium text-gray-700 hover:text-emerald-600 dark:text-gray-200 dark:hover:text-emerald-400 transition-colors hover:scale-105 transform duration-200"
                 >
                   Donasi & Kolaborasi
                 </Link>
@@ -157,13 +140,13 @@ export function Navbar() {
               
               {/* Language Selector */}
               <DropdownMenu>
-                <DropdownMenuTrigger className="flex items-center gap-2 text-gray-700 hover:text-brand-blue dark:text-gray-200 dark:hover:text-brand-blue transition-colors h-8">
+                <DropdownMenuTrigger className="flex items-center gap-2 text-gray-700 hover:text-emerald-600 dark:text-gray-200 dark:hover:text-emerald-400 transition-colors">
                   <Globe className="h-4 w-4" />
                   <span className="text-sm font-medium">
                     {languages.find(lang => lang.code === currentLang)?.flag}
                   </span>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" sideOffset={8} className="mt-1">
+                <DropdownMenuContent align="end">
                   {languages.map((lang) => (
                     <DropdownMenuItem
                       key={lang.code}
@@ -186,10 +169,10 @@ export function Navbar() {
             <div className="flex items-center gap-4 md:hidden">
               {/* Language Selector for Mobile */}
               <DropdownMenu>
-                <DropdownMenuTrigger className="flex items-center gap-1 text-gray-700 hover:text-brand-blue dark:text-gray-200 dark:hover:text-brand-blue transition-colors h-8">
+                <DropdownMenuTrigger className="flex items-center gap-1 text-gray-700 hover:text-emerald-600 dark:text-gray-200 dark:hover:text-emerald-400 transition-colors">
                   <Globe className="h-4 w-4" />
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" sideOffset={8} className="mt-1">
+                <DropdownMenuContent align="end">
                   {languages.map((lang) => (
                     <DropdownMenuItem
                       key={lang.code}
@@ -222,116 +205,36 @@ export function Navbar() {
 
         {/* Bottom Navigation Bar */}
         <div className="hidden md:block container mx-auto px-6 max-w-7xl">
-          <div className="flex items-center justify-between h-16 relative">
-            {/* Logo moved to bottom nav and made bigger */}
-            <div className="flex items-center mr-8">
-              <Link href="/" className="flex items-center group">
-                <div className="flex items-center">
-                  <Image 
-                    src="/logos/Logo-name-stack.png" 
-                    alt="Generasi Melek Politik" 
-                    width={140} 
-                    height={35}
-                    className="h-9 w-auto transition-all duration-300 group-hover:scale-105"
-                  />
-                </div>
-              </Link>
-            </div>
-            
+          <div className="flex items-center justify-between h-16">
             {/* Left aligned menu items */}
-            <div className="flex items-center gap-8 flex-1">
+            <div className="flex items-center gap-8">
               {mainNavItems.map((item) => (
                 item.hasDropdown ? (
                   <DropdownMenu key={item.name}>
-                    <DropdownMenuTrigger className="flex items-center gap-1 font-heading font-semibold text-base transition-all duration-200 focus:outline-none group hover:text-brand-blue dark:hover:text-brand-blue text-gray-700 dark:text-gray-200">
+                    <DropdownMenuTrigger className="flex items-center gap-1 font-heading font-semibold text-base transition-all duration-200 focus:outline-none group hover:text-emerald-600 dark:hover:text-emerald-400 text-gray-700 dark:text-gray-200">
                       <span className="group-hover:translate-x-0.5 transition-transform duration-200">
                         {item.name}
                       </span>
                       <ChevronDown className="h-4 w-4 transition-transform duration-200 group-hover:rotate-180" />
                     </DropdownMenuTrigger>
-                    {item.hasMegaMenu ? (
-                      <DropdownMenuContent 
-                        align="center" 
-                        className="animate-in fade-in-50 zoom-in-95 data-[side=bottom]:slide-in-from-top-2 w-[800px] p-0"
-                      >
-                        <div className="flex w-full">
-                          {/* Left column: Categories */}
-                          <div className="w-1/3 bg-gray-50 dark:bg-gray-800 p-4">
-                            <h3 className="font-heading font-semibold text-base mb-3 text-gray-800 dark:text-gray-200">
-                              Kategori
-                            </h3>
-                            <div className="flex flex-col space-y-2">
-                              {publicationCategories.map((category) => (
-                                <Link 
-                                  key={category}
-                                  href={`/publications?category=${encodeURIComponent(category)}`}
-                                  className="text-sm text-gray-700 hover:text-brand-blue dark:text-gray-300 dark:hover:text-brand-blue transition-colors"
-                                >
-                                  {category}
-                                </Link>
-                              ))}
-                              <Link 
-                                href="/publications"
-                                className="text-sm font-medium text-brand-yellow hover:text-brand-pink dark:text-brand-yellow dark:hover:text-brand-pink transition-colors mt-2"
-                              >
-                                Lihat Semua Publikasi
-                              </Link>
-                            </div>
-                          </div>
-                          
-                          {/* Right columns: Latest publications (2 columns) */}
-                          <div className="w-2/3 grid grid-cols-2 gap-4 p-4">
-                            <h3 className="col-span-2 font-heading font-semibold text-base mb-2 text-gray-800 dark:text-gray-200">
-                              Publikasi Terbaru
-                            </h3>
-                            {latestPublications.map((publication) => (
-                              <Link 
-                                key={publication.id}
-                                href={`/publications/${publication.id}`}
-                                className="block group"
-                              >
-                                <div className="overflow-hidden rounded-md mb-2 aspect-[4/3] relative">
-                                  <Image
-                                    src={publication.image}
-                                    alt={publication.title}
-                                    fill
-                                    className="object-cover transition-all duration-300 group-hover:scale-105"
-                                  />
-                                </div>
-                                <span className="text-xs font-medium text-brand-yellow dark:text-brand-yellow">
-                                  {publication.category}
-                                </span>
-                                <h4 className="text-sm font-semibold text-gray-800 dark:text-gray-200 line-clamp-2 group-hover:text-brand-blue dark:group-hover:text-brand-blue transition-colors">
-                                  {publication.title}
-                                </h4>
-                                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                                  {publication.date}
-                                </p>
-                              </Link>
-                            ))}
-                          </div>
-                        </div>
-                      </DropdownMenuContent>
-                    ) : (
-                      <DropdownMenuContent align="center" className="animate-in fade-in-50 zoom-in-95 data-[side=bottom]:slide-in-from-top-2">
-                        {item.dropdownItems?.map((dropdownItem) => (
-                          <DropdownMenuItem key={dropdownItem.name} asChild>
-                            <Link 
-                              href={dropdownItem.href} 
-                              className="cursor-pointer font-medium transition-colors hover:text-brand-blue dark:hover:text-brand-blue"
-                            >
-                              {dropdownItem.name}
-                            </Link>
-                          </DropdownMenuItem>
-                        ))}
-                      </DropdownMenuContent>
-                    )}
+                    <DropdownMenuContent align="center" className="animate-in fade-in-50 zoom-in-95 data-[side=bottom]:slide-in-from-top-2">
+                      {item.dropdownItems.map((dropdownItem) => (
+                        <DropdownMenuItem key={dropdownItem.name} asChild>
+                          <Link 
+                            href={dropdownItem.href} 
+                            className="cursor-pointer font-medium transition-colors hover:text-emerald-600 dark:hover:text-emerald-400"
+                          >
+                            {dropdownItem.name}
+                          </Link>
+                        </DropdownMenuItem>
+                      ))}
+                    </DropdownMenuContent>
                   </DropdownMenu>
                 ) : (
                   <Link
                     key={item.name}
                     href={item.href}
-                    className="font-heading font-semibold text-base text-gray-700 hover:text-brand-blue dark:text-gray-200 dark:hover:text-brand-blue transition-all duration-200 hover:translate-x-0.5"
+                    className="font-heading font-semibold text-base text-gray-700 hover:text-emerald-600 dark:text-gray-200 dark:hover:text-emerald-400 transition-all duration-200 hover:translate-x-0.5"
                   >
                     {item.name}
                   </Link>
@@ -345,14 +248,14 @@ export function Navbar() {
                 <Input
                   type="search"
                   placeholder="Cari artikel..."
-                  className="pl-10 pr-4 h-10 rounded-full border-gray-200 focus:border-brand-yellow dark:border-gray-700 dark:focus:border-brand-yellow transition-all duration-300 group-hover:shadow-md"
+                  className="pl-10 pr-4 h-10 rounded-full border-gray-200 focus:border-emerald-300 dark:border-gray-700 dark:focus:border-emerald-700 transition-all duration-300 group-hover:shadow-md"
                 />
-                <Search className="absolute left-3 h-4 w-4 text-gray-400 group-hover:text-brand-yellow transition-colors duration-300" />
+                <Search className="absolute left-3 h-4 w-4 text-gray-400 group-hover:text-emerald-500 transition-colors duration-300" />
                 <Button 
                   type="submit" 
                   variant="ghost" 
                   size="sm" 
-                  className="absolute right-1 rounded-full hover:bg-brand-yellow/10 dark:hover:bg-brand-yellow/20 transition-colors duration-300"
+                  className="absolute right-1 rounded-full hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-colors duration-300"
                 >
                   <span className="sr-only">Search</span>
                   <ChevronDown className="h-4 w-4 -rotate-90 transition-transform duration-300 group-hover:scale-110" />
@@ -387,43 +290,18 @@ export function Navbar() {
                         </Link>
                         <ChevronDown className="h-4 w-4 text-gray-500" />
                       </div>
-                      {item.hasMegaMenu ? (
-                        <div className="mt-2 ml-4 flex flex-col space-y-2">
-                          <h3 className="font-heading text-sm font-semibold text-gray-800 dark:text-gray-200 mb-1">
-                            Kategori
-                          </h3>
-                          {publicationCategories.map((category) => (
-                            <Link
-                              key={category}
-                              href={`/publications?category=${encodeURIComponent(category)}`}
-                              onClick={() => setIsOpen(false)}
-                              className="font-body text-gray-600 dark:text-gray-300"
-                            >
-                              {category}
-                            </Link>
-                          ))}
+                      <div className="mt-2 ml-4 flex flex-col space-y-2">
+                        {item.dropdownItems.map((subItem) => (
                           <Link
-                            href="/publications"
+                            key={subItem.name}
+                            href={subItem.href}
                             onClick={() => setIsOpen(false)}
-                            className="font-body text-sm font-medium text-gray-600 dark:text-gray-300"
+                            className="font-body text-gray-600 dark:text-gray-300"
                           >
-                            Lihat Semua Publikasi
+                            {subItem.name}
                           </Link>
-                        </div>
-                      ) : (
-                        <div className="mt-2 ml-4 flex flex-col space-y-2">
-                          {item.dropdownItems?.map((subItem) => (
-                            <Link
-                              key={subItem.name}
-                              href={subItem.href}
-                              onClick={() => setIsOpen(false)}
-                              className="font-body text-gray-600 dark:text-gray-300"
-                            >
-                              {subItem.name}
-                            </Link>
-                          ))}
-                        </div>
-                      )}
+                        ))}
+                      </div>
                     </div>
                   ) : (
                     <Link
@@ -443,21 +321,188 @@ export function Navbar() {
                 <Link
                   href="/donate"
                   onClick={() => setIsOpen(false)}
-                  className="inline-block text-brand-yellow dark:text-brand-yellow font-heading font-semibold"
+                  className="inline-block text-emerald-600 dark:text-emerald-400 font-heading font-semibold"
                 >
                   Donasi & Kolaborasi
                 </Link>
               </div>
+            </div>
+          </div>
+        </div>
+      </nav>
 
-              {/* Email Link */}
-              <div className="pt-2 border-t border-gray-100 dark:border-gray-700 mt-2">
-                <Link
-                  href="mailto:info@generasimelek.org"
-                  className="flex items-center gap-2 text-gray-700 hover:text-brand-blue dark:text-gray-200 dark:hover:text-brand-blue transition-colors mt-2"
-                >
-                  <Mail className="h-5 w-5" />
-                  <span className="font-medium">info@generasimelek.org</span>
-                </Link>
+      {/* Compact Navbar (Like the image - appears on scroll) */}
+      <nav
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+          deepScroll ? "transform translate-y-0 opacity-100" : "transform -translate-y-full opacity-0"
+        }`}
+      >
+        <div className="container mx-auto px-6 pt-4 max-w-7xl">
+          <div className="bg-[#7baf3f] dark:bg-[#7baf3f] rounded-full shadow-md flex items-center justify-between h-14 px-5">
+            {/* Logo on left */}
+            <div className="flex items-center">
+              <Link href="/" className="flex items-center">
+                <div className="flex items-center">
+                  <Image 
+                    src="/logos/logo.png" 
+                    alt="GMP Icon" 
+                    width={40} 
+                    height={40}
+                    className="h-8 w-8"
+                  />
+                </div>
+              </Link>
+            </div>
+
+            {/* Centered navigation for desktop */}
+            <div className="hidden md:flex items-center justify-center space-x-6 flex-1">
+              {mainNavItems.map((item) => (
+                <div key={item.name} className="relative group">
+                  {item.hasDropdown ? (
+                    <DropdownMenu>
+                      <DropdownMenuTrigger className="flex items-center gap-1 font-heading font-semibold text-sm transition-all duration-200 focus:outline-none group hover:text-white/80 text-white">
+                        <span className="group-hover:translate-x-0.5 transition-transform duration-200">
+                          {item.name}
+                        </span>
+                        <ChevronDown className="h-3.5 w-3.5 transition-transform duration-200 group-hover:rotate-180" />
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="center" className="animate-in fade-in-50 zoom-in-95 data-[side=bottom]:slide-in-from-top-2">
+                        {item.dropdownItems.map((dropdownItem) => (
+                          <DropdownMenuItem key={dropdownItem.name} asChild>
+                            <Link 
+                              href={dropdownItem.href} 
+                              className="cursor-pointer font-medium transition-colors hover:text-emerald-600 dark:hover:text-emerald-400"
+                            >
+                              {dropdownItem.name}
+                            </Link>
+                          </DropdownMenuItem>
+                        ))}
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  ) : (
+                    <Link
+                      href={item.href}
+                      className="flex items-center font-semibold text-sm py-2 transition-colors duration-200 hover:text-white/80 text-white"
+                    >
+                      {item.name}
+                    </Link>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            {/* Right side search and buttons */}
+            <div className="flex items-center gap-4">
+              {/* Search input */}
+              <div className="relative hidden md:flex items-center mr-2">
+                <Input
+                  type="search"
+                  placeholder="Cari artikel..."
+                  className="pl-8 pr-4 h-8 w-40 rounded-full border-transparent focus:border-white dark:border-transparent dark:focus:border-white text-sm bg-white/20 text-white placeholder:text-white/70"
+                />
+                <Search className="absolute left-2.5 h-3.5 w-3.5 text-white" />
+              </div>
+
+              {/* Language and dark mode */}
+              <div className="hidden md:flex items-center space-x-3">
+                {/* Language Selector */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger className="flex items-center gap-1 text-white hover:text-white/80 transition-colors">
+                    <Globe className="h-4 w-4" />
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    {languages.map((lang) => (
+                      <DropdownMenuItem
+                        key={lang.code}
+                        onClick={() => setCurrentLang(lang.code)}
+                        className="flex items-center gap-2 cursor-pointer"
+                      >
+                        <span>{lang.flag}</span>
+                        <span>{lang.name}</span>
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
+                <ModeToggle />
+              </div>
+
+              {/* Mobile menu button */}
+              <button
+                onClick={() => setIsOpen(!isOpen)}
+                className="p-1.5 rounded-md text-white hover:bg-white/10 transition-colors md:hidden"
+                aria-expanded={isOpen}
+              >
+                <span className="sr-only">Toggle menu</span>
+                {isOpen ? (
+                  <X className="h-5 w-5" aria-hidden="true" />
+                ) : (
+                  <Menu className="h-5 w-5" aria-hidden="true" />
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Mobile menu for compact navbar */}
+        <div
+          className={`md:hidden transition-all duration-300 ease-in-out ${
+            isOpen
+              ? "max-h-screen opacity-100 py-4"
+              : "max-h-0 opacity-0 overflow-hidden"
+          }`}
+        >
+          <div className="container mx-auto px-6 max-w-7xl bg-[#7baf3f] dark:bg-[#7baf3f] rounded-b-lg shadow-md">
+            <div className="flex flex-col space-y-4 pb-6 pt-2">
+              {/* Navigation */}
+              <div className="flex flex-col space-y-2">
+                {mainNavItems.map((item) => 
+                  item.hasDropdown ? (
+                    <div key={item.name}>
+                      <div className="flex items-center justify-between pb-1 border-b border-white/20">
+                        <Link 
+                          href={item.href} 
+                          onClick={() => setIsOpen(false)}
+                          className="font-heading text-base font-semibold text-white"
+                        >
+                          {item.name}
+                        </Link>
+                        <ChevronDown className="h-4 w-4 text-white" />
+                      </div>
+                      <div className="mt-2 ml-4 flex flex-col space-y-2">
+                        {item.dropdownItems.map((subItem) => (
+                          <Link
+                            key={subItem.name}
+                            href={subItem.href}
+                            onClick={() => setIsOpen(false)}
+                            className="font-body text-sm text-white/80"
+                          >
+                            {subItem.name}
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  ) : (
+                    <Link
+                      key={item.name}
+                      href={item.href}
+                      onClick={() => setIsOpen(false)}
+                      className="font-heading text-base font-semibold text-white pb-1 border-b border-white/20"
+                    >
+                      {item.name}
+                    </Link>
+                  )
+                )}
+              </div>
+
+              {/* Search */}
+              <div className="relative pt-2">
+                <Input
+                  type="search"
+                  placeholder="Cari artikel..."
+                  className="pl-9 pr-4 h-9 w-full rounded-full border-transparent focus:border-white text-sm bg-white/20 text-white placeholder:text-white/70"
+                />
+                <Search className="absolute left-3 top-[1.15rem] h-4 w-4 text-white" />
               </div>
             </div>
           </div>
@@ -467,7 +512,7 @@ export function Navbar() {
       {/* Scroll to top button */}
       <button
         onClick={scrollToTop}
-        className={`fixed bottom-6 right-6 p-3 rounded-full bg-brand-pink text-white shadow-lg transition-all duration-300 z-50 ${
+        className={`fixed bottom-6 right-6 p-3 rounded-full bg-emerald-600 text-white shadow-lg transition-all duration-300 z-50 ${
           showScrollTop ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10 pointer-events-none"
         }`}
         aria-label="Scroll to top"
@@ -476,4 +521,4 @@ export function Navbar() {
       </button>
     </>
   );
-}
+} 

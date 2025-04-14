@@ -14,7 +14,7 @@ interface CompanyButtonProps extends Omit<ButtonProps, "variant"> {
 }
 
 export function CompanyButton({
-  colorVariant = "yellow",
+  colorVariant = "green",
   variant = "solid",
   className,
   ...props
@@ -31,39 +31,24 @@ export function CompanyButton({
       });
     }
 
-    // Use our color scheme based on colorVariant
-    switch (colorVariant) {
-      case "yellow":
-        return cn({
-          "bg-brand-yellow text-black hover:bg-brand-yellow/90": variant === "solid",
-          "border border-brand-yellow text-brand-yellow hover:bg-brand-yellow/10": variant === "outline",
-          "text-brand-yellow hover:bg-brand-yellow/10": variant === "ghost",
-          "text-brand-yellow underline-offset-4 hover:underline": variant === "link",
-        });
-      case "pink":
-        return cn({
-          "bg-brand-pink text-white hover:bg-brand-pink/90": variant === "solid",
-          "border border-brand-pink text-brand-pink hover:bg-brand-pink/10": variant === "outline",
-          "text-brand-pink hover:bg-brand-pink/10": variant === "ghost",
-          "text-brand-pink underline-offset-4 hover:underline": variant === "link",
-        });
-      case "blue":
-        return cn({
-          "bg-brand-blue text-white hover:bg-brand-blue/90": variant === "solid",
-          "border border-brand-blue text-brand-blue hover:bg-brand-blue/10": variant === "outline",
-          "text-brand-blue hover:bg-brand-blue/10": variant === "ghost",
-          "text-brand-blue underline-offset-4 hover:underline": variant === "link",
-        });
-      case "green":
-        return cn({
-          "bg-green-600 text-white hover:bg-green-600/90": variant === "solid",
-          "border border-green-600 text-green-600 hover:bg-green-600/10": variant === "outline",
-          "text-green-600 hover:bg-green-600/10": variant === "ghost",
-          "text-green-600 underline-offset-4 hover:underline": variant === "link",
-        });
-      default:
-        return "";
-    }
+    // Get the color from our colors object
+    const color = {
+      green: COLORS.GREEN,
+      yellow: COLORS.YELLOW,
+      blue: COLORS.BLUE,
+      pink: COLORS.PINK,
+    }[colorVariant];
+
+    // Get text color - dark text on yellow, white on others
+    const textColor = colorVariant === "yellow" ? "text-black" : "text-white";
+
+    // Return appropriate classes based on variant
+    return cn({
+      [`bg-[${color}] ${textColor} hover:bg-opacity-90`]: variant === "solid",
+      [`border border-[${color}] text-[${color}] hover:bg-[${color}] hover:bg-opacity-10`]: variant === "outline",
+      [`text-[${color}] hover:bg-[${color}] hover:bg-opacity-10`]: variant === "ghost",
+      [`text-[${color}] underline-offset-4 hover:underline`]: variant === "link",
+    });
   };
 
   // Get the appropriate shadcn button variant
