@@ -1,0 +1,9 @@
+[install]
+cache = true
+production = false
+optional = true
+dev = true
+peer = true
+
+[test]
+coverage = true 
