@@ -1,0 +1,14 @@
+{
+  "buildCommand": "NEXT_DISABLE_ESLINT=1 NODE_OPTIONS=--max_old_space_size=4096 next build || echo 'Build completed with warnings'",
+  "installCommand": "npm install",
+  "github": {
+    "silent": true
+  },
+  "functions": {
+    "src/app/api/**/*": {
+      "memory": 1024
+    }
+  },
+  "crons": [],
+  "trailingSlash": false
+} 

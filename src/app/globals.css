@@ -1,0 +1,162 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: var(--font-inter), Arial, Helvetica, sans-serif;
+}
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 3.9%;
+    --primary: 47 87% 65%;  /* rgb(247, 203, 87) - Yellow as primary */
+    --primary-foreground: 0 0% 0%;
+    --secondary: 343 80% 68%; /* rgb(237, 109, 148) - Pink as secondary */
+    --secondary-foreground: 0 0% 100%;
+    --accent: 199 88% 65%; /* rgb(90, 202, 244) - Blue as accent */
+    --accent-foreground: 0 0% 100%;
+    --muted: 0 0% 96.1%;
+    --muted-foreground: 0 0% 45.1%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 89.8%;
+    --input: 0 0% 89.8%;
+    --ring: 47 87% 65%; /* Yellow for focus rings */
+    --chart-1: 47 87% 65%; /* Yellow */
+    --chart-2: 343 80% 68%; /* Pink */
+    --chart-3: 199 88% 65%; /* Blue */
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+    --radius: 0.5rem;
+    
+    /* Light sidebar colors for default theme */
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 0 0% 3.9%;
+    --sidebar-primary: 47 87% 65%; /* Yellow */
+    --sidebar-primary-foreground: 0 0% 0%;
+    --sidebar-accent: 343 80% 68%; /* Pink */
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 0 0% 89.8%;
+    --sidebar-ring: 47 87% 65%; /* Yellow */
+
+    /* Company brand colors */
+    --brand-yellow: 47 87% 65%; /* rgb(247, 203, 87) */
+    --brand-pink: 343 80% 68%; /* rgb(237, 109, 148) */
+    --brand-blue: 199 88% 65%; /* rgb(90, 202, 244) */
+    --brand-green: 93 57% 38%; /* #5d992a - keeping as legacy */
+  }
+  .dark {
+    --background: 0 0% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 0 0% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 47 87% 65%;  /* rgb(247, 203, 87) - Yellow as primary */
+    --primary-foreground: 0 0% 0%;
+    --secondary: 343 80% 68%; /* rgb(237, 109, 148) - Pink as secondary */
+    --secondary-foreground: 0 0% 100%;
+    --accent: 199 88% 65%; /* rgb(90, 202, 244) - Blue as accent */
+    --accent-foreground: 0 0% 100%;
+    --muted: 0 0% 14.9%;
+    --muted-foreground: 0 0% 63.9%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 14.9%;
+    --input: 0 0% 14.9%;
+    --ring: 47 87% 65%; /* Yellow for focus rings */
+    --chart-1: 47 87% 65%; /* Yellow */
+    --chart-2: 343 80% 68%; /* Pink */
+    --chart-3: 199 88% 65%; /* Blue */
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+    
+    /* Dark sidebar colors for dark theme */
+    --sidebar-background: 0 0% 0%;
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-primary: 47 87% 65%; /* Yellow */
+    --sidebar-primary-foreground: 0 0% 0%;
+    --sidebar-accent: 343 80% 68%; /* Pink */
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 0 0% 15%;
+    --sidebar-ring: 47 87% 65%; /* Yellow */
+
+    /* Company brand colors (same in dark mode) */
+    --brand-yellow: 47 87% 65%; /* rgb(247, 203, 87) */
+    --brand-pink: 343 80% 68%; /* rgb(237, 109, 148) */
+    --brand-blue: 199 88% 65%; /* rgb(90, 202, 244) */
+    --brand-green: 93 57% 38%; /* #5d992a - keeping as legacy */
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  .font-heading {
+    font-family: var(--font-plus-jakarta-sans);
+  }
+  
+  .font-body {
+    font-family: var(--font-pt-serif);
+  }
+}
+
+/* New utility classes for consistent brand colors */
+@layer utilities {
+  .text-brand-yellow {
+    color: rgb(247, 203, 87);
+  }
+  
+  .text-brand-pink {
+    color: rgb(237, 109, 148);
+  }
+  
+  .text-brand-blue {
+    color: rgb(90, 202, 244);
+  }
+  
+  .bg-brand-yellow {
+    background-color: rgb(247, 203, 87);
+  }
+  
+  .bg-brand-pink {
+    background-color: rgb(237, 109, 148);
+  }
+  
+  .bg-brand-blue {
+    background-color: rgb(90, 202, 244);
+  }
+  
+  .border-brand-yellow {
+    border-color: rgb(247, 203, 87);
+  }
+  
+  .border-brand-pink {
+    border-color: rgb(237, 109, 148);
+  }
+  
+  .border-brand-blue {
+    border-color: rgb(90, 202, 244);
+  }
+}
