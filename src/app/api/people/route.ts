@@ -2,10 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import sqlite from "@/lib/sqlite"
 import { getServerSession } from "@/lib/server-auth"
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function GET(request: NextRequest) {
   try {
     const session = await getServerSession()
 
@@ -16,33 +13,56 @@ export async function GET(
       )
     }
 
-    const category = await sqlite.get(
-      "SELECT * FROM event_categories WHERE id = ?",
-      [params.id]
-    )
-
-    if (!category) {
-      return NextResponse.json(
-        { error: "Category not found" },
-        { status: 404 }
-      )
+    // Get query parameters
+    const searchParams = request.nextUrl.searchParams
+    const search = searchParams.get("search") || ""
+    const page = parseInt(searchParams.get("page") || "1")
+    const limit = parseInt(searchParams.get("limit") || "10")
+    
+    // Calculate pagination
+    const { offset, limit: validLimit } = await sqlite.paginate(page, limit)
+    
+    // Build query conditions
+    let conditions = []
+    const params: any[] = []
+    
+    if (search) {
+      conditions.push("(name LIKE ? OR title LIKE ? OR bio LIKE ?)")
+      params.push(`%${search}%`, `%${search}%`, `%${search}%`)
     }
-
-    // Get publications count for this category
-    const publicationsCount = await sqlite.get(
-      "SELECT COUNT(*) as count FROM publications WHERE categoryId = ?",
-      [params.id]
-    )
-
-    // Add count to category
+    
+    // Build the WHERE clause
+    const whereClause = conditions.length > 0 
+      ? `WHERE ${conditions.join(" AND ")}` 
+      : ""
+    
+    // Get people with pagination
+    const people = await sqlite.all(`
+      SELECT * FROM people
+      ${whereClause}
+      ORDER BY name ASC
+      LIMIT ? OFFSET ?
+    `, [...params, validLimit, offset])
+    
+    // Get total count for pagination
+    const totalCount = await sqlite.get(`
+      SELECT COUNT(*) as count FROM people
+      ${whereClause}
+    `, params)
+    
     return NextResponse.json({
-      ...category,
-      publicationsCount: publicationsCount ? publicationsCount.count : 0
+      people,
+      pagination: {
+        page,
+        limit: validLimit,
+        totalCount: totalCount ? totalCount.count : 0,
+        totalPages: Math.ceil((totalCount ? totalCount.count : 0) / validLimit)
+      }
     })
   } catch (error) {
-    console.error("Failed to fetch category:", error)
+    console.error("Failed to fetch people:", error)
     return NextResponse.json(
-      { error: "Failed to fetch category" },
+      { error: "Failed to fetch people" },
       { status: 500 }
     )
   }

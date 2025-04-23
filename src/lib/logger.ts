@@ -8,7 +8,7 @@ export interface LogEvent {
   level: LogLevel;
   message: string;
   timestamp: string;
-  context?: Record<string, any>;
+  context?: Record<string, unknown>;
   stack?: string;
 }
 
@@ -34,28 +34,28 @@ class Logger {
   /**
    * Log a debug message
    */
-  debug(message: string, context?: Record<string, any>): void {
+  debug(message: string, context?: Record<string, unknown>): void {
     this.log('debug', message, context);
   }
 
   /**
    * Log an info message
    */
-  info(message: string, context?: Record<string, any>): void {
+  info(message: string, context?: Record<string, unknown>): void {
     this.log('info', message, context);
   }
 
   /**
    * Log a warning message
    */
-  warn(message: string, context?: Record<string, any>): void {
+  warn(message: string, context?: Record<string, unknown>): void {
     this.log('warn', message, context);
   }
 
   /**
    * Log an error message
    */
-  error(message: string, error?: Error, context?: Record<string, any>): void {
+  error(message: string, error?: Error, context?: Record<string, unknown>): void {
     const combinedContext = {
       ...context,
       errorName: error?.name
@@ -69,7 +69,7 @@ class Logger {
   /**
    * Log a fatal error message
    */
-  fatal(message: string, error?: Error, context?: Record<string, any>): void {
+  fatal(message: string, error?: Error, context?: Record<string, unknown>): void {
     const combinedContext = {
       ...context,
       errorName: error?.name
@@ -83,7 +83,7 @@ class Logger {
   /**
    * Generic log method that handles all log levels
    */
-  log(level: LogLevel, message: string, context?: Record<string, any>, stack?: string): void {
+  log(level: LogLevel, message: string, context?: Record<string, unknown>, stack?: string): void {
     // Create log event
     const logEvent: LogEvent = {
       level,
@@ -145,7 +145,7 @@ class Logger {
   async saveErrorToDatabase(
     severity: ErrorSeverity,
     message: string,
-    context?: Record<string, any>,
+    context?: Record<string, unknown>,
     stack?: string
   ): Promise<void> {
     try {

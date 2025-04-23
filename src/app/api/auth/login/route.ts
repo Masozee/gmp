@@ -9,7 +9,7 @@ import logger from "@/lib/logger"
 
 // This should be in an environment variable in a real application
 const JWT_SECRET = process.env.JWT_SECRET || "test_jwt_secret_for_development_only"
-const JWT_EXPIRY = "24h" // 24 hours
+const JWT_EXPIRY = "1h" // Changed from 24h to 1h for 1-hour session timeout
 
 /**
  * Handle user login
@@ -67,7 +67,7 @@ export async function POST(request: NextRequest) {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
-      maxAge: 60 * 60 * 24 * 7, // 1 week
+      maxAge: 60 * 60, // 1 hour in seconds (to match JWT expiry)
       path: "/",
     })
 

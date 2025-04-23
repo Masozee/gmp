@@ -14,7 +14,7 @@ interface Publication {
   id: string
   title: string
   slug: string
-  description: string
+  abstract: string  // Changed from description
   content: string
   coverImage: string | null
   coverCredit: string | null
@@ -155,9 +155,9 @@ export function PublicationList() {
                   <TableCell className="font-medium">
                     <div>
                       <div>{publication.title}</div>
-                      {publication.description && (
+                      {publication.abstract && (
                         <div className="text-sm text-muted-foreground line-clamp-1">
-                          {publication.description}
+                          {publication.abstract}
                         </div>
                       )}
                     </div>
@@ -206,4 +206,4 @@ export function PublicationList() {
       </CardContent>
     </Card>
   )
-} 
+}

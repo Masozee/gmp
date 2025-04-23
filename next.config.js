@@ -3,28 +3,29 @@ const nextConfig = {
   reactStrictMode: true,
   images: {
     domains: ['picsum.photos'],
+    formats: ['image/avif', 'image/webp'],
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
   },
   typescript: {
-    // !! WARN !!
-    // Dangerously allow production builds to successfully complete even if
-    // your project has type errors.
-    // !! WARN !!
-    ignoreBuildErrors: true,
+    ignoreBuildErrors: false,
   },
   eslint: {
-    // Warning: This allows production builds to successfully complete even if
-    // your project has ESLint errors.
-    ignoreDuringBuilds: true,
+    ignoreDuringBuilds: false,
   },
-  // Ensure the build ignores all linting errors
+  poweredByHeader: false,
+  compress: true,
+  productionBrowserSourceMaps: false,
+  output: 'standalone',
   experimental: {
-    forceSwcTransforms: true
+    optimizeCss: true,
+    optimizePackageImports: ['lucide-react', '@radix-ui/react-icons'],
+    scrollRestoration: true,
   },
   serverRuntimeConfig: {
-    // Will only be available on the server side
     isVercel: process.env.VERCEL === '1',
     dbPath: process.env.VERCEL === '1' ? ':memory:' : './src/db.sqlite'
-  }
+  },
 }
 
-module.exports = nextConfig; 
+module.exports = nextConfig;

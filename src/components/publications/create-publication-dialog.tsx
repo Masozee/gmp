@@ -75,7 +75,7 @@ interface Tag {
 
 const formSchema = z.object({
   title: z.string().min(3, "Title must be at least 3 characters").max(100, "Title must be less than 100 characters"),
-  description: z.string().min(10, "Description must be at least 10 characters").max(500, "Description must be less than 500 characters"),
+  abstract: z.string().min(10, "Abstract must be at least 10 characters").max(500, "Abstract must be less than 500 characters"),
   content: z.string().min(50, "Content must be at least 50 characters"),
   status: z.enum(["DRAFT", "PUBLISHED"], {
     required_error: "Please select a status",
@@ -114,7 +114,7 @@ export function CreatePublicationDialog({
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: "",
-      description: "",
+      abstract: "",
       content: "",
       status: "DRAFT",
       category: "",
@@ -125,7 +125,7 @@ export function CreatePublicationDialog({
     },
   })
 
-  const watchDescription = form.watch("description")
+  const watchAbstract = form.watch("abstract")
   const watchContent = form.watch("content")
 
   useEffect(() => {
@@ -203,10 +203,10 @@ export function CreatePublicationDialog({
         return
       }
 
-      if (!values.description) {
-        form.setError("description", { 
+      if (!values.abstract) {
+        form.setError("abstract", { 
           type: "required", 
-          message: "Description is required" 
+          message: "Abstract is required" 
         })
         setLoading(false)
         return
@@ -291,32 +291,49 @@ export function CreatePublicationDialog({
   const createNewTag = async (name: string) => {
     try {
       setCreateTagLoading(true)
+      setError(null)
+
+      if (!name || name.trim() === "") {
+        throw new Error("Tag name is required")
+      }
+
       const response = await fetch("/api/tags", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ name }),
+        body: JSON.stringify({ name: name.trim() }),
       })
 
+      const data = await response.json()
+
       if (!response.ok) {
-        throw new Error("Failed to create tag")
+        throw new Error(data.error || "Failed to create tag")
       }
 
-      const newTag = await response.json()
-      setTags((prev) => [...prev, newTag])
-      
+      if (!data.id || !data.name) {
+        throw new Error("Invalid response from server")
+      }
+
+      // Add the new tag to the local state
+      setTags((prev) => [...prev, data])
+
       // Add the newly created tag to the selected tags
       const currentValue = new Set(form.getValues("tags") || [])
-      currentValue.add(newTag.id)
+      currentValue.add(data.id)
       form.setValue("tags", Array.from(currentValue), { shouldValidate: true })
       
       toast.success("Tag created successfully")
+
+      return data
     } catch (error) {
       console.error("Error creating tag:", error)
+      const message = error instanceof Error ? error.message : "Failed to create tag"
+      setError(message)
       toast.error("Failed to create tag", {
-        description: "Please try again.",
+        description: message,
       })
+      throw error
     } finally {
       setCreateTagLoading(false)
     }
@@ -352,15 +369,15 @@ export function CreatePublicationDialog({
 
             <FormField
               control={form.control}
-              name="description"
+              name="abstract"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Description</FormLabel>
+                  <FormLabel>Abstract</FormLabel>
                   <FormControl>
                     <div className="relative">
-                      <Textarea placeholder="Enter description" {...field} />
+                      <Textarea placeholder="Enter abstract" {...field} />
                       <div className="absolute bottom-2 right-2 text-xs text-muted-foreground">
-                        {watchDescription?.length || 0}/500
+                        {watchAbstract?.length || 0}/500
                       </div>
                     </div>
                   </FormControl>
@@ -707,4 +724,4 @@ export function CreatePublicationDialog({
       </DialogContent>
     </Dialog>
   )
-} 
+}

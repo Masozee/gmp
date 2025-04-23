@@ -2,47 +2,25 @@ import { NextRequest, NextResponse } from "next/server"
 import sqlite from "@/lib/sqlite"
 import { getServerSession } from "@/lib/server-auth"
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function GET(request: NextRequest) {
   try {
     const session = await getServerSession()
 
     if (!session?.user) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      )
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    const category = await sqlite.get(
-      "SELECT * FROM event_categories WHERE id = ?",
-      [params.id]
+    // Fetch basic user info from users table
+    const user = await sqlite.get(
+      "SELECT id, email, role FROM users WHERE id = ?",
+      [session.user.id]
     )
 
-    if (!category) {
-      return NextResponse.json(
-        { error: "Category not found" },
-        { status: 404 }
-      )
-    }
-
-    // Get publications count for this category
-    const publicationsCount = await sqlite.get(
-      "SELECT COUNT(*) as count FROM publications WHERE categoryId = ?",
-      [params.id]
-    )
-
-    // Add count to category
-    return NextResponse.json({
-      ...category,
-      publicationsCount: publicationsCount ? publicationsCount.count : 0
-    })
+    return NextResponse.json(user)
   } catch (error) {
-    console.error("Failed to fetch category:", error)
+    console.error("Failed to fetch profile:", error)
     return NextResponse.json(
-      { error: "Failed to fetch category" },
+      { error: "Failed to fetch profile" },
       { status: 500 }
     )
   }
@@ -134,4 +112,4 @@ export async function DELETE(
       { status: 500 }
     )
   }
-} 
+}

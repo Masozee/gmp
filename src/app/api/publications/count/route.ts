@@ -2,10 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import sqlite from "@/lib/sqlite"
 import { getServerSession } from "@/lib/server-auth"
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function GET(request: NextRequest) {
   try {
     const session = await getServerSession()
 
@@ -16,33 +13,29 @@ export async function GET(
       )
     }
 
-    const category = await sqlite.get(
-      "SELECT * FROM event_categories WHERE id = ?",
-      [params.id]
-    )
-
-    if (!category) {
-      return NextResponse.json(
-        { error: "Category not found" },
-        { status: 404 }
-      )
+    // Get query parameters
+    const searchParams = request.nextUrl.searchParams
+    const status = searchParams.get("status") || "all"
+    
+    // Build query conditions
+    let query = "SELECT COUNT(*) as count FROM publications"
+    const params: any[] = []
+    
+    if (status && status !== "all") {
+      query += " WHERE status = ?"
+      params.push(status)
     }
-
-    // Get publications count for this category
-    const publicationsCount = await sqlite.get(
-      "SELECT COUNT(*) as count FROM publications WHERE categoryId = ?",
-      [params.id]
-    )
-
-    // Add count to category
+    
+    // Get total count
+    const result = await sqlite.get(query, params)
+    
     return NextResponse.json({
-      ...category,
-      publicationsCount: publicationsCount ? publicationsCount.count : 0
+      count: result ? result.count : 0
     })
   } catch (error) {
-    console.error("Failed to fetch category:", error)
+    console.error("Failed to fetch publications count:", error)
     return NextResponse.json(
-      { error: "Failed to fetch category" },
+      { error: "Failed to fetch publications count" },
       { status: 500 }
     )
   }

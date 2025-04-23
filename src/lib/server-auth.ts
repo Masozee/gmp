@@ -52,7 +52,7 @@ export async function getServerSession(): Promise<Session | null> {
       user: {
         id: user.id,
         email: user.email,
-        role: user.role as any,
+        role: user.role as unknown,
       }
     }
   } catch (error) {

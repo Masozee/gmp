@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Menu, X, Facebook, Instagram, Youtube, Search, ChevronUp, Globe } from "lucide-react";
@@ -14,6 +14,7 @@ import {
 import { ChevronDown } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { debounce } from "@/lib/utils";
 
 // Define the youth-oriented color palette
 const YOUTH_COLORS = {
@@ -25,37 +26,32 @@ const YOUTH_COLORS = {
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-  const [showScrollTop, setShowScrollTop] = useState(false);
-  const [deepScroll, setDeepScroll] = useState(false);
+  const [scrollState, setScrollState] = useState({
+    scrolled: false,
+    showScrollTop: false,
+    deepScroll: false
+  });
 
-  // Handle scroll effect   
+  // Memoize the debounced scroll handler
+  const handleScroll = useCallback(
+    debounce(() => {
+      const scrollY = window.scrollY;
+      setScrollState({
+        scrolled: scrollY > 10,
+        deepScroll: scrollY > 100,
+        showScrollTop: scrollY > 300
+      });
+    }, 10),
+    []
+  );
+
   useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 10) {
-        setScrolled(true);
-      } else {
-        setScrolled(false);
-      }
-
-      // Deep scroll for compact navbar
-      if (window.scrollY > 100) {
-        setDeepScroll(true);
-      } else {
-        setDeepScroll(false);
-      }
-
-      // Show scroll to top button when user scrolls down 300px
-      if (window.scrollY > 300) {
-        setShowScrollTop(true);
-      } else {
-        setShowScrollTop(false);
-      }
-    };
-
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [handleScroll]);
+
+  // Memoize derived values
+  const { scrolled, showScrollTop, deepScroll } = scrollState;
 
   // Scroll to top function
   const scrollToTop = () => {
@@ -521,4 +517,4 @@ export function Navbar() {
       </button>
     </>
   );
-} 
+}

@@ -40,7 +40,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+
 import { Checkbox } from "@/components/ui/checkbox"
 import {
   AlertDialog,
@@ -60,20 +60,20 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { Input } from "@/components/ui/input"
-import { ScrollArea } from "@/components/ui/scroll-area"
+
+
 
 interface Publication {
   id: string
   title: string
-  status: "DRAFT" | "PUBLISHED" | "ARCHIVED"
-  authors: Array<{
-    profile: {
-      firstName: string
-      lastName: string
-      photoUrl: string | null
-    }
-  }>
+  published: number
+  // authors: Array<{
+  //   profile: {
+  //     firstName: string
+  //     lastName: string
+  //     photoUrl: string | null
+  //   }
+  // }>
   createdAt: string
   updatedAt: string
 }
@@ -217,7 +217,7 @@ export function PublicationTable({
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify({ status: batchStatus }),
+            body: JSON.stringify({ published: batchStatus === "PUBLISHED" ? 1 : 0 }),
           })
         )
       )
@@ -243,7 +243,7 @@ export function PublicationTable({
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ status }),
+        body: JSON.stringify({ published: status === "PUBLISHED" ? 1 : 0 }),
       })
 
       if (!response.ok) {
@@ -257,10 +257,18 @@ export function PublicationTable({
       )
 
       toast.success("Publication status updated successfully")
-    } catch (error) {
+    } catch (error: unknown) {
       console.error("Error updating publication status:", error)
-      setError(error instanceof Error ? error.message : "Failed to update publication status")
-      toast.error("Failed to update publication status")
+      if (
+        typeof error === 'object' &&
+        error !== null &&
+        'message' in error &&
+        typeof (error as { message?: unknown }).message === 'string'
+      ) {
+        toast.error((error as { message: string }).message)
+      } else {
+        toast.error("Failed to update publication status")
+      }
     } finally {
       setIsLoading(false)
     }
@@ -272,8 +280,8 @@ export function PublicationTable({
       ["Title", "Status", "Authors", "Last Updated"],
       ...selectedPublications.map(pub => [
         pub.title,
-        pub.status,
-        pub.authors.map(a => `${a.profile.firstName} ${a.profile.lastName}`).join(", "),
+        getPublicationStatus(pub.published),
+        "N/A", // Removed author mapping
         new Date(pub.updatedAt).toLocaleString(),
       ]),
     ]
@@ -289,6 +297,11 @@ export function PublicationTable({
     a.click()
     window.URL.revokeObjectURL(url)
     document.body.removeChild(a)
+  }
+
+  // Map the published value to status
+  const getPublicationStatus = (published: number): "DRAFT" | "PUBLISHED" | "ARCHIVED" => {
+    return published === 1 ? "PUBLISHED" : "DRAFT";
   }
 
   if (error) {
@@ -416,7 +429,7 @@ export function PublicationTable({
             <TableBody>
               {isLoading ? (
                 <TableRow>
-                  <TableCell colSpan={6} className="h-24 text-center">
+                  <TableCell colSpan={5} className="h-24 text-center">
                     <div className="flex items-center justify-center">
                       <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
                       <p className="text-sm text-muted-foreground">Loading publications...</p>
@@ -425,7 +438,7 @@ export function PublicationTable({
                 </TableRow>
               ) : publications.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={6} className="h-24 text-center">
+                  <TableCell colSpan={5} className="h-24 text-center">
                     <div className="flex flex-col items-center justify-center">
                       <p className="text-sm text-muted-foreground">No publications found</p>
                       {searchQuery || statusFilter !== 'all' ? (
@@ -444,7 +457,7 @@ export function PublicationTable({
                 </TableRow>
               ) : (
                 publications.map((publication) => {
-                  const StatusIcon = statusMap[publication.status].icon
+                  const StatusIcon = statusMap[getPublicationStatus(publication.published)].icon
                   return (
                     <TableRow key={publication.id} className="group hover:bg-accent/5 data-[state=selected]:bg-accent/10">
                       <TableCell className="py-3">
@@ -455,30 +468,11 @@ export function PublicationTable({
                         />
                       </TableCell>
                       <TableCell className="py-3 font-medium">{publication.title}</TableCell>
+                      <TableCell className="py-3 text-muted-foreground">N/A</TableCell> 
                       <TableCell className="py-3">
-                        <div className="flex -space-x-2">
-                          {publication.authors.map((author, index) => (
-                            <Avatar
-                              key={index}
-                              className="h-8 w-8 border-2 border-background transition-transform group-hover:translate-x-0 group-hover:scale-105"
-                              style={{ transform: `translateX(${index * -4}px)` }}
-                            >
-                              <AvatarImage
-                                src={author.profile.photoUrl || ""}
-                                alt={`${author.profile.firstName} ${author.profile.lastName}`}
-                              />
-                              <AvatarFallback>
-                                {author.profile.firstName[0]}
-                                {author.profile.lastName[0]}
-                              </AvatarFallback>
-                            </Avatar>
-                          ))}
-                        </div>
-                      </TableCell>
-                      <TableCell className="py-3">
-                        <Badge variant={statusMap[publication.status].variant as any} className="font-normal">
+                        <Badge variant={statusMap[getPublicationStatus(publication.published)].variant as string} className="font-normal">
                           <StatusIcon className="mr-1 h-3 w-3" />
-                          {statusMap[publication.status].label}
+                          {statusMap[getPublicationStatus(publication.published)].label}
                         </Badge>
                       </TableCell>
                       <TableCell className="py-3 text-muted-foreground">

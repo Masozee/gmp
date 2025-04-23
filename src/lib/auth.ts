@@ -1,7 +1,6 @@
 "use client"
 
 import { verifyToken } from "./jwt"
-import { signToken } from "./edge-jwt"
 import { jwtVerify } from "jose"
 
 // User interface

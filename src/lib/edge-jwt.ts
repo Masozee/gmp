@@ -1,4 +1,5 @@
 import { SignJWT, jwtVerify } from "jose"
+import type { JWTPayload } from "jose"
 
 // This should be in an environment variable in a real application
 const JWT_SECRET = new TextEncoder().encode(
@@ -17,10 +18,10 @@ interface TokenPayload {
  * @returns The signed JWT token
  */
 export async function signToken(payload: TokenPayload): Promise<string> {
-  const token = await new SignJWT(payload as any)
+  const token = await new SignJWT(payload as unknown as JWTPayload)
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
-    .setExpirationTime("8h")
+    .setExpirationTime("1h")
     .sign(JWT_SECRET)
   
   return token

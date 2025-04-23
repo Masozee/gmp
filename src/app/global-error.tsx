@@ -1,7 +1,5 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
-
 export default function GlobalError({
   error,
   reset,
@@ -12,12 +10,37 @@ export default function GlobalError({
   return (
     <html>
       <body>
-        <div className="flex h-screen flex-col items-center justify-center gap-4 bg-background text-center text-foreground">
-          <h2 className="text-3xl font-bold">Something went wrong!</h2>
-          <p className="text-muted-foreground">
+        <div style={{ 
+          display: 'flex', 
+          flexDirection: 'column', 
+          alignItems: 'center', 
+          justifyContent: 'center', 
+          height: '100vh',
+          textAlign: 'center',
+          gap: '1rem',
+          fontFamily: 'system-ui, sans-serif',
+          backgroundColor: 'white',
+          color: 'black'
+        }}>
+          <h2 style={{ fontSize: '1.875rem', fontWeight: 'bold' }}>
+            Something went wrong!
+          </h2>
+          <p style={{ color: '#6b7280' }}>
             A critical error has occurred. Please try again later.
           </p>
-          <Button onClick={() => reset()}>Try again</Button>
+          <button
+            onClick={() => reset()}
+            style={{ 
+              backgroundColor: '#2563eb', 
+              color: 'white', 
+              padding: '0.5rem 1rem', 
+              borderRadius: '0.375rem',
+              border: 'none',
+              cursor: 'pointer'
+            }}
+          >
+            Try again
+          </button>
         </div>
       </body>
     </html>

@@ -31,7 +31,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
-import { Profile } from "@/types/profile"
+import type { Profile } from "@/types/profile"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 
 const formSchema = z.object({
@@ -121,7 +121,7 @@ export function EditProfileDialog({
       onSuccess()
       onOpenChange(false)
     } catch (error) {
-      console.error("Error updating profile:", error)
+      console.error("ErrYou&apos;re editing your own profile.:", error)
       setError(error instanceof Error ? error.message : "Failed to update profile")
     } finally {
       setIsLoading(false)

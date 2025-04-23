@@ -2,40 +2,18 @@
 
 import * as React from "react"
 import {
-  ActivitySquare,
-  AlignEndHorizontal,
-  Archive,
-  ArchiveX,
-  BookOpen,
-  Bot,
-  Boxes,
-  Building,
-  Calendar,
-  CalendarDays,
-  CircleUser,
-  ClipboardCheck,
-  Command,
-  Construction,
-  Edit,
-  FilePenLine,
-  FileText,
-  Frame,
-  Home,
-  LifeBuoy,
-  LineChart,
-  Mail,
-  Map,
-  MessageSquare,
+  ChartColumnStacked,
+  FolderKanban,
   Newspaper,
-  PieChart,
-  Send,
-  Settings2,
-  SquareTerminal,
-  Users,
   Briefcase,
-  BarChart,
+  Home,
+  Mail,
+  Settings2,
+  Map,
+  Calendar
 } from "lucide-react"
 import Image from "next/image"
+import { memo } from "react"
 
 import { cx } from "class-variance-authority"
 import { NavMain } from "@/components/nav-main"
@@ -48,65 +26,46 @@ import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
-  SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
+  SidebarHeader as SidebarHeaderComponent,
+
 } from "@/components/ui/sidebar"
 
-const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
+// Memoize the sidebar data to prevent unnecessary recalculations
+const sidebarData = {
   navMain: [
     {
       title: "Dashboard",
       url: "/dashboard",
-      icon: Home,
+      icon: ChartColumnStacked,
+      isActive: false,
+    },
+    {
+      title: "Tasks",
+      url: "/dashboard/tasks",
+      icon: FolderKanban,
       isActive: false,
     },
     {
       title: "Publications",
-      url: "/publications",
+      url: "#",
       icon: Newspaper,
-      isActive: true,
+      isActive: false,
       items: [
         {
           title: "Browse Publications",
-          url: "/publications",
+          url: "/dashboard/publications",
         },
         {
           title: "Create Publication",
-          url: "/create-publication",
+          url: "/dashboard/publications/create",
         },
         {
           title: "Categories",
-          url: "/publications/categories",
+          url: "/dashboard/publications/categories",
         },
         {
           title: "Analytics",
-          url: "/publications/analytics",
-        },
-      ],
-    },
-    {
-      title: "Mail",
-      url: "/dashboard/mail",
-      icon: Mail,
-      items: [
-        {
-          title: "Overview",
-          url: "/dashboard/mail",
-        },
-        {
-          title: "List",
-          url: "/dashboard/mail/list",
-        },
-        {
-          title: "Categories",
-          url: "/dashboard/mail/categories",
+          url: "/dashboard/publications/analytics",
         },
       ],
     },
@@ -114,25 +73,12 @@ const data = {
       title: "Projects",
       url: "/dashboard/projects",
       icon: Briefcase,
-      items: [
-        {
-          title: "All Projects",
-          url: "/dashboard/projects",
-        },
-        {
-          title: "Create New",
-          url: "/dashboard/projects/new",
-        },
-        {
-          title: "Categories",
-          url: "/dashboard/projects/categories",
-        },
-      ],
+      isActive: false,
     },
     {
       title: "People",
       url: "#",
-      icon: Users,
+      icon: Home,
       items: [
         {
           title: "List",
@@ -155,7 +101,7 @@ const data = {
     {
       title: "Events",
       url: "/dashboard/events",
-      icon: CalendarDays,
+      icon: Calendar,
       items: [
         {
           title: "All Events",
@@ -179,59 +125,22 @@ const data = {
         },
       ],
     },
-    {
-      title: "Presentations",
-      url: "/dashboard/presentations",
-      icon: FileText,
-      items: [
-        {
-          title: "All Presentations",
-          url: "/dashboard/presentations",
-        },
-        {
-          title: "Public List",
-          url: "/presentations",
-        },
-        {
-          title: "Create New",
-          url: "/dashboard/presentations/new",
-        },
-      ],
-    },
-    {
-      title: "Settings",
-      url: "#",
-      icon: Settings2,
-      items: [
-        {
-          title: "General",
-          url: "#",
-        },
-        {
-          title: "Logs",
-          url: "/dashboard/logs",
-        },
-        {
-          title: "Billing",
-          url: "#",
-        },
-        {
-          title: "Limits",
-          url: "#",
-        },
-      ],
-    },
   ],
   navSecondary: [
     {
       title: "Support",
-      url: "#",
-      icon: LifeBuoy,
+      url: "/dashboard/support",
+      icon: Home,
     },
     {
       title: "Feedback",
-      url: "#",
-      icon: Send,
+      url: "/dashboard/feedback",
+      icon: Mail,
+    },
+    {
+      title: "Settings",
+      url: "/dashboard/settings",
+      icon: Settings2 // Replace with a valid icon if imported, otherwise use 'Settings2' as a string or another imported icon.
     },
   ],
   projects: [
@@ -242,40 +151,48 @@ const data = {
     },
     {
       name: "Geo Tagging",
+      url: "/dashboard/projects/geo-tagging",
+      icon: Map,
+    },
+    {
+      name: "Asset Management",
       url: "#",
       icon: Map,
     },
   ],
-}
+};
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+// Memoize individual sections
+const SidebarHeader = memo(function SidebarHeader() {
+  return (
+    <SidebarHeaderComponent className="border-b border-sidebar-border">
+  <div className="flex items-center justify-center py-2">
+  <Image
+    src="/logos/logo.png"
+    alt="Logo"
+    width={160}
+    height={180}
+    className="object-contain drop-shadow-lg"
+    priority
+    loading="eager"
+  />
+</div>
+</SidebarHeaderComponent>
+  );
+});
+
+export const AppSidebar = memo(function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar variant="inset" {...props}>
-      <SidebarHeader className="border-b border-sidebar-border">
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton size="lg" asChild>
-              <a href="/dashboard">
-                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-accent text-sidebar-accent-foreground">
-                  <Image src="/logos/logo.png" alt="GMP Logo" width={32} height={32} />
-                </div>
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">Generasi Melek Politik</span>
-                  <span className="truncate text-xs">Dashboard</span>
-                </div>
-              </a>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
-      </SidebarHeader>
+      <SidebarHeader />
       <SidebarContent>
-        <NavMain items={data.navMain} />
-        <NavProjects projects={data.projects} />
-        <NavSecondary items={data.navSecondary} className="mt-auto" />
+        <NavMain items={sidebarData.navMain} />
+        <NavProjects projects={sidebarData.projects} />
+        <NavSecondary items={sidebarData.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter className="border-t border-sidebar-border">
         <NavUser />
       </SidebarFooter>
     </Sidebar>
-  )
-}
+  );
+});

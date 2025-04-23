@@ -2,6 +2,7 @@
 
 import React, { useRef, useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
+import { useIsomorphicLayoutEffect } from "@/hooks/use-isomorphic-layout-effect";
 
 type FadeInProps = {
   children: React.ReactNode;
@@ -28,7 +29,7 @@ export function FadeIn({
   const [hasAnimated, setHasAnimated] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     const currentRef = ref.current;
     if (!currentRef) return;
 
@@ -82,4 +83,4 @@ export function FadeIn({
       {children}
     </div>
   );
-} 
+}

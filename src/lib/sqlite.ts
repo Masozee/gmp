@@ -1,11 +1,9 @@
 import { Database } from 'sqlite3';
-import path from 'path';
-import fs from 'fs';
 import { randomUUID } from 'crypto';
 
 // Always use in-memory database on Vercel
 const isVercel = process.env.VERCEL === '1';
-const dbPath = isVercel ? ':memory:' : './src/db.sqlite';
+const dbPath = isVercel ? ':memory:' : './db/app.db';
 
 // For singleton pattern
 let db: Database | null = null;
@@ -58,10 +56,10 @@ const sqlite = {
   },
   
   // Run a query that doesn't return data
-  async run(sql: string, params: any[] = []): Promise<RunResult> {
+  async run(sql: string, params: unknown[] = []): Promise<RunResult> {
     return new Promise(async (resolve, reject) => {
       const connection = await this.getConnection();
-      connection.run(sql, params, function(this: { lastID: number, changes: number }, err) {
+      connection.run(sql, params, function(this: { lastID: number, changes: number }, err: Error | null) {
         if (err) {
           console.error('SQL Error in run:', sql, 'Params:', JSON.stringify(params), 'Error:', err);
           reject(err);
@@ -76,10 +74,10 @@ const sqlite = {
   },
   
   // Get a single row from a query
-  async get<T = any>(sql: string, params: any[] = []): Promise<T | undefined> {
+  async get<T = unknown>(sql: string, params: unknown[] = []): Promise<T | undefined> {
     return new Promise(async (resolve, reject) => {
       const connection = await this.getConnection();
-      connection.get(sql, params, (err, row) => {
+      connection.get(sql, params, (err: Error | null, row: unknown) => {
         if (err) {
           console.error('SQL Error in get:', sql, 'Params:', JSON.stringify(params), 'Error:', err);
           reject(err);
@@ -91,10 +89,10 @@ const sqlite = {
   },
   
   // Get all rows from a query
-  async all<T = any>(sql: string, params: any[] = []): Promise<T[]> {
+  async all<T = unknown>(sql: string, params: unknown[] = []): Promise<T[]> {
     return new Promise(async (resolve, reject) => {
       const connection = await this.getConnection();
-      connection.all(sql, params, (err, rows) => {
+      connection.all(sql, params, (err: Error | null, rows: unknown) => {
         if (err) {
           console.error('SQL Error in all:', sql, 'Params:', JSON.stringify(params), 'Error:', err);
           reject(err);
@@ -106,18 +104,18 @@ const sqlite = {
   },
   
   // Execute a query and process rows one at a time
-  async each<T = any>(
+  async each<T = unknown>(
     sql: string, 
-    params: any[] = [], 
+    params: unknown[] = [], 
     callback: (row: T) => void
   ): Promise<number> {
-    return new Promise(async (resolve, reject) => {
-      const connection = await this.getConnection();
+    const connection = await this.getConnection();
+    return new Promise((resolve, reject) => {
       let count = 0;
       
       connection.each(sql, params, 
         // Row callback
-        (err, row) => {
+        (err: Error | null, row: unknown) => {
           if (err) {
             reject(err);
             return;
@@ -126,7 +124,7 @@ const sqlite = {
           count++;
         },
         // Completion callback
-        (err, totalRows) => {
+        (err: Error | null) => {
           if (err) {
             reject(err);
             return;
@@ -140,9 +138,8 @@ const sqlite = {
   // Execute a transaction
   async transaction<T>(callback: () => Promise<T> | T): Promise<T> {
     const connection = await this.getConnection();
-    
     return new Promise(async (resolve, reject) => {
-      connection.run('BEGIN TRANSACTION', async (beginErr) => {
+      connection.run('BEGIN TRANSACTION', async (beginErr: Error | null) => {
         if (beginErr) {
           reject(beginErr);
           return;
@@ -151,7 +148,7 @@ const sqlite = {
         try {
           const result = await Promise.resolve(callback());
           
-          connection.run('COMMIT', (commitErr) => {
+          connection.run('COMMIT', (commitErr: Error | null) => {
             if (commitErr) {
               connection.run('ROLLBACK', () => {
                 reject(commitErr);
@@ -161,7 +158,7 @@ const sqlite = {
             resolve(result);
           });
         } catch (error) {
-          connection.run('ROLLBACK', (rollbackErr) => {
+          connection.run('ROLLBACK', (rollbackErr: Error | null) => {
             if (rollbackErr) {
               console.error('Failed to roll back transaction:', rollbackErr);
             }
@@ -207,7 +204,6 @@ const sqlite = {
   
   // Setup database tables and schema
   async setupDatabase(): Promise<void> {
-    const connection = await this.getConnection();
     
     // Define all your tables here
     const tables = [

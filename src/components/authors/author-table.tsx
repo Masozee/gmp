@@ -60,6 +60,7 @@ export function AuthorTable({
 
   const fetchAuthors = async () => {
     try {
+      setIsLoading(true)
       const params = new URLSearchParams()
       if (searchQuery) params.set("search", searchQuery)
       if (categoryFilter !== "all") params.set("category", categoryFilter)
@@ -67,9 +68,12 @@ export function AuthorTable({
       const response = await fetch(`/api/authors?${params}`)
       if (!response.ok) throw new Error("Failed to fetch authors")
       const data = await response.json()
-      setAuthors(data)
+      
+      // Ensure data is an array before setting it
+      setAuthors(Array.isArray(data) ? data : [])
     } catch (error) {
       console.error("Error fetching authors:", error)
+      setAuthors([]) // Set empty array on error
     } finally {
       setIsLoading(false)
     }
@@ -219,4 +223,4 @@ export function AuthorTable({
       </TableBody>
     </Table>
   )
-} 
+}

@@ -41,9 +41,9 @@ export function NavMain({
           <Collapsible key={item.title} asChild defaultOpen={item.isActive}>
             <SidebarMenuItem>
               <SidebarMenuButton asChild tooltip={item.title}>
-                <a href={item.url}>
+                <a href={item.url} className="sidebar-menu-hover">
                   <item.icon />
-                  <span>{item.title}</span>
+                  <span className="sidebar-label hidden md:inline group-[data-collapsible=icon]:hidden">{item.title}</span>
                 </a>
               </SidebarMenuButton>
               {item.items?.length ? (

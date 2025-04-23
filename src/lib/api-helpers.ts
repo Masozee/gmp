@@ -4,7 +4,7 @@ import sqlite from './sqlite';
 /**
  * Standardized API response type for better type safety across the application
  */
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = unknown> {
   success: boolean;
   data?: T;
   error?: string;
@@ -105,7 +105,7 @@ export const apiHandler = {
     defaultOrder = 'desc',
     customQuery = null,
     customParams = [],
-    transform = (data: any) => data as T,
+    transform = (data: unknown) => data as T,
   }: {
     request: NextRequest;
     tableName: string;
@@ -113,8 +113,8 @@ export const apiHandler = {
     defaultSort?: string;
     defaultOrder?: 'asc' | 'desc';
     customQuery?: string | null;
-    customParams?: any[];
-    transform?: (data: any) => T;
+    customParams?: unknown[];
+    transform?: (data: unknown) => T;
   }) {
     try {
       // Parse query parameters
@@ -134,7 +134,7 @@ export const apiHandler = {
       
       // Build WHERE clause for search
       let whereClause = '';
-      const params: any[] = [...customParams];
+      const params: unknown[] = [...customParams];
       
       if (search && searchFields.length > 0) {
         const searchClauses = searchFields.map(field => `${field} LIKE ?`);
@@ -200,16 +200,16 @@ export const apiHandler = {
     request,
     tableName,
     requiredFields = [],
-    transform = (data: any) => data,
-    beforeInsert = async (data: any) => data,
-    afterInsert = async (id: number, data: any) => ({ id, ...data }),
+    transform = (data: unknown) => data as T,
+    beforeInsert = async (data: Record<string, unknown>) => data,
+    afterInsert = async (id: number, data: Record<string, unknown>) => ({ id, ...data } as T),
   }: {
     request: NextRequest;
     tableName: string;
     requiredFields?: string[];
-    transform?: (data: any) => any;
-    beforeInsert?: (data: any) => Promise<any>;
-    afterInsert?: (id: number, data: any) => Promise<T>;
+    transform?: (data: unknown) => T;
+    beforeInsert?: (data: Record<string, unknown>) => Promise<Record<string, unknown>>;
+    afterInsert?: (id: number, data: Record<string, unknown>) => Promise<T>;
   }) {
     try {
       const body = await request.json();
@@ -228,14 +228,14 @@ export const apiHandler = {
       const transformedData = transform(body);
       
       // Additional processing before insert
-      const processedData = await beforeInsert(transformedData);
+      const processedData = await beforeInsert(transformedData as Record<string, unknown>);
       
       // Use a transaction for the insert
       return sqlite.transaction(async () => {
         // Get the fields and values for the insert
         const fields = Object.keys(processedData);
         const placeholders = fields.map(() => '?').join(', ');
-        const values = fields.map(field => processedData[field]);
+        const values = fields.map(field => (processedData as Record<string, unknown>)[field]);
         
         // Use direct query instead of prepared statement
         const insertQuery = `
@@ -251,7 +251,7 @@ export const apiHandler = {
           ? Number(result.lastInsertRowid) 
           : result.lastInsertRowid as number;
         
-        const finalData = await afterInsert(rowId, processedData);
+        const finalData = await afterInsert(rowId, processedData as Record<string, unknown>);
         
         return NextResponse.json(finalData, { status: 201 });
       });
@@ -272,14 +272,14 @@ export const apiHandler = {
     tableName,
     idField = 'id',
     customQuery = null,
-    transform = (data: any) => data as T,
+    transform = (data: unknown) => data as T,
     notFoundMessage = 'Resource not found',
   }: {
     id: string;
     tableName: string;
     idField?: string;
     customQuery?: string | null;
-    transform?: (data: any) => T;
+    transform?: (data: unknown) => T;
     notFoundMessage?: string;
   }) {
     try {
@@ -321,9 +321,9 @@ export const apiHandler = {
     tableName,
     idField = 'id',
     requiredFields = [],
-    transform = (data: any) => data,
-    beforeUpdate = async (data: any) => data,
-    afterUpdate = async (id: string, data: any) => ({ id, ...data }),
+    transform = (data: unknown) => data as T,
+    beforeUpdate = async (data: Record<string, unknown>) => data,
+    afterUpdate = async (id: string, data: Record<string, unknown>) => ({ id, ...data } as T),
     notFoundMessage = 'Resource not found',
   }: {
     id: string;
@@ -331,9 +331,9 @@ export const apiHandler = {
     tableName: string;
     idField?: string;
     requiredFields?: string[];
-    transform?: (data: any) => any;
-    beforeUpdate?: (data: any) => Promise<any>;
-    afterUpdate?: (id: string, data: any) => Promise<T>;
+    transform?: (data: unknown) => T;
+    beforeUpdate?: (data: Record<string, unknown>) => Promise<Record<string, unknown>>;
+    afterUpdate?: (id: string, data: Record<string, unknown>) => Promise<T>;
     notFoundMessage?: string;
   }) {
     try {
@@ -363,7 +363,7 @@ export const apiHandler = {
       const transformedData = transform(body);
       
       // Additional processing before update
-      const processedData = await beforeUpdate(transformedData);
+      const processedData = await beforeUpdate(transformedData as Record<string, unknown>);
       
       // Use a transaction for the update
       return await sqlite.transaction(async () => {
@@ -381,7 +381,7 @@ export const apiHandler = {
         await sqlite.run(updateQuery, values);
         
         // Process after update
-        const finalData = await afterUpdate(id, processedData);
+        const finalData = await afterUpdate(id, processedData as Record<string, unknown>);
         
         return NextResponse.json(finalData);
       });
@@ -402,14 +402,14 @@ export const apiHandler = {
     tableName,
     idField = 'id',
     beforeDelete = async () => true,
-    afterDelete = async () => ({}),
+    afterDelete = async (): Promise<unknown> => ({}),
     notFoundMessage = 'Resource not found',
   }: {
     id: string;
     tableName: string;
     idField?: string;
     beforeDelete?: () => Promise<boolean>;
-    afterDelete?: () => Promise<any>;
+    afterDelete?: () => Promise<unknown>;
     notFoundMessage?: string;
   }) {
     try {

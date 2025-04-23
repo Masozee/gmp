@@ -3,7 +3,7 @@ import { TextEncoder, TextDecoder } from "util"
 
 // Mock TextEncoder/TextDecoder
 global.TextEncoder = TextEncoder
-global.TextDecoder = TextDecoder as any
+global.TextDecoder = TextDecoder as typeof TextDecoder
 
 // Mock fetch
 global.fetch = jest.fn()

@@ -145,6 +145,7 @@ export function DashboardPublicationList() {
             <Button 
               variant="outline" 
               size="sm"
+              className="dashboard-yellow-btn"
               onClick={() => router.push("/dashboard/publications")}
             >
               View All Publications

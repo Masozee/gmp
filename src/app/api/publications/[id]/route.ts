@@ -16,33 +16,31 @@ export async function GET(
       )
     }
 
-    const category = await sqlite.get(
-      "SELECT * FROM event_categories WHERE id = ?",
-      [params.id]
-    )
+    // Get the publication by ID
+    const publication = await sqlite.get(`
+      SELECT 
+        p.*, 
+        c.name as categoryName
+      FROM 
+        publications p
+      LEFT JOIN 
+        event_categories c ON p.categoryId = c.id
+      WHERE 
+        p.id = ?
+    `, [params.id])
 
-    if (!category) {
+    if (!publication) {
       return NextResponse.json(
-        { error: "Category not found" },
+        { error: "Publication not found" },
         { status: 404 }
       )
     }
 
-    // Get publications count for this category
-    const publicationsCount = await sqlite.get(
-      "SELECT COUNT(*) as count FROM publications WHERE categoryId = ?",
-      [params.id]
-    )
-
-    // Add count to category
-    return NextResponse.json({
-      ...category,
-      publicationsCount: publicationsCount ? publicationsCount.count : 0
-    })
+    return NextResponse.json(publication)
   } catch (error) {
-    console.error("Failed to fetch category:", error)
+    console.error("Failed to fetch publication:", error)
     return NextResponse.json(
-      { error: "Failed to fetch category" },
+      { error: "Failed to fetch publication" },
       { status: 500 }
     )
   }
@@ -50,7 +48,7 @@ export async function GET(
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params: routeParams }: { params: { id: string } }
 ) {
   try {
     const session = await getServerSession()
@@ -62,46 +60,86 @@ export async function PATCH(
       )
     }
 
-    const { name, description } = await request.json()
+    const { title, slug, abstract, content, categoryId, published } = await request.json()
 
-    if (!name) {
+    if (title !== undefined && !title) {
       return NextResponse.json(
-        { error: "Name is required" },
+        { error: "Title is required" },
         { status: 400 }
       )
     }
 
-    // Generate slug from name
-    const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, "-")
+    // Generate slug if not provided and title is being updated
+    const finalSlug = title ? (slug || title.toLowerCase().replace(/[^a-z0-9]+/g, "-")) : slug
     
     const now = new Date().toISOString()
 
-    // Update the category
-    await sqlite.run(
-      "UPDATE event_categories SET name = ?, slug = ?, description = ?, updatedAt = ? WHERE id = ?",
-      [name, slug, description, now, params.id]
-    )
-    
-    // Get the updated category
-    const category = await sqlite.get(
-      "SELECT * FROM event_categories WHERE id = ?",
-      [params.id]
-    )
-    
-    // Get publications count
-    const publicationsCount = await sqlite.get(
-      "SELECT COUNT(*) as count FROM publications WHERE categoryId = ?",
-      [params.id]
-    )
+    // Build the update query dynamically based on provided fields
+    const updateFields = []
+    const queryParams = []
 
-    return NextResponse.json({
-      ...category,
-      publicationsCount: publicationsCount ? publicationsCount.count : 0
-    })
+    if (title !== undefined) {
+      updateFields.push("title = ?")
+      queryParams.push(title)
+    }
+
+    if (finalSlug !== undefined) {
+      updateFields.push("slug = ?")
+      queryParams.push(finalSlug)
+    }
+
+    if (abstract !== undefined) {
+      updateFields.push("abstract = ?")
+      queryParams.push(abstract)
+    }
+
+    if (content !== undefined) {
+      updateFields.push("content = ?")
+      queryParams.push(content)
+    }
+
+    if (categoryId !== undefined) {
+      updateFields.push("categoryId = ?")
+      queryParams.push(categoryId)
+    }
+
+    if (published !== undefined) {
+      updateFields.push("published = ?")
+      queryParams.push(published)
+    }
+
+    // Always update the updatedAt field
+    updateFields.push("updatedAt = ?")
+    queryParams.push(now)
+
+    // Add the ID as the last parameter for the WHERE clause
+    queryParams.push(routeParams.id)
+
+    // Update the publication
+    await sqlite.run(`
+      UPDATE publications 
+      SET ${updateFields.join(", ")} 
+      WHERE id = ?
+    `, queryParams)
+    
+    // Get the updated publication
+    const publication = await sqlite.get(`
+      SELECT 
+        p.*, 
+        c.name as categoryName
+      FROM 
+        publications p
+      LEFT JOIN 
+        event_categories c ON p.categoryId = c.id
+      WHERE 
+        p.id = ?
+    `, [routeParams.id])
+
+    return NextResponse.json(publication)
   } catch (error) {
-    console.error("Failed to update category:", error)
+    console.error("Failed to update publication:", error)
     return NextResponse.json(
-      { error: "Failed to update category" },
+      { error: "Failed to update publication" },
       { status: 500 }
     )
   }
@@ -122,15 +160,15 @@ export async function DELETE(
     }
 
     await sqlite.run(
-      "DELETE FROM event_categories WHERE id = ?",
+      "DELETE FROM publications WHERE id = ?",
       [params.id]
     )
 
     return new NextResponse(null, { status: 204 })
   } catch (error) {
-    console.error("Failed to delete category:", error)
+    console.error("Failed to delete publication:", error)
     return NextResponse.json(
-      { error: "Failed to delete category" },
+      { error: "Failed to delete publication" },
       { status: 500 }
     )
   }

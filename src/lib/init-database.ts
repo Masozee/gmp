@@ -1,6 +1,4 @@
 import sqlite from './sqlite';
-import fs from 'fs';
-import path from 'path';
 
 // Flag to track initialization
 let isInitialized = false;
@@ -160,9 +158,11 @@ function createTables() {
       id TEXT PRIMARY KEY,
       firstName TEXT NOT NULL,
       lastName TEXT NOT NULL,
-      title TEXT,
-      bio TEXT,
+      email TEXT UNIQUE NOT NULL,
+      phoneNumber TEXT,
       organization TEXT,
+      bio TEXT,
+      category TEXT NOT NULL,
       photoUrl TEXT,
       createdAt DATETIME NOT NULL,
       updatedAt DATETIME NOT NULL
@@ -225,6 +225,10 @@ function createIndices() {
   // Authors on publications indices
   sqlite.run(`CREATE INDEX IF NOT EXISTS idx_authors_publications_pub ON authors_on_publications(publicationId)`);
   sqlite.run(`CREATE INDEX IF NOT EXISTS idx_authors_publications_author ON authors_on_publications(authorId)`);
+  
+  // Authors indices
+  sqlite.run(`CREATE INDEX IF NOT EXISTS idx_authors_email ON authors(email)`);
+  sqlite.run(`CREATE INDEX IF NOT EXISTS idx_authors_category ON authors(category)`);
 }
 
 // Initialize database on import

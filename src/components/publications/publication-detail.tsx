@@ -17,7 +17,7 @@ interface Publication {
   id: string
   title: string
   slug: string
-  description: string
+  abstract: string  // Changed from description
   content: string
   coverImage: string | null
   coverCredit: string | null
@@ -169,8 +169,8 @@ export function PublicationDetail({ publicationId }: PublicationDetailProps) {
       </CardHeader>
       <CardContent className="space-y-6">
         <div>
-          <h3 className="text-sm font-medium text-muted-foreground">Description</h3>
-          <p className="mt-1">{publication.description}</p>
+          <h3 className="text-sm font-medium text-muted-foreground">Abstract</h3>
+          <p className="mt-1">{publication.abstract}</p>
         </div>
         
         <Separator />
@@ -249,4 +249,4 @@ export function PublicationDetail({ publicationId }: PublicationDetailProps) {
       </CardFooter>
     </Card>
   )
-} 
+}

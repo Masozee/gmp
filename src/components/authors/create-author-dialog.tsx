@@ -72,28 +72,41 @@ export function CreateAuthorDialog({
       setIsLoading(true)
       setError(null)
 
-      const formData = new FormData()
-      Object.entries(values).forEach(([key, value]) => {
-        if (value) formData.append(key, value)
-      })
+      let response;
 
+      // If there's a photo, use FormData
       if (photo) {
+        const formData = new FormData()
+        Object.entries(values).forEach(([key, value]) => {
+          if (value) formData.append(key, value)
+        })
         formData.append("photo", photo)
+
+        response = await fetch("/api/authors", {
+          method: "POST",
+          body: formData,
+        })
+      } else {
+        // If no photo, use JSON for more reliable submission
+        response = await fetch("/api/authors", {
+          method: "POST",
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(values),
+        })
       }
 
-      const response = await fetch("/api/authors", {
-        method: "POST",
-        body: formData,
-      })
-
       if (!response.ok) {
-        throw new Error("Failed to create author")
+        const errorData = await response.json().catch(() => null);
+        throw new Error(errorData?.error || "Failed to create author")
       }
 
       form.reset()
       setPhoto(null)
       onOpenChange(false)
     } catch (error) {
+      console.error("Error creating author:", error);
       setError(error instanceof Error ? error.message : "Something went wrong")
     } finally {
       setIsLoading(false)

@@ -1,7 +1,6 @@
 "use client"
 
 import { useEffect } from "react"
-import { Button } from "@/components/ui/button"
 
 export default function Error({
   error,
@@ -11,17 +10,38 @@ export default function Error({
   reset: () => void
 }) {
   useEffect(() => {
-    // Log the error to an error reporting service
     console.error(error)
   }, [error])
 
   return (
-    <div className="flex h-screen flex-col items-center justify-center gap-4 text-center">
-      <h2 className="text-3xl font-bold">Something went wrong!</h2>
-      <p className="text-muted-foreground">
+    <div style={{ 
+      display: 'flex', 
+      flexDirection: 'column', 
+      alignItems: 'center', 
+      justifyContent: 'center', 
+      height: '100vh',
+      textAlign: 'center',
+      gap: '1rem' 
+    }}>
+      <h2 style={{ fontSize: '1.875rem', fontWeight: 'bold' }}>
+        Something went wrong!
+      </h2>
+      <p style={{ color: '#6b7280' }}>
         An unexpected error has occurred. Please try again later.
       </p>
-      <Button onClick={() => reset()}>Try again</Button>
+      <button
+        onClick={() => reset()}
+        style={{ 
+          backgroundColor: '#2563eb', 
+          color: 'white', 
+          padding: '0.5rem 1rem', 
+          borderRadius: '0.375rem',
+          border: 'none',
+          cursor: 'pointer'
+        }}
+      >
+        Try again
+      </button>
     </div>
   )
 } 

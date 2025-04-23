@@ -17,7 +17,7 @@ interface PublicationFormProps {
 interface PublicationFormData {
   title: string
   slug: string
-  description: string
+  abstract: string
   content: string
   coverImage: string
   coverCredit: string
@@ -31,7 +31,7 @@ export function PublicationForm({ publicationId }: PublicationFormProps) {
   const [formData, setFormData] = useState<PublicationFormData>({
     title: "",
     slug: "",
-    description: "",
+    abstract: "",
     content: "",
     coverImage: "",
     coverCredit: "",
@@ -54,7 +54,7 @@ export function PublicationForm({ publicationId }: PublicationFormProps) {
             setFormData({
               title: data.data.title || "",
               slug: data.data.slug || "",
-              description: data.data.description || "",
+              abstract: data.data.abstract || "",
               content: data.data.content || "",
               coverImage: data.data.coverImage || "",
               coverCredit: data.data.coverCredit || "",
@@ -116,8 +116,8 @@ export function PublicationForm({ publicationId }: PublicationFormProps) {
         throw new Error("Slug is required")
       }
       
-      if (!formData.description) {
-        throw new Error("Description is required")
+      if (!formData.abstract) {
+        throw new Error("Abstract is required")
       }
       
       if (!formData.content) {
@@ -239,13 +239,13 @@ export function PublicationForm({ publicationId }: PublicationFormProps) {
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="description">Description</Label>
+            <Label htmlFor="abstract">Abstract</Label>
             <Textarea
-              id="description"
-              name="description"
-              value={formData.description}
+              id="abstract"
+              name="abstract"
+              value={formData.abstract}
               onChange={handleChange}
-              placeholder="Enter publication description"
+              placeholder="Enter publication abstract"
               disabled={loading}
               rows={2}
               required
@@ -328,4 +328,4 @@ export function PublicationForm({ publicationId }: PublicationFormProps) {
       </form>
     </Card>
   )
-} 
+}

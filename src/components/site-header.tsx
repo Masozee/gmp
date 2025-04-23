@@ -22,23 +22,15 @@ export function SiteHeader() {
       <div className="flex h-14 items-center gap-4 px-6">
         <SidebarTrigger className="-ml-2 h-9 w-9" />
         <div className="flex items-center gap-2">
-          <Link href="/dashboard" className="flex items-center">
-            <Image
-              src="/logos/Logo-name-stack.png"
-              alt="Generasi Melek Politik"
-              width={140}
-              height={32}
-              className="h-8 w-auto"
-            />
-          </Link>
-          {paths.length > 0 && (
-            <>
-              <span className="text-muted-foreground">/</span>
-              <span className="text-muted-foreground capitalize">
-                {paths[paths.length - 1].replace(/-/g, " ")}
-              </span>
-            </>
-          )}
+  {/* Logo removed as per user request */}
+  {paths.length > 0 && (
+    <>
+      <span className="text-muted-foreground">/</span>
+      <span className="text-muted-foreground capitalize">
+        {paths[paths.length - 1].replace(/-/g, " ")}
+      </span>
+    </>
+  )}
         </div>
         <div className="ml-auto flex items-center gap-4">
           <div className="relative w-full lg:w-[240px]">

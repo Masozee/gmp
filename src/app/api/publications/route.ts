@@ -2,10 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import sqlite from "@/lib/sqlite"
 import { getServerSession } from "@/lib/server-auth"
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function GET(request: NextRequest) {
   try {
     const session = await getServerSession()
 
@@ -16,33 +13,77 @@ export async function GET(
       )
     }
 
-    const category = await sqlite.get(
-      "SELECT * FROM event_categories WHERE id = ?",
-      [params.id]
-    )
-
-    if (!category) {
-      return NextResponse.json(
-        { error: "Category not found" },
-        { status: 404 }
-      )
+    // Get query parameters
+    const searchParams = request.nextUrl.searchParams
+    const search = searchParams.get("search") || ""
+    const status = searchParams.get("status") || "all"
+    const page = parseInt(searchParams.get("page") || "1")
+    const limit = parseInt(searchParams.get("limit") || "10")
+    
+    // Calculate pagination
+    const { offset, limit: validLimit } = await sqlite.paginate(page, limit)
+    
+    // Build query conditions
+    const conditions = []
+    const params: any[] = []
+    
+    if (search) {
+      conditions.push("(p.title LIKE ? OR p.abstract LIKE ?)")
+      params.push(`%${search}%`, `%${search}%`)
     }
-
-    // Get publications count for this category
-    const publicationsCount = await sqlite.get(
-      "SELECT COUNT(*) as count FROM publications WHERE categoryId = ?",
-      [params.id]
-    )
-
-    // Add count to category
+    
+    if (status && status !== "all") {
+      conditions.push("p.published = ?")
+      params.push(status === "PUBLISHED" ? 1 : 0)
+    }
+    
+    // Build the WHERE clause
+    const whereClause = conditions.length > 0 
+      ? `WHERE ${conditions.join(" AND ")}`
+      : ""
+    
+    // Get publications with pagination
+    const publications = await sqlite.all(`
+      SELECT 
+        p.id, 
+        p.title, 
+        p.slug, 
+        p.abstract, 
+        p.published, 
+        p.categoryId,
+        p.createdAt,
+        p.updatedAt,
+        c.name as categoryName
+      FROM 
+        publications p
+      LEFT JOIN 
+        event_categories c ON p.categoryId = c.id
+      ${whereClause}
+      ORDER BY 
+        p.createdAt DESC
+      LIMIT ? OFFSET ?
+    `, [...params, validLimit, offset])
+    
+    // Get total count for pagination
+    const totalCount = await sqlite.get(`
+      SELECT COUNT(*) as count 
+      FROM publications p
+      ${whereClause}
+    `, params)
+    
     return NextResponse.json({
-      ...category,
-      publicationsCount: publicationsCount ? publicationsCount.count : 0
+      publications,
+      pagination: {
+        page,
+        limit: validLimit,
+        totalCount: totalCount ? totalCount.count : 0,
+        totalPages: Math.ceil((totalCount ? totalCount.count : 0) / validLimit)
+      }
     })
   } catch (error) {
-    console.error("Failed to fetch category:", error)
+    console.error("Failed to fetch publications:", error)
     return NextResponse.json(
-      { error: "Failed to fetch category" },
+      { error: "Failed to fetch publications" },
       { status: 500 }
     )
   }
@@ -134,4 +175,4 @@ export async function DELETE(
       { status: 500 }
     )
   }
-} 
+}

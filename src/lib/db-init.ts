@@ -1,6 +1,5 @@
 import sqlite from './sqlite';
 import { randomUUID } from 'crypto';
-import bcrypt from 'bcryptjs';
 
 // Flag to track if DB was initialized
 let isInitialized = false;

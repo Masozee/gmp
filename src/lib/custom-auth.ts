@@ -17,7 +17,7 @@ export interface Session {
 }
 
 // Verify JWT token on client side
-export function verifyToken(token: string): any {
+export function verifyToken(token: string): unknown {
   try {
     // This is a simplified version - in production you would use proper JWT verification
     const base64Url = token.split('.')[1];

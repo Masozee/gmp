@@ -12,7 +12,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Profile } from "@/types/profile"
+import type { Profile } from "@/types/profile"
 
 interface DeleteProfileDialogProps {
   profile: Profile | null
@@ -62,11 +62,11 @@ export function DeleteProfileDialog({
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
           <AlertDialogDescription>
-            This action cannot be undone. This will permanently delete{" "}
+            You can&apos;t delete your own profile while you&apos;re logged in. This action cannot be undone. This will permanently delete{" "}
             <span className="font-medium">
               {profile?.firstName} {profile?.lastName}
             </span>
-            's profile and remove their data from the system.
+            &apos;s profile and remove their data from the system.
           </AlertDialogDescription>
         </AlertDialogHeader>
         {error && (
