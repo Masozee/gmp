@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
+import Link from "next/link"
 
 import {
   Form,
@@ -17,8 +18,6 @@ import {
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { logError } from "@/lib/logger"
-import { ErrorSeverity } from "@/lib/logger"
 
 const formSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
@@ -78,7 +77,7 @@ export function LoginForm() {
       form.reset()
 
       // Get redirect path
-      const from = searchParams.get("from") || "/dashboard"
+      const from = searchParams?.get("from") || "/dashboard"
       console.log("[Login Form] Redirecting to:", from)
 
       // Force a full page reload to ensure the cookie is picked up
@@ -91,12 +90,11 @@ export function LoginForm() {
       form.setValue("password", "")
 
       // Log the error with more details
-      await logError({
+      console.error({
         message: errorMessage,
         path: "/api/auth/login",
         method: "POST",
         stack: error instanceof Error ? error.stack : undefined,
-        severity: ErrorSeverity.ERROR,
         metadata: {
           email: values.email,
           statusCode: response?.status,
@@ -162,13 +160,9 @@ export function LoginForm() {
       <div className="text-center text-sm">
         <p className="text-muted-foreground">
           Don't have an account?{" "}
-          <Button
-            variant="link"
-            className="p-0 h-auto"
-            onClick={() => router.push("/register")}
-          >
+          <Link href="/register" className="text-primary hover:underline">
             Sign up
-          </Button>
+          </Link>
         </p>
       </div>
     </div>

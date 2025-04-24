@@ -60,12 +60,33 @@ export function TaskStats() {
         })
       } catch (error) {
         console.error('Error fetching task stats:', error)
+        // Show error and zero stats
+        setStats({
+          total: 0,
+          inProgress: 0,
+          completed: 0,
+          overdue: 0
+        })
       } finally {
         setLoading(false)
       }
     }
     
     fetchStats()
+
+    // Listen for local demo task creation events
+    const handler = (e: Event) => {
+      const customEvent = e as CustomEvent<any>;
+      setStats(prev => ({
+        ...prev,
+        total: prev.total + 1,
+        inProgress: prev.inProgress + (customEvent.detail.status === 'IN_PROGRESS' ? 1 : 0),
+        completed: prev.completed + (customEvent.detail.status === 'COMPLETED' ? 1 : 0),
+        overdue: prev.overdue + (customEvent.detail.status !== 'COMPLETED' && customEvent.detail.dueDate && new Date(customEvent.detail.dueDate) < new Date() ? 1 : 0)
+      }));
+    };
+    window.addEventListener("add-demo-task", handler);
+    return () => window.removeEventListener("add-demo-task", handler);
   }, [])
   
   return (

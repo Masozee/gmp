@@ -204,88 +204,137 @@ const sqlite = {
   
   // Setup database tables and schema
   async setupDatabase(): Promise<void> {
-    
-    // Define all your tables here
-    const tables = [
-      // Users table
-      `CREATE TABLE IF NOT EXISTS users (
-        id TEXT PRIMARY KEY,
-        name TEXT,
-        email TEXT UNIQUE NOT NULL,
-        emailVerified DATETIME,
-        image TEXT,
-        role TEXT,
-        password TEXT,
-        createdAt DATETIME NOT NULL,
-        updatedAt DATETIME NOT NULL
-      )`,
+    try {
+      // Define all your tables here
+      const tables = [
+        // Users table
+        `CREATE TABLE IF NOT EXISTS users (
+          id TEXT PRIMARY KEY,
+          name TEXT,
+          email TEXT UNIQUE NOT NULL,
+          emailVerified DATETIME,
+          image TEXT,
+          role TEXT,
+          password TEXT,
+          createdAt DATETIME NOT NULL,
+          updatedAt DATETIME NOT NULL
+        )`,
+        
+        // Tasks table
+        `CREATE TABLE IF NOT EXISTS tasks (
+          id TEXT PRIMARY KEY,
+          title TEXT NOT NULL,
+          description TEXT,
+          status TEXT NOT NULL,
+          priority TEXT NOT NULL,
+          dueDate DATETIME,
+          completedDate DATETIME,
+          assignedTo TEXT,
+          delegatedBy TEXT,
+          reviewStatus TEXT DEFAULT 'PENDING',
+          reviewComment TEXT,
+          reviewDate DATETIME,
+          createdBy TEXT,
+          agentId TEXT,
+          tags TEXT,
+          sharedFiles TEXT,
+          deleted INTEGER DEFAULT 0,
+          createdAt DATETIME NOT NULL,
+          updatedAt DATETIME NOT NULL
+        )`,
+        
+        // Categories table
+        `CREATE TABLE IF NOT EXISTS event_categories (
+          id TEXT PRIMARY KEY,
+          name TEXT NOT NULL,
+          slug TEXT UNIQUE NOT NULL,
+          description TEXT,
+          createdAt DATETIME NOT NULL,
+          updatedAt DATETIME NOT NULL
+        )`,
+        
+        // Events table
+        `CREATE TABLE IF NOT EXISTS events (
+          id TEXT PRIMARY KEY,
+          title TEXT NOT NULL,
+          slug TEXT UNIQUE NOT NULL,
+          description TEXT NOT NULL,
+          content TEXT,
+          location TEXT NOT NULL,
+          venue TEXT,
+          startDate DATETIME NOT NULL,
+          endDate DATETIME NOT NULL,
+          posterImage TEXT,
+          posterCredit TEXT,
+          status TEXT NOT NULL,
+          published INTEGER NOT NULL DEFAULT 0,
+          categoryId TEXT,
+          createdAt DATETIME NOT NULL,
+          updatedAt DATETIME NOT NULL,
+          FOREIGN KEY (categoryId) REFERENCES event_categories(id)
+        )`,
+        
+        // Speakers table
+        `CREATE TABLE IF NOT EXISTS speakers (
+          id TEXT PRIMARY KEY,
+          firstName TEXT NOT NULL,
+          lastName TEXT NOT NULL,
+          organization TEXT,
+          bio TEXT,
+          profileImage TEXT,
+          email TEXT,
+          website TEXT,
+          socialMedia TEXT,
+          createdAt DATETIME NOT NULL,
+          updatedAt DATETIME NOT NULL
+        )`,
+        
+        // Presentation table
+        `CREATE TABLE IF NOT EXISTS presentation (
+          id TEXT PRIMARY KEY,
+          title TEXT NOT NULL,
+          abstract TEXT,
+          speakerId TEXT NOT NULL,
+          eventId TEXT NOT NULL,
+          duration INTEGER, 
+          startTime DATETIME,
+          endTime DATETIME,
+          slidesUrl TEXT,
+          videoUrl TEXT,
+          createdAt DATETIME NOT NULL,
+          updatedAt DATETIME NOT NULL,
+          FOREIGN KEY (speakerId) REFERENCES speakers(id),
+          FOREIGN KEY (eventId) REFERENCES events(id)
+        )`
+      ];
       
-      // Categories table
-      `CREATE TABLE IF NOT EXISTS event_categories (
-        id TEXT PRIMARY KEY,
-        name TEXT NOT NULL,
-        slug TEXT UNIQUE NOT NULL,
-        description TEXT,
-        createdAt DATETIME NOT NULL,
-        updatedAt DATETIME NOT NULL
-      )`,
+      // Execute each table creation query
+      for (const query of tables) {
+        await this.run(query);
+      }
       
-      // Events table
-      `CREATE TABLE IF NOT EXISTS events (
-        id TEXT PRIMARY KEY,
-        title TEXT NOT NULL,
-        slug TEXT UNIQUE NOT NULL,
-        description TEXT NOT NULL,
-        content TEXT,
-        location TEXT NOT NULL,
-        venue TEXT,
-        startDate DATETIME NOT NULL,
-        endDate DATETIME NOT NULL,
-        posterImage TEXT,
-        posterCredit TEXT,
-        status TEXT NOT NULL,
-        published INTEGER NOT NULL DEFAULT 0,
-        categoryId TEXT,
-        createdAt DATETIME NOT NULL,
-        updatedAt DATETIME NOT NULL,
-        FOREIGN KEY (categoryId) REFERENCES event_categories(id)
-      )`
-    ];
-    
-    for (const tableSql of tables) {
-      await this.run(tableSql);
-    }
-    
-    // Create indices
-    const indices = [
-      `CREATE INDEX IF NOT EXISTS idx_users_email ON users(email)`,
-      `CREATE INDEX IF NOT EXISTS idx_events_slug ON events(slug)`,
-      `CREATE INDEX IF NOT EXISTS idx_events_category ON events(categoryId)`
-    ];
-    
-    for (const indexSql of indices) {
-      await this.run(indexSql);
-    }
-    
-    // Check for and create admin user if needed
-    const adminExists = await this.get(
-      "SELECT id FROM users WHERE email = ? AND role = ?",
-      ["admin@example.com", "ADMIN"]
-    );
-    
-    if (!adminExists) {
-      console.log('Creating admin user...');
+      // Create indexes after tables are created
+      const indexes = [
+        // Add your indexes here
+        `CREATE INDEX IF NOT EXISTS idx_users_email ON users(email)`,
+        `CREATE INDEX IF NOT EXISTS idx_tasks_status ON tasks(status)`,
+        `CREATE INDEX IF NOT EXISTS idx_tasks_assignedTo ON tasks(assignedTo)`,
+        `CREATE INDEX IF NOT EXISTS idx_tasks_deleted ON tasks(deleted)`,
+        `CREATE INDEX IF NOT EXISTS idx_events_slug ON events(slug)`,
+        `CREATE INDEX IF NOT EXISTS idx_events_category ON events(categoryId)`,
+        `CREATE INDEX IF NOT EXISTS idx_presentation_speaker ON presentation(speakerId)`,
+        `CREATE INDEX IF NOT EXISTS idx_presentation_event ON presentation(eventId)`
+      ];
       
-      const now = new Date().toISOString();
-      const userId = this.generateId();
+      // Create each index
+      for (const indexQuery of indexes) {
+        await this.run(indexQuery);
+      }
       
-      // Create admin user
-      await this.run(
-        "INSERT INTO users (id, name, email, role, password, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, ?, ?)",
-        [userId, "Admin User", "admin@example.com", "ADMIN", "$2a$10$8r0aGeQoqQioRh8LQgB5Y.BwqR6EUQ2oe5YHBnwKDJ0K0UZnuoiC.", now, now]
-      );
-      
-      console.log('Admin user created with default password (admin123)');
+      console.log('Database setup completed successfully');
+    } catch (error) {
+      console.error('Error setting up database:', error);
+      throw error;
     }
   }
 };

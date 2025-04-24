@@ -78,7 +78,7 @@ export function NavUser() {
       })
 
       if (response.ok) {
-        router.push("/login")
+        window.location.href = "/login";
       }
     } catch (error) {
       console.error("Error logging out:", error)

@@ -1,15 +1,38 @@
 import sqlite from "@/lib/sqlite";
 
+interface Speaker {
+  id: string;
+  firstName: string;
+  lastName: string;
+  organization: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface Event {
+  id: string;
+  title: string;
+  slug: string;
+  description: string;
+  location: string;
+  startDate: string;
+  endDate: string;
+  status: string;
+  published: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
 async function setupDatabase() {
   console.log("Setting up database...");
   
   // Initialize database tables
-  sqlite.setupDatabase();
-  
-  // Add test data
   try {
+    await sqlite.setupDatabase();
+    
+    // Add test data
     // Add a test speaker if none exists
-    const speakers = await sqlite.all(`SELECT * FROM speakers LIMIT 1`);
+    const speakers = await sqlite.all<Speaker>(`SELECT * FROM speakers LIMIT 1`);
     let speakerId: string;
     
     if (speakers.length === 0) {
@@ -34,7 +57,7 @@ async function setupDatabase() {
     }
     
     // Add a test event if none exists
-    const events = await sqlite.all(`SELECT * FROM events LIMIT 1`);
+    const events = await sqlite.all<Event>(`SELECT * FROM events LIMIT 1`);
     let eventId: string;
     
     if (events.length === 0) {
@@ -92,11 +115,34 @@ async function setupDatabase() {
     }
     
     console.log("Database setup complete");
+
+    // Create admin user if doesn't exist
+    const adminExists = await sqlite.get(
+      "SELECT id FROM users WHERE email = ? AND role = ?",
+      ["admin@example.com", "ADMIN"]
+    );
+    
+    if (!adminExists) {
+      console.log('Creating admin user...');
+      
+      const now = new Date().toISOString();
+      const userId = sqlite.generateId();
+      
+      // Create admin user
+      await sqlite.run(
+        "INSERT INTO users (id, name, email, role, password, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, ?, ?)",
+        [userId, "Admin User", "admin@example.com", "ADMIN", "$2a$10$8r0aGeQoqQioRh8LQgB5Y.BwqR6EUQ2oe5YHBnwKDJ0K0UZnuoiC.", now, now]
+      );
+      
+      console.log('Admin user created with default password (admin123)');
+    }
+
   } catch (error) {
-    console.error("Error setting up test data:", error);
+    console.error("Error setting up database:", error);
   } finally {
-    // Close database connection
-    sqlite.close();
+    // Close database connection after all operations are complete
+    await sqlite.close();
+    console.log("Database connection closed");
   }
 }
 

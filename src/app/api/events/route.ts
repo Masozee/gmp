@@ -53,11 +53,14 @@ export async function GET(request: NextRequest) {
 
     const events = await sqlite.all(eventsQuery, eventsParams)
 
-    return apiResponse.success(events, {
-      total,
-      page,
-      limit,
-      totalPages: Math.ceil(total / limit)
+    return apiResponse.success({
+      events,
+      pagination: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit)
+      }
     })
   } catch (error) {
     console.error("Failed to fetch events:", error)

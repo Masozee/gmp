@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server"
 import sqlite from "@/lib/sqlite"
 import { cookies } from "next/headers"
-import { verifyToken } from "@/lib/jwt"
-import { Task } from "../route"
+import { verifyToken } from "@/lib/jwt-server"
+import type { Task } from "../route"
 
 export async function GET(
   request: NextRequest,
@@ -11,9 +11,9 @@ export async function GET(
   try {
     const taskId = params.id
     
-    // Get the task by ID
+    // Get task from database (only non-deleted tasks)
     const task = await sqlite.get<Task>(
-      "SELECT * FROM tasks WHERE id = ?",
+      "SELECT * FROM tasks WHERE id = ? AND deleted = 0",
       [taskId]
     )
     
@@ -39,7 +39,7 @@ export async function PUT(
     const taskId = params.id
     
     // Get the token from cookies
-    const cookieStore = cookies()
+    const cookieStore = await cookies()
     const token = cookieStore.get("token")?.value
     
     // Check if user is authenticated
@@ -48,12 +48,16 @@ export async function PUT(
     }
     
     // Verify token
-    let user
+    let user: { id: string | number; email: string; role: string } | null = null;
     try {
-      user = verifyToken(token)
+      const decoded = await verifyToken(token)
+      user = decoded as { id: string | number; email: string; role: string };
     } catch (error) {
-      return NextResponse.json({ error: "Invalid token" }, { status: 401 })
+      console.error("verifyToken error:", error);
+      return NextResponse.json({ error: "Invalid token", details: String(error) }, { status: 401 })
     }
+
+    const userId = user?.id ? String(user.id) : null;
     
     // Get the existing task
     const existingTask = await sqlite.get<Task>(
@@ -65,8 +69,20 @@ export async function PUT(
       return NextResponse.json({ error: "Task not found" }, { status: 404 })
     }
     
+    // IMPORTANT: Only the delegator (A) can edit the task
+    if (existingTask.delegatedBy !== userId) {
+      return NextResponse.json({ 
+        error: "Only the task delegator can edit this task" 
+      }, { status: 403 })
+    }
+    
     // Parse request body
-    const body = await request.json()
+    let body: any;
+    try {
+      body = await request.json()
+    } catch (error) {
+      return NextResponse.json({ error: "Invalid JSON in request body" }, { status: 400 })
+    }
     
     // Create updated task object
     const now = new Date().toISOString()
@@ -77,8 +93,12 @@ export async function PUT(
       priority: body.priority || existingTask.priority,
       dueDate: body.dueDate !== undefined ? body.dueDate : existingTask.dueDate,
       assignedTo: body.assignedTo !== undefined ? body.assignedTo : existingTask.assignedTo,
-      agentId: body.agentId !== undefined ? body.agentId : existingTask.agentId,
       tags: body.tags !== undefined ? body.tags : existingTask.tags,
+      // Preserve review fields
+      reviewStatus: body.reviewStatus || existingTask.reviewStatus,
+      reviewComment: body.reviewComment !== undefined ? body.reviewComment : existingTask.reviewComment,
+      agentId: body.agentId !== undefined ? body.agentId : existingTask.agentId,
+      // Update time
       updatedAt: now
     }
     
@@ -87,6 +107,21 @@ export async function PUT(
       updatedTask.completedDate = now
     } else if (body.status !== "COMPLETED" && existingTask.status === "COMPLETED") {
       updatedTask.completedDate = null
+    }
+
+    // Handle review date when review status changes
+    if (body.reviewStatus && body.reviewStatus !== existingTask.reviewStatus) {
+      updatedTask.reviewDate = now
+    }
+    
+    // Handle shared files if provided
+    if (body.sharedFiles) {
+      try {
+        const filesArray = Array.isArray(body.sharedFiles) ? body.sharedFiles : JSON.parse(body.sharedFiles)
+        updatedTask.sharedFiles = JSON.stringify(filesArray)
+      } catch (error) {
+        console.error("Error parsing shared files:", error)
+      }
     }
     
     // Build update query
@@ -132,7 +167,7 @@ export async function DELETE(
     const taskId = params.id
     
     // Get the token from cookies
-    const cookieStore = cookies()
+    const cookieStore = await cookies()
     const token = cookieStore.get("token")?.value
     
     // Check if user is authenticated
@@ -141,12 +176,16 @@ export async function DELETE(
     }
     
     // Verify token
-    let user
+    let user: { id: string | number; email: string; role: string } | null = null;
     try {
-      user = verifyToken(token)
+      const decoded = await verifyToken(token)
+      user = decoded as { id: string | number; email: string; role: string };
     } catch (error) {
-      return NextResponse.json({ error: "Invalid token" }, { status: 401 })
+      console.error("verifyToken error:", error);
+      return NextResponse.json({ error: "Invalid token", details: String(error) }, { status: 401 })
     }
+
+    const userId = user?.id ? String(user.id) : null;
     
     // Check if the task exists
     const task = await sqlite.get<Task>(
@@ -158,8 +197,19 @@ export async function DELETE(
       return NextResponse.json({ error: "Task not found" }, { status: 404 })
     }
     
-    // Delete the task
-    await sqlite.run("DELETE FROM tasks WHERE id = ?", [taskId])
+    // IMPORTANT: Only the delegator (A) can delete the task
+    if (task.delegatedBy !== userId) {
+      return NextResponse.json({ 
+        error: "Only the task delegator can delete this task" 
+      }, { status: 403 })
+    }
+    
+    // Soft delete the task by setting the deleted flag
+    const now = new Date().toISOString();
+    await sqlite.run(
+      "UPDATE tasks SET deleted = 1, updatedAt = ? WHERE id = ?", 
+      [now, taskId]
+    )
     
     return NextResponse.json({
       message: "Task deleted successfully"

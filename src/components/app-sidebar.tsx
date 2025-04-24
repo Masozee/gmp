@@ -10,7 +10,12 @@ import {
   Mail,
   Settings2,
   Map,
-  Calendar
+  Calendar,
+  LayoutGrid,
+  CircleUser,
+  Blocks,
+  Earth,
+  MonitorDown
 } from "lucide-react"
 import Image from "next/image"
 import { memo } from "react"
@@ -71,14 +76,38 @@ const sidebarData = {
     },
     {
       title: "Projects",
-      url: "/dashboard/projects",
+      url: "#",
       icon: Briefcase,
+      isActive: false,
+      items: [
+        {
+          title: "All Projects",
+          url: "/dashboard/projects",
+        },
+        {
+          title: "Create Project",
+          url: "/dashboard/projects/create",
+        },
+        {
+          title: "Milestones",
+          url: "/dashboard/projects/milestones",
+        },
+        {
+          title: "Reports",
+          url: "/dashboard/projects/reports",
+        },
+      ],
+    },
+    {
+      title: "Calendar",
+      url: "/dashboard/calendar",
+      icon: Calendar,
       isActive: false,
     },
     {
       title: "People",
       url: "#",
-      icon: Home,
+      icon: CircleUser,
       items: [
         {
           title: "List",
@@ -147,17 +176,17 @@ const sidebarData = {
     {
       name: "Project Management",
       url: "/dashboard/projects",
-      icon: Briefcase,
+      icon: Blocks,
     },
     {
       name: "Geo Tagging",
       url: "/dashboard/projects/geo-tagging",
-      icon: Map,
+      icon: Earth,
     },
     {
       name: "Asset Management",
       url: "#",
-      icon: Map,
+      icon: MonitorDown,
     },
   ],
 };

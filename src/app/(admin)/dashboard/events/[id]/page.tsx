@@ -114,7 +114,7 @@ export default function EventDetailsPage({ params }: { params: Promise<{ id: str
                   {event.status}
                 </Badge>
                 <span className="text-muted-foreground">•</span>
-                <span className="text-muted-foreground">{event.category.name}</span>
+                <span className="text-muted-foreground">{event.category?.name || 'Uncategorized'}</span>
               </div>
             </div>
             <div className="flex gap-2">
@@ -177,7 +177,7 @@ export default function EventDetailsPage({ params }: { params: Promise<{ id: str
                   <CardTitle>Speakers</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  {event.speakers.length > 0 ? (
+                  {Array.isArray(event.speakers) && event.speakers.length > 0 ? (
                     <div className="space-y-4">
                       {event.speakers.map((speakerItem) => (
                         <div key={speakerItem.id} className="flex items-center gap-3">
@@ -185,19 +185,19 @@ export default function EventDetailsPage({ params }: { params: Promise<{ id: str
                             {speakerItem.speaker.photoUrl ? (
                               <img 
                                 src={speakerItem.speaker.photoUrl} 
-                                alt={`${speakerItem.speaker.firstName} ${speakerItem.speaker.lastName}`}
-                                className="h-full w-full object-cover"
+                                alt={speakerItem.speaker.firstName + ' ' + speakerItem.speaker.lastName}
+                                className="object-cover h-10 w-10"
                               />
                             ) : (
-                              <User className="h-5 w-5 text-muted-foreground" />
+                              <User className="h-6 w-6 text-muted-foreground" />
                             )}
                           </div>
                           <div>
-                            <p className="font-medium">{speakerItem.speaker.firstName} {speakerItem.speaker.lastName}</p>
-                            {(speakerItem.speaker.position || speakerItem.speaker.organization) && (
-                              <p className="text-sm text-muted-foreground">
-                                {speakerItem.speaker.position}
-                                {speakerItem.speaker.position && speakerItem.speaker.organization && " at "}
+                            <p className="font-medium">
+                              {speakerItem.speaker.firstName} {speakerItem.speaker.lastName}
+                            </p>
+                            {speakerItem.speaker.organization && (
+                              <p className="text-xs text-muted-foreground">
                                 {speakerItem.speaker.organization}
                               </p>
                             )}
@@ -224,7 +224,7 @@ export default function EventDetailsPage({ params }: { params: Promise<{ id: str
                     {event.venue && <p className="text-sm text-muted-foreground">{event.venue}</p>}
                   </div>
 
-                  {event.tags.length > 0 && (
+                  {Array.isArray(event.tags) && event.tags.length > 0 && (
                     <div>
                       <h4 className="text-sm font-medium text-muted-foreground mb-1">Tags</h4>
                       <div className="flex flex-wrap gap-1">

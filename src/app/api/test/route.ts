@@ -2,12 +2,49 @@ import { NextRequest, NextResponse } from "next/server"
 import sqlite from "@/lib/sqlite"
 import { getServerSession } from "@/lib/server-auth"
 
-export async function GET() {
-  return NextResponse.json({ 
-    status: "ok", 
-    message: "API is working", 
-    timestamp: new Date().toISOString() 
-  })
+export async function GET(request: NextRequest) {
+  try {
+    // Test database connection by fetching users
+    const users = await sqlite.all('SELECT id, name, email, role FROM users LIMIT 10');
+    
+    // Test database connection by fetching events
+    const events = await sqlite.all('SELECT id, title FROM events LIMIT 5');
+    
+    // Test database connection by fetching speakers
+    const speakers = await sqlite.all('SELECT id, firstName, lastName FROM speakers LIMIT 5');
+    
+    return NextResponse.json({
+      success: true,
+      message: 'Database connection is working',
+      data: {
+        users,
+        events,
+        speakers
+      }
+    });
+  } catch (error) {
+    console.error('Database test failed:', error);
+    return NextResponse.json({
+      success: false,
+      message: 'Database test failed',
+      error: error instanceof Error ? error.message : 'Unknown error'
+    }, { status: 500 });
+  } finally {
+    // Don't close the database connection here, it will be handled by the application
+  }
+}
+
+interface Category {
+  id: string;
+  name: string;
+  slug: string;
+  description?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface PublicationCount {
+  count: number;
 }
 
 export async function PATCH(
@@ -45,16 +82,23 @@ export async function PATCH(
     )
     
     // Get the updated category
-    const category = await sqlite.get(
+    const category = await sqlite.get<Category>(
       "SELECT * FROM event_categories WHERE id = ?",
       [params.id]
     )
     
     // Get publications count
-    const publicationsCount = await sqlite.get(
+    const publicationsCount = await sqlite.get<PublicationCount>(
       "SELECT COUNT(*) as count FROM publications WHERE categoryId = ?",
       [params.id]
     )
+
+    if (!category) {
+      return NextResponse.json(
+        { error: "Category not found" },
+        { status: 404 }
+      )
+    }
 
     return NextResponse.json({
       ...category,

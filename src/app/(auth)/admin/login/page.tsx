@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, Suspense } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -10,7 +10,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import Image from "next/image"
 import Link from "next/link"
 
-export default function AdminLoginPage() {
+function LoginForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
   // Update the default redirect path to ensure it works with route groups
@@ -37,9 +37,8 @@ export default function AdminLoginPage() {
         throw new Error(data.error || "Login failed")
       }
 
-      // Navigate to the admin dashboard without causing a redirect loop
-      router.push(from)
-      router.refresh()
+      // Force a full reload to ensure the auth cookie is recognized
+      window.location.href = from
     } catch (error) {
       setError(error instanceof Error ? error.message : "Login failed")
     } finally {
@@ -115,5 +114,17 @@ export default function AdminLoginPage() {
         </form>
       </Card>
     </div>
+  )
+}
+
+export default function AdminLoginPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex items-center justify-center min-h-screen">
+        <p>Loading...</p>
+      </div>
+    }>
+      <LoginForm />
+    </Suspense>
   )
 } 

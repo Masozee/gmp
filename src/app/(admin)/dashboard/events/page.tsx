@@ -81,7 +81,7 @@ function EventsPageContent() {
       try {
         setLoading(true)
         
-        let url = `/api/events-list?page=${page}`
+        let url = `/api/events?page=${page}`
         if (selectedStatus && selectedStatus !== "ALL") url += `&status=${selectedStatus}`
         if (selectedCategory && selectedCategory !== "ALL") url += `&categoryId=${selectedCategory}`
         if (sortOrder) url += `&sort=${sortOrder}`
@@ -94,20 +94,20 @@ function EventsPageContent() {
         
         const data = await response.json()
         
-        // Check if the response has the expected structure
-        if (!data.events) {
+        // Handle new API response structure: { success, data: { events, pagination }, ... }
+        if (!data.data || !data.data.events) {
           // If the API returns just an array of events without pagination
           if (Array.isArray(data)) {
             setEvents(data)
-            setTotalPages(1) // Default to 1 page if no pagination info
-          } else {
-            throw new Error("Invalid response format from API")
+            setTotalPages(1)
+            setLoading(false)
+            return
           }
-        } else {
-          // If the API returns the expected structure with events and pagination
-          setEvents(data.events)
-          setTotalPages(data.pagination.totalPages)
+          throw new Error("Invalid response format from API")
         }
+        setEvents(data.data.events)
+        setTotalPages(data.data.pagination?.totalPages || 1)
+        setLoading(false)
       } catch (err) {
         setError("Could not load events")
         console.error(err)
@@ -348,7 +348,7 @@ function EventsPageContent() {
                 <div className="flex justify-between items-start">
                   <div>
                     <CardTitle>{event.title}</CardTitle>
-                    <CardDescription>{event.category.name}</CardDescription>
+                    <CardDescription>{event.category?.name || 'Uncategorized'}</CardDescription>
                   </div>
                 </div>
               </CardHeader>
@@ -367,7 +367,7 @@ function EventsPageContent() {
                       {format(new Date(event.startDate), "MMM d, yyyy")} - {format(new Date(event.endDate), "MMM d, yyyy")}
                     </span>
                   </div>
-                  {event.speakers.length > 0 && (
+                  {Array.isArray(event.speakers) && event.speakers.length > 0 && (
                     <div className="mt-2 flex items-center text-sm text-muted-foreground">
                       <User className="mr-1 h-4 w-4" />
                       <span>
@@ -378,7 +378,7 @@ function EventsPageContent() {
                   )}
                 </div>
               </CardContent>
-              <Separator />
+// ...
               <CardFooter className="flex justify-between p-4">
                 <Button variant="outline" asChild>
                   <Link href={`/dashboard/events/${event.id}`}>

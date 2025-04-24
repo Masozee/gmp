@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import sqlite from "@/lib/sqlite"
 import { cookies } from "next/headers"
-import { verifyToken } from "@/lib/jwt"
+import { verifyToken } from "@/lib/edge-jwt"
 
 // Define our task type
 export interface Task {
@@ -12,10 +12,22 @@ export interface Task {
   priority: "LOW" | "MEDIUM" | "HIGH" | "CRITICAL"
   dueDate: string | null
   completedDate: string | null
+  // Person who performs the task (B)
   assignedTo: string | null
+  // Person who delegates/creates the task (A)
+  delegatedBy: string
+  // Review status fields
+  reviewStatus: "PENDING" | "NEEDS_UPDATE" | "ACCEPTED"
+  reviewComment: string | null
+  reviewDate: string | null
+  // Legacy field for compatibility
   createdBy: string | null
   agentId: string | null
   tags: string | null
+  // Shared files for collaboration (JSON string array)
+  sharedFiles: string | null
+  // Soft delete flag (0 = active, 1 = deleted)
+  deleted: number
   createdAt: string
   updatedAt: string
 }
@@ -33,7 +45,7 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(searchParams.get("limit") || "10")
     
     // Build query
-    let query = "SELECT * FROM tasks WHERE 1=1"
+    let query = "SELECT * FROM tasks WHERE deleted = 0"
     const params: any[] = []
     
     // Add filters
@@ -99,7 +111,8 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     // Get the token from cookies
-    const cookieStore = cookies()
+    const cookieStore = await cookies();
+    console.log("Cookies in POST /api/tasks:", cookieStore.getAll());
     const token = cookieStore.get("token")?.value
     
     // Check if user is authenticated
@@ -108,57 +121,85 @@ export async function POST(request: NextRequest) {
     }
     
     // Verify token
-    let user
+    let user: { id: string | number; email: string; role: string } | null = null;
     try {
-      user = verifyToken(token)
+      user = await verifyToken(token);
+      console.log("User from token:", user);
     } catch (error) {
-      return NextResponse.json({ error: "Invalid token" }, { status: 401 })
+      console.error("verifyToken error:", error);
+      return NextResponse.json({ error: "Invalid token", details: String(error) }, { status: 401 })
     }
-    
+
     // Parse request body
-    const body = await request.json()
-    
-    // Validation
-    if (!body.title) {
-      return NextResponse.json({ error: "Title is required" }, { status: 400 })
+    let body: any
+    try {
+      body = await request.json()
+    } catch (error) {
+      return NextResponse.json({ error: "Invalid JSON in request body" }, { status: 400 })
     }
-    
-    if (!body.status) {
-      body.status = "TODO" // Default status
+
+    // Validation: Required fields
+    if (!body.title || typeof body.title !== 'string') {
+      return NextResponse.json({ error: "Title is required and must be a string" }, { status: 400 })
     }
-    
-    if (!body.priority) {
-      body.priority = "MEDIUM" // Default priority
+
+    // Optional fields with defaults
+    if (!body.status || typeof body.status !== 'string') {
+      body.status = "TODO"
     }
-    
-    // Create task object
+    if (!body.priority || typeof body.priority !== 'string') {
+      body.priority = "MEDIUM"
+    }
+
+    // Convert user ID to string (ensuring it matches the TEXT column in SQLite)
+    const userId = user?.id ? String(user.id) : null;
+    console.log("User ID for createdBy:", userId, "Type:", typeof userId);
+
+    // Validate and sanitize all fields
     const now = new Date().toISOString()
     const task: Task = {
       id: sqlite.generateId(),
       title: body.title,
-      description: body.description || null,
+      description: typeof body.description === 'string' ? body.description : null,
       status: body.status,
       priority: body.priority,
-      dueDate: body.dueDate || null,
+      dueDate: typeof body.dueDate === 'string' ? body.dueDate : null,
       completedDate: body.status === "COMPLETED" ? now : null,
-      assignedTo: body.assignedTo || null,
-      createdBy: user.id || null,
-      agentId: body.agentId || null,
-      tags: body.tags || null,
+      // Person being assigned to the task (B)
+      assignedTo: typeof body.assignedTo === 'string' ? body.assignedTo : null,
+      // Person delegating the task (A) - must be the current user
+      delegatedBy: userId || '',
+      // Initial review status is always PENDING
+      reviewStatus: "PENDING",
+      reviewComment: null,
+      reviewDate: null,
+      // Keep createdBy for backwards compatibility
+      createdBy: userId,
+      agentId: typeof body.agentId === 'string' ? body.agentId : null,
+      tags: typeof body.tags === 'string' ? body.tags : null,
+      // Shared files (JSON string array)
+      sharedFiles: typeof body.sharedFiles === 'string' ? body.sharedFiles : null,
+      // Default to not deleted (0)
+      deleted: 0,
       createdAt: now,
       updatedAt: now
     }
-    
+
+    // Debug log for task object
+    console.log('Task to insert:', task)
+
     // Insert into database
     await sqlite.run(`
       INSERT INTO tasks (
         id, title, description, status, priority, dueDate, completedDate,
-        assignedTo, createdBy, agentId, tags, createdAt, updatedAt
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        assignedTo, delegatedBy, reviewStatus, reviewComment, reviewDate,
+        createdBy, agentId, tags, sharedFiles, deleted, createdAt, updatedAt
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `, [
       task.id, task.title, task.description, task.status, task.priority,
-      task.dueDate, task.completedDate, task.assignedTo, task.createdBy,
-      task.agentId, task.tags, task.createdAt, task.updatedAt
+      task.dueDate, task.completedDate, task.assignedTo, task.delegatedBy,
+      task.reviewStatus, task.reviewComment, task.reviewDate, task.createdBy,
+      task.agentId, task.tags, task.sharedFiles, task.deleted, task.createdAt, task.updatedAt
     ])
     
     return NextResponse.json({

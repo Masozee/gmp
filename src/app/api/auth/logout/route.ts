@@ -4,9 +4,11 @@ import { cookies } from "next/headers"
 
 export async function POST(request: NextRequest) {
   try {
-    // Clear the session cookie
-    cookies().delete("session")
-    
+    // Clear the session and token cookies
+    const cookieStore = cookies();
+    cookieStore.delete("session");
+    cookieStore.delete("token");
+
     return NextResponse.json({ success: true })
   } catch (error) {
     console.error("Logout error:", error)

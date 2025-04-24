@@ -159,7 +159,7 @@ function NewEventPageContent() {
         const response = await fetch("/api/speakers");
         if (!response.ok) throw new Error("Failed to fetch speakers");
         const data = await response.json();
-        setSpeakers(data);
+        setSpeakers(data.speakers || []);
       } catch (error) {
         console.error("Error fetching speakers:", error);
       }

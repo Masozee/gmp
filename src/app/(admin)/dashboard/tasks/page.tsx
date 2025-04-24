@@ -17,17 +17,29 @@ export default function TasksPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   
   // Handle task form submission
-  type TaskFormData = {
+  interface TaskFormData {
     dueDate?: Date;
     [key: string]: any;
-  };
+  }
 
   const handleCreateTask = async (data: TaskFormData) => {
     setIsSubmitting(true)
     
-    // Convert date object to ISO string
+    // Create a new data object with a proper copy to avoid reference issues
+    const submissionData = { ...data }
+    
+    // Convert Date object to ISO string for API submission
     if (data.dueDate) {
-      data.dueDate = data.dueDate.toISOString()
+      // @ts-ignore - We know this is a Date object that needs to be converted to string
+      submissionData.dueDate = data.dueDate.toISOString()
+    }
+    
+    // Convert shared files to a JSON-friendly format if provided
+    if (data.sharedFiles) {
+      const files = data.sharedFiles.split(',').map((file: string) => file.trim()).filter(Boolean)
+      if (files.length > 0) {
+        submissionData.sharedFiles = files.join(',')
+      }
     }
     
     try {
@@ -36,12 +48,13 @@ export default function TasksPage() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(data),
+        credentials: "include",
+        body: JSON.stringify(submissionData),
       })
       
       if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || "Failed to create task")
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to create task");
       }
       
       toast({

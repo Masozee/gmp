@@ -18,8 +18,11 @@ import {
 } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { CheckCircle, Clock, AlertCircle, XCircle, Edit, Trash2 } from "lucide-react"
+import { CheckCircle, Clock, AlertCircle, XCircle, Edit, Trash2, FileText, UserCheck, ExternalLink, Eye } from "lucide-react"
 import { format, isPast, isToday, isTomorrow } from "date-fns"
+import { TaskReview } from "./task-review"
+import { toast } from "sonner"
+import Link from "next/link"
 
 // Task type
 interface Task {
@@ -31,9 +34,14 @@ interface Task {
   dueDate: string | null
   completedDate: string | null
   assignedTo: string | null
+  delegatedBy: string
+  reviewStatus: "PENDING" | "NEEDS_UPDATE" | "ACCEPTED"
+  reviewComment: string | null
+  reviewDate: string | null
   createdBy: string | null
   agentId: string | null
   tags: string | null
+  sharedFiles: string | null
   createdAt: string
   updatedAt: string
 }
@@ -56,12 +64,14 @@ interface TaskListProps {
   }
   onTaskUpdate?: (task: Task) => void
   onTaskDelete?: (taskId: string) => void
+  currentUserId?: string // Add current user ID to check permissions
 }
 
 export function TaskList({ 
   initialFilter = {}, 
   onTaskUpdate, 
-  onTaskDelete 
+  onTaskDelete,
+  currentUserId
 }: TaskListProps) {
   const [tasks, setTasks] = useState<Task[]>([])
   const [pagination, setPagination] = useState<Pagination>({ 
@@ -71,6 +81,7 @@ export function TaskList({
     pages: 0 
   })
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const [filter, setFilter] = useState(initialFilter)
   
   // Fetch tasks
@@ -108,6 +119,9 @@ export function TaskList({
         })
       } catch (error) {
         console.error("Error fetching tasks:", error)
+        setError("Failed to fetch tasks. Please try again later.")
+        setTasks([]);
+        setPagination({ total: 0, page: 1, limit: 10, pages: 0 });
       } finally {
         setLoading(false)
       }
@@ -115,8 +129,8 @@ export function TaskList({
     
     fetchTasks()
   }, [filter, pagination.page, pagination.limit])
-  
-  // Status badge color
+
+  // Get status badge color
   const getStatusColor = (status: string) => {
     switch (status) {
       case "TODO":
@@ -129,6 +143,20 @@ export function TaskList({
         return "bg-green-500"
       case "CANCELLED":
         return "bg-red-500"
+      default:
+        return "bg-slate-500"
+    }
+  }
+  
+  // Get review status badge color
+  const getReviewStatusColor = (status: string) => {
+    switch (status) {
+      case "PENDING":
+        return "bg-yellow-500"
+      case "NEEDS_UPDATE":
+        return "bg-red-500"
+      case "ACCEPTED":
+        return "bg-green-500"
       default:
         return "bg-slate-500"
     }
@@ -179,7 +207,7 @@ export function TaskList({
       })
       
       if (!response.ok) {
-        throw new Error("Failed to update task status")
+        throw new Error("Failed to update task status");
       }
       
       const data = await response.json()
@@ -193,8 +221,55 @@ export function TaskList({
       if (onTaskUpdate) {
         onTaskUpdate(data.task)
       }
+      
+      toast(`Task status changed to ${newStatus}`)
     } catch (error) {
       console.error("Error updating task status:", error)
+      toast.error("Failed to update task status")
+    }
+  }
+  
+  // Handle task review
+  const handleTaskReview = async (taskId: string, reviewData: { reviewStatus: string, reviewComment?: string }) => {
+    try {
+      const response = await fetch(`/api/tasks/review`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          taskId,
+          reviewStatus: reviewData.reviewStatus,
+          reviewComment: reviewData.reviewComment
+        })
+      })
+      
+      if (!response.ok) {
+        throw new Error("Failed to submit review");
+      }
+      
+      // Refresh tasks after review
+      const updatedTask = tasks.find(task => task.id === taskId);
+      if (updatedTask) {
+        updatedTask.reviewStatus = reviewData.reviewStatus as Task["reviewStatus"];
+        updatedTask.reviewComment = reviewData.reviewComment || null;
+        updatedTask.reviewDate = new Date().toISOString();
+        
+        // If accepted, also update status
+        if (reviewData.reviewStatus === "ACCEPTED") {
+          updatedTask.status = "COMPLETED";
+        }
+        
+        setTasks([...tasks]);
+        
+        // Call parent handler if provided
+        if (onTaskUpdate) {
+          onTaskUpdate(updatedTask);
+        }
+      }
+    } catch (error) {
+      console.error("Error submitting review:", error);
+      throw error;
     }
   }
   
@@ -239,33 +314,52 @@ export function TaskList({
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Title</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Priority</TableHead>
-                  <TableHead>Due Date</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
+                  <TableHead className="w-[30%]">Title</TableHead>
+                  <TableHead className="w-[15%]">Status</TableHead>
+                  <TableHead className="w-[10%]">Priority</TableHead>
+                  <TableHead className="w-[15%]">Assigned To</TableHead>
+                  <TableHead className="w-[15%]">Due Date</TableHead>
+                  <TableHead className="w-[15%] text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {tasks.map(task => (
-                  <TableRow key={task.id}>
+                  <TableRow key={task.id} className="hover:bg-muted/50">
                     <TableCell className="font-medium">
-                      {task.title}
-                      {task.description && (
-                        <div className="text-sm text-muted-foreground truncate max-w-[300px]">
-                          {task.description}
-                        </div>
-                      )}
+                      <Link 
+                        href={`/dashboard/tasks/${task.id}`}
+                        className="font-medium hover:underline flex items-center"
+                      >
+                        {task.title}
+                        <ExternalLink className="h-3 w-3 ml-1 opacity-50" />
+                      </Link>
                     </TableCell>
                     <TableCell>
                       <Badge className={getStatusColor(task.status)}>
                         {task.status.replace("_", " ")}
                       </Badge>
+                      {(task.status === "REVIEW" || task.status === "COMPLETED") && (
+                        <div className="mt-1">
+                          <Badge variant="outline" className={getReviewStatusColor(task.reviewStatus)}>
+                            {task.reviewStatus.replace("_", " ")}
+                          </Badge>
+                        </div>
+                      )}
                     </TableCell>
                     <TableCell>
                       <Badge className={getPriorityColor(task.priority)}>
                         {task.priority}
                       </Badge>
+                    </TableCell>
+                    <TableCell>
+                      {task.assignedTo ? (
+                        <div className="flex items-center space-x-1">
+                          <UserCheck className="h-4 w-4" />
+                          <span className="truncate max-w-[120px]">{task.assignedTo}</span>
+                        </div>
+                      ) : (
+                        <span className="text-muted-foreground text-sm">Unassigned</span>
+                      )}
                     </TableCell>
                     <TableCell>
                       {task.dueDate && (
@@ -277,42 +371,75 @@ export function TaskList({
                         </div>
                       )}
                     </TableCell>
-                    <TableCell className="text-right space-x-2">
-                      {task.status !== "COMPLETED" && (
-                        <Button
-                          variant="outline"
-                          size="icon"
-                          onClick={() => handleStatusChange(task.id, "COMPLETED")}
-                          title="Mark as Complete"
-                        >
-                          <CheckCircle className="h-4 w-4" />
-                        </Button>
-                      )}
-                      {task.status === "COMPLETED" && (
-                        <Button
-                          variant="outline"
-                          size="icon"
-                          onClick={() => handleStatusChange(task.id, "TODO")}
-                          title="Mark as Todo"
-                        >
-                          <AlertCircle className="h-4 w-4" />
-                        </Button>
-                      )}
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        title="Edit Task"
-                      >
-                        <Edit className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        title="Delete Task"
-                        onClick={() => handleDelete(task.id)}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
+                    <TableCell className="text-right">
+                      <div className="flex justify-end space-x-1">
+                        {/* View detail button */}
+                        <Link href={`/dashboard/tasks/${task.id}`}>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            title="View Task Details"
+                          >
+                            <Eye className="h-4 w-4" />
+                          </Button>
+                        </Link>
+                        
+                        {/* Status change buttons */}
+                        {task.status !== "COMPLETED" && (
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleStatusChange(task.id, "COMPLETED")}
+                            title="Mark as Complete"
+                          >
+                            <CheckCircle className="h-4 w-4" />
+                          </Button>
+                        )}
+                        {task.status === "COMPLETED" && (
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleStatusChange(task.id, "TODO")}
+                            title="Mark as Todo"
+                          >
+                            <AlertCircle className="h-4 w-4" />
+                          </Button>
+                        )}
+                        
+                        {/* Review button - only visible to delegator */}
+                        {currentUserId && task.delegatedBy === currentUserId && 
+                         (task.status === "REVIEW" || task.status === "COMPLETED") && (
+                          <TaskReview 
+                            task={task} 
+                            onReviewSubmit={handleTaskReview} 
+                          />
+                        )}
+                        
+                        {/* Edit button - only visible to delegator */}
+                        {(!currentUserId || currentUserId === task.delegatedBy) && (
+                          <Link href={`/dashboard/tasks/${task.id}/edit`}>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              title="Edit Task"
+                            >
+                              <Edit className="h-4 w-4" />
+                            </Button>
+                          </Link>
+                        )}
+                        
+                        {/* Delete button - only visible to delegator */}
+                        {(!currentUserId || currentUserId === task.delegatedBy) && (
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            title="Delete Task"
+                            onClick={() => handleDelete(task.id)}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        )}
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))}
