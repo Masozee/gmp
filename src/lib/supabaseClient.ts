@@ -8,5 +8,5 @@
 //   // In a client component:
 //   const supabase = createBrowserSupabaseClient();
 
-export { createClient as createServerSupabaseClient } from "../utils/supabase/server";
-export { createClient as createBrowserSupabaseClient } from "../utils/supabase/client";
+export { createClient as createServerSupabaseClient } from "../../utils/supabase/server";
+export { createClient as createBrowserSupabaseClient } from "../../utils/supabase/client";
