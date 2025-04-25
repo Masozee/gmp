@@ -1,5 +1,4 @@
-import { Database } from 'sqlite3';
-import { randomUUID } from 'crypto';
+
 
 // Always use in-memory database on Vercel
 const isVercel = process.env.VERCEL === '1';

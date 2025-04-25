@@ -1,4 +1,4 @@
-import sqlite from './sqlite';
+
 import './db-init'; // Import Vercel database initializer
 
 // Only initialize on server-side

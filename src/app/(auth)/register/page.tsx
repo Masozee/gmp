@@ -49,36 +49,25 @@ function RegisterForm() {
   })
 
   const onSubmit = async (values: FormValues) => {
+    setIsLoading(true);
+    setError(null);
     try {
-      setIsLoading(true)
-      setError(null)
-
-      const response = await fetch("/api/auth/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: values.name,
-          email: values.email,
-          password: values.password,
-        }),
-      })
-
-      const data = await response.json()
-
-      if (!response.ok) {
-        throw new Error(data.error || `Registration failed with status ${response.status}`)
-      }
-
-      // Clear form
-      form.reset()
-
-      // Redirect to login page
-      router.push("/login?registered=true")
-    } catch (error) {
-      console.error("Registration error:", error)
-      setError(error instanceof Error ? error.message : "Registration failed")
+      const supabase = createBrowserSupabaseClient();
+      const { error } = await supabase.auth.signUp({
+        email: values.email,
+        password: values.password,
+        options: {
+          data: { name: values.name },
+        },
+      });
+      if (error) throw error;
+      // Optionally, show a message about email confirmation
+      form.reset();
+      router.push("/login?registered=true");
+    } catch (error: any) {
+      setError(error.message || "Registration failed");
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
   }
 

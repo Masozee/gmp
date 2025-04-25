@@ -4,19 +4,6 @@ const bcrypt = require('bcryptjs');
 const fs = require('fs');
 const path = require('path');
 
-// Path to the database file
-const dbPath = path.join(__dirname, 'db.sqlite');
-
-// Ensure the database directory exists
-const dbDir = path.dirname(dbPath);
-if (!fs.existsSync(dbDir)) {
-  fs.mkdirSync(dbDir, { recursive: true });
-}
-
-// Create/open the database
-const db = new sqlite3.Database(dbPath);
-
-console.log('Database initialization started');
 
 // Enable foreign keys
 db.run('PRAGMA foreign_keys = ON');
