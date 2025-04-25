@@ -28,8 +28,7 @@ export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrollState, setScrollState] = useState({
     scrolled: false,
-    showScrollTop: false,
-    deepScroll: false
+    showScrollTop: false
   });
 
   // Memoize the debounced scroll handler
@@ -38,7 +37,6 @@ export function Navbar() {
       const scrollY = window.scrollY;
       setScrollState({
         scrolled: scrollY > 10,
-        deepScroll: scrollY > 100,
         showScrollTop: scrollY > 300
       });
     }, 10),
@@ -51,7 +49,7 @@ export function Navbar() {
   }, [handleScroll]);
 
   // Memoize derived values
-  const { scrolled, showScrollTop, deepScroll } = scrollState;
+  const { scrolled, showScrollTop } = scrollState;
 
   // Scroll to top function
   const scrollToTop = () => {
@@ -79,16 +77,6 @@ export function Navbar() {
     { name: "Mitra Strategis", href: "/partners" },
   ];
 
-  // Clean navigation for compact mode (like the image)
-  const compactNavItems = [
-    { name: "Products", href: "#", hasDropdown: true },
-    { name: "Initiatives", href: "#", hasDropdown: true },
-    { name: "Community", href: "#" },
-    { name: "Stories", href: "#" },
-    { name: "Newsletter", href: "#", isNew: true },
-    { name: "About", href: "#", hasDropdown: true },
-  ];
-
   // Language options
   const languages = [
     { code: 'id', name: 'Indonesia', flag: '🇮🇩' },
@@ -105,7 +93,7 @@ export function Navbar() {
           scrolled
             ? "bg-white/80 backdrop-blur-md shadow-sm dark:bg-gray-900/80"
             : "bg-white/60 backdrop-blur-sm dark:bg-gray-900/60"
-        } ${deepScroll ? "transform -translate-y-full opacity-0" : "transform translate-y-0 opacity-100"}`}
+        }`}
       >
         {/* Top Navigation Bar */}
         <div className="container mx-auto px-6 max-w-7xl border-b border-gray-100 dark:border-gray-800">
@@ -321,184 +309,6 @@ export function Navbar() {
                 >
                   Donasi & Kolaborasi
                 </Link>
-              </div>
-            </div>
-          </div>
-        </div>
-      </nav>
-
-      {/* Compact Navbar (Like the image - appears on scroll) */}
-      <nav
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-          deepScroll ? "transform translate-y-0 opacity-100" : "transform -translate-y-full opacity-0"
-        }`}
-      >
-        <div className="container mx-auto px-6 pt-4 max-w-7xl">
-          <div className="bg-[#7baf3f] dark:bg-[#7baf3f] rounded-full shadow-md flex items-center justify-between h-14 px-5">
-            {/* Logo on left */}
-            <div className="flex items-center">
-              <Link href="/" className="flex items-center">
-                <div className="flex items-center">
-                  <Image 
-                    src="/logos/logo.png" 
-                    alt="GMP Icon" 
-                    width={40} 
-                    height={40}
-                    className="h-8 w-8"
-                  />
-                </div>
-              </Link>
-            </div>
-
-            {/* Centered navigation for desktop */}
-            <div className="hidden md:flex items-center justify-center space-x-6 flex-1">
-              {mainNavItems.map((item) => (
-                <div key={item.name} className="relative group">
-                  {item.hasDropdown ? (
-                    <DropdownMenu>
-                      <DropdownMenuTrigger className="flex items-center gap-1 font-heading font-semibold text-sm transition-all duration-200 focus:outline-none group hover:text-white/80 text-white">
-                        <span className="group-hover:translate-x-0.5 transition-transform duration-200">
-                          {item.name}
-                        </span>
-                        <ChevronDown className="h-3.5 w-3.5 transition-transform duration-200 group-hover:rotate-180" />
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="center" className="animate-in fade-in-50 zoom-in-95 data-[side=bottom]:slide-in-from-top-2">
-                        {item.dropdownItems.map((dropdownItem) => (
-                          <DropdownMenuItem key={dropdownItem.name} asChild>
-                            <Link 
-                              href={dropdownItem.href} 
-                              className="cursor-pointer font-medium transition-colors hover:text-emerald-600 dark:hover:text-emerald-400"
-                            >
-                              {dropdownItem.name}
-                            </Link>
-                          </DropdownMenuItem>
-                        ))}
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  ) : (
-                    <Link
-                      href={item.href}
-                      className="flex items-center font-semibold text-sm py-2 transition-colors duration-200 hover:text-white/80 text-white"
-                    >
-                      {item.name}
-                    </Link>
-                  )}
-                </div>
-              ))}
-            </div>
-
-            {/* Right side search and buttons */}
-            <div className="flex items-center gap-4">
-              {/* Search input */}
-              <div className="relative hidden md:flex items-center mr-2">
-                <Input
-                  type="search"
-                  placeholder="Cari artikel..."
-                  className="pl-8 pr-4 h-8 w-40 rounded-full border-transparent focus:border-white dark:border-transparent dark:focus:border-white text-sm bg-white/20 text-white placeholder:text-white/70"
-                />
-                <Search className="absolute left-2.5 h-3.5 w-3.5 text-white" />
-              </div>
-
-              {/* Language and dark mode */}
-              <div className="hidden md:flex items-center space-x-3">
-                {/* Language Selector */}
-                <DropdownMenu>
-                  <DropdownMenuTrigger className="flex items-center gap-1 text-white hover:text-white/80 transition-colors">
-                    <Globe className="h-4 w-4" />
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    {languages.map((lang) => (
-                      <DropdownMenuItem
-                        key={lang.code}
-                        onClick={() => setCurrentLang(lang.code)}
-                        className="flex items-center gap-2 cursor-pointer"
-                      >
-                        <span>{lang.flag}</span>
-                        <span>{lang.name}</span>
-                      </DropdownMenuItem>
-                    ))}
-                  </DropdownMenuContent>
-                </DropdownMenu>
-
-                <ModeToggle />
-              </div>
-
-              {/* Mobile menu button */}
-              <button
-                onClick={() => setIsOpen(!isOpen)}
-                className="p-1.5 rounded-md text-white hover:bg-white/10 transition-colors md:hidden"
-                aria-expanded={isOpen}
-              >
-                <span className="sr-only">Toggle menu</span>
-                {isOpen ? (
-                  <X className="h-5 w-5" aria-hidden="true" />
-                ) : (
-                  <Menu className="h-5 w-5" aria-hidden="true" />
-                )}
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* Mobile menu for compact navbar */}
-        <div
-          className={`md:hidden transition-all duration-300 ease-in-out ${
-            isOpen
-              ? "max-h-screen opacity-100 py-4"
-              : "max-h-0 opacity-0 overflow-hidden"
-          }`}
-        >
-          <div className="container mx-auto px-6 max-w-7xl bg-[#7baf3f] dark:bg-[#7baf3f] rounded-b-lg shadow-md">
-            <div className="flex flex-col space-y-4 pb-6 pt-2">
-              {/* Navigation */}
-              <div className="flex flex-col space-y-2">
-                {mainNavItems.map((item) => 
-                  item.hasDropdown ? (
-                    <div key={item.name}>
-                      <div className="flex items-center justify-between pb-1 border-b border-white/20">
-                        <Link 
-                          href={item.href} 
-                          onClick={() => setIsOpen(false)}
-                          className="font-heading text-base font-semibold text-white"
-                        >
-                          {item.name}
-                        </Link>
-                        <ChevronDown className="h-4 w-4 text-white" />
-                      </div>
-                      <div className="mt-2 ml-4 flex flex-col space-y-2">
-                        {item.dropdownItems.map((subItem) => (
-                          <Link
-                            key={subItem.name}
-                            href={subItem.href}
-                            onClick={() => setIsOpen(false)}
-                            className="font-body text-sm text-white/80"
-                          >
-                            {subItem.name}
-                          </Link>
-                        ))}
-                      </div>
-                    </div>
-                  ) : (
-                    <Link
-                      key={item.name}
-                      href={item.href}
-                      onClick={() => setIsOpen(false)}
-                      className="font-heading text-base font-semibold text-white pb-1 border-b border-white/20"
-                    >
-                      {item.name}
-                    </Link>
-                  )
-                )}
-              </div>
-
-              {/* Search */}
-              <div className="relative pt-2">
-                <Input
-                  type="search"
-                  placeholder="Cari artikel..."
-                  className="pl-9 pr-4 h-9 w-full rounded-full border-transparent focus:border-white text-sm bg-white/20 text-white placeholder:text-white/70"
-                />
-                <Search className="absolute left-3 top-[1.15rem] h-4 w-4 text-white" />
               </div>
             </div>
           </div>
