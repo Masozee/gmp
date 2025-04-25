@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
 import Link from "next/link"
 import Image from "next/image"
+import { createBrowserSupabaseClient } from "@/lib/supabaseClient"
 
 import {
   Form,
