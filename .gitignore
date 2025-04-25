@@ -47,13 +47,6 @@ next-env.d.ts
 *.swp
 *.swo
 
-# database files
-*.sqlite
-*.db
-src/db.sqlite
-*.sqlite-journal
-*.sqlite-shm
-*.sqlite-wal
 
 # Large files
 *.dmg
@@ -65,3 +58,10 @@ src/db.sqlite
 .bun-cache/
 node_modules/.cache/
 .bun-cache
+
+# Database backup files
+/backup-db/
+
+# Don't ignore database files in src/db
+!/src/db/app.db
+!/src/db/app.db-*

@@ -3,7 +3,7 @@ import { randomUUID } from 'crypto';
 
 // Always use in-memory database on Vercel
 const isVercel = process.env.VERCEL === '1';
-const dbPath = isVercel ? ':memory:' : './db/app.db';
+const dbPath = isVercel ? ':memory:' : './src/db/app.db';
 
 // For singleton pattern
 let db: Database | null = null;
