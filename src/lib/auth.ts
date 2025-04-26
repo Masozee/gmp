@@ -60,7 +60,12 @@ export async function signIn(email: string, password: string) {
       throw new Error(errorData.error || 'Authentication failed');
     }
 
-    return await response.json();
+    const contentType = response.headers.get("content-type");
+if (contentType && contentType.includes("application/json")) {
+  return await response.json();
+} else {
+  throw new Error("Unexpected response from server");
+}
   } catch (error) {
     console.error("Login error:", error);
     throw error;

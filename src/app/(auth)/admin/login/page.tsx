@@ -33,7 +33,13 @@ function LoginForm() {
       })
 
       if (!response.ok) {
-        const data = await response.json()
+        let data = null;
+const contentType = response.headers.get("content-type");
+if (contentType && contentType.includes("application/json")) {
+  data = await response.json();
+} else {
+  throw new Error("Unexpected response from server");
+}
         throw new Error(data.error || "Login failed")
       }
 
