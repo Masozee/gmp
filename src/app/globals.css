@@ -2,11 +2,50 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  font-family: var(--font-inter), Arial, Helvetica, sans-serif;
+:root {
+  
+  /* Partisipasi Muda colors */
+  --primary: #ffcb57;     /* Amber/Yellow main color */
+  --primary-dark: #e6b74e; /* Darker version of main color */
+  --secondary: #59caf5;    /* Light blue secondary color */
+  --secondary-dark: #41b1e8; /* Darker version of secondary color */
+  --accent: #59caf5;      /* Using secondary as accent */
+  --accent-dark: #41b1e8; /* Darker version of accent */
+  --success: #22c55e;     /* Green-500 */
+  --success-dark: #16a34a; /* Green-600 */
+  
+  /* Font families - swapped */
+  --font-heading: 'Inter', sans-serif;
+  --font-body: 'Annapurna SIL', serif;
 }
 
 @layer base {
+  body {
+    @apply bg-white text-gray-900;
+    font-family: var(--font-body);
+    font-size: 1.05rem;
+    font-weight: 500;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-bold;
+    font-family: var(--font-heading);
+  }
+  
+  p, span, div, li, a {
+    font-family: var(--font-body);
+  }
+
+  /* Ensure navbar always uses Inter font */
+  nav, .font-heading, nav *, .font-heading * {
+    font-family: 'Inter', sans-serif !important;
+  }
+
+  /* Ensure all buttons use Inter font */
+  button, .button, a[href], [role="button"], 
+  [type="button"], [type="submit"], [type="reset"] {
+    font-family: 'Inter', sans-serif !important;
+  }
   :root {
     --background: 0 0% 100%;
     --foreground: 0 0% 3.9%;
@@ -33,22 +72,14 @@ body {
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
-    
-    /* Light sidebar colors for default theme */
-    --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 0 0% 3.9%;
-    --sidebar-primary: 0 0% 9%;
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
     --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 93 57% 38%;
-    --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 0 0% 89.8%;
-    --sidebar-ring: 93 57% 38%;
-
-    /* Company brand colors */
-    --brand-green: 93 57% 38%; /* #5d992a */
-    --brand-yellow: 43 74% 59%; /* #e5b546 */
-    --brand-blue: 198 68% 55%; /* #3cb1dc */
-    --brand-pink: 340 60% 58%; /* #d45484 */
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
   }
   .dark {
     --background: 0 0% 3.9%;
@@ -75,23 +106,61 @@ body {
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
-    
-    /* Dark sidebar colors for dark theme */
-    --sidebar-background: 0 0% 0%;
-    --sidebar-foreground: 0 0% 100%;
-    --sidebar-primary: 0 0% 100%;
-    --sidebar-primary-foreground: 0 0% 0%;
-    --sidebar-accent: 93 57% 38%;
-    --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 0 0% 15%;
-    --sidebar-ring: 93 57% 38%;
-
-    /* Company brand colors (same in dark mode) */
-    --brand-green: 93 57% 38%; /* #5d992a */
-    --brand-yellow: 43 74% 59%; /* #e5b546 */
-    --brand-blue: 198 68% 55%; /* #3cb1dc */
-    --brand-pink: 340 60% 58%; /* #d45484 */
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
   }
+}
+
+@layer components {
+  .btn {
+    @apply px-4 py-2 rounded-md font-medium transition-colors;
+    font-family: 'Inter', sans-serif !important;
+  }
+  
+  .btn-primary {
+    @apply bg-primary text-black hover:bg-primary-dark;
+  }
+  
+  .btn-secondary {
+    @apply bg-secondary text-white hover:bg-secondary-dark;
+  }
+  
+  .btn-outline {
+    @apply border-2 border-primary text-primary hover:bg-primary hover:text-black;
+  }
+}
+
+.font-heading {
+  font-family: var(--font-heading) !important;
+}
+
+.font-body {
+  font-family: var(--font-body) !important;
+}
+
+/* Custom color utility classes */
+.bg-primary {
+  background-color: var(--primary);
+  color: #000000; /* Black text on primary (amber) background */
+}
+
+.bg-secondary {
+  background-color: var(--secondary);
+  color: #ffffff; /* White text on secondary (blue) background */
+}
+
+.text-primary {
+  color: var(--primary);
+}
+
+.text-secondary {
+  color: var(--secondary);
 }
 
 @layer base {
@@ -103,21 +172,382 @@ body {
   }
 }
 
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
+/* Import dyslexia font */
+@font-face {
+  font-family: 'OpenDyslexic';
+  src: url('/fonts/OpenDyslexic-Regular.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
 }
 
-@layer utilities {
-  .font-heading {
-    font-family: var(--font-plus-jakarta-sans);
-  }
-  
-  .font-body {
-    font-family: var(--font-pt-serif);
-  }
+@font-face {
+  font-family: 'OpenDyslexic';
+  src: url('/fonts/OpenDyslexic-Bold.otf') format('opentype');
+  font-weight: bold;
+  font-style: normal;
+}
+
+/* Font size adjustments */
+:root[data-font-size="small"] {
+  font-size: 0.85rem;
+}
+
+:root[data-font-size="normal"] {
+  font-size: 1rem;
+}
+
+:root[data-font-size="large"] {
+  font-size: 1.2rem;
+}
+
+/* Cursor size adjustments */
+:root[data-cursor-size="large"] * {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m5 5 7 7-7 7'%3E%3C/path%3E%3C/svg%3E"), auto;
+}
+
+:root[data-cursor-size="small"] * {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m5 5 7 7-7 7'%3E%3C/path%3E%3C/svg%3E"), auto;
+}
+
+/* High contrast mode */
+.high-contrast {
+  filter: contrast(150%);
+}
+
+/* Dark mode high contrast - stronger implementation */
+.high-contrast.dark {
+  background-color: #121212 !important;
+}
+
+.high-contrast.dark body,
+.high-contrast.dark main,
+.high-contrast.dark header,
+.high-contrast.dark nav,
+.high-contrast.dark section,
+.high-contrast.dark footer,
+.high-contrast.dark aside,
+.high-contrast.dark article,
+.high-contrast.dark div {
+  background-color: #121212 !important;
+}
+
+.high-contrast.dark * {
+  color: white !important;
+  border-color: white !important;
+}
+
+.high-contrast.dark button,
+.high-contrast.dark [role="button"],
+.high-contrast.dark input,
+.high-contrast.dark select,
+.high-contrast.dark textarea {
+  background-color: #333 !important;
+  color: white !important;
+  border: 1px solid white !important;
+}
+
+.high-contrast.dark a {
+  color: #ffcc00 !important; /* Yellow for links in dark mode for high contrast */
+  font-weight: bold !important;
+  text-decoration: underline !important;
+}
+
+.high-contrast.dark button:not(.accessibility-button) {
+  background-color: #333 !important;
+  color: white !important;
+  border: 2px solid white !important;
+  font-weight: bold !important;
+}
+
+.high-contrast.dark .bg-white,
+.high-contrast.dark [class*="bg-slate"],
+.high-contrast.dark [class*="bg-gray"],
+.high-contrast.dark [class*="bg-neutral"] {
+  background-color: #121212 !important;
+}
+
+.high-contrast.dark .bg-black,
+.high-contrast.dark [class*="bg-zinc"] {
+  background-color: #333 !important;
+}
+
+.high-contrast.dark .card,
+.high-contrast.dark div[class*="card"],
+.high-contrast.dark div[class*="Card"] {
+  background-color: #333 !important;
+  border: 1px solid white !important;
+}
+
+.high-contrast.dark .p-5,
+.high-contrast.dark .p-4 {
+  background-color: #333 !important;
+}
+
+/* Make sure card content also has the right background */
+.high-contrast.dark .card > div,
+.high-contrast.dark [class*="card"] > div {
+  background-color: #333 !important;
+}
+
+/* Light mode high contrast styles - keeping these as fallback */
+.high-contrast:not(.dark) * {
+  background-color: white !important;
+  color: black !important;
+  border-color: black !important;
+}
+
+.high-contrast:not(.dark) a {
+  color: #0000EE !important;
+  font-weight: bold !important;
+}
+
+.high-contrast:not(.dark) button {
+  background-color: black !important;
+  color: white !important;
+  border: 2px solid black !important;
+}
+
+/* Grayscale mode */
+.grayscale {
+  filter: grayscale(100%);
+}
+
+/* Hide images */
+.hide-images img {
+  display: none !important;
+}
+
+.hide-images svg {
+  display: none !important;
+}
+
+.hide-images [role="img"] {
+  display: none !important;
+}
+
+.hide-images [aria-label*="image"] {
+  display: none !important;
+}
+
+.hide-images [aria-label*="photo"] {
+  display: none !important;
+}
+
+.hide-images [aria-label*="picture"] {
+  display: none !important;
+}
+
+/* Highlight links */
+.highlight-links a {
+  background-color: #ffffd8 !important;
+  color: #0000EE !important;
+  border-bottom: 2px solid currentColor !important;
+  font-weight: bold !important;
+  text-decoration: underline !important;
+}
+
+/* Bold text */
+.bold-text * {
+  font-weight: bold !important;
+}
+
+/* Dyslexia font */
+.dyslexia-font * {
+  font-family: 'OpenDyslexic', sans-serif !important;
+  letter-spacing: 0.05em !important;
+  word-spacing: 0.1em !important;
+  line-height: 1.5 !important;
+}
+
+/* Reduce motion */
+.reduce-motion * {
+  animation: none !important;
+  transition: none !important;
+  scroll-behavior: auto !important;
+}
+
+.reduce-motion *::after,
+.reduce-motion *::before {
+  animation: none !important;
+  transition: none !important;
+}
+
+/* Accessibility button specific styles when features are active */
+.high-contrast:not(.dark) .fixed[aria-label="Aksesibilitas"] {
+  background-color: black !important;
+  border: 3px solid white !important;
+}
+
+.high-contrast.dark .fixed[aria-label="Aksesibilitas"] {
+  background-color: white !important;
+  border: 3px solid #ffcc00 !important;
+}
+
+.high-contrast.dark .fixed[aria-label="Aksesibilitas"] img {
+  filter: brightness(0) !important; /* Make the icon black */
+}
+
+.grayscale .fixed[aria-label="Aksesibilitas"] {
+  filter: grayscale(100%) !important;
+}
+
+/* Keyboard navigation styles */
+.keyboard-navigation *:focus {
+  outline: 3px solid #4d90fe !important;
+  outline-offset: 2px !important;
+  box-shadow: 0 0 0 3px rgba(77, 144, 254, 0.4) !important;
+  border-radius: 2px !important;
+  transition: none !important;
+}
+
+/* Ensure accessibility button is always visible */
+.accessibility-button {
+  visibility: visible !important;
+  opacity: 1 !important;
+  transform: none !important;
+  position: fixed !important;
+  z-index: 9999 !important;
+  pointer-events: auto !important;
+  bottom: 5rem !important; /* 80px, matching bottom-20 in tailwind */
+  right: 1.5rem !important; /* 24px, matching right-6 in tailwind */
+}
+
+.keyboard-navigation .accessibility-button {
+  border: 3px solid #4d90fe !important;
+  left: auto !important; /* Ensure it doesn't move to the left */
+  right: 1.5rem !important; /* Keep it on the right */
+}
+
+.keyboard-navigation a:focus, 
+.keyboard-navigation button:focus,
+.keyboard-navigation input:focus,
+.keyboard-navigation select:focus,
+.keyboard-navigation textarea:focus,
+.keyboard-navigation [tabindex="0"]:focus {
+  outline: 3px solid #4d90fe !important;
+  outline-offset: 2px !important;
+  box-shadow: 0 0 0 3px rgba(77, 144, 254, 0.4) !important;
+  border-radius: 2px !important;
+  position: relative !important;
+  z-index: 10 !important;
+}
+
+/* Skip link navigation */
+.skip-to-content {
+  position: absolute;
+  top: -9999px;
+  left: -9999px;
+  z-index: 9999;
+  opacity: 0;
+  padding: 0.5rem 1rem;
+  background-color: #ffffff;
+  color: #000000;
+  font-weight: bold;
+  border: 2px solid #000000;
+  text-decoration: none;
+  transform: translateY(-100%);
+  transition: transform 0.2s;
+}
+
+.skip-to-content:focus {
+  position: fixed;
+  top: 0;
+  left: 0;
+  transform: translateY(0);
+  opacity: 1;
+  outline: 3px solid #4d90fe;
+}
+
+/* Interactive element hover state for keyboard navigation */
+.keyboard-navigation a:hover,
+.keyboard-navigation button:hover,
+.keyboard-navigation [role="button"]:hover {
+  cursor: pointer !important;
+  text-decoration: underline !important;
+}
+
+/* Enhanced tab indicators */
+.keyboard-navigation [data-focus-visible-added],
+.keyboard-navigation :focus-visible {
+  box-shadow: 0 0 0 3px rgba(77, 144, 254, 0.8) !important;
+  outline: 3px solid #4d90fe !important;
+  position: relative !important;
+  z-index: 10 !important;
+}
+
+/* Accessibility button and drawer styles for high contrast dark mode */
+.high-contrast.dark .fixed[aria-label="Aksesibilitas"] {
+  background-color: white !important;
+  border: 3px solid #ffcc00 !important;
+}
+
+.high-contrast.dark .fixed[aria-label="Aksesibilitas"] img {
+  filter: brightness(0) !important; /* Make the icon black */
+}
+
+.high-contrast.dark [data-radix-popper-content-wrapper] > div {
+  background-color: #222 !important;
+  border: 2px solid white !important;
+}
+
+.high-contrast.dark [role="dialog"] {
+  background-color: #222 !important;
+  border: 2px solid white !important;
+}
+
+.high-contrast.dark .p-6,
+.high-contrast.dark .px-6,
+.high-contrast.dark .py-8 {
+  background-color: #222 !important;
+}
+
+/* Dialog styling for high contrast dark mode */
+.high-contrast.dark [role="dialog"],
+.high-contrast.dark .popover,
+.high-contrast.dark .dropdown-menu,
+.high-contrast.dark .dialog {
+  background-color: #222 !important;
+  border: 2px solid white !important;
+}
+
+/* Fix drawer content specifically */
+.high-contrast.dark [data-state="open"].rounded-xl {
+  background-color: #222 !important;
+  border: 2px solid white !important;
+}
+
+/* Make sure headings and text have enough contrast */
+.high-contrast.dark h1,
+.high-contrast.dark h2, 
+.high-contrast.dark h3,
+.high-contrast.dark h4,
+.high-contrast.dark h5,
+.high-contrast.dark h6 {
+  color: white !important;
+  text-shadow: 0 0 2px rgba(255,255,255,0.3) !important;
+}
+
+.high-contrast.dark .text-muted-foreground {
+  color: #cccccc !important;
+}
+
+/* Add border lines for dark high contrast mode */
+.high-contrast.dark .card,
+.high-contrast.dark [class*="card"] {
+  border: 1px solid #ffffff !important;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.2) !important;
+}
+
+.high-contrast.dark .grid > div {
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+}
+
+.high-contrast.dark [data-state="open"].rounded-xl {
+  border: 2px solid #ffffff !important;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5) !important;
+}
+
+.high-contrast.dark .border-b,
+.high-contrast.dark hr {
+  border-color: rgba(255, 255, 255, 0.3) !important;
 }

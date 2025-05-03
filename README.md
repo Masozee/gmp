@@ -1,99 +1,36 @@
-# AI Agent Dashboard
-
-A modern dashboard application built with Next.js 15, TypeScript, and shadcn components, using Bun as the runtime and package manager.
-
-## Tech Stack
-
-- Next.js 15
-- TypeScript
-- SQLite
-- shadcn/ui components
-- Tailwind CSS
-- Bun runtime
-
-## Features
-
-- User Authentication
-- Profile Management
-- Error Logging System
-- Dark Mode Support
-- Responsive Design
-- Calendar Integration
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
 
-1. Clone the repository:
+First, run the development server:
+
 ```bash
-git clone [your-repo-url]
-cd [your-repo-name]
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
 ```
 
-2. Install dependencies with Bun:
-```bash
-bun install
-```
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-3. Set up environment variables:
-Create a `.env` file in the root directory and add the following:
-```env
-DATABASE_URL=file:./data.db
-JWT_SECRET=your_jwt_secret_key
-NEXT_RUNTIME_BUN=true
-```
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-4. Initialize the database:
-```bash
-bun run db:init
-```
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-5. Start the development server:
-```bash
-bun run dev
-```
+## Learn More
 
-## Project Structure
+To learn more about Next.js, take a look at the following resources:
 
-```
-src/
-├── app/              # Next.js app directory
-├── components/       # React components
-├── lib/             # Utility functions and shared logic
-├── styles/          # Global styles
-└── types/           # TypeScript type definitions
-```
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-## Using Bun
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-This project uses [Bun](https://bun.sh) for faster dependency installation, development, and production builds.
+## Deploy on Vercel
 
-### Key Benefits:
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-- Faster package installation
-- Improved development server performance
-- Native TypeScript support without transpilation
-- Built-in API for common tasks
-
-### Useful Bun Commands:
-
-- `bun install` - Install dependencies
-- `bun run dev` - Start development server
-- `bun run build` - Build for production
-- `bun run start` - Run production server
-
-## Development Guidelines
-
-- Follow TypeScript best practices
-- Use shadcn components for UI consistency
-- Implement proper error handling
-- Write comprehensive documentation
-- Maintain test coverage
-
-## Contributing
-
-1. Create a feature branch
-2. Make your changes
-3. Submit a pull request
-
-## License
-
-MIT
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.

@@ -1,227 +1,198 @@
 "use client"
 
 import * as React from "react"
-import {
-  ChartColumnStacked,
-  FolderKanban,
-  Newspaper,
-  Briefcase,
-  Home,
-  Mail,
-  Settings2,
-  Map,
-  Calendar,
-  LayoutGrid,
-  CircleUser,
-  Blocks,
-  Earth,
-  MonitorDown
-} from "lucide-react"
 import Image from "next/image"
-import { memo } from "react"
+import { supabase } from "@/app/lib/supabase"
+import {
+  BarChartIcon,
+  CameraIcon,
+  ClipboardListIcon,
+  DatabaseIcon,
+  FileCodeIcon,
+  FileIcon,
+  FileTextIcon,
+  FolderIcon,
+  HelpCircleIcon,
+  LayoutDashboardIcon,
+  ListIcon,
+  SearchIcon,
+  SettingsIcon,
+  UsersIcon,
+} from "lucide-react"
 
-import { cx } from "class-variance-authority"
+import { NavDocuments } from "@/components/nav-documents"
 import { NavMain } from "@/components/nav-main"
-import { NavProjects } from "@/components/nav-projects"
 import { NavSecondary } from "@/components/nav-secondary"
 import { NavUser } from "@/components/nav-user"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Separator } from "@/components/ui/separator"
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
-  SidebarHeader as SidebarHeaderComponent,
-
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
 } from "@/components/ui/sidebar"
 
-// Memoize the sidebar data to prevent unnecessary recalculations
-const sidebarData = {
+const data = {
+  user: {
+    name: "shadcn",
+    email: "m@example.com",
+    avatar: "/avatars/shadcn.jpg",
+  },
   navMain: [
     {
       title: "Dashboard",
-      url: "/dashboard",
-      icon: ChartColumnStacked,
-      isActive: false,
-    },
-    {
-      title: "Tasks",
-      url: "/dashboard/tasks",
-      icon: FolderKanban,
-      isActive: false,
-    },
-    {
-      title: "Publications",
       url: "#",
-      icon: Newspaper,
-      isActive: false,
-      items: [
-        {
-          title: "Browse Publications",
-          url: "/dashboard/publications",
-        },
-        {
-          title: "Create Publication",
-          url: "/dashboard/publications/create",
-        },
-        {
-          title: "Categories",
-          url: "/dashboard/publications/categories",
-        },
-        {
-          title: "Analytics",
-          url: "/dashboard/publications/analytics",
-        },
-      ],
+      icon: LayoutDashboardIcon,
+    },
+    {
+      title: "Publikasi",
+      url: "/admin/publikasi",
+      icon: ListIcon,
+    },
+    {
+      title: "Acara",
+      url: "#",
+      icon: BarChartIcon,
     },
     {
       title: "Projects",
       url: "#",
-      icon: Briefcase,
-      isActive: false,
-      items: [
-        {
-          title: "All Projects",
-          url: "/dashboard/projects",
-        },
-        {
-          title: "Create Project",
-          url: "/dashboard/projects/create",
-        },
-        {
-          title: "Milestones",
-          url: "/dashboard/projects/milestones",
-        },
-        {
-          title: "Reports",
-          url: "/dashboard/projects/reports",
-        },
-      ],
+      icon: FolderIcon,
     },
     {
-      title: "Calendar",
-      url: "/dashboard/calendar",
-      icon: Calendar,
-      isActive: false,
-    },
-    {
-      title: "People",
+      title: "Team",
       url: "#",
-      icon: CircleUser,
+      icon: UsersIcon,
+    },
+  ],
+  navClouds: [
+    {
+      title: "Capture",
+      icon: CameraIcon,
+      isActive: true,
+      url: "#",
       items: [
         {
-          title: "List",
-          url: "/dashboard/profiles",
+          title: "Active Proposals",
+          url: "#",
         },
         {
-          title: "User Profiles",
-          url: "/dashboard/users/profiles",
-        },
-        {
-          title: "Roles",
-          url: "/dashboard/users/roles",
-        },
-        {
-          title: "Permissions",
-          url: "/dashboard/users/permissions",
+          title: "Archived",
+          url: "#",
         },
       ],
     },
     {
-      title: "Events",
-      url: "/dashboard/events",
-      icon: Calendar,
+      title: "Proposal",
+      icon: FileTextIcon,
+      url: "#",
       items: [
         {
-          title: "All Events",
-          url: "/dashboard/events",
+          title: "Active Proposals",
+          url: "#",
         },
         {
-          title: "Create New",
-          url: "/dashboard/events/new",
+          title: "Archived",
+          url: "#",
+        },
+      ],
+    },
+    {
+      title: "Prompts",
+      icon: FileCodeIcon,
+      url: "#",
+      items: [
+        {
+          title: "Active Proposals",
+          url: "#",
         },
         {
-          title: "Calendar View",
-          url: "/dashboard/events?view=calendar",
-        },
-        {
-          title: "Upcoming",
-          url: "/dashboard/events?status=UPCOMING",
-        },
-        {
-          title: "Completed",
-          url: "/dashboard/events?status=COMPLETED",
+          title: "Archived",
+          url: "#",
         },
       ],
     },
   ],
   navSecondary: [
     {
-      title: "Support",
-      url: "/dashboard/support",
-      icon: Home,
-    },
-    {
-      title: "Feedback",
-      url: "/dashboard/feedback",
-      icon: Mail,
-    },
-    {
       title: "Settings",
-      url: "/dashboard/settings",
-      icon: Settings2 // Replace with a valid icon if imported, otherwise use 'Settings2' as a string or another imported icon.
-    },
-  ],
-  projects: [
-    {
-      name: "Project Management",
-      url: "/dashboard/projects",
-      icon: Blocks,
-    },
-    {
-      name: "Geo Tagging",
-      url: "/dashboard/projects/geo-tagging",
-      icon: Earth,
-    },
-    {
-      name: "Asset Management",
       url: "#",
-      icon: MonitorDown,
+      icon: SettingsIcon,
+    },
+    {
+      title: "Get Help",
+      url: "#",
+      icon: HelpCircleIcon,
+    },
+    {
+      title: "Search",
+      url: "#",
+      icon: SearchIcon,
     },
   ],
-};
+  documents: [
+    {
+      name: "Data Library",
+      url: "#",
+      icon: DatabaseIcon,
+    },
+    {
+      name: "Reports",
+      url: "#",
+      icon: ClipboardListIcon,
+    },
+    {
+      name: "Word Assistant",
+      url: "#",
+      icon: FileIcon,
+    },
+  ],
+}
 
-// Memoize individual sections
-const SidebarHeader = memo(function SidebarHeader() {
-  return (
-    <SidebarHeaderComponent className="border-b border-sidebar-border">
-  <div className="flex items-center justify-center py-2">
-  <Image
-    src="/logos/logo.png"
-    alt="Logo"
-    width={160}
-    height={180}
-    className="object-contain drop-shadow-lg"
-    priority
-    loading="eager"
-  />
-</div>
-</SidebarHeaderComponent>
-  );
-});
+export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const [user, setUser] = React.useState(data.user);
 
-export const AppSidebar = memo(function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  React.useEffect(() => {
+    async function fetchUserData() {
+      const { data: { user: authUser } } = await supabase.auth.getUser();
+      if (!authUser) return;
+      const { data: dbUser, error } = await supabase
+        .from("users")
+        .select("full_name, email, avatar_url")
+        .eq("id", authUser.id)
+        .single();
+      if (error) console.error("Error fetching user:", error);
+      else setUser({ name: dbUser.full_name, email: dbUser.email, avatar: dbUser.avatar_url });
+    }
+    fetchUserData();
+  }, []);
+
   return (
-    <Sidebar variant="inset" {...props}>
-      <SidebarHeader />
-      <SidebarContent>
-        <NavMain items={sidebarData.navMain} />
-        <NavProjects projects={sidebarData.projects} />
-        <NavSecondary items={sidebarData.navSecondary} className="mt-auto" />
-      </SidebarContent>
-      <SidebarFooter className="border-t border-sidebar-border">
-        <NavUser />
-      </SidebarFooter>
-    </Sidebar>
+    <div className="font-inter">
+      <Sidebar collapsible="offcanvas" {...props}>
+        <SidebarHeader>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild className="data-[slot=sidebar-menu-button]:!p-1.5">
+                <a href="#" className="flex items-center">
+                  <Image src="/images/logo/logo.png" alt="Logo" width={28} height={28} />
+                  <span className="text-base font-semibold ml-2">Partisipasi Muda</span>
+                </a>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarHeader>
+        <SidebarContent>
+          <NavMain items={data.navMain} />
+          <NavDocuments items={data.documents} />
+          <NavSecondary items={data.navSecondary} className="mt-auto" />
+        </SidebarContent>
+        <SidebarFooter>
+          <NavUser user={user} />
+        </SidebarFooter>
+      </Sidebar>
+    </div>
   );
-});
+}

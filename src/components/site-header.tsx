@@ -1,53 +1,17 @@
-"use client"
-
-import Link from "next/link"
-import Image from "next/image"
-import { usePathname } from "next/navigation"
-import { Moon, Sun, Search } from "lucide-react"
-
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { SidebarTrigger } from "@/components/ui/sidebar"
-import { ModeToggle } from "@/components/mode-toggle"
-import { WeatherDisplay } from "@/components/weather-display"
-import { DateDisplay } from "@/components/date-display"
 import { Separator } from "@/components/ui/separator"
+import { SidebarTrigger } from "@/components/ui/sidebar"
 
 export function SiteHeader() {
-  const pathname = usePathname()
-  const paths = pathname.split("/").filter(Boolean)
-
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background">
-      <div className="flex h-14 items-center gap-4 px-6">
-        <SidebarTrigger className="-ml-2 h-9 w-9" />
-        <div className="flex items-center gap-2">
-  {/* Logo removed as per user request */}
-  {paths.length > 0 && (
-    <>
-      <span className="text-muted-foreground">/</span>
-      <span className="text-muted-foreground capitalize">
-        {paths[paths.length - 1].replace(/-/g, " ")}
-      </span>
-    </>
-  )}
-        </div>
-        <div className="ml-auto flex items-center gap-4">
-          <div className="relative w-full lg:w-[240px]">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input
-              type="search"
-              placeholder="Search..."
-              className="h-9 pl-8 lg:w-[240px]"
-            />
-          </div>
-          <DateDisplay />
-          <Separator orientation="vertical" className="h-6" />
-          <WeatherDisplay />
-          <Separator orientation="vertical" className="h-6" />
-          <ModeToggle />
-        </div>
+    <header className="group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 flex h-12 shrink-0 items-center gap-2 border-b transition-[width,height] ease-linear">
+      <div className="flex w-full items-center gap-1 px-4 lg:gap-2 lg:px-6">
+        <SidebarTrigger className="-ml-1" />
+        <Separator
+          orientation="vertical"
+          className="mx-2 data-[orientation=vertical]:h-4"
+        />
+        <h1 className="text-base font-medium">Documents</h1>
       </div>
     </header>
   )
-}
+} 

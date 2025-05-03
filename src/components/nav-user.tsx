@@ -1,15 +1,14 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import { useRouter } from "next/navigation"
 import {
-  BadgeCheck,
-  Bell,
-  ChevronsUpDown,
-  CreditCard,
-  LogOut,
-  Sparkles,
+  BellIcon,
+  CreditCardIcon,
+  LogOutIcon,
+  MoreVerticalIcon,
+  UserCircleIcon,
 } from "lucide-react"
+import { createBrowserClient } from '@supabase/ssr'
+import { useRouter } from "next/navigation"
 
 import {
   Avatar,
@@ -27,70 +26,32 @@ import {
 } from "@/components/ui/dropdown-menu"
 import {
   SidebarMenu,
-  SidebarMenuItem,
   SidebarMenuButton,
+  SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
 
-interface UserProfile {
-  id: string
-  email: string
-  role: string
-  firstName: string | null
-  lastName: string | null
-  phoneNumber?: string
-  organization?: string
-  bio?: string
-  category?: string
-  photoUrl?: string
-}
-
-export function NavUser() {
-  const router = useRouter()
-  const { isMobile } = useSidebar()
-  const [user, setUser] = useState<UserProfile | null>(null)
-
-  useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const response = await fetch("/api/profile", { credentials: "include" })
-        if (response.status === 401) {
-          // Not authenticated, show guest/anonymous UI
-          setUser(null)
-          console.warn("[NavUser] Not authenticated, profile fetch returned 401")
-          return
-        }
-        if (!response.ok) throw new Error("Failed to fetch profile")
-        const data = await response.json()
-        setUser(data)
-      } catch (error) {
-        console.error("Error fetching profile:", error)
-      }
-    }
-
-    fetchProfile()
-  }, [])
-
-  const handleLogout = async () => {
-    try {
-      const response = await fetch("/api/auth/logout", {
-        method: "POST",
-      })
-
-      if (response.ok) {
-        window.location.href = "/login";
-      }
-    } catch (error) {
-      console.error("Error logging out:", error)
-    }
+export function NavUser({
+  user,
+}: {
+  user: {
+    name: string
+    email: string
+    avatar: string
   }
-
-  const fullName = user ? `${user.firstName || ''} ${user.lastName || ''}`.trim() || 'User' : 'User'
-  const initials = fullName
-    .split(" ")
-    .map(n => n[0])
-    .join("")
-    .toUpperCase()
+}) {
+  const { isMobile } = useSidebar()
+  const router = useRouter()
+  
+  const handleSignOut = async () => {
+    const supabase = createBrowserClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    )
+    
+    await supabase.auth.signOut()
+    router.push('/login')
+  }
 
   return (
     <SidebarMenu>
@@ -101,53 +62,58 @@ export function NavUser() {
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
-              <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarImage src={user?.photoUrl || ""} alt={fullName} />
-                <AvatarFallback className="rounded-lg">{initials}</AvatarFallback>
+              <Avatar className="h-8 w-8 rounded-lg grayscale">
+                <AvatarImage src={user.avatar} alt={user.name} />
+                <AvatarFallback className="rounded-lg">CN</AvatarFallback>
               </Avatar>
-              {!isMobile && (
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">{fullName}</span>
-                  <span className="truncate text-xs text-muted-foreground">
-                    {user?.email || ""}
-                  </span>
-                </div>
-              )}
-              {!isMobile && <ChevronsUpDown className="h-4 w-4 shrink-0 opacity-50" />}
+              <div className="grid flex-1 text-left text-sm leading-tight">
+                <span className="truncate font-medium">{user.name}</span>
+                <span className="truncate text-xs text-muted-foreground">
+                  {user.email}
+                </span>
+              </div>
+              <MoreVerticalIcon className="ml-auto size-4" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-56" align="start" side="right">
-            <DropdownMenuLabel className="font-normal">
-              <div className="flex flex-col space-y-1">
-                <p className="text-sm font-medium leading-none">{fullName}</p>
-                <p className="text-xs leading-none text-muted-foreground">
-                  {user?.email || ""}
-                </p>
+          <DropdownMenuContent
+            className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
+            side={isMobile ? "bottom" : "right"}
+            align="end"
+            sideOffset={4}
+          >
+            <DropdownMenuLabel className="p-0 font-normal">
+              <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+                <Avatar className="h-8 w-8 rounded-lg">
+                  <AvatarImage src={user.avatar} alt={user.name} />
+                  <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                </Avatar>
+                <div className="grid flex-1 text-left text-sm leading-tight">
+                  <span className="truncate font-medium">{user.name}</span>
+                  <span className="truncate text-xs text-muted-foreground">
+                    {user.email}
+                  </span>
+                </div>
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem>
-                <BadgeCheck className="mr-2 h-4 w-4" />
-                <span>Status</span>
+                <UserCircleIcon />
+                Account
               </DropdownMenuItem>
               <DropdownMenuItem>
-                <CreditCard className="mr-2 h-4 w-4" />
-                <span>Billing</span>
+                <CreditCardIcon />
+                Billing
               </DropdownMenuItem>
               <DropdownMenuItem>
-                <Bell className="mr-2 h-4 w-4" />
-                <span>Notifications</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Sparkles className="mr-2 h-4 w-4" />
-                <span>What's New</span>
+                <BellIcon />
+                Notifications
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={handleLogout}>
-              <LogOut className="mr-2 h-4 w-4" />
-              <span>Log out</span>
+            <DropdownMenuItem onClick={handleSignOut}>
+              <LogOutIcon />
+              Log out
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
