@@ -52,7 +52,7 @@ const Navbar = () => {
           <div className="flex items-center">
             <Link href="/" className="flex items-center">
               <Image 
-                src={hasScrolled ? '/images/logo/Logo-name-stack.png' : '/images/logo/logo-white.png'} 
+                src={hasScrolled ? '/images/logo/logo.png' : '/images/logo/logo-white.png'} 
                 alt="Partisipasi Muda Logo" 
                 width={hasScrolled ? 160 : 180} 
                 height={40} 
@@ -117,10 +117,10 @@ const Navbar = () => {
             }`}>
               Donasi dan Kolaborasi
             </Link>
-            <Link href="/mitra-strategis" className={`font-medium transition-colors ${
+            <Link href="/acara" className={`font-medium transition-colors ${
               hasScrolled ? 'hover:text-secondary text-gray-800' : 'hover:text-primary text-white'
             }`}>
-              Mitra Strategis
+              Acara
             </Link>
           </div>
           

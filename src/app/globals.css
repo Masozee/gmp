@@ -7,16 +7,16 @@
   /* Partisipasi Muda colors */
   --primary: #ffcb57;     /* Amber/Yellow main color */
   --primary-dark: #e6b74e; /* Darker version of main color */
-  --secondary: #59caf5;    /* Light blue secondary color */
-  --secondary-dark: #41b1e8; /* Darker version of secondary color */
-  --accent: #59caf5;      /* Using secondary as accent */
-  --accent-dark: #41b1e8; /* Darker version of accent */
+  --secondary: #F06292;    /* Pink secondary color */
+  --secondary-dark: #EC407A; /* Darker version of secondary color */
+  --accent: #F06292;      /* Using secondary as accent */
+  --accent-dark: #EC407A; /* Darker version of accent */
   --success: #22c55e;     /* Green-500 */
   --success-dark: #16a34a; /* Green-600 */
   
-  /* Font families - swapped */
+  /* Font family - Inter only */
   --font-heading: 'Inter', sans-serif;
-  --font-body: 'Annapurna SIL', serif;
+  --font-body: 'Inter', sans-serif;
 }
 
 @layer base {
@@ -392,13 +392,46 @@
 }
 
 /* Keyboard navigation styles */
+/*
 .keyboard-navigation *:focus {
-  outline: 3px solid #4d90fe !important;
-  outline-offset: 2px !important;
-  box-shadow: 0 0 0 3px rgba(77, 144, 254, 0.4) !important;
+  outline: 3px solid var(--secondary) !important;
+  outline-offset: 3px !important;
   border-radius: 2px !important;
-  transition: none !important;
+  box-shadow: 0 0 0 3px rgba(89, 202, 245, 0.3) !important;
+  position: relative;
+  z-index: 1;
 }
+
+.keyboard-navigation .accessibility-button {
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3) !important;
+  outline: none !important;
+}
+
+.keyboard-navigation a:focus,
+.keyboard-navigation button:focus,
+.keyboard-navigation [tabindex="0"]:focus,
+.keyboard-navigation input:focus,
+.keyboard-navigation select:focus,
+.keyboard-navigation textarea:focus {
+  outline: 3px solid var(--secondary) !important;
+  outline-offset: 3px !important;
+  border-radius: 2px !important;
+  box-shadow: 0 0 0 3px rgba(89, 202, 245, 0.3) !important;
+}
+
+.keyboard-navigation a:hover,
+.keyboard-navigation button:hover {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.keyboard-navigation [data-focus-visible-added],
+.keyboard-navigation [data-focus-visible-added] * {
+  outline: 3px solid var(--secondary) !important;
+  outline-offset: 3px !important;
+  box-shadow: 0 0 0 3px rgba(89, 202, 245, 0.3) !important;
+}
+*/
 
 /* Ensure accessibility button is always visible */
 .accessibility-button {

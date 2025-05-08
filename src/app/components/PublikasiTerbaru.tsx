@@ -6,7 +6,8 @@ interface Publikasi {
   title: string;
   url: string;
   date: string; 
-  image: string | null; // Assuming image can sometimes be null
+  category?: string; // Added category field
+  image: string | null;
   content: string;
   // Add other relevant fields if needed, e.g., pdf_url, type
 }
@@ -27,6 +28,16 @@ const PublikasiTerbaru = ({ publikasi }: PublikasiTerbaruProps) => {
     return null; 
   }
 
+  // Function to format date
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('id-ID', { 
+      day: 'numeric', 
+      month: 'long', 
+      year: 'numeric' 
+    });
+  };
+
   return (
     <section className="py-16 bg-gray-50">
       <div className="container mx-auto px-4 max-w-7xl">
@@ -37,7 +48,11 @@ const PublikasiTerbaru = ({ publikasi }: PublikasiTerbaruProps) => {
         
         <div className="grid md:grid-cols-3 gap-8">
           {displayPublikasi.map((item) => (
-            <div key={item.url} className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition">
+            <Link 
+              key={item.url} 
+              href={`/publikasi/${item.url}`} 
+              className="bg-white overflow-hidden shadow-sm border border-secondary group hover:bg-[#F06292] transition-all duration-300"
+            >
               <div className="relative h-56">
                 <PlaceholderImage 
                   alt={item.title} 
@@ -46,15 +61,22 @@ const PublikasiTerbaru = ({ publikasi }: PublikasiTerbaruProps) => {
                 />
               </div>
               <div className="p-6">
-                <h3 className="text-xl font-bold mb-2 text-gray-900">{item.title}</h3>
-                <p className="text-gray-600 mb-4 line-clamp-3">
-                  {item.content ? item.content.substring(0, 150) + (item.content.length > 150 ? '...' : '') : 'Deskripsi tidak tersedia.'}
-                </p>
-                <Link href={`/publikasi/${item.url}`} className="text-blue-600 font-medium hover:underline">
-                  Baca Selengkapnya →
-                </Link>
+                <div className="flex justify-between items-center mb-2">
+                  {item.category && (
+                    <span className="text-sm text-gray-600 font-medium group-hover:text-white">
+                      {item.category}
+                    </span>
+                  )}
+                  <span className="text-sm text-gray-500 group-hover:text-white">
+                    {formatDate(item.date)}
+                  </span>
+                </div>
+                <h3 className="text-xl font-bold mb-2 text-gray-900 group-hover:text-white">{item.title}</h3>
+                <span className="text-blue-600 font-medium group-hover:text-white">
+                  Baca Selengkapnya
+                </span>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </div>

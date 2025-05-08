@@ -34,38 +34,35 @@ const Partners = () => {
   ];
 
   return (
-    <section className="py-16 bg-white">
-      <div className="container mx-auto px-4 max-w-7xl">
-        <h2 className="text-3xl font-bold text-center mb-4 text-gray-900">Mitra Kami</h2>
-        <p className="text-lg text-center mb-12 text-gray-600 max-w-3xl mx-auto">
-          Kami berkolaborasi dengan organisasi terkemuka untuk memperluas dampak dan jangkauan kami dalam pendidikan politik.
-        </p>
-        
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 items-center">
+    <section className="py-12 bg-black text-white rounded-b-[40px]">
+      <div className="container mx-auto px-4 max-w-5xl">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 items-stretch">
           {partners.map((partner) => (
             <Link 
               href={partner.url} 
               key={partner.name}
               target="_blank" 
               rel="noopener noreferrer" 
-              className="flex flex-col items-center group transition"
+              className="group h-full"
             >
-              <div className="h-24 flex items-center justify-center mb-4 relative">
-                <Image 
-                  src={partner.logo} 
-                  alt={`${partner.name} logo`} 
-                  width={180} 
-                  height={90} 
-                  className="object-contain transition-opacity group-hover:opacity-80"
-                  style={{
-                    maxHeight: '100%',
-                    width: 'auto'
-                  }}
-                />
+              <div className="bg-white/10 backdrop-blur-sm p-5 rounded-lg shadow-lg hover:bg-white/20 transition-all duration-300 flex flex-col items-center justify-between h-full">
+                <div className="flex-1 flex items-center justify-center w-full py-4">
+                  <Image 
+                    src={partner.logo} 
+                    alt={`${partner.name} logo`} 
+                    width={160} 
+                    height={80} 
+                    className="object-contain transition-all group-hover:scale-105"
+                    style={{
+                      maxHeight: '80px',
+                      width: 'auto'
+                    }}
+                  />
+                </div>
+                <span className="text-center font-medium text-white group-hover:text-primary transition text-sm mt-4">
+                  {partner.name}
+                </span>
               </div>
-              <span className="text-center font-medium text-gray-700 group-hover:text-secondary transition">
-                {partner.name}
-              </span>
             </Link>
           ))}
         </div>

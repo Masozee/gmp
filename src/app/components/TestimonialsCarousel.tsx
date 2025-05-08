@@ -2,132 +2,128 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import Image from 'next/image';
+import testimonialsData from '@/data/testimoni.json';
 
 interface Testimonial {
   id: number;
   quote: string;
   name: string;
-  role: string;
+  age: number;
+  school: string;
   image: string;
 }
 
-const testimonials: Testimonial[] = [
-  {
-    id: 1,
-    quote: "Through Partisipasi Muda's workshops, I finally understood how policies directly affect my daily life. Now I actively participate in local community discussions.",
-    name: "Indira Putri",
-    role: "Mahasiswa, Universitas Indonesia",
-    image: "/images/testimonials/adriansyah.png"
-  },
-  {
-    id: 2,
-    quote: "The political literacy materials provided by Yayasan Partisipasi Muda are engaging and easy to understand. I've shared them with my entire campus community.",
-    name: "Ahmad Rizal",
-    role: "Aktivis Muda, Bandung",
-    image: "/images/testimonials/alya.png"
-  },
-  {
-    id: 3,
-    quote: "Before attending these programs, I felt disconnected from politics. Now I see how every decision affects our future, and I'm motivated to make my voice heard.",
-    name: "Siti Rahma",
-    role: "Guru SMA, Surabaya",
-    image: "/images/testimonials/jumpa.png"
-  },
-  {
-    id: 4,
-    quote: "The interactive approach to political education makes complex concepts accessible. I've gained confidence to engage in meaningful political discussions.",
-    name: "Budi Santoso",
-    role: "Pemilih Pemula, Jakarta",
-    image: "/images/testimonials/kristina.png"
-  },
-  {
-    id: 5,
-    quote: "Participating in Partisipasi Muda's workshops changed my perspective on civic engagement. I now understand that my participation matters in shaping Indonesia's future.",
-    name: "Maya Anggraini",
-    role: "Penggerak Komunitas, Yogyakarta",
-    image: "/images/testimonials/ridho.png"
-  }
-];
-
 const TestimonialsCarousel = () => {
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const slideInterval = useRef<NodeJS.Timeout | null>(null);
+  const [testimonials] = useState<Testimonial[]>(testimonialsData);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const carouselRef = useRef<HTMLDivElement>(null);
+  const autoScrollRef = useRef<NodeJS.Timeout | null>(null);
   
-  const stopSlideTimer = useCallback(() => {
-    if (slideInterval.current) {
-      clearInterval(slideInterval.current);
-      slideInterval.current = null;
-    }
-  }, []);
-
-  const startSlideTimer = useCallback(() => {
-    stopSlideTimer();
-    slideInterval.current = setInterval(() => {
-      setCurrentSlide(prev => (prev + 1) % testimonials.length);
-    }, 5000);
-  }, [stopSlideTimer]);
-
+  // Auto-scroll functionality wrapped in useCallback
+  const startAutoScroll = useCallback(() => {
+    autoScrollRef.current = setInterval(() => {
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % testimonials.length);
+    }, 5000); // Change slides every 5 seconds
+  }, [testimonials.length]);
+  
   useEffect(() => {
-    startSlideTimer();
-    return () => stopSlideTimer();
-  }, [startSlideTimer, stopSlideTimer]);
-
-  const goToSlide = (index: number) => {
-    setCurrentSlide(index);
-    startSlideTimer();
+    startAutoScroll();
+    
+    return () => {
+      if (autoScrollRef.current) {
+        clearInterval(autoScrollRef.current);
+      }
+    };
+  }, [startAutoScroll]);
+  
+  // Pause auto-scroll on hover
+  const handleMouseEnter = () => {
+    if (autoScrollRef.current) {
+      clearInterval(autoScrollRef.current);
+    }
   };
-
+  
+  const handleMouseLeave = () => {
+    startAutoScroll();
+  };
+  
+  // Get testimonials for current view (4 at a time, looping through all)
+  const getVisibleTestimonials = () => {
+    const visibleItems = [];
+    for (let i = 0; i < 4; i++) {
+      const index = (currentIndex + i) % testimonials.length;
+      visibleItems.push(testimonials[index]);
+    }
+    return visibleItems;
+  };
+  
   return (
-    <section className="py-16 md:py-24 bg-[#59caf5] text-white">
-      <div className="container mx-auto px-4 max-w-7xl">
-        <h2 className="text-3xl md:text-4xl font-heading font-bold mb-12 text-center">Suara dari Peserta Kami</h2>
-        
-        <div className="relative">
-          {/* Testimonials Carousel */}
-          <div className="overflow-hidden">
-            <div 
-              className="flex transition-transform duration-700 ease-in-out" 
-              style={{ transform: `translateX(-${currentSlide * 100}%)` }}
-            >
-              {testimonials.map((testimonial) => (
-                <div key={testimonial.id} className="w-full flex-shrink-0 px-4">
-                  <div className="bg-blue-700/50 rounded-lg p-8 md:p-10 text-center">
-                    <div className="mb-6 mx-auto w-20 h-20 relative rounded-full overflow-hidden border-4 border-white">
+    <section className="py-16 bg-gray-50">
+      <div className="container mx-auto px-4">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-3xl md:text-4xl font-bold mb-10 text-gray-900 text-center">Suara dari Peserta Kami</h2>
+          
+          <div 
+            className="relative"
+            ref={carouselRef}
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+          >
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+              {getVisibleTestimonials().map((testimonial) => (
+                <div 
+                  key={testimonial.id} 
+                  className="bg-white p-6 rounded-lg shadow-md h-full hover:shadow-lg transition-all duration-300 flex flex-col"
+                >
+                  <div className="flex items-center mb-4">
+                    <div className="relative w-12 h-12 mr-3 flex-shrink-0">
                       <Image 
-                        src={testimonial.image} 
+                        src={testimonial.image}
                         alt={testimonial.name}
-                        width={80}
-                        height={80}
-                        className="object-cover w-full h-full"
+                        fill
+                        className="rounded-full object-cover border-2 border-primary"
                         onError={(e) => {
                           const target = e.target as HTMLImageElement;
                           target.src = '/images/testimonials/default-avatar.jpg';
                         }}
                       />
                     </div>
-                    <blockquote className="text-xl md:text-2xl italic mb-6 font-light">
-                      &quot;{testimonial.quote}&quot;
-                    </blockquote>
-                    <p className="font-heading font-bold text-lg">{testimonial.name}</p>
-                    <p className="text-blue-100">{testimonial.role}</p>
+                    <div>
+                      <h3 className="font-bold text-base">{testimonial.name}</h3>
+                      <p className="text-sm text-gray-600">{testimonial.age} tahun, {testimonial.school}</p>
+                    </div>
+                  </div>
+                  
+                  <div className="text-gray-700 text-sm flex-grow">
+                    <svg className="w-5 h-5 text-primary mb-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 14">
+                      <path d="M6 0H2a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h4v1a3 3 0 0 1-3 3H2a1 1 0 0 0 0 2h1a5.006 5.006 0 0 0 5-5V2a2 2 0 0 0-2-2Zm10 0h-4a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h4v1a3 3 0 0 1-3 3h-1a1 1 0 0 0 0 2h1a5.006 5.006 0 0 0 5-5V2a2 2 0 0 0-2-2Z"/>
+                    </svg>
+                    <p className="italic">{testimonial.quote}</p>
                   </div>
                 </div>
               ))}
             </div>
-          </div>
-
-          {/* Pagination Dots */}
-          <div className="flex justify-center mt-8">
-            {testimonials.map((_, index) => (
-              <button 
-                key={index} 
-                onClick={() => goToSlide(index)}
-                className={`w-3 h-3 mx-1 rounded-full focus:outline-none ${
-                  index === currentSlide ? 'bg-white' : 'bg-white/40'
-                }`}
-                aria-label={`Go to slide ${index + 1}`}
-              />
-            ))}
+            
+            {/* Navigation dots */}
+            <div className="flex justify-center mt-8 gap-2">
+              {testimonials.map((_, index) => {
+                // Group indicators by 4
+                if (index % 4 === 0) {
+                  const isActive = currentIndex >= index && currentIndex < index + 4;
+                  return (
+                    <button
+                      key={index}
+                      onClick={() => setCurrentIndex(index)}
+                      className={`w-2.5 h-2.5 rounded-full transition-all ${
+                        isActive ? 'bg-primary w-5' : 'bg-gray-300'
+                      }`}
+                      aria-label={`Go to testimonials ${index + 1}-${Math.min(index + 4, testimonials.length)}`}
+                    />
+                  );
+                }
+                return null;
+              }).filter(Boolean)}
+            </div>
           </div>
         </div>
       </div>

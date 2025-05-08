@@ -57,12 +57,12 @@ export default function RootLayout({
           <a href="#main-content" className="skip-to-content">
             Loncat ke konten utama
           </a>
-          <Navbar />
+        <Navbar />
           <main id="main-content" tabIndex={-1}>
             {children}
           </main>
           <AccessibilityButton />
-          <Footer />
+        <Footer />
         </AccessibilityProvider>
       </body>
     </html>

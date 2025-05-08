@@ -12,8 +12,7 @@ import {
   Image as ImageIcon,
   BoldIcon,
   FileText,
-  ActivitySquare,
-  Keyboard
+  ActivitySquare
 } from "lucide-react";
 import { CustomSheet, CustomSheetContent, CustomSheetTitle } from "@/components/ui/custom-sheet";
 import { Card, CardContent } from "@/components/ui/card";
@@ -31,23 +30,8 @@ const AccessibilityButton = () => {
     highlightLinks, setHighlightLinks,
     boldText, setBoldText,
     dyslexiaFont, setDyslexiaFont,
-    reduceMotion, setReduceMotion,
-    keyboardNavigation, setKeyboardNavigation
+    reduceMotion, setReduceMotion
   } = useAccessibility();
-
-  const showKeyboardShortcuts = () => {
-    alert(
-      "Keyboard Shortcuts:\n" +
-      "Tab: Navigate through interactive elements\n" +
-      "Shift+Tab: Navigate backwards\n" +
-      "Enter/Space: Activate buttons and links\n" +
-      "Alt+H: Go to home page\n" +
-      "Alt+M: Skip to main content\n" +
-      "Alt+N: Go to navigation\n" +
-      "Alt+F: Go to footer\n" +
-      "Shift+?: Show this help dialog"
-    );
-  };
 
   return (
     <>
@@ -55,7 +39,7 @@ const AccessibilityButton = () => {
         <Button
           variant="default"
           size="icon"
-          className="fixed bottom-20 right-6 z-[9999] h-14 w-14 rounded-full shadow-lg bg-primary hover:bg-primary/90 transition-all p-0 overflow-hidden accessibility-button"
+          className="fixed bottom-20 right-6 z-[9999] h-14 w-14 rounded-full shadow-lg bg-[#F06292] hover:bg-[#EC407A] transition-all p-0 overflow-hidden accessibility-button"
           onClick={() => setIsOpen(true)}
           aria-label="Aksesibilitas"
         >
@@ -97,7 +81,7 @@ const AccessibilityButton = () => {
                   <CardContent className="p-5">
                     <div className="flex justify-between items-center">
                       <div className="flex items-center gap-3">
-                        <Type className="h-5 w-5 text-primary" />
+                        <Type className="h-5 w-5 text-[#FFCB57]" />
                         <span className="text-lg font-medium">Ukuran Teks</span>
                       </div>
                     </div>
@@ -137,7 +121,7 @@ const AccessibilityButton = () => {
                   <CardContent className="p-5">
                     <div className="flex justify-between items-center">
                       <div className="flex items-center gap-3">
-                        <MousePointer className="h-5 w-5 text-primary" />
+                        <MousePointer className="h-5 w-5 text-[#FFCB57]" />
                         <span className="text-lg font-medium">Ukuran Kursor</span>
                       </div>
                     </div>
@@ -177,56 +161,7 @@ const AccessibilityButton = () => {
                   <CardContent className="p-5">
                     <div className="flex justify-between items-center">
                       <div className="flex items-center gap-3">
-                        <Keyboard className="h-5 w-5 text-primary" />
-                        <span className="text-lg font-medium">Navigasi Keyboard</span>
-                      </div>
-                      <SwitchToggle 
-                        checked={keyboardNavigation} 
-                        onCheckedChange={setKeyboardNavigation} 
-                      />
-                    </div>
-                    <p className="text-sm text-muted-foreground mt-2">
-                      Aktifkan bantuan navigasi keyboard dan pintasan untuk aksesibilitas.
-                    </p>
-                    <div className="flex gap-2 mt-3">
-                      {keyboardNavigation ? (
-                        <>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={showKeyboardShortcuts}
-                            className="flex-1"
-                          >
-                            Lihat Pintasan
-                          </Button>
-                          <Button 
-                            variant="destructive" 
-                            size="sm"
-                            onClick={() => setKeyboardNavigation(false)}
-                            className="flex-1"
-                          >
-                            Nonaktifkan
-                          </Button>
-                        </>
-                      ) : (
-                        <Button 
-                          variant="default" 
-                          size="sm"
-                          onClick={() => setKeyboardNavigation(true)}
-                          className="w-full"
-                        >
-                          Aktifkan Navigasi Keyboard
-                        </Button>
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card className="shadow-sm border-0 bg-transparent">
-                  <CardContent className="p-5">
-                    <div className="flex justify-between items-center">
-                      <div className="flex items-center gap-3">
-                        <Contrast className="h-5 w-5 text-primary" />
+                        <Contrast className="h-5 w-5 text-[#FFCB57]" />
                         <span className="text-lg font-medium">Kontras Tinggi</span>
                       </div>
                       <SwitchToggle 
@@ -244,7 +179,7 @@ const AccessibilityButton = () => {
                   <CardContent className="p-5">
                     <div className="flex justify-between items-center">
                       <div className="flex items-center gap-3">
-                        <Eye className="h-5 w-5 text-primary" />
+                        <Eye className="h-5 w-5 text-[#FFCB57]" />
                         <span className="text-lg font-medium">Skala Abu-abu</span>
                       </div>
                       <SwitchToggle 
@@ -262,7 +197,7 @@ const AccessibilityButton = () => {
                   <CardContent className="p-5">
                     <div className="flex justify-between items-center">
                       <div className="flex items-center gap-3">
-                        <ImageIcon className="h-5 w-5 text-primary" />
+                        <ImageIcon className="h-5 w-5 text-[#FFCB57]" />
                         <span className="text-lg font-medium">Sembunyikan Gambar</span>
                       </div>
                       <SwitchToggle 
@@ -280,7 +215,7 @@ const AccessibilityButton = () => {
                   <CardContent className="p-5">
                     <div className="flex justify-between items-center">
                       <div className="flex items-center gap-3">
-                        <Link className="h-5 w-5 text-primary" />
+                        <Link className="h-5 w-5 text-[#FFCB57]" />
                         <span className="text-lg font-medium">Sorot Tautan</span>
                       </div>
                       <SwitchToggle 
@@ -298,7 +233,7 @@ const AccessibilityButton = () => {
                   <CardContent className="p-5">
                     <div className="flex justify-between items-center">
                       <div className="flex items-center gap-3">
-                        <BoldIcon className="h-5 w-5 text-primary" />
+                        <BoldIcon className="h-5 w-5 text-[#FFCB57]" />
                         <span className="text-lg font-medium">Teks Tebal</span>
                       </div>
                       <SwitchToggle 
@@ -316,7 +251,7 @@ const AccessibilityButton = () => {
                   <CardContent className="p-5">
                     <div className="flex justify-between items-center">
                       <div className="flex items-center gap-3">
-                        <FileText className="h-5 w-5 text-primary" />
+                        <FileText className="h-5 w-5 text-[#FFCB57]" />
                         <span className="text-lg font-medium">Font Dyslexia</span>
                       </div>
                       <SwitchToggle 
@@ -334,7 +269,7 @@ const AccessibilityButton = () => {
                   <CardContent className="p-5">
                     <div className="flex justify-between items-center">
                       <div className="flex items-center gap-3">
-                        <ActivitySquare className="h-5 w-5 text-primary" />
+                        <ActivitySquare className="h-5 w-5 text-[#FFCB57]" />
                         <span className="text-lg font-medium">Kurangi Gerakan</span>
                       </div>
                       <SwitchToggle 

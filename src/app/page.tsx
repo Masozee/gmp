@@ -1,89 +1,120 @@
-// Remove 'use client' to make it a Server Component
-// 'use client';
+'use client';
 
-// Remove useEffect and useState imports
-// import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 
-// Import fs and path for reading file directly
-import fs from 'fs';
-import path from 'path';
-
-// Import component and type (keep these)
+// Import component and type
 import PublikasiTerbaru, { Publikasi } from './components/PublikasiTerbaru';
 
-// Import other components (keep these)
+// Import other components 
 import Hero from './components/Hero';
-import MissionStatement from './components/MissionStatement';
 import ParticipationInfo from './components/ParticipationInfo';
 import EngagementBanner from './components/EngagementBanner';
 import TestimonialsCarousel from './components/TestimonialsCarousel';
 import Partners from './components/Partners';
 import NewsletterSignup from './components/NewsletterSignup';
+import UpcomingEvents from './components/UpcomingEvents';
 
-// Helper function to parse Indonesian dates (keep this)
-const monthMap: { [key: string]: number } = {
-  Januari: 0, Februari: 1, Maret: 2, April: 3, Mei: 4, Juni: 5,
-  Juli: 6, Agustus: 7, September: 8, Oktober: 9, November: 10, Desember: 11
+// Animation variants for section transitions
+const sectionVariants = {
+  hidden: { opacity: 0 },
+  visible: { 
+    opacity: 1,
+    transition: { 
+      duration: 0.8,
+      ease: "easeInOut"
+    }
+  }
 };
 
-function parseIndonesianDate(dateString: string): Date | null {
-  if (!dateString) return null;
-  const parts = dateString.split(' ');
-  if (parts.length !== 3) return null;
-  const day = parseInt(parts[0], 10);
-  const monthName = parts[1];
-  const year = parseInt(parts[2], 10);
-  const month = monthMap[monthName];
+export default function Home() {
+  const [latestPublikasi, setLatestPublikasi] = useState<Publikasi[]>([]);
 
-  if (isNaN(day) || isNaN(year) || month === undefined) return null;
-
-  return new Date(year, month, day);
-}
-
-// Helper function to read and process publication data
-function getLatestPublikasi(): Publikasi[] {
-  try {
-    const filePath = path.join(process.cwd(), 'src', 'data', 'publikasi.json');
-    const jsonData = fs.readFileSync(filePath, 'utf-8');
-    const publikasiData = JSON.parse(jsonData);
-
-    if (!Array.isArray(publikasiData)) {
-      console.error('Error: publikasi.json does not contain a valid JSON array.');
-      return [];
+  useEffect(() => {
+    // Fetch publikasi data from an API endpoint
+    async function fetchPublikasi() {
+      try {
+        const response = await fetch('/api/publikasi');
+        if (!response.ok) {
+          throw new Error('Failed to fetch publikasi data');
+        }
+        const data = await response.json();
+        setLatestPublikasi(data);
+      } catch (error) {
+        console.error('Error fetching publikasi:', error);
+        setLatestPublikasi([]);
+      }
     }
 
-    const sortedPublikasi = (publikasiData as Publikasi[])
-      .map(p => ({ ...p, parsedDate: parseIndonesianDate(p.date) }))
-      .filter(p => p.parsedDate !== null)
-      .sort((a, b) => b.parsedDate!.getTime() - a.parsedDate!.getTime());
-
-    return sortedPublikasi.slice(0, 3);
-
-  } catch (error) {
-    console.error("Failed to read or process publications:", error);
-    return []; // Return empty array on error
-  }
-}
-
-export default function Home() {
-  // Remove state and useEffect
-  // const [latestPublikasi, setLatestPublikasi] = useState<Publikasi[]>([]);
-  // useEffect(() => { ... }, []);
-
-  // Load data directly (runs on the server)
-  const latestPublikasi = getLatestPublikasi();
+    fetchPublikasi();
+  }, []);
 
   return (
     <main className="min-h-screen">
       <Hero />
-      <MissionStatement />
-      <ParticipationInfo />
-      <EngagementBanner />
-      {/* Pass data directly */}
-      <PublikasiTerbaru publikasi={latestPublikasi} /> 
-      <Partners />
-      <TestimonialsCarousel />
-      <NewsletterSignup />
+      
+      <motion.div
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.1 }}
+        variants={sectionVariants}
+      >
+        <Partners />
+      </motion.div>
+      
+      <motion.div
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.1 }}
+        variants={sectionVariants}
+      >
+        <ParticipationInfo />
+      </motion.div>
+      
+      <motion.div
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.1 }}
+        variants={sectionVariants}
+      >
+        <EngagementBanner />
+      </motion.div>
+      
+      <motion.div
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.1 }}
+        variants={sectionVariants}
+      >
+        <PublikasiTerbaru publikasi={latestPublikasi} /> 
+      </motion.div>
+      
+      <motion.div
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.1 }}
+        variants={sectionVariants}
+      >
+        <TestimonialsCarousel />
+      </motion.div>
+      
+      <motion.div
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.1 }}
+        variants={sectionVariants}
+      >
+        <UpcomingEvents />
+      </motion.div>
+      
+      <motion.div
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.1 }}
+        variants={sectionVariants}
+      >
+        <NewsletterSignup />
+      </motion.div>
     </main>
   );
 }

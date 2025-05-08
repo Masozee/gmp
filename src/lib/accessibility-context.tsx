@@ -24,8 +24,6 @@ interface AccessibilityContextType {
   setDyslexiaFont: (enabled: boolean) => void;
   reduceMotion: boolean;
   setReduceMotion: (enabled: boolean) => void;
-  keyboardNavigation: boolean;
-  setKeyboardNavigation: (enabled: boolean) => void;
 }
 
 const AccessibilityContext = createContext<AccessibilityContextType | undefined>(undefined);
@@ -49,7 +47,6 @@ export const AccessibilityProvider: React.FC<{ children: React.ReactNode }> = ({
   const [boldText, setBoldText] = useState(false);
   const [dyslexiaFont, setDyslexiaFont] = useState(false);
   const [reduceMotion, setReduceMotion] = useState(false);
-  const [keyboardNavigation, setKeyboardNavigation] = useState(false);
 
   // Load settings from localStorage on first render
   useEffect(() => {
@@ -66,7 +63,6 @@ export const AccessibilityProvider: React.FC<{ children: React.ReactNode }> = ({
         setBoldText(settings.boldText || false);
         setDyslexiaFont(settings.dyslexiaFont || false);
         setReduceMotion(settings.reduceMotion || false);
-        setKeyboardNavigation(settings.keyboardNavigation || false);
       }
     }
   }, []);
@@ -84,7 +80,6 @@ export const AccessibilityProvider: React.FC<{ children: React.ReactNode }> = ({
         boldText,
         dyslexiaFont,
         reduceMotion,
-        keyboardNavigation,
       };
       localStorage.setItem("accessibility-settings", JSON.stringify(settings));
     }
@@ -98,7 +93,6 @@ export const AccessibilityProvider: React.FC<{ children: React.ReactNode }> = ({
     boldText,
     dyslexiaFont,
     reduceMotion,
-    keyboardNavigation,
   ]);
 
   // Apply settings to the DOM
@@ -159,13 +153,6 @@ export const AccessibilityProvider: React.FC<{ children: React.ReactNode }> = ({
     } else {
       document.documentElement.classList.remove("reduce-motion");
     }
-
-    // Apply keyboard navigation
-    if (keyboardNavigation) {
-      document.documentElement.classList.add("keyboard-navigation");
-    } else {
-      document.documentElement.classList.remove("keyboard-navigation");
-    }
   }, [
     fontSize,
     cursorSize,
@@ -176,87 +163,7 @@ export const AccessibilityProvider: React.FC<{ children: React.ReactNode }> = ({
     boldText,
     dyslexiaFont,
     reduceMotion,
-    keyboardNavigation,
   ]);
-
-  // Set up keyboard navigation listeners
-  useEffect(() => {
-    if (!keyboardNavigation) return;
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      // Skip if user is typing in an input/textarea/contenteditable
-      if (
-        e.target instanceof HTMLInputElement ||
-        e.target instanceof HTMLTextAreaElement ||
-        (e.target instanceof HTMLElement && e.target.isContentEditable)
-      ) {
-        return;
-      }
-
-      // Tab key is handled by the browser for regular tabbing
-
-      // Shortcut keys for navigation
-      switch (e.key) {
-        case "h": // Home
-          if (e.altKey) {
-            e.preventDefault();
-            window.location.href = "/";
-          }
-          break;
-        case "m": // Main content - skip to main
-          if (e.altKey) {
-            e.preventDefault();
-            const main = document.querySelector("main");
-            if (main) {
-              (main as HTMLElement).focus();
-              main.setAttribute("tabindex", "-1");
-            }
-          }
-          break;
-        case "n": // Navigation
-          if (e.altKey) {
-            e.preventDefault();
-            const nav = document.querySelector("nav");
-            if (nav) {
-              (nav as HTMLElement).focus();
-              nav.setAttribute("tabindex", "-1");
-            }
-          }
-          break;
-        case "f": // Footer
-          if (e.altKey) {
-            e.preventDefault();
-            const footer = document.querySelector("footer");
-            if (footer) {
-              (footer as HTMLElement).focus();
-              footer.setAttribute("tabindex", "-1");
-            }
-          }
-          break;
-        case "?": // Help/Shortcuts dialog
-          if (e.shiftKey) {
-            e.preventDefault();
-            alert(
-              "Keyboard Shortcuts:\n" +
-              "Tab: Navigate through interactive elements\n" +
-              "Shift+Tab: Navigate backwards\n" +
-              "Enter/Space: Activate buttons and links\n" +
-              "Alt+H: Go to home page\n" +
-              "Alt+M: Skip to main content\n" +
-              "Alt+N: Go to navigation\n" +
-              "Alt+F: Go to footer\n" +
-              "Shift+?: Show this help dialog"
-            );
-          }
-          break;
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [keyboardNavigation]);
 
   const value = {
     fontSize,
@@ -277,12 +184,14 @@ export const AccessibilityProvider: React.FC<{ children: React.ReactNode }> = ({
     setDyslexiaFont,
     reduceMotion,
     setReduceMotion,
-    keyboardNavigation,
-    setKeyboardNavigation,
   };
 
   return (
     <AccessibilityContext.Provider value={value}>
+      {/* Skip to content link for accessibility */}
+      <a href="#main-content" className="skip-to-content">
+        Skip to content
+      </a>
       {children}
     </AccessibilityContext.Provider>
   );
