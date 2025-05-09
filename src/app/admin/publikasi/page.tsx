@@ -73,7 +73,7 @@ export default function PublicationsPage() {
     <div className="container mx-auto py-8">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Publications</h1>
-        <Link href="/admin/publikasi/create" className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">Create New</Link>
+        <Link href="/admin/publikasi/create" className="bg-pink-600 text-white px-4 py-2 rounded hover:bg-pink-700 transition">Create New</Link>
       </div>
       {loading ? (
         <div>Loading...</div>
@@ -95,7 +95,7 @@ export default function PublicationsPage() {
               {publications.length === 0 ? (
                 <tr>
                   <td className="px-4 py-4 border-b text-center" colSpan={5}>
-                    No publications found. <Link href="/admin/publikasi/create" className="text-blue-600 hover:underline">Create one</Link>
+                    No publications found. <Link href="/admin/publikasi/create" className="text-pink-600 hover:underline">Create one</Link>
                   </td>
                 </tr>
               ) : (
@@ -106,7 +106,7 @@ export default function PublicationsPage() {
                     <td className="px-4 py-2 border-b">{pub.published ? "Yes" : "No"}</td>
                     <td className="px-4 py-2 border-b">{pub.publicationdate ? new Date(pub.publicationdate).toLocaleDateString() : "-"}</td>
                     <td className="px-4 py-2 border-b">
-                      <Link href={`/admin/publikasi/edit/${pub.id}`} className="text-blue-600 hover:underline mr-4">Edit</Link>
+                      <Link href={`/admin/publikasi/edit/${pub.id}`} className="text-pink-600 hover:underline mr-4">Edit</Link>
                       <button 
                         onClick={() => handleDelete(pub.id)} 
                         className="text-red-600 hover:underline"

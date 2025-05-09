@@ -35,7 +35,7 @@ const DonasiPage = () => {
           <p className="font-semibold">
             Silahkan kirim tawaran kontribusi/kerjasama Anda ke:
             <br />
-            <a href="mailto:admin@partisipasimuda.org" className="text-blue-600 hover:underline">
+            <a href="mailto:admin@partisipasimuda.org" className="text-pink-600 hover:underline">
               admin@partisipasimuda.org
             </a>
           </p>

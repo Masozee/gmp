@@ -125,7 +125,7 @@ export default async function PublicationDetailPage({ params }: PageProps) {
                 href={publication.pdf_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-block rounded bg-blue-600 px-4 py-2 font-semibold text-white no-underline hover:bg-blue-700"
+                className="inline-block rounded bg-pink-600 px-4 py-2 font-semibold text-white no-underline hover:bg-pink-700"
               >
                 Download PDF
               </a>
@@ -133,7 +133,7 @@ export default async function PublicationDetailPage({ params }: PageProps) {
           )}
 
           <div className="mt-12 text-center">
-            <Link href="/publikasi" className="text-blue-600 hover:underline">
+            <Link href="/publikasi" className="text-pink-600 hover:underline">
               &larr; Kembali ke Daftar Publikasi
             </Link>
           </div>

@@ -52,7 +52,7 @@ export default function PublikasiPage() {
           <h1 className="mb-4 text-4xl font-bold md:text-5xl">
             Publikasi Kami
           </h1>
-          <p className="text-lg text-blue-100">
+          <p className="text-lg text-pink-100">
             Jelajahi artikel, laporan, dan hasil survei dari Partisipasi Muda.
           </p>
         </div>
@@ -101,7 +101,7 @@ export default function PublikasiPage() {
                     )}
                   </div>
                   <div className="p-4">
-                    <span className="mb-1 inline-block rounded bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-800">
+                    <span className="mb-1 inline-block rounded bg-pink-100 px-2 py-0.5 text-xs font-medium text-pink-800">
                       {pub.type === 'article' ? 'Artikel' : pub.type === 'survey' ? 'Hasil Survei' : pub.type} {/* Display type */}
                     </span>
                     <h2 className="mb-2 mt-1 line-clamp-2 text-lg font-semibold">

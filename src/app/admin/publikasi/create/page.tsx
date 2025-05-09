@@ -100,7 +100,7 @@ export default function CreatePublicationPage() {
               value={formData.title}
               onChange={handleChange}
               required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
             />
           </div>
 
@@ -113,7 +113,7 @@ export default function CreatePublicationPage() {
               value={formData.slug}
               onChange={handleChange}
               required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
             />
           </div>
 
@@ -126,7 +126,7 @@ export default function CreatePublicationPage() {
               value={formData.publicationdate}
               onChange={handleChange}
               required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
             />
           </div>
 
@@ -139,7 +139,7 @@ export default function CreatePublicationPage() {
               value={formData.categoryid}
               onChange={handleChange}
               required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
             />
           </div>
 
@@ -152,7 +152,7 @@ export default function CreatePublicationPage() {
               value={formData.coverimage}
               onChange={handleChange}
               required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
             />
           </div>
 
@@ -164,7 +164,7 @@ export default function CreatePublicationPage() {
               name="imagecredit"
               value={formData.imagecredit}
               onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
             />
           </div>
 
@@ -175,7 +175,7 @@ export default function CreatePublicationPage() {
               name="published"
               checked={formData.published === 1}
               onChange={handleChange}
-              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+              className="h-4 w-4 text-pink-600 focus:ring-pink-500 border-gray-300 rounded"
             />
             <label htmlFor="published" className="ml-2 block text-gray-700">Published</label>
           </div>
@@ -190,7 +190,7 @@ export default function CreatePublicationPage() {
             onChange={handleChange}
             required
             rows={3}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
           />
         </div>
 
@@ -203,7 +203,7 @@ export default function CreatePublicationPage() {
             onChange={handleChange}
             required
             rows={10}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
           />
         </div>
 
@@ -211,7 +211,7 @@ export default function CreatePublicationPage() {
           <button
             type="submit"
             disabled={loading}
-            className={`bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
+            className={`bg-pink-600 text-white px-6 py-2 rounded hover:bg-pink-700 transition ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
           >
             {loading ? 'Creating...' : 'Create Publication'}
           </button>
