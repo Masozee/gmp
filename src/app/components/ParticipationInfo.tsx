@@ -66,7 +66,7 @@ const ParticipationInfo = () => {
                 whileHover={{ y: -5, boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)" }}
               >
                 <Users className="w-9 h-9 mb-3 text-pink-400" />
-                <div className="font-bold text-lg mb-1 text-gray-900">Diskusi Interaktif</div>
+                <div className="font-bold text-lg mb-1 text-gray-900">Diskusi</div>
                 <div className="text-sm text-gray-700">Sesi diskusi politik yang menyenangkan dan interaktif bersama anak muda lainnya.</div>
               </motion.div>
               

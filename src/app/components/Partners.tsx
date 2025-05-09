@@ -50,11 +50,11 @@ const Partners = () => {
                   <Image 
                     src={partner.logo} 
                     alt={`${partner.name} logo`} 
-                    width={160} 
-                    height={80} 
+                    width={220} 
+                    height={120} 
                     className="object-contain transition-all group-hover:scale-105"
                     style={{
-                      maxHeight: '80px',
+                      maxHeight: '120px',
                       width: 'auto'
                     }}
                   />

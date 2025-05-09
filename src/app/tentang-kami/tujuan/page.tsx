@@ -6,11 +6,20 @@ const TujuanPage = () => {
     <>
       {/* Hero Section */}
       <section 
-        className="relative py-32 text-center bg-[#f06d98] text-white"
+        className="relative py-32 text-center text-white overflow-hidden"
       >
-        {/* Overlay */}
-        {/* <div className="absolute inset-0 bg-black opacity-50"></div> */}
-        
+        {/* Background Image with Fallback */}
+        <div className="absolute inset-0 w-full h-full z-0">
+          <Image
+            src="/images/bg/academia.jpeg"
+            alt="Hero Background"
+            fill
+            style={{objectFit: 'cover'}}
+            className="w-full h-full object-cover"
+            priority
+          />
+          <div className="absolute inset-0 bg-black/50" />
+        </div>
         {/* Content */}
         <div className="relative container mx-auto px-4 z-10">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">Tujuan Kami</h1>
@@ -33,7 +42,7 @@ const TujuanPage = () => {
 
         <div className="mt-12 flex justify-center">
           <Image
-            src="/images/placeholder-tujuan.jpg" // Placeholder image path
+            src="/images/bg/about.jpg" // Placeholder image path
             alt="Placeholder Image for Tujuan Page"
             width={600}
             height={400}

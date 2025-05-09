@@ -22,7 +22,12 @@ const MitraStrategisPage = () => {
       </section>
 
       {/* Partners Component Section */}
-      {/* Render the existing Partners component here */}
+      <div className="bg-green-600">
+        <div className="container mx-auto max-w-7xl px-4">
+          <hr className="border-t-2 border-white my-0" />
+          <h4 className="text-white text-2xl font-bold text-center mt-8 mb-4">Rekan Kami</h4>
+        </div>
+      </div>
       <Partners />
     </>
   );

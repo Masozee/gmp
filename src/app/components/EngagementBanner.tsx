@@ -1,24 +1,9 @@
 import Link from 'next/link';
-import PlaceholderImage from './PlaceholderImage';
 import { motion } from 'framer-motion';
 
 const EngagementBanner = () => {
   return (
-    <section className="relative py-16 md:py-24 text-white">
-      <div className="absolute inset-0 z-0">
-        <PlaceholderImage 
-          alt="Youth actively participating in civic engagement" 
-          className="object-cover"
-          imagePlaceholder="/images/bg/papaioannou-kostas-tysecUm5HJA-unsplash.jpg"
-        />
-        <motion.div 
-          className="absolute inset-0 bg-[#59caf5]/70"
-          initial={{ opacity: 0.5 }}
-          whileInView={{ opacity: 0.7 }}
-          transition={{ duration: 1 }}
-          viewport={{ once: true }}
-        ></motion.div>
-      </div>
+    <section className="relative py-16 md:py-24 text-white bg-[#f06d98]">
       <div className="relative z-10 container mx-auto px-4 text-center max-w-7xl">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
