@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 
@@ -10,9 +10,6 @@ interface MobileMenuProps {
 }
 
 const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
-  const [isTentangKamiMobileOpen, setIsTentangKamiMobileOpen] = useState(false);
-  const [isProgramMobileOpen, setIsProgramMobileOpen] = useState(false);
-
   // Close the menu when clicking outside and prevent scrolling when menu is open
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
