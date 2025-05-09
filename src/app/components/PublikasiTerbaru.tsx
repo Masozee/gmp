@@ -51,7 +51,7 @@ const PublikasiTerbaru = ({ publikasi }: PublikasiTerbaruProps) => {
             <Link 
               key={item.url} 
               href={`/publikasi/${item.url}`} 
-              className="bg-white overflow-hidden shadow-sm border border-secondary group hover:bg-[#F06292] transition-all duration-300"
+              className="bg-[#f06d98] overflow-hidden shadow-xl rounded-2xl group hover:bg-[#ffe066] active:bg-[#ffe066] focus:bg-[#ffe066] transition-all duration-300"
             >
               <div className="relative h-56">
                 <PlaceholderImage 
@@ -63,16 +63,16 @@ const PublikasiTerbaru = ({ publikasi }: PublikasiTerbaruProps) => {
               <div className="p-6">
                 <div className="flex justify-between items-center mb-2">
                   {item.category && (
-                    <span className="text-sm text-gray-600 font-medium group-hover:text-white">
+                    <span className="text-sm text-white font-medium group-hover:text-black group-active:text-black group-focus:text-black">
                       {item.category}
                     </span>
                   )}
-                  <span className="text-sm text-gray-500 group-hover:text-white">
+                  <span className="text-sm text-pink-100 group-hover:text-black group-active:text-black group-focus:text-black">
                     {formatDate(item.date)}
                   </span>
                 </div>
-                <h3 className="text-xl font-bold mb-2 text-gray-900 group-hover:text-white">{item.title}</h3>
-                <span className="text-blue-600 font-medium group-hover:text-white">
+                <h3 className="text-xl font-bold mb-2 text-white group-hover:text-black group-active:text-black group-focus:text-black">{item.title}</h3>
+                <span className="text-white font-medium group-hover:text-black group-active:text-black group-focus:text-black">
                   Baca Selengkapnya
                 </span>
               </div>

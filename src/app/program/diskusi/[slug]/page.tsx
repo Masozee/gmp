@@ -1,17 +1,21 @@
-import { notFound } from 'next/navigation';
-// import Image from 'next/image';
+// import { notFound } from 'next/navigation';
+import Image from 'next/image';
+import fs from 'fs';
+import path from 'path';
 // import Link from 'next/link';
-// import fs from 'fs';
-// import path from 'path';
 // import { slugify } from '@/lib/utils'; 
 
-// Simplified interface (or remove if not needed for basic render)
-// interface PastEvent { ... }
+interface PastEvent {
+  title: string;
+  slug: string;
+  image: string;
+  date: string;
+  description: string;
+}
 
 // Define the PageProps interface matching Next.js 15 type definition
 interface PageProps {
-  params: Promise<{ slug: string }>;
-  searchParams?: Promise<Record<string, string | string[] | undefined>>;
+  params: { slug: string };
 }
 
 // Remove data reading functions
@@ -29,35 +33,52 @@ export async function generateStaticParams() {
 
 // Page component (Server Component) - Using explicit Props type
 export default async function DiskusiDetailPage({ params }: PageProps) {
-  // Access slug directly from params, but handle it as a Promise
-  const resolvedParams = await params;
-  const slug = resolvedParams?.slug as string;
+  const slug = params.slug;
 
-  // Remove data fetching logic
-  // const event = getEventBySlug(slug);
-  // if (!event) { notFound(); }
+  // Read and parse the JSON file
+  const filePath = path.join(process.cwd(), 'src', 'data', 'diskusi.json');
+  const jsonData = fs.readFileSync(filePath, 'utf-8');
+  const events: PastEvent[] = JSON.parse(jsonData);
+  const event = events.find((e) => e.slug === slug);
 
-  // Basic check for slug existence
-  if (!slug) {
-    notFound();
+  if (!event) {
+    return (
+      <section className="py-32 text-center bg-gray-100">
+        <div className="container mx-auto px-4">
+          <h1 className="text-4xl font-bold mb-4 text-gray-800">Diskusi Tidak Ditemukan</h1>
+          <p className="text-lg text-gray-600">Acara diskusi dengan slug &quot;{slug}&quot; tidak ditemukan.</p>
+        </div>
+      </section>
+    );
   }
 
   return (
     <>
-      {/* Minimal Hero Section */}
-      <section 
-        className="relative py-32 text-center bg-sky-500 text-white"
-      >
-        <div className="relative container mx-auto px-4 z-10">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">Diskusi Detail</h1>
-          <p>Slug: {slug}</p>
+      {/* Hero Section with Image */}
+      <section className="relative py-32 text-center bg-[#f06d98] text-white">
+        <div className="absolute inset-0 w-full h-full">
+          <Image
+            src={event.image}
+            alt={event.title}
+            fill
+            className="object-cover object-center opacity-60"
+            priority
+          />
+          <div className="absolute inset-0 bg-[#f06d98] opacity-80"></div>
+        </div>
+        <div className="relative container mx-auto px-4 z-10 flex flex-col items-center justify-center">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 drop-shadow-lg">{event.title}</h1>
+          <p className="text-lg text-pink-100 mb-2">{event.date}</p>
         </div>
       </section>
 
-      {/* Minimal Content Section */}
-      <section className="container mx-auto px-4 py-16 max-w-4xl">
-        <p>Content for slug: {slug}</p>
-        {/* Removed rendering logic for event data */}
+      {/* Main Content Section */}
+      <section className="container mx-auto px-4 py-16 max-w-2xl">
+        <div className="bg-white rounded-2xl shadow-xl p-8">
+          <h2 className="text-2xl font-bold mb-4 text-primary">{event.title}</h2>
+          <p className="text-gray-700 mb-2"><span className="font-semibold">Tanggal:</span> {event.date}</p>
+          <p className="text-gray-700 mb-2"><span className="font-semibold">Lokasi/Keterangan:</span> {event.description}</p>
+        </div>
       </section>
     </>
   );

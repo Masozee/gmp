@@ -90,14 +90,22 @@ export default async function PublicationDetailPage({ params }: PageProps) {
   return (
     <>
       {/* Hero Section */}
-      <section
-        className="relative flex flex-col items-center justify-center bg-sky-500 py-32 text-white" // Set consistent background and padding
-      >
-        <div className="container relative z-10 mx-auto px-4 text-center max-w-7xl">
-          <h1 className="mb-4 text-3xl font-bold md:text-4xl lg:text-5xl">
-            {publication.title}
-          </h1>
-          <p className="mb-6 text-lg text-gray-100">{publication.date}</p> {/* Adjusted text color slightly */}
+      <section className="relative py-32 text-center bg-[#f06d98] text-white">
+        {publication.image && (
+          <div className="absolute inset-0 w-full h-full">
+            <Image
+              src={publication.image}
+              alt={publication.title}
+              fill
+              className="object-cover object-center opacity-60"
+              priority
+            />
+            <div className="absolute inset-0 bg-[#f06d98] opacity-80"></div>
+          </div>
+        )}
+        <div className="relative container mx-auto px-4 z-10 flex flex-col items-center justify-center max-w-7xl">
+          <h1 className="mb-4 text-3xl font-bold md:text-4xl lg:text-5xl drop-shadow-lg">{publication.title}</h1>
+          <p className="mb-6 text-lg text-pink-100">{publication.date}</p>
         </div>
       </section>
 
@@ -154,7 +162,7 @@ export default async function PublicationDetailPage({ params }: PageProps) {
                   <Link 
                     key={relatedSlug} 
                     href={`/publikasi/${relatedSlug}`} 
-                    className="block overflow-hidden rounded-lg border bg-white shadow-sm transition-shadow duration-200 hover:shadow-md"
+                    className="block overflow-hidden rounded-2xl shadow-xl bg-[#f06d98] transition-all duration-300 hover:bg-[#ffe066] active:bg-[#ffe066] focus:bg-[#ffe066] group"
                   >
                     <div className="relative h-48 w-full">
                       {relatedPub.image ? (
@@ -172,10 +180,10 @@ export default async function PublicationDetailPage({ params }: PageProps) {
                       )}
                     </div>
                     <div className="p-4">
-                      <h3 className="mb-2 line-clamp-2 text-lg font-semibold">
+                      <h3 className="mb-2 line-clamp-2 text-lg font-semibold text-white group-hover:text-black group-active:text-black group-focus:text-black">
                         {relatedPub.title}
                       </h3>
-                      <p className="text-sm text-gray-600">{relatedPub.date}</p>
+                      <p className="text-sm text-pink-100 group-hover:text-black group-active:text-black group-focus:text-black">{relatedPub.date}</p>
                     </div>
                   </Link>
                 );

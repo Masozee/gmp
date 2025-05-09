@@ -100,7 +100,7 @@ const UpcomingEvents = () => {
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {events.map((event) => (
-            <div key={event.id} className="relative shadow-md overflow-hidden border border-gray-200 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 h-[450px] group">
+            <div key={event.id} className="relative shadow-xl overflow-hidden rounded-2xl transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 h-[450px] group">
               <div className="absolute inset-0 w-full h-full transition-transform duration-700 ease-in-out group-hover:scale-110 group-hover:rotate-1" 
                 style={{ 
                   backgroundImage: `url('${event.image}')`, 

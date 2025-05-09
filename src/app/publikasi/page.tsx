@@ -83,7 +83,7 @@ export default function PublikasiPage() {
                 <Link 
                   key={slug} 
                   href={`/publikasi/${slug}`} 
-                  className="block overflow-hidden rounded-lg border bg-white shadow-sm transition-shadow duration-200 hover:shadow-md hover:bg-[#f06d98] group"
+                  className="block overflow-hidden rounded-2xl shadow-xl bg-[#f06d98] transition-all duration-300 hover:bg-[#ffe066] active:bg-[#ffe066] focus:bg-[#ffe066] group"
                 >
                   <div className="relative h-48 w-full">
                     {pub.image ? (
@@ -101,13 +101,13 @@ export default function PublikasiPage() {
                     )}
                   </div>
                   <div className="p-4">
-                    <span className="mb-1 inline-block rounded bg-pink-100 px-2 py-0.5 text-xs font-medium text-pink-800 group-hover:bg-pink-600 group-hover:text-white">
+                    <span className="mb-1 inline-block rounded bg-[#f06d98] px-2 py-0.5 text-xs font-medium text-white group-hover:bg-[#ffe066] group-hover:text-black group-active:bg-[#ffe066] group-active:text-black group-focus:bg-[#ffe066] group-focus:text-black">
                       {pub.type.charAt(0).toUpperCase() + pub.type.slice(1)}
                     </span>
-                    <h2 className="mb-2 mt-1 line-clamp-2 text-lg font-semibold group-hover:text-white">
+                    <h2 className="mb-2 mt-1 line-clamp-2 text-lg font-semibold text-white group-hover:text-black group-active:text-black group-focus:text-black">
                       {pub.title}
                     </h2>
-                    <p className="text-sm text-gray-600 group-hover:text-white">{pub.date}</p>
+                    <p className="text-sm text-pink-100 group-hover:text-black group-active:text-black group-focus:text-black">{pub.date}</p>
                   </div>
                 </Link>
               );
