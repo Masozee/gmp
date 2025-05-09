@@ -21,11 +21,10 @@ const Hero = () => {
         <div 
           className="absolute inset-0" 
           style={{ 
-            background: "linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.3) 40%, rgba(0,0,0,0.9) 80%, rgba(0,0,0,1) 100%)" 
+            background: "linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.3) 40%, rgba(0,0,0,0.9) 80%, rgba(0,0,0,1) 100%)"
           }}
         ></div>
       </motion.div>
-      
       <div className="relative z-10 container mx-auto px-6 max-w-7xl w-full">
         <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8">
           {/* Left Column (8/12) */}
@@ -36,19 +35,15 @@ const Hero = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
             >
-              Politik itu tentang kehidupan sehari-hari
+              Yayasan Partisipasi Muda
             </motion.h1>
-          </div>
-          
-          {/* Right Column (4/12) */}
-          <div className="lg:w-4/12 flex flex-col items-start lg:items-end">
             <motion.p 
-              className="text-lg md:text-xl mb-6 lg:text-right"
+              className="text-lg md:text-xl mb-6"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.4 }}
             >
-              Pendidikan, seni, lingkungan, bahkan harga kopimu—semuanya adalah kebijakan.
+              Yayasan Partisipasi Muda adalah organisasi nirlaba yang dinamis dan berdedikasi untuk mengubah budaya demokrasi di Indonesia agar suara anak muda didengar dan berdampak.
             </motion.p>
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
@@ -58,7 +53,7 @@ const Hero = () => {
               whileTap={{ scale: 0.95 }}
             >
               <Link 
-                href="/tentang-kami"
+                href="/tentang-kami/tujuan"
                 className="bg-primary text-black hover:bg-primary-dark px-8 py-3 rounded-md font-bold text-lg inline-block transition duration-300 ease-in-out"
               >
                 Pelajari Lebih Lanjut

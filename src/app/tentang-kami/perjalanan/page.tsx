@@ -47,30 +47,49 @@ const PerjalananPage = () => {
         </div>
       </section>
 
-      {/* Horizontal Timeline Section */}
-      <div className="container mx-auto px-4 py-16">
-        {/* Title moved inside the container if preferred, or remove if redundant with hero */}
-        {/* <h2 className="text-3xl font-bold mb-12 text-center text-primary">Timeline</h2> */}
-        
-        <div className="flex overflow-x-auto space-x-8 pb-8 scrollbar-thin scrollbar-thumb-primary scrollbar-track-gray-200">
-          {/* Timeline Items */}
-          {timelineData.map((item, index) => (
-            <div key={index} className="flex-shrink-0 w-72 bg-white rounded-lg shadow-lg overflow-hidden">
-              <Image 
-                src={item.imageSrc} 
-                alt={`Perjalanan ${item.year}`}
-                width={288} // Corresponds to w-72
-                height={160} // Aspect ratio 16:9 (adjust as needed)
-                className="w-full h-40 object-cover"
-              />
-              <div className="p-4">
-                <h3 className="font-bold text-lg text-primary mb-2">{item.year}</h3>
-                <p className="text-sm text-gray-700 leading-snug">
-                  {item.description}
-                </p>
-              </div>
+      {/* Two-column layout: left for timeline, right for text */}
+      <div className="container mx-auto px-4 py-16 flex flex-col md:flex-row gap-12">
+        {/* Left: Scrollable Timeline */}
+        <div className="md:w-2/3 w-full max-h-[80vh] overflow-y-auto pr-2">
+          <div className="relative">
+            {/* Vertical line with accent */}
+            <div className="absolute left-1/2 top-0 w-1 bg-gradient-to-b from-pink-400 via-yellow-300 to-pink-400 h-full -translate-x-1/2 z-0" />
+            <div className="flex flex-col gap-24 relative z-10">
+              {timelineData.map((item, index) => (
+                <div
+                  key={index}
+                  className="flex justify-center relative group animate-fadeInUp"
+                >
+                  {/* Timeline Dot */}
+                  <div className="hidden md:block absolute left-1/2 top-8 -translate-x-1/2 -translate-y-1/2 z-20">
+                    <div className="w-6 h-6 rounded-full bg-white border-4 border-yellow-400 shadow-lg" />
+                  </div>
+                  {/* Single Card with Image and Description */}
+                  <div className="bg-white/90 backdrop-blur-lg rounded-2xl p-0 shadow-xl border border-gray-100 transition-all duration-300 hover:bg-yellow-300 hover:text-black cursor-pointer w-full max-w-2xl">
+                    <Image
+                      src={item.imageSrc}
+                      alt={`Perjalanan ${item.year}`}
+                      width={640}
+                      height={320}
+                      className="rounded-t-2xl object-cover w-full h-56 md:h-72 border-b border-gray-100"
+                    />
+                    <div className="p-8">
+                      <h3 className="font-extrabold text-2xl mb-3 text-primary group-hover:text-black tracking-tight drop-shadow-sm">{item.year}</h3>
+                      <p className="text-lg text-gray-700 group-hover:text-black leading-relaxed font-medium">
+                        {item.description}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
-          ))}
+          </div>
+        </div>
+        {/* Right: Section Title and Description (sticky on desktop) */}
+        <div className="md:w-1/3 w-full md:sticky md:top-32 h-fit flex flex-col justify-start">
+          <p className="text-lg md:text-xl text-gray-700 max-w-2xl">
+            Yayasan Partisipasi Muda (YPM) telah menempuh perjalanan yang penuh tantangan dan inspirasi sejak berdiri pada tahun 2017. Berawal dari keresahan terhadap narasi SARA dalam Pilkada DKI Jakarta, YPM lahir sebagai wadah bagi anak muda untuk terlibat aktif dalam pendidikan politik yang inklusif dan menyenangkan. Melalui berbagai diskusi publik, kolaborasi dengan universitas ternama, hingga pelaksanaan program-program inovatif seperti Academia Politica dan Temu Kandidat, YPM terus berupaya membangun budaya demokrasi yang sehat dan partisipatif di Indonesia. Setiap fase perjalanan ini menandai komitmen kami untuk memastikan suara anak muda didengar, diakui, dan mampu memberikan dampak nyata bagi masa depan bangsa.
+          </p>
         </div>
       </div>
     </>

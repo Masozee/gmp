@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 
 interface Event {
   id: number;
@@ -101,7 +100,7 @@ export default function AcaraPage() {
   if (isLoading) {
     return (
       <main className="min-h-screen bg-gray-50">
-        <header className="bg-primary py-10 text-white">
+        <header className="bg-[#f06d98] py-10 text-white">
         <div className="container mx-auto px-4 max-w-7xl">
             <h1 className="text-4xl md:text-5xl font-heading font-bold text-center">Acara & Kegiatan</h1>
           </div>
@@ -123,7 +122,7 @@ export default function AcaraPage() {
   return (
     <main className="min-h-screen bg-gray-50">
       {/* Header Section */}
-      <header className="bg-primary py-32 text-white shadow-lg">
+      <header className="bg-[#f06d98] py-32 text-white shadow-lg">
         <div className="container mx-auto px-4 max-w-7xl text-center">
           <h1 className="text-4xl md:text-5xl font-heading font-bold mb-4">
             Acara & Kegiatan
@@ -137,7 +136,7 @@ export default function AcaraPage() {
       <div className="container mx-auto px-4 max-w-7xl py-8">
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Sidebar Filters */}
-          <aside className="lg:w-1/4 bg-white p-6 rounded-lg shadow-md h-fit sticky top-8">
+          <aside className="lg:w-1/4 bg-white p-6 rounded-lg shadow-md h-fit sticky top-28">
             <h2 className="text-xl font-bold mb-4 text-gray-800">Filter Acara</h2>
             
             <div className="mb-6">
@@ -198,78 +197,44 @@ export default function AcaraPage() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
                 <h3 className="text-xl font-bold mb-2 text-gray-800">Tidak Ada Acara Ditemukan</h3>
-            <p className="text-gray-600 mb-4">
-              Tidak ada acara yang sesuai dengan filter atau pencarian Anda. Silakan coba kata kunci atau filter yang berbeda.
-            </p>
-            <button 
-                  onClick={resetFilters}
-              className="inline-block bg-primary hover:bg-primary-dark text-white font-medium py-2 px-4 rounded-md transition"
-            >
-              Reset Filter
-            </button>
+                <p className="text-gray-600">Coba gunakan filter atau kata kunci lain.</p>
           </div>
         ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
             {filteredEvents.map((event) => (
-                  <div key={event.id} className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 transition-transform hover:shadow-lg hover:-translate-y-1 flex flex-col">
-                <div className="relative h-48">
-                  <div className="absolute top-0 right-0 z-10 bg-primary text-white text-sm font-medium px-3 py-1 rounded-bl-lg">
-                    {event.category}
-                  </div>
-                  <Image
-                    src={event.image}
-                    alt={event.title}
-                    fill
-                    className="object-cover"
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      target.src = '/images/events/default-event.jpg';
-                    }}
-                  />
+              <div key={event.id} className="relative shadow-md overflow-hidden border border-gray-200 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 h-[450px] group">
+                <div className="absolute inset-0 w-full h-full transition-transform duration-700 ease-in-out group-hover:scale-110 group-hover:rotate-1" 
+                  style={{ 
+                    backgroundImage: `url('${event.image}')`, 
+                    backgroundSize: 'cover', 
+                    backgroundPosition: 'center'
+                  }}>
                 </div>
-                
-                    <div className="p-6 flex flex-col flex-grow">
-                      <h3 className="text-xl font-bold mb-2 line-clamp-2 text-gray-900">{event.title}</h3>
-                  
-                      <div className="flex items-center text-gray-600 text-sm mb-1">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <div className="absolute inset-0" style={{ background: 'linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.6) 50%, rgba(0,0,0,0.9) 100%)' }}></div>
+                <div className="absolute top-0 right-0 z-10 bg-primary text-white text-sm font-medium px-3 py-1">{event.category}</div>
+                <div className="absolute bottom-0 left-0 right-0 p-6 text-white flex flex-col h-2/3 justify-end">
+                  <h3 className="text-xl font-bold mb-4 line-clamp-2">{event.title}</h3>
+                  <div className="flex items-center mb-2 text-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
                     <span>{event.date}</span>
-                  </div>
-                  
-                      <div className="flex items-center text-gray-600 text-sm mb-1">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
+                    <span className="mx-2">•</span>
                     <span>{event.time}</span>
                   </div>
-                  
-                      <div className="flex items-center text-gray-600 text-sm mb-3">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <div className="flex items-center mb-4 text-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                     </svg>
                     <span className="line-clamp-1">{event.location}</span>
                   </div>
-                  
-                      <p className="text-gray-700 text-sm mb-4 line-clamp-3 flex-grow">{event.description}</p>
-                  
-                  {event.isPaid && (
-                        <div className="mb-4 font-medium text-sm">
-                      <span className="text-primary">Biaya: </span>
-                          <span className="text-gray-800">Rp {event.price?.toLocaleString('id-ID')}</span>
-                    </div>
-                  )}
-                  
-                      <div className="mt-auto pt-4 border-t border-gray-100">
-                    <Link 
-                          href={`/acara/${event.id}`}
-                          className={`block w-full text-center py-2 px-3 rounded-md font-medium text-sm transition ${
-                        event.isRegistrationOpen ? 'bg-secondary hover:bg-secondary-dark text-white' : 'bg-gray-300 text-gray-600 cursor-not-allowed'
-                      }`}
-                    >
-                          {event.isRegistrationOpen ? 'Lihat & Daftar' : 'Info Detail'}
+                  <div className="mt-4">
+                    <Link href={`/acara/${event.id}`}
+                      className={`inline-block w-full text-center py-2 px-4 rounded-md font-medium transition-all hover:bg-[#F06292] hover:text-white ${
+                        event.isRegistrationOpen ? 'bg-yellow-400 text-black' : 'bg-gray-300 text-gray-600 cursor-not-allowed hover:bg-gray-300 hover:text-gray-600'
+                      }`}>
+                      {event.isRegistrationOpen ? 'Daftar Sekarang' : 'Pendaftaran Ditutup'}
                     </Link>
                   </div>
                 </div>

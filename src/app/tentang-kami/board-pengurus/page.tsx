@@ -37,19 +37,21 @@ const BoardPengurusPage = () => {
           <h2 className="text-3xl font-bold mb-8 text-center text-primary">Dewan Pembina & Pengawas</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
             {boardData.map((member: Member, index: number) => (
-              <div key={`board-${index}`} className="bg-white rounded-lg shadow-lg text-center overflow-hidden flex flex-col">
+              <div key={`board-${index}`} className="bg-white rounded-lg shadow-lg text-center overflow-hidden flex flex-col border border-gray-100 transition-all duration-300 hover:border-yellow-300">
                 <div className="relative w-full h-80">
                     <Image 
                         src={member.photo}
                         alt={member.name}
                         layout="fill"
                         objectFit="cover"
-                        className="grayscale hover:grayscale-0 transition-all duration-300"
+                        className="transition-all duration-300"
                     />
                 </div>
                 <div className="p-4 mt-auto">
-                  <h3 className="font-semibold text-lg text-gray-800">{member.name}</h3>
-                  <p className="text-sm text-secondary">{member.title || member.position}</p>
+                  <div className="flex flex-col items-center gap-1">
+                    <span className="font-semibold text-base text-black">{member.name}</span>
+                    <span className="font-semibold text-base text-black">{member.title || member.position}</span>
+                  </div>
                 </div>
               </div>
             ))}
@@ -61,19 +63,21 @@ const BoardPengurusPage = () => {
           <h2 className="text-3xl font-bold mb-8 text-center text-primary">Pengurus Harian</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
             {pengurusData.map((member: Member, index: number) => (
-                 <div key={`pengurus-${index}`} className="bg-white rounded-lg shadow-lg text-center overflow-hidden flex flex-col">
+                 <div key={`pengurus-${index}`} className="bg-white rounded-lg shadow-lg text-center overflow-hidden flex flex-col border border-gray-100 transition-all duration-300 hover:border-yellow-300">
                      <div className="relative w-full h-80">
                         <Image 
                             src={member.photo}
                             alt={member.name}
                             layout="fill"
                             objectFit="cover"
-                             className="grayscale hover:grayscale-0 transition-all duration-300"
+                             className="transition-all duration-300"
                         />
                     </div>
                     <div className="p-4 mt-auto">
-                    <h3 className="font-semibold text-lg text-gray-800">{member.name}</h3>
-                    <p className="text-sm text-secondary">{member.position || member.title}</p>
+                    <div className="flex flex-col items-center gap-1">
+                      <span className="font-semibold text-base text-black">{member.name}</span>
+                      <span className="font-semibold text-base text-black">{member.position || member.title}</span>
+                    </div>
                     </div>
               </div>
             ))}
