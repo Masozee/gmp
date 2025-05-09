@@ -77,7 +77,7 @@ const DiskusiPage = () => {
             ) : (
               pastEvents.map((event, index) => (
                 <Link key={index} href={`/program/diskusi/${event.slug}`} legacyBehavior>
-                  <a className="block bg-white rounded-lg shadow-lg overflow-hidden flex flex-col transform transition duration-300 hover:scale-105 hover:shadow-xl">
+                  <a className="block bg-white rounded-lg shadow-lg overflow-hidden flex flex-col transform transition duration-300 hover:scale-105 hover:shadow-xl hover:bg-[#f06d98] group">
                     <div className="relative w-full h-48">
                       <Image 
                         src={event.image} 
@@ -87,10 +87,10 @@ const DiskusiPage = () => {
                       />
                     </div>
                     <div className="p-6 flex flex-col flex-grow">
-                      <h3 className="font-semibold text-lg text-gray-900 mb-2 line-clamp-2">{event.title}</h3> {/* Add line-clamp */}
-                      <p className="text-sm text-gray-600 mb-1">{event.date}</p>
-                      <p className="text-sm text-gray-700 mb-4 flex-grow line-clamp-3">{event.description}</p> {/* Add line-clamp */}
-                      <span className="text-sm text-primary hover:text-primary-dark font-semibold mt-auto">
+                      <h3 className="font-semibold text-lg text-gray-900 mb-2 line-clamp-2 group-hover:text-white">{event.title}</h3>
+                      <p className="text-sm text-gray-600 mb-1 group-hover:text-white">{event.date}</p>
+                      <p className="text-sm text-gray-700 mb-4 flex-grow line-clamp-3 group-hover:text-white">{event.description}</p>
+                      <span className="text-sm text-primary hover:text-white font-semibold mt-auto group-hover:text-white">
                         Lihat Detail →
                       </span>
                     </div>

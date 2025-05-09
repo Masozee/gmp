@@ -207,7 +207,7 @@ const Navbar = () => {
           
           <div className="flex items-center font-heading" style={{ fontFamily: "'Inter', sans-serif" }}>
             {/* Dukung Kami Button */}
-            <Link href="/donate" className="bg-primary hover:bg-primary-dark text-black px-5 py-2 rounded-none font-semibold transition h-10 flex items-center justify-center">
+            <Link href="/donasi" className="bg-primary hover:bg-primary-dark text-black px-5 py-2 rounded-none font-semibold transition h-10 flex items-center justify-center">
               Dukung Kami
             </Link>
             

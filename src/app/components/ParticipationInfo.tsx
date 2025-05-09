@@ -45,8 +45,11 @@ const ParticipationInfo = () => {
             variants={textVariants}
           >
             <h2 className="text-3xl md:text-4xl font-bold mb-3 text-gray-900">Bagaimana Anda Bisa Berpartisipasi</h2>
+            <p className="text-lg text-gray-700 max-w-2xl mb-3">
+              Pilih peran yang sesuai dengan minat dan keahlianmu untuk ikut serta membangun masa depan demokrasi Indonesia. Dengan bergabung, kamu akan mendapatkan kesempatan untuk memperluas wawasan, mengembangkan keterampilan, dan membangun jaringan dengan individu serta komunitas yang memiliki visi serupa.
+            </p>
             <p className="text-lg text-gray-700 max-w-2xl">
-              Pilih peran yang sesuai minatmu dan ikut membangun masa depan demokrasi Indonesia.
+              Partisipasimu tidak hanya memberikan dampak positif bagi dirimu sendiri, tetapi juga berkontribusi langsung dalam menciptakan perubahan nyata bagi bangsa. Jadilah bagian dari gerakan yang mendorong inovasi, kolaborasi, dan kemajuan bersama demi Indonesia yang lebih baik.
             </p>
           </motion.div>
           

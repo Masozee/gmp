@@ -6,27 +6,27 @@ const PerjalananPage = () => {
     {
       year: '2017',
       description: 'Gagasan Generasi Melek Politik (GMP) lahir dari keresahan Pilkada DKI Jakarta 2017 yang dipenuhi narasi SARA. Co-founder mencari anggota awal melalui indorelawan.org.',
-      imageSrc: '/images/perjalanan/placeholder-2017.jpg',
+      imageSrc: '/images/bg/about.jpg',
     },
     {
       year: '2017-2018',
       description: 'GMP mengadakan diskusi publik dengan modal minim (Rp 0), berkolaborasi dengan berbagai tempat sebagai venue.',
-      imageSrc: '/images/perjalanan/placeholder-2017-18.jpg',
+      imageSrc: '/images/bg/about.jpg',
     },
     {
       year: '2018',
       description: 'Organisasi resmi dilegalkan menjadi Yayasan Partisipasi Muda, terdaftar di Kemenkumham RI (No: 5018071931100892).',
-      imageSrc: '/images/perjalanan/placeholder-2018.jpg',
+      imageSrc: '/images/bg/about.jpg',
     },
     {
       year: '2018-2019',
       description: 'Berkolaborasi mengembangkan diskusi, meluncurkan Academia Politik (bersama Universitas Indonesia) dan Kongres Millennial (bersama Universitas Bakrie).',
-      imageSrc: '/images/perjalanan/placeholder-2018-19.jpg',
+      imageSrc: '/images/bg/about.jpg',
     },
     {
       year: '2020',
       description: 'Dipercaya oleh lembaga donor untuk menjalankan Temu Kandidat, digital townhall meeting pertama di Indonesia bertema kebijakan lingkungan.',
-      imageSrc: '/images/perjalanan/placeholder-2020.jpg',
+      imageSrc: '/images/bg/about.jpg',
     },
   ];
 

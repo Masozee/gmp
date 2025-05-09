@@ -34,9 +34,9 @@ export default function PublikasiPage() {
 
   const filterOptions = [
     { label: 'Semua', value: 'all' },
-    { label: 'Artikel', value: 'article' },
-    { label: 'Hasil Survei', value: 'survey' }, // Assuming type 'survey' exists/will exist
-    // Add more types as needed
+    { label: 'Artikel', value: 'artikel' },
+    { label: 'Riset', value: 'riset' },
+    { label: 'Dampak', value: 'dampak' },
   ];
 
   const filteredPublications = publications.filter((pub) => {
@@ -83,7 +83,7 @@ export default function PublikasiPage() {
                 <Link 
                   key={slug} 
                   href={`/publikasi/${slug}`} 
-                  className="block overflow-hidden rounded-lg border bg-white shadow-sm transition-shadow duration-200 hover:shadow-md"
+                  className="block overflow-hidden rounded-lg border bg-white shadow-sm transition-shadow duration-200 hover:shadow-md hover:bg-[#f06d98] group"
                 >
                   <div className="relative h-48 w-full">
                     {pub.image ? (
@@ -101,13 +101,13 @@ export default function PublikasiPage() {
                     )}
                   </div>
                   <div className="p-4">
-                    <span className="mb-1 inline-block rounded bg-pink-100 px-2 py-0.5 text-xs font-medium text-pink-800">
-                      {pub.type === 'article' ? 'Artikel' : pub.type === 'survey' ? 'Hasil Survei' : pub.type} {/* Display type */}
+                    <span className="mb-1 inline-block rounded bg-pink-100 px-2 py-0.5 text-xs font-medium text-pink-800 group-hover:bg-pink-600 group-hover:text-white">
+                      {pub.type.charAt(0).toUpperCase() + pub.type.slice(1)}
                     </span>
-                    <h2 className="mb-2 mt-1 line-clamp-2 text-lg font-semibold">
+                    <h2 className="mb-2 mt-1 line-clamp-2 text-lg font-semibold group-hover:text-white">
                       {pub.title}
                     </h2>
-                    <p className="text-sm text-gray-600">{pub.date}</p>
+                    <p className="text-sm text-gray-600 group-hover:text-white">{pub.date}</p>
                   </div>
                 </Link>
               );
