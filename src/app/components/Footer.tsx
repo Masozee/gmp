@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 
 const Footer = () => {
   return (
@@ -7,13 +8,13 @@ const Footer = () => {
         <div className="grid md:grid-cols-4 gap-8">
           <div>
             <div className="mb-4">
-              <img
+              <Image
                 src="/logo/logowhite.png"
-                srcSet="/logo/logowhite.png 1x, /logo/logowhite_retina.png 2x"
                 alt="Partisipasi Muda Logo"
                 width={160}
                 height={40}
                 className="h-10 w-auto"
+                priority
               />
             </div>
             <p className="text-white mb-4">

@@ -18,10 +18,6 @@ interface Publikasi {
   url: string;
 }
 
-interface PublikasiWithParsedDate extends Publikasi {
-  parsedDate: Date | null;
-}
-
 function parseIndonesianDate(dateString: string): Date | null {
   if (!dateString) return null;
   const parts = dateString.split(' ');
@@ -46,19 +42,25 @@ export async function GET() {
       return NextResponse.json({ error: 'Invalid data format' }, { status: 500 });
     }
 
-    const sortedPublikasi = publikasiData
-      .map((p: Publikasi) => ({ 
-        ...p, 
-        parsedDate: parseIndonesianDate(p.date) 
-      } as PublikasiWithParsedDate))
-      .filter((p: PublikasiWithParsedDate) => p.parsedDate !== null)
-      .sort((a: PublikasiWithParsedDate, b: PublikasiWithParsedDate) => 
-        b.parsedDate!.getTime() - a.parsedDate!.getTime()
-      )
+    // Create objects with parsed dates for sorting
+    const publikasiWithDates = publikasiData
+      .map((item: Publikasi) => {
+        const parsedDate = parseIndonesianDate(item.date);
+        if (!parsedDate) return null;
+        return {
+          data: item,
+          timestamp: parsedDate.getTime()
+        };
+      })
+      .filter((item): item is { data: Publikasi; timestamp: number } => item !== null);
+    
+    // Sort by timestamp (descending) and take top 3
+    const sortedData = publikasiWithDates
+      .sort((a, b) => b.timestamp - a.timestamp)
       .slice(0, 3)
-      .map(({ parsedDate, ...rest }: PublikasiWithParsedDate) => rest);
+      .map(item => item.data);
 
-    return NextResponse.json(sortedPublikasi);
+    return NextResponse.json(sortedData);
   } catch (error) {
     console.error("Failed to read or process publications:", error);
     return NextResponse.json({ error: 'Failed to fetch publikasi data' }, { status: 500 });

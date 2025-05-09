@@ -8,6 +8,10 @@ const nextConfig = {
     // !! WARN !!
     ignoreBuildErrors: true,
   },
+  eslint: {
+    // Enforce ESLint during builds
+    ignoreDuringBuilds: false,
+  },
   images: {
     remotePatterns: [
       {
@@ -21,4 +25,4 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig; 
+module.exports = nextConfig;
