@@ -1,354 +1,162 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
-import * as d3 from 'd3-geo';
-import { GeoGeometryObjects } from 'd3-geo';
+import { useEffect, useRef, useState } from 'react';
+import * as d3 from 'd3';
+import type { Feature, FeatureCollection, Geometry } from 'geojson';
 
-// Define province type
-interface Province {
-  id: string;
-  name: string;
-  value: number;
-  activities: number;
-  clicked?: boolean;
-}
-
-// Data for provinces with activity information
-const provinceData: Province[] = [
-  { id: 'ID-AC', name: 'Aceh', value: 75, activities: 12 },
-  { id: 'ID-SU', name: 'Sumatera Utara', value: 65, activities: 10 },
-  { id: 'ID-SB', name: 'Sumatera Barat', value: 80, activities: 15 },
-  { id: 'ID-RI', name: 'Riau', value: 60, activities: 8 },
-  { id: 'ID-JA', name: 'Jambi', value: 45, activities: 5 },
-  { id: 'ID-SS', name: 'Sumatera Selatan', value: 70, activities: 11 },
-  { id: 'ID-BE', name: 'Bengkulu', value: 40, activities: 4 },
-  { id: 'ID-LA', name: 'Lampung', value: 55, activities: 7 },
-  { id: 'ID-BB', name: 'Kepulauan Bangka Belitung', value: 30, activities: 3 },
-  { id: 'ID-KR', name: 'Kepulauan Riau', value: 35, activities: 4 },
-  { id: 'ID-JK', name: 'DKI Jakarta', value: 95, activities: 25 },
-  { id: 'ID-JB', name: 'Jawa Barat', value: 90, activities: 20 },
-  { id: 'ID-JT', name: 'Jawa Tengah', value: 85, activities: 18 },
-  { id: 'ID-YO', name: 'DI Yogyakarta', value: 88, activities: 19 },
-  { id: 'ID-JI', name: 'Jawa Timur', value: 82, activities: 17 },
-  { id: 'ID-BT', name: 'Banten', value: 75, activities: 12 },
-  { id: 'ID-BA', name: 'Bali', value: 78, activities: 14 },
-  { id: 'ID-NB', name: 'Nusa Tenggara Barat', value: 60, activities: 8 },
-  { id: 'ID-NT', name: 'Nusa Tenggara Timur', value: 50, activities: 6 },
-  { id: 'ID-KB', name: 'Kalimantan Barat', value: 45, activities: 5 },
-  { id: 'ID-KT', name: 'Kalimantan Tengah', value: 40, activities: 4 },
-  { id: 'ID-KS', name: 'Kalimantan Selatan', value: 55, activities: 7 },
-  { id: 'ID-KI', name: 'Kalimantan Timur', value: 60, activities: 8 },
-  { id: 'ID-KU', name: 'Kalimantan Utara', value: 35, activities: 4 },
-  { id: 'ID-SA', name: 'Sulawesi Utara', value: 50, activities: 6 },
-  { id: 'ID-ST', name: 'Sulawesi Tengah', value: 45, activities: 5 },
-  { id: 'ID-SN', name: 'Sulawesi Selatan', value: 65, activities: 10 },
-  { id: 'ID-SG', name: 'Sulawesi Tenggara', value: 40, activities: 4 },
-  { id: 'ID-GO', name: 'Gorontalo', value: 30, activities: 3 },
-  { id: 'ID-SR', name: 'Sulawesi Barat', value: 25, activities: 2 },
-  { id: 'ID-MA', name: 'Maluku', value: 35, activities: 4 },
-  { id: 'ID-MU', name: 'Maluku Utara', value: 30, activities: 3 },
-  { id: 'ID-PA', name: 'Papua', value: 40, activities: 4 },
-  { id: 'ID-PB', name: 'Papua Barat', value: 35, activities: 4 },
-];
-
-// Function to get color based on value
-const getColor = (value: number): string => {
-  if (value >= 80) return '#2563eb'; // Deep blue for high values
-  if (value >= 60) return '#3b82f6'; // Medium blue
-  if (value >= 40) return '#60a5fa'; // Light blue
-  return '#93c5fd'; // Very light blue for low values
+type ProvinceProperties = {
+  PROVINSI: string;
+  Provinsi?: string;
+  NAME_1?: string;
+  [key: string]: unknown;
 };
 
-// Define the GeoFeature interface with proper d3-geo typing
-interface GeoFeature {
-  type: string;
-  geometry: GeoGeometryObjects;
-  properties: {
-    [key: string]: string | number;
-  };
+type ProvinceFeature = Feature<Geometry, ProvinceProperties>;
+type ProvinceCollection = FeatureCollection<Geometry, ProvinceProperties>;
+
+interface IndonesiaMapProps {
+  width?: number;
+  height?: number;
+  className?: string;
 }
 
-interface GeoJSON {
-  type: string;
-  features: GeoFeature[];
-}
-
-interface TooltipPosition {
-  x: number;
-  y: number;
-}
-
-const IndonesiaMap: React.FC = () => {
-  const [geoData, setGeoData] = useState<GeoJSON | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-  const [selectedProvince, setSelectedProvince] = useState<Province | null>(null);
-  const [tooltipPosition, setTooltipPosition] = useState<TooltipPosition>({ x: 0, y: 0 });
+const IndonesiaMap = ({ 
+  width = 800, 
+  height = 400,
+  className = '' 
+}: IndonesiaMapProps) => {
   const svgRef = useRef<SVGSVGElement>(null);
-  
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [mapData, setMapData] = useState<ProvinceCollection | null>(null);
+
   useEffect(() => {
-    // Fetch the GeoJSON data with better error handling
-    const fetchGeoData = async (): Promise<void> => {
-      setLoading(true);
-      setError(null);
-      
+    const fetchMapData = async () => {
       try {
+        setLoading(true);
+        setError(null);
+        
         const response = await fetch('/data/Provinsi.json');
-        
         if (!response.ok) {
-          throw new Error(`Failed to load GeoJSON: ${response.status} ${response.statusText}`);
+          throw new Error(`Failed to fetch map data: ${response.status}`);
         }
         
-        const data = await response.json();
-        
-        if (!data || !data.features || !Array.isArray(data.features)) {
-          throw new Error('Invalid GeoJSON data format');
-        }
-        
-        console.log('GeoJSON loaded successfully:', data.features.length, 'features');
-        setGeoData(data);
-      } catch (error) {
-        console.error('Error loading GeoJSON:', error);
-        setError(error instanceof Error ? error.message : 'Failed to load map data');
+        const data = await response.json() as ProvinceCollection;
+        setMapData(data);
+      } catch (err) {
+        console.error('Error loading map data:', err);
+        setError(err instanceof Error ? err.message : 'Failed to load map data');
       } finally {
         setLoading(false);
       }
     };
-    
-    fetchGeoData();
+
+    fetchMapData();
   }, []);
 
   useEffect(() => {
-    // Adjust the map when the container is resized
-    const handleResize = (): void => {
-      if (svgRef.current && geoData) {
-        // Force a re-render by updating state
-        setGeoData({...geoData});
-      }
-    };
+    if (!mapData || !svgRef.current) return;
 
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, [geoData]);
+    const svg = d3.select(svgRef.current);
+    svg.selectAll('*').remove(); // Clear previous rendering
 
-  const handleProvinceClick = (province: Province): void => {
-    setSelectedProvince((prevState: Province | null) => 
-      prevState && prevState.name === province.name ? null : province
-    );
-  };
-
-  const handleProvinceHover = (e: React.MouseEvent, province: Province): void => {
-    const rect = svgRef.current?.getBoundingClientRect();
-    if (rect) {
-      setTooltipPosition({ 
-        x: e.clientX - rect.left, 
-        y: e.clientY - rect.top 
-      });
-    } else {
-      setTooltipPosition({ x: e.clientX, y: e.clientY });
-    }
-    setSelectedProvince(province);
-  };
-
-  const handleProvinceLeave = (): void => {
-    // Only clear the province if it wasn't clicked
-    if (selectedProvince && !selectedProvince.clicked) {
-      setSelectedProvince(null);
-    }
-  };
-
-  // Create the map projection
-  const createProjection = () => {
-    if (!geoData || !svgRef.current) return null;
-    
-    const width = svgRef.current.clientWidth || 800;
-    const height = svgRef.current.clientHeight || 500;
-    
-    // Create a projection centered on Indonesia
-    return d3.geoMercator()
+    const projection = d3.geoMercator()
       .center([118, -2]) // Center on Indonesia
-      .scale(width * 1.3) // Adjust scale as needed
+      .scale(width * 1.3)
       .translate([width / 2, height / 2]);
-  };
 
-  // Create the path generator
-  const createPathGenerator = () => {
-    const projection = createProjection();
-    if (!projection) return null;
-    
-    return d3.geoPath().projection(projection);
-  };
+    const path = d3.geoPath().projection(projection);
 
-  // Find province data by name
-  const getProvinceData = (name: string): Province => {
-    // Clean up the name to match our data structure
-    const cleanName = name.replace(/PROVINSI /i, '').trim();
-    
-    // Try to find a direct match
-    let province = provinceData.find(p => 
-      p.name.toLowerCase() === cleanName.toLowerCase()
+    const g = svg.append('g');
+
+    g.selectAll('path')
+      .data(mapData.features)
+      .enter()
+      .append('path')
+      .attr('d', (d) => path(d) || '')
+      .attr('fill', '#f0a6d2')
+      .attr('stroke', '#ffffff')
+      .attr('stroke-width', 0.5)
+      .on('mouseover', function(event, d: ProvinceFeature) {
+        d3.select(this)
+          .attr('fill', '#d53f8c')
+          .attr('stroke-width', 1);
+          
+        const provinceName = d.properties.PROVINSI || 
+                             d.properties.Provinsi || 
+                             d.properties.NAME_1 || 'Unknown Province';
+          
+        // Show tooltip
+        const [x, y] = d3.pointer(event);
+        const tooltip = svg.append('g')
+          .attr('class', 'tooltip')
+          .attr('transform', `translate(${x + 10}, ${y + 10})`);
+          
+        tooltip.append('rect')
+          .attr('width', provinceName.length * 8 + 20)
+          .attr('height', 30)
+          .attr('fill', 'white')
+          .attr('opacity', 0.9)
+          .attr('rx', 5)
+          .attr('stroke', '#d53f8c')
+          .attr('stroke-width', 1);
+          
+        tooltip.append('text')
+          .attr('x', 10)
+          .attr('y', 20)
+          .text(provinceName)
+          .attr('fill', '#333')
+          .attr('font-size', '12px');
+      })
+      .on('mouseout', function() {
+        d3.select(this)
+          .attr('fill', '#f0a6d2')
+          .attr('stroke-width', 0.5);
+          
+        // Remove tooltip
+        svg.selectAll('.tooltip').remove();
+      });
+
+  }, [mapData, width, height]);
+
+  if (loading) {
+    return (
+      <div className={`flex items-center justify-center ${className}`} style={{ height }}>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-pink-600"></div>
+      </div>
     );
-    
-    // If no direct match, try partial matching
-    if (!province) {
-      province = provinceData.find(p => 
-        cleanName.toLowerCase().includes(p.name.toLowerCase()) || 
-        p.name.toLowerCase().includes(cleanName.toLowerCase())
-      );
-    }
-    
-    // If still no match, return a default
-    if (!province) {
-      console.log('No match found for province:', cleanName);
-      return {
-        name: cleanName,
-        value: 30,
-        activities: 2,
-        id: 'unknown'
-      };
-    }
-    
-    return province;
-  };
+  }
+
+  if (error) {
+    return (
+      <div className={`flex items-center justify-center ${className}`} style={{ height }}>
+        <div className="text-red-500 text-center">
+          <p>Failed to load map: {error}</p>
+          <button 
+            onClick={() => window.location.reload()} 
+            className="mt-2 px-4 py-2 bg-pink-600 text-white rounded-md hover:bg-pink-700"
+          >
+            Retry
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="relative">
-      {/* Legend */}
-      <div className="absolute top-4 right-4 bg-white p-3 rounded-md shadow-md z-10">
-        <h4 className="text-sm font-semibold mb-2">Tingkat Aktivitas</h4>
-        <div className="flex flex-col gap-1">
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4" style={{ backgroundColor: '#2563eb' }}></div>
-            <span className="text-xs">Sangat Tinggi (80-100)</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4" style={{ backgroundColor: '#3b82f6' }}></div>
-            <span className="text-xs">Tinggi (60-79)</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4" style={{ backgroundColor: '#60a5fa' }}></div>
-            <span className="text-xs">Sedang (40-59)</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4" style={{ backgroundColor: '#93c5fd' }}></div>
-            <span className="text-xs">Rendah (0-39)</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Map Container */}
-      <div className="w-full h-[500px] overflow-hidden relative border rounded-lg">
-        {loading && (
-          <div className="absolute inset-0 flex items-center justify-center bg-gray-100 z-20">
-            <div className="text-center">
-              <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mb-2"></div>
-              <p className="text-gray-500">Loading map data...</p>
-            </div>
-          </div>
-        )}
-        
-        {error && (
-          <div className="absolute inset-0 flex items-center justify-center bg-gray-100 z-20">
-            <div className="text-center p-4 max-w-md">
-              <p className="text-red-500 font-semibold">Error loading map: {error}</p>
-              <button 
-                onClick={() => window.location.reload()} 
-                className="mt-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-              >
-                Reload
-              </button>
-            </div>
-          </div>
-        )}
-        
-        <svg
-          ref={svgRef}
-          width="100%"
-          height="100%"
-          viewBox="0 0 800 500"
-          preserveAspectRatio="xMidYMid meet"
-          className="w-full h-full"
-        >
-          {geoData && geoData.features && geoData.features.map((feature, index) => {
-            const pathGenerator = createPathGenerator();
-            if (!pathGenerator) return null;
-            
-            const provinceName = typeof feature.properties.PROVINSI === 'string' 
-              ? feature.properties.PROVINSI 
-              : typeof feature.properties.Provinsi === 'string'
-              ? feature.properties.Provinsi
-              : typeof feature.properties.NAME_1 === 'string'
-              ? feature.properties.NAME_1
-              : 'Unknown';
-            const province = getProvinceData(provinceName);
-            
-            return (
-              <path
-                key={index}
-                d={pathGenerator(feature.geometry) || ''}
-                fill={getColor(province.value)}
-                stroke="#fff"
-                strokeWidth="0.5"
-                onClick={() => handleProvinceClick(province)}
-                onMouseMove={(e) => handleProvinceHover(e, province)}
-                onMouseLeave={handleProvinceLeave}
-                className="cursor-pointer hover:opacity-80 transition-opacity"
-              />
-            );
-          })}
-        </svg>
-        
-        {/* Tooltip */}
-        {selectedProvince && (
-          <div 
-            className="absolute bg-white p-3 rounded-md shadow-lg z-20 pointer-events-none"
-            style={{ 
-              left: `${tooltipPosition.x}px`, 
-              top: `${tooltipPosition.y}px`,
-              transform: 'translate(-50%, -100%)',
-              maxWidth: '200px',
-              marginTop: '-10px'
-            }}
-          >
-            <h3 className="font-bold text-blue-600">{selectedProvince.name}</h3>
-            <div className="text-sm mt-1">
-              <p>Tingkat Aktivitas: <span className="font-semibold">{selectedProvince.value}%</span></p>
-              <p>Jumlah Kegiatan: <span className="font-semibold">{selectedProvince.activities}</span></p>
-            </div>
-          </div>
-        )}
-      </div>
-      
-      {/* Selected Province Details */}
-      {selectedProvince && (
-        <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-          <h3 className="text-xl font-bold text-blue-700 mb-2">{selectedProvince.name}</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <p className="text-gray-700">Tingkat Aktivitas: <span className="font-semibold">{selectedProvince.value}%</span></p>
-              <p className="text-gray-700">Jumlah Kegiatan: <span className="font-semibold">{selectedProvince.activities}</span></p>
-              <div className="mt-2 w-full bg-gray-200 rounded-full h-2.5">
-                <div 
-                  className="bg-blue-600 h-2.5 rounded-full" 
-                  style={{ width: `${selectedProvince.value}%` }}
-                ></div>
-              </div>
-            </div>
-            <div>
-              <h4 className="font-semibold text-blue-700 mb-1">Kegiatan Terbaru:</h4>
-              <ul className="list-disc list-inside text-sm text-gray-700">
-                <li>Workshop Literasi Politik di {selectedProvince.name}</li>
-                <li>Seminar Kepemimpinan Muda</li>
-                <li>Dialog Publik: Peran Pemuda dalam Demokrasi</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      )}
+    <div className={className}>
+      <svg 
+        ref={svgRef} 
+        width={width} 
+        height={height} 
+        viewBox={`0 0 ${width} ${height}`} 
+        style={{ maxWidth: '100%', height: 'auto' }}
+      />
     </div>
   );
 };
 
+// Add display name
 IndonesiaMap.displayName = 'IndonesiaMap';
 
 export default IndonesiaMap;
