@@ -125,7 +125,7 @@ const Navbar = () => {
           <div className="flex items-center">
             <Link href="/" className="flex items-center">
               <Image 
-                src={hasScrolled ? '/images/logo/logo.png' : '/images/logo/logo-white.png'} 
+                src={hasScrolled ? '/images/logo/logo.png' : '/images/logo/logowhite.png'} 
                 alt="Partisipasi Muda Logo" 
                 width={hasScrolled ? 160 : 180} 
                 height={40} 
@@ -193,10 +193,10 @@ const Navbar = () => {
             }`}>
               Publikasi
             </Link>
-            <Link href="/donasi" className={`transition-colors py-2 ${
+            <Link href="/report" className={`transition-colors py-2 ${
               hasScrolled ? 'hover:text-secondary text-gray-800' : 'hover:text-primary text-white'
             }`}>
-              Donasi dan Kolaborasi
+              Laporan
             </Link>
             <Link href="/acara" className={`transition-colors py-2 ${
               hasScrolled ? 'hover:text-secondary text-gray-800' : 'hover:text-primary text-white'

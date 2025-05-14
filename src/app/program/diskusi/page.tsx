@@ -76,25 +76,27 @@ const DiskusiPage = () => {
               <p className="col-span-full text-center text-gray-500">Belum ada dokumentasi kegiatan.</p>
             ) : (
               pastEvents.map((event, index) => (
-                <Link key={index} href={`/program/diskusi/${event.slug}`} legacyBehavior>
-                  <a className="block bg-[#f06d98] rounded-lg shadow-lg overflow-hidden flex flex-col transform transition duration-300 hover:scale-105 hover:shadow-xl hover:bg-[#ffe066] active:bg-[#ffe066] focus:bg-[#ffe066] group">
-                    <div className="relative w-full h-48">
-                      <Image 
-                        src={event.image} 
-                        alt={event.title}
-                        fill // Use fill instead of layout
-                        style={{ objectFit: 'cover' }} // Add objectFit style
-                      />
-                    </div>
-                    <div className="p-6 flex flex-col flex-grow">
-                      <h3 className="font-semibold text-lg text-white mb-2 line-clamp-2 group-hover:text-black group-active:text-black group-focus:text-black">{event.title}</h3>
-                      <p className="text-sm text-pink-100 mb-1 group-hover:text-black group-active:text-black group-focus:text-black">{event.date}</p>
-                      <p className="text-sm text-white mb-4 flex-grow line-clamp-3 group-hover:text-black group-active:text-black group-focus:text-black">{event.description}</p>
-                      <span className="text-sm text-white font-semibold mt-auto group-hover:text-black group-active:text-black group-focus:text-black">
-                        Lihat Detail →
-                      </span>
-                    </div>
-                  </a>
+                <Link 
+                  key={index} 
+                  href={`/program/diskusi/${event.slug}`}
+                  className="block bg-[#f06d98] rounded-lg shadow-lg overflow-hidden flex flex-col transform transition duration-300 hover:scale-105 hover:shadow-xl hover:bg-[#ffe066] active:bg-[#ffe066] focus:bg-[#ffe066] group"
+                >
+                  <div className="relative w-full h-48">
+                    <Image 
+                      src={event.image} 
+                      alt={event.title}
+                      fill 
+                      style={{ objectFit: 'cover' }} 
+                    />
+                  </div>
+                  <div className="p-6 flex flex-col flex-grow">
+                    <h3 className="font-semibold text-lg text-white mb-2 line-clamp-2 group-hover:text-black group-active:text-black group-focus:text-black">{event.title}</h3>
+                    <p className="text-sm text-pink-100 mb-1 group-hover:text-black group-active:text-black group-focus:text-black">{event.date}</p>
+                    <p className="text-sm text-white mb-4 flex-grow line-clamp-3 group-hover:text-black group-active:text-black group-focus:text-black">{event.description}</p>
+                    <span className="text-sm text-white font-semibold mt-auto group-hover:text-black group-active:text-black group-focus:text-black">
+                      Lihat Detail →
+                    </span>
+                  </div>
                 </Link>
               ))
             )}
