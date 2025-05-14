@@ -7,7 +7,7 @@ import dynamic from 'next/dynamic';
 const LoadingMap: React.FC = () => (
   <div className="h-[500px] w-full flex items-center justify-center bg-gray-100 rounded-lg">
     <div className="text-center">
-      <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-pink-600 mb-2"></div>
+      <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mb-2"></div>
       <p className="text-gray-500">Loading map...</p>
     </div>
   </div>
@@ -21,9 +21,9 @@ const ErrorMap: React.FC<{ error: Error }> = ({ error }) => (
       <p className="text-red-500 font-semibold">Failed to load map: {error.message}</p>
       <button 
         onClick={() => window.location.reload()} 
-        className="mt-2 px-4 py-2 bg-pink-600 text-white rounded-md hover:bg-pink-700"
+        className="mt-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
       >
-        Reload
+        Try Again
       </button>
     </div>
   </div>

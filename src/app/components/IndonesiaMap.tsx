@@ -53,10 +53,10 @@ const provinceData: Province[] = [
 
 // Function to get color based on value
 const getColor = (value: number): string => {
-  if (value >= 80) return '#d53f8c'; // Strong pink for high values
-  if (value >= 60) return '#e779ba'; // Medium pink
-  if (value >= 40) return '#f0a6d2'; // Light pink
-  return '#f8d4e8'; // Very light pink for low values
+  if (value >= 80) return '#2563eb'; // Deep blue for high values
+  if (value >= 60) return '#3b82f6'; // Medium blue
+  if (value >= 40) return '#60a5fa'; // Light blue
+  return '#93c5fd'; // Very light blue for low values
 };
 
 // Define the GeoFeature interface with proper d3-geo typing
@@ -218,19 +218,19 @@ const IndonesiaMap: React.FC = () => {
         <h4 className="text-sm font-semibold mb-2">Tingkat Aktivitas</h4>
         <div className="flex flex-col gap-1">
           <div className="flex items-center gap-2">
-            <div className="w-4 h-4" style={{ backgroundColor: '#d53f8c' }}></div>
+            <div className="w-4 h-4" style={{ backgroundColor: '#2563eb' }}></div>
             <span className="text-xs">Sangat Tinggi (80-100)</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-4 h-4" style={{ backgroundColor: '#e779ba' }}></div>
+            <div className="w-4 h-4" style={{ backgroundColor: '#3b82f6' }}></div>
             <span className="text-xs">Tinggi (60-79)</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-4 h-4" style={{ backgroundColor: '#f0a6d2' }}></div>
+            <div className="w-4 h-4" style={{ backgroundColor: '#60a5fa' }}></div>
             <span className="text-xs">Sedang (40-59)</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-4 h-4" style={{ backgroundColor: '#f8d4e8' }}></div>
+            <div className="w-4 h-4" style={{ backgroundColor: '#93c5fd' }}></div>
             <span className="text-xs">Rendah (0-39)</span>
           </div>
         </div>
@@ -241,7 +241,7 @@ const IndonesiaMap: React.FC = () => {
         {loading && (
           <div className="absolute inset-0 flex items-center justify-center bg-gray-100 z-20">
             <div className="text-center">
-              <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-pink-600 mb-2"></div>
+              <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mb-2"></div>
               <p className="text-gray-500">Loading map data...</p>
             </div>
           </div>
@@ -253,7 +253,7 @@ const IndonesiaMap: React.FC = () => {
               <p className="text-red-500 font-semibold">Error loading map: {error}</p>
               <button 
                 onClick={() => window.location.reload()} 
-                className="mt-2 px-4 py-2 bg-pink-600 text-white rounded-md hover:bg-pink-700"
+                className="mt-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
               >
                 Reload
               </button>
@@ -310,7 +310,7 @@ const IndonesiaMap: React.FC = () => {
               marginTop: '-10px'
             }}
           >
-            <h3 className="font-bold text-pink-600">{selectedProvince.name}</h3>
+            <h3 className="font-bold text-blue-600">{selectedProvince.name}</h3>
             <div className="text-sm mt-1">
               <p>Tingkat Aktivitas: <span className="font-semibold">{selectedProvince.value}%</span></p>
               <p>Jumlah Kegiatan: <span className="font-semibold">{selectedProvince.activities}</span></p>
@@ -321,21 +321,21 @@ const IndonesiaMap: React.FC = () => {
       
       {/* Selected Province Details */}
       {selectedProvince && (
-        <div className="mt-6 p-4 bg-pink-50 rounded-lg">
-          <h3 className="text-xl font-bold text-pink-700 mb-2">{selectedProvince.name}</h3>
+        <div className="mt-6 p-4 bg-blue-50 rounded-lg">
+          <h3 className="text-xl font-bold text-blue-700 mb-2">{selectedProvince.name}</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <p className="text-gray-700">Tingkat Aktivitas: <span className="font-semibold">{selectedProvince.value}%</span></p>
               <p className="text-gray-700">Jumlah Kegiatan: <span className="font-semibold">{selectedProvince.activities}</span></p>
               <div className="mt-2 w-full bg-gray-200 rounded-full h-2.5">
                 <div 
-                  className="bg-pink-600 h-2.5 rounded-full" 
+                  className="bg-blue-600 h-2.5 rounded-full" 
                   style={{ width: `${selectedProvince.value}%` }}
                 ></div>
               </div>
             </div>
             <div>
-              <h4 className="font-semibold text-pink-700 mb-1">Kegiatan Terbaru:</h4>
+              <h4 className="font-semibold text-blue-700 mb-1">Kegiatan Terbaru:</h4>
               <ul className="list-disc list-inside text-sm text-gray-700">
                 <li>Workshop Literasi Politik di {selectedProvince.name}</li>
                 <li>Seminar Kepemimpinan Muda</li>
