@@ -63,8 +63,7 @@ const ParticipationInfo = () => {
               variants={containerVariants}
             >
               <motion.div 
-                className="aspect-square flex flex-col items-start justify-center shadow bg-pink-50 p-6 border border-gray-200 min-h-[180px]" 
-                style={{borderRadius: 0}}
+                className="aspect-square flex flex-col items-start justify-center shadow bg-pink-50 p-6 border border-gray-200 min-h-[180px] rounded-lg" 
                 variants={cardVariants}
                 whileHover={{ y: -5, boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)" }}
               >
@@ -74,8 +73,7 @@ const ParticipationInfo = () => {
               </motion.div>
               
               <motion.div 
-                className="aspect-square flex flex-col items-start justify-center shadow bg-yellow-50 p-6 border border-gray-200 min-h-[180px]" 
-                style={{borderRadius: 0}}
+                className="aspect-square flex flex-col items-start justify-center shadow bg-yellow-50 p-6 border border-gray-200 min-h-[180px] rounded-lg" 
                 variants={cardVariants}
                 whileHover={{ y: -5, boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)" }}
               >
@@ -85,8 +83,7 @@ const ParticipationInfo = () => {
               </motion.div>
               
               <motion.div 
-                className="aspect-square flex flex-col items-start justify-center shadow bg-green-50 p-6 border border-gray-200 min-h-[180px]" 
-                style={{borderRadius: 0}}
+                className="aspect-square flex flex-col items-start justify-center shadow bg-green-50 p-6 border border-gray-200 min-h-[180px] rounded-lg" 
                 variants={cardVariants}
                 whileHover={{ y: -5, boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)" }}
               >
@@ -96,8 +93,7 @@ const ParticipationInfo = () => {
               </motion.div>
               
               <motion.div 
-                className="aspect-square flex flex-col items-start justify-center shadow bg-blue-50 p-6 border border-gray-200 min-h-[180px]" 
-                style={{borderRadius: 0}}
+                className="aspect-square flex flex-col items-start justify-center shadow bg-blue-50 p-6 border border-gray-200 min-h-[180px] rounded-lg" 
                 variants={cardVariants}
                 whileHover={{ y: -5, boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)" }}
               >

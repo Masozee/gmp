@@ -39,7 +39,7 @@ const AccessibilityButton = () => {
         <Button
           variant="default"
           size="icon"
-          className="fixed bottom-20 right-6 z-[9999] h-14 w-14 rounded-full shadow-lg bg-[#F06292] hover:bg-[#EC407A] transition-all p-0 overflow-hidden accessibility-button"
+          className="fixed bottom-20 right-6 z-[9999] h-14 w-14 rounded-full shadow-lg bg-yellow-400 hover:bg-yellow-500 transition-all p-0 overflow-hidden accessibility-button"
           onClick={() => setIsOpen(true)}
           aria-label="Aksesibilitas"
         >

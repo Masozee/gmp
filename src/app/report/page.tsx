@@ -14,25 +14,25 @@ const ReportPage = () => {
       id: 1,
       title: '34',
       description: 'Provinsi di Indonesia',
-      icon: '/images/report/province-icon.svg',
+      icon: '/icons/pin.png',
     },
     {
       id: 2,
       title: '250+',
       description: 'Kegiatan Terlaksana',
-      icon: '/images/report/event-icon.svg',
+      icon: '/icons/communication.png',
     },
     {
       id: 3,
       title: '5000+',
       description: 'Peserta Teredukasi',
-      icon: '/images/report/people-icon.svg',
+      icon: '/icons/global-network.png',
     },
     {
       id: 4,
       title: '100+',
       description: 'Mitra Kolaborasi',
-      icon: '/images/report/partner-icon.svg',
+      icon: '/icons/team-work.png',
     },
   ];
 

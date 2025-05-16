@@ -207,14 +207,14 @@ const Navbar = () => {
           
           <div className="flex items-center font-heading" style={{ fontFamily: "'Inter', sans-serif" }}>
             {/* Dukung Kami Button */}
-            <Link href="/donasi" className="bg-primary hover:bg-primary-dark text-black px-5 py-2 rounded-none font-semibold transition h-10 flex items-center justify-center">
+            <Link href="/donasi" className="bg-primary hover:bg-pink-500 hover:text-white text-black px-5 py-2 rounded-full font-semibold transition h-10 flex items-center justify-center">
               Dukung Kami
             </Link>
             
             {/* Language Selector */}
             <button 
               onClick={toggleLanguage}
-              className="bg-primary hover:bg-primary-dark text-black px-5 py-2 rounded-none font-semibold transition ml-4 h-10 flex items-center justify-center"
+              className="bg-primary hover:bg-pink-500 hover:text-white text-black px-5 py-2 rounded-full font-semibold transition ml-4 h-10 flex items-center justify-center"
             >
               {language}
             </button>
@@ -222,7 +222,7 @@ const Navbar = () => {
             {/* Search Button */}
             <button 
               onClick={toggleSearchForm}
-              className="bg-primary hover:bg-primary-dark text-black px-5 py-2 rounded-none font-semibold transition ml-4 h-10 flex items-center justify-center"
+              className="bg-primary hover:bg-pink-500 hover:text-white text-black px-5 py-2 rounded-full font-semibold transition ml-4 h-10 flex items-center justify-center"
               aria-label="Search"
             >
               <Search size={20} />

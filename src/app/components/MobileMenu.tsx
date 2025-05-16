@@ -126,7 +126,7 @@ const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
         {/* Dukung Kami Button */}
         <div className="p-6 border-t border-gray-100">
           <Link href="/donate" 
-            className="block w-full bg-primary hover:bg-primary-dark text-black py-3 px-4 rounded-xl font-bold text-center text-lg shadow transition"
+            className="block w-full bg-primary hover:bg-pink-500 hover:text-white text-black py-3 px-4 rounded-full font-bold text-center text-lg shadow transition"
             onClick={onClose}
           >
             Dukung Kami
