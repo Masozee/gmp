@@ -5,8 +5,8 @@
 :root {
   
   /* Partisipasi Muda colors */
-  --primary: #ffcb57;     /* Amber/Yellow main color */
-  --primary-dark: #e6b74e; /* Darker version of main color */
+  --primary: #ffb31a;     /* Darker Amber/Yellow main color */
+  --primary-dark: #e29900; /* Darker version of main color */
   --secondary: #F06292;    /* Pink secondary color */
   --secondary-dark: #EC407A; /* Darker version of secondary color */
   --accent: #F06292;      /* Using secondary as accent */
@@ -14,9 +14,9 @@
   --success: #22c55e;     /* Green-500 */
   --success-dark: #16a34a; /* Green-600 */
   
-  /* Font family - Inter only */
+  /* Font family */
   --font-heading: 'Inter', sans-serif;
-  --font-body: 'Inter', sans-serif;
+  --font-body: 'Figtree', sans-serif;
 }
 
 @layer base {
@@ -28,23 +28,35 @@
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-bold;
     font-family: var(--font-heading);
+    font-weight: 800;
   }
   
-  p, span, div, li, a {
+  p, span, div, li {
     font-family: var(--font-body);
+    font-weight: 500;
   }
 
-  /* Ensure navbar always uses Inter font */
-  nav, .font-heading, nav *, .font-heading * {
-    font-family: 'Inter', sans-serif !important;
+  /* Navbar and navigation styles */
+  nav, .navbar, header nav {
+    font-family: 'Figtree', sans-serif !important;
+    font-weight: 800 !important;
   }
 
-  /* Ensure all buttons use Inter font */
+  /* Submenu specific styles */
+  nav .submenu, 
+  nav .dropdown-menu,
+  .navbar .submenu,
+  nav ul ul,
+  nav .subnav {
+    font-family: 'Figtree', sans-serif !important;
+    font-weight: 600 !important;
+  }
+
+  /* Ensure all buttons use Figtree font */
   button, .button, a[href], [role="button"], 
   [type="button"], [type="submit"], [type="reset"] {
-    font-family: 'Inter', sans-serif !important;
+    font-family: 'Figtree', sans-serif !important;
   }
   :root {
     --background: 0 0% 100%;
@@ -120,7 +132,7 @@
 @layer components {
   .btn {
     @apply px-4 py-2 rounded-md font-medium transition-colors;
-    font-family: 'Inter', sans-serif !important;
+    font-family: 'Figtree', sans-serif !important;
   }
   
   .btn-primary {
@@ -583,4 +595,14 @@
 .high-contrast.dark .border-b,
 .high-contrast.dark hr {
   border-color: rgba(255, 255, 255, 0.3) !important;
+}
+
+/* Hide scrollbars while allowing scrolling */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.hide-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
 }

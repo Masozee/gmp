@@ -9,10 +9,13 @@ module.exports = {
   	extend: {
   		fontFamily: {
   			sans: [
-  				'var(--font-body)'
+  				'var(--font-figtree)', 'Figtree', 'sans-serif'
   			],
   			heading: [
-  				'var(--font-heading)'
+  				'var(--font-inter)', 'Inter', 'sans-serif'
+  			],
+  			body: [
+  				'var(--font-figtree)', 'Figtree', 'sans-serif'
   			]
   		},
   		colors: {

@@ -12,7 +12,6 @@ const Navbar = () => {
   const [isTentangKamiOpen, setIsTentangKamiOpen] = useState(false);
   const [isProgramOpen, setIsProgramOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [language, setLanguage] = useState('ID');
   const tentangKamiTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const programTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -50,10 +49,6 @@ const Navbar = () => {
 
   const toggleSearchForm = () => {
     setIsSearchOpen(!isSearchOpen);
-  };
-
-  const toggleLanguage = () => {
-    setLanguage(language === 'ID' ? 'EN' : 'ID');
   };
 
   // Handle scroll event
@@ -127,37 +122,35 @@ const Navbar = () => {
               <Image 
                 src={hasScrolled ? '/images/logo/logo.png' : '/images/logo/logowhite.png'} 
                 alt="Partisipasi Muda Logo" 
-                width={hasScrolled ? 160 : 180} 
+                width={160}
                 height={40} 
-                className={`transition-all duration-300 ${
-                  hasScrolled ? 'h-12 w-auto' : 'h-10 w-auto'
-                }`}
+                className="h-10 w-auto transition-all duration-300"
               />
             </Link>
           </div>
           
-          <div className="hidden md:flex space-x-8 font-heading font-bold" style={{ fontFamily: "'Inter', sans-serif" }}>
+          <div className="hidden md:flex space-x-8 font-heading font-extrabold" style={{ fontFamily: "'Inter', sans-serif" }}>
             {/* Tentang Kami Dropdown */}
             <div 
               className="relative group" 
               onMouseEnter={handleTentangKamiEnter}
               onMouseLeave={handleTentangKamiLeave}
             >
-              <button className={`transition-colors flex items-center py-2 ${
-                hasScrolled ? 'hover:text-secondary text-gray-800' : 'hover:text-primary text-white'
+              <button className={`transition-colors flex items-center py-2 font-extrabold ${
+                hasScrolled ? 'hover:text-pink-500 text-gray-800' : 'hover:text-pink-500 text-white'
               }`}>
                 Tentang Kami
                 <svg className={`w-4 h-4 ml-1 transition-transform duration-200 ${isTentangKamiOpen ? 'transform rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
               </button>
               {isTentangKamiOpen && (
                 <div 
-                  className={`absolute left-0 mt-0 w-48 rounded-md shadow-lg py-1 z-10 ${hasScrolled ? 'bg-white' : 'bg-gray-800'}`}
+                  className={`absolute left-0 mt-0 w-48 rounded-md shadow-lg py-1 z-10 font-semibold ${hasScrolled ? 'bg-white' : 'bg-gray-800'}`}
                   onMouseEnter={handleTentangKamiEnter}
                   onMouseLeave={handleTentangKamiLeave}
                 >
-                  <Link href="/tentang-kami/tujuan" className={`block px-4 py-2 text-sm ${hasScrolled ? 'text-gray-700 hover:bg-gray-100' : 'text-white hover:bg-gray-700'}`}>Tujuan</Link>
-                  <Link href="/tentang-kami/perjalanan" className={`block px-4 py-2 text-sm ${hasScrolled ? 'text-gray-700 hover:bg-gray-100' : 'text-white hover:bg-gray-700'}`}>Perjalanan</Link>
-                  <Link href="/tentang-kami/board-pengurus" className={`block px-4 py-2 text-sm ${hasScrolled ? 'text-gray-700 hover:bg-gray-100' : 'text-white hover:bg-gray-700'}`}>Board dan Pengurus</Link>
+                  <Link href="/tentang-kami/tujuan" className={`block px-4 py-2 text-sm ${hasScrolled ? 'text-gray-700 hover:bg-gray-100 hover:text-pink-500' : 'text-white hover:bg-gray-700 hover:text-pink-500'}`}>Tujuan</Link>
+                  <Link href="/tentang-kami/perjalanan" className={`block px-4 py-2 text-sm ${hasScrolled ? 'text-gray-700 hover:bg-gray-100 hover:text-pink-500' : 'text-white hover:bg-gray-700 hover:text-pink-500'}`}>Perjalanan</Link>
+                  <Link href="/tentang-kami/board-pengurus" className={`block px-4 py-2 text-sm ${hasScrolled ? 'text-gray-700 hover:bg-gray-100 hover:text-pink-500' : 'text-white hover:bg-gray-700 hover:text-pink-500'}`}>Board dan Pengurus</Link>
                 </div>
               )}
             </div>
@@ -168,38 +161,38 @@ const Navbar = () => {
               onMouseEnter={handleProgramEnter}
               onMouseLeave={handleProgramLeave}
             >
-              <button className={`transition-colors flex items-center py-2 ${
-                hasScrolled ? 'hover:text-secondary text-gray-800' : 'hover:text-primary text-white'
+              <button className={`transition-colors flex items-center py-2 font-extrabold ${
+                hasScrolled ? 'hover:text-pink-500 text-gray-800' : 'hover:text-pink-500 text-white'
               }`}>
                 Program
                  <svg className={`w-4 h-4 ml-1 transition-transform duration-200 ${isProgramOpen ? 'transform rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
               </button>
               {isProgramOpen && (
                 <div 
-                  className={`absolute left-0 mt-0 w-48 rounded-md shadow-lg py-1 z-10 ${hasScrolled ? 'bg-white' : 'bg-gray-800'}`}
+                  className={`absolute left-0 mt-0 w-48 rounded-md shadow-lg py-1 z-10 font-semibold ${hasScrolled ? 'bg-white' : 'bg-gray-800'}`}
                   onMouseEnter={handleProgramEnter}
                   onMouseLeave={handleProgramLeave}
                 >
-                  <Link href="/program/diskusi" className={`block px-4 py-2 text-sm ${hasScrolled ? 'text-gray-700 hover:bg-gray-100' : 'text-white hover:bg-gray-700'}`}>Diskusi</Link>
-                  <Link href="/program/temu-kandidat" className={`block px-4 py-2 text-sm ${hasScrolled ? 'text-gray-700 hover:bg-gray-100' : 'text-white hover:bg-gray-700'}`}>Temu Kandidat</Link>
-                  <Link href="/program/academia-politica" className={`block px-4 py-2 text-sm ${hasScrolled ? 'text-gray-700 hover:bg-gray-100' : 'text-white hover:bg-gray-700'}`}>Academia Politica</Link>
-                  <Link href="/program/council-gen-z" className={`block px-4 py-2 text-sm ${hasScrolled ? 'text-gray-700 hover:bg-gray-100' : 'text-white hover:bg-gray-700'}`}>Council of Gen Z</Link>
+                  <Link href="/program/diskusi" className={`block px-4 py-2 text-sm ${hasScrolled ? 'text-gray-700 hover:bg-gray-100 hover:text-pink-500' : 'text-white hover:bg-gray-700 hover:text-pink-500'}`}>Diskusi</Link>
+                  <Link href="/program/temu-kandidat" className={`block px-4 py-2 text-sm ${hasScrolled ? 'text-gray-700 hover:bg-gray-100 hover:text-pink-500' : 'text-white hover:bg-gray-700 hover:text-pink-500'}`}>Temu Kandidat</Link>
+                  <Link href="/program/academia-politica" className={`block px-4 py-2 text-sm ${hasScrolled ? 'text-gray-700 hover:bg-gray-100 hover:text-pink-500' : 'text-white hover:bg-gray-700 hover:text-pink-500'}`}>Academia Politica</Link>
+                  <Link href="/program/council-gen-z" className={`block px-4 py-2 text-sm ${hasScrolled ? 'text-gray-700 hover:bg-gray-100 hover:text-pink-500' : 'text-white hover:bg-gray-700 hover:text-pink-500'}`}>Council of Gen Z</Link>
                 </div>
               )}
             </div>
             
-            <Link href="/publikasi" className={`transition-colors py-2 ${
-              hasScrolled ? 'hover:text-secondary text-gray-800' : 'hover:text-primary text-white'
+            <Link href="/publikasi" className={`transition-colors py-2 font-extrabold ${
+              hasScrolled ? 'hover:text-pink-500 text-gray-800' : 'hover:text-pink-500 text-white'
             }`}>
               Publikasi
             </Link>
-            <Link href="/report" className={`transition-colors py-2 ${
-              hasScrolled ? 'hover:text-secondary text-gray-800' : 'hover:text-primary text-white'
+            <Link href="/report" className={`transition-colors py-2 font-extrabold ${
+              hasScrolled ? 'hover:text-pink-500 text-gray-800' : 'hover:text-pink-500 text-white'
             }`}>
               Laporan
             </Link>
-            <Link href="/acara" className={`transition-colors py-2 ${
-              hasScrolled ? 'hover:text-secondary text-gray-800' : 'hover:text-primary text-white'
+            <Link href="/acara" className={`transition-colors py-2 font-extrabold ${
+              hasScrolled ? 'hover:text-pink-500 text-gray-800' : 'hover:text-pink-500 text-white'
             }`}>
               Acara
             </Link>
@@ -211,18 +204,10 @@ const Navbar = () => {
               Dukung Kami
             </Link>
             
-            {/* Language Selector */}
-            <button 
-              onClick={toggleLanguage}
-              className="bg-primary hover:bg-pink-500 hover:text-white text-black px-5 py-2 rounded-full font-semibold transition ml-4 h-10 flex items-center justify-center"
-            >
-              {language}
-            </button>
-            
             {/* Search Button */}
             <button 
               onClick={toggleSearchForm}
-              className="bg-primary hover:bg-pink-500 hover:text-white text-black px-5 py-2 rounded-full font-semibold transition ml-4 h-10 flex items-center justify-center"
+              className="bg-primary hover:bg-pink-500 hover:text-white text-black w-10 h-10 rounded-full font-semibold transition ml-4 flex items-center justify-center"
               aria-label="Search"
             >
               <Search size={20} />

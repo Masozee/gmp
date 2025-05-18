@@ -100,9 +100,9 @@ export default function AcaraPage() {
   if (isLoading) {
     return (
       <main className="min-h-screen bg-gray-50">
-        <header className="bg-[#f06d98] py-10 text-white">
+        <header className="bg-blue-500 py-10 text-white">
         <div className="container mx-auto px-4 max-w-7xl">
-            <h1 className="text-4xl md:text-5xl font-heading font-bold text-center">Acara & Kegiatan</h1>
+            <h1 className="text-4xl md:text-5xl font-heading font-bold text-center" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>Acara & Kegiatan</h1>
           </div>
         </header>
         <div className="container mx-auto px-4 max-w-7xl py-8">
@@ -122,12 +122,12 @@ export default function AcaraPage() {
   return (
     <main className="min-h-screen bg-gray-50">
       {/* Header Section */}
-      <header className="bg-[#f06d98] py-32 text-white shadow-lg">
+      <header className="bg-blue-500 py-32 text-white shadow-lg">
         <div className="container mx-auto px-4 max-w-7xl text-center">
-          <h1 className="text-4xl md:text-5xl font-heading font-bold mb-4">
+          <h1 className="text-4xl md:text-5xl font-heading font-bold mb-4" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>
             Acara & Kegiatan
           </h1>
-          <p className="text-lg text-blue-100 max-w-3xl mx-auto">
+          <p className="text-lg text-white max-w-3xl mx-auto">
             Temukan berbagai acara menarik dari Partisipasi Muda untuk meningkatkan kapasitas dan keterlibatan politik pemuda.
           </p>
         </div>
@@ -137,7 +137,7 @@ export default function AcaraPage() {
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Sidebar Filters */}
           <aside className="lg:w-1/4 bg-white p-6 rounded-lg shadow-md h-fit sticky top-28">
-            <h2 className="text-xl font-bold mb-4 text-gray-800">Filter Acara</h2>
+            <h2 className="text-xl font-bold mb-4 text-gray-800" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>Filter Acara</h2>
             
             <div className="mb-6">
               <label htmlFor="search" className="block text-sm font-medium text-gray-700 mb-1">Cari Acara</label>
@@ -184,64 +184,99 @@ export default function AcaraPage() {
         
           {/* Main Content - Event Cards */}
           <div className="lg:w-3/4">
-        <div className="mb-6">
-          <p className="text-gray-600">
-            Menampilkan {filteredEvents.length} acara {filter !== 'all' ? `dalam kategori "${filter.charAt(0).toUpperCase() + filter.slice(1)}"` : ''}
-            {searchQuery ? ` dengan kata kunci "${searchQuery}"` : ''}
-          </p>
-        </div>
-        
-        {filteredEvents.length === 0 ? (
-          <div className="bg-white p-12 rounded-lg shadow-md text-center">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-                <h3 className="text-xl font-bold mb-2 text-gray-800">Tidak Ada Acara Ditemukan</h3>
+            <div className="mb-6">
+              <p className="text-gray-600">
+                Menampilkan {filteredEvents.length} acara {filter !== 'all' ? `dalam kategori "${filter.charAt(0).toUpperCase() + filter.slice(1)}"` : ''}
+                {searchQuery ? ` dengan kata kunci "${searchQuery}"` : ''}
+              </p>
+            </div>
+            
+            {filteredEvents.length === 0 ? (
+              <div className="bg-white p-12 rounded-lg shadow-md text-center">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <h3 className="text-xl font-bold mb-2 text-gray-800" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>Tidak Ada Acara Ditemukan</h3>
                 <p className="text-gray-600">Coba gunakan filter atau kata kunci lain.</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-            {filteredEvents.map((event) => (
-              <div key={event.id} className="relative shadow-md overflow-hidden border border-gray-200 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 h-[450px] group">
-                <div className="absolute inset-0 w-full h-full transition-transform duration-700 ease-in-out group-hover:scale-110 group-hover:rotate-1" 
-                  style={{ 
-                    backgroundImage: `url('${event.image}')`, 
-                    backgroundSize: 'cover', 
-                    backgroundPosition: 'center'
-                  }}>
-                </div>
-                <div className="absolute inset-0" style={{ background: 'linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.6) 50%, rgba(0,0,0,0.9) 100%)' }}></div>
-                <div className="absolute top-0 right-0 z-10 bg-primary text-white text-sm font-medium px-3 py-1">{event.category}</div>
-                <div className="absolute bottom-0 left-0 right-0 p-6 text-white flex flex-col h-2/3 justify-end">
-                  <h3 className="text-xl font-bold mb-4 line-clamp-2">{event.title}</h3>
-                  <div className="flex items-center mb-2 text-sm">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                    <span>{event.date}</span>
-                    <span className="mx-2">•</span>
-                    <span>{event.time}</span>
-                  </div>
-                  <div className="flex items-center mb-4 text-sm">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
-                    <span className="line-clamp-1">{event.location}</span>
-                  </div>
-                  <div className="mt-4">
-                    <Link href={`/acara/${event.id}`}
-                      className={`inline-block w-full text-center py-2 px-4 rounded-md font-medium transition-all hover:bg-[#F06292] hover:text-white ${
-                        event.isRegistrationOpen ? 'bg-yellow-400 text-black' : 'bg-gray-300 text-gray-600 cursor-not-allowed hover:bg-gray-300 hover:text-gray-600'
-                      }`}>
-                      {event.isRegistrationOpen ? 'Daftar Sekarang' : 'Pendaftaran Ditutup'}
-                    </Link>
-                  </div>
-                </div>
               </div>
-            ))}
-          </div>
-        )}
+            ) : (
+              <div className="space-y-8">
+                {filteredEvents.map(event => (
+                  <div key={event.id} className="flex flex-col sm:flex-row bg-white rounded-lg shadow-sm overflow-hidden">
+                    {/* Event Image */}
+                    <div className="sm:w-1/3 relative">
+                      <img
+                        src={event.image || '/images/default-event.jpg'}
+                        alt={event.title}
+                        className="w-full h-full object-cover"
+                      />
+                      <div className="absolute top-2 left-2 flex gap-2">
+                        <span className="text-xs font-semibold rounded-full px-2 py-0.5 bg-[#ffe066] text-black">
+                          {event.isPaid ? `Rp${event.price?.toLocaleString('id-ID')}` : 'Gratis'}
+                        </span>
+                        <span className="text-xs font-semibold bg-[#ffe066] text-black rounded-full px-2 py-0.5">
+                          {event.category}
+                        </span>
+                      </div>
+                    </div>
+                    
+                    {/* Event Content */}
+                    <div className="p-6 sm:w-2/3 flex flex-col">
+                      <h3 className="text-xl font-bold mb-2 text-gray-800" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>
+                        {event.title}
+                      </h3>
+                      
+                      <div className="text-sm text-gray-600 mb-4">
+                        <div className="flex items-center mb-1">
+                          <svg className="h-4 w-4 mr-1 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                          </svg>
+                          {event.date}
+                        </div>
+                        <div className="flex items-center mb-1">
+                          <svg className="h-4 w-4 mr-1 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          {event.time}
+                        </div>
+                        <div className="flex items-center">
+                          <svg className="h-4 w-4 mr-1 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                          </svg>
+                          {event.location}
+                        </div>
+                      </div>
+                      
+                      {/* Description */}
+                      <p className="text-sm text-gray-600 mb-4 line-clamp-3">
+                        {event.description}
+                      </p>
+                      
+                      {/* Speakers - This assumes speakers data is in the description format "Speakers: Name1, Name2" */}
+                      <div className="mb-4">
+                        <h4 className="text-sm font-semibold text-gray-700 mb-1">Pembicara:</h4>
+                        <p className="text-sm text-gray-600">
+                          {event.description.includes("Pembicara:") ? 
+                            event.description.split("Pembicara:")[1].split(".")[0].trim() : 
+                            "Info pembicara akan diumumkan"}
+                        </p>
+                      </div>
+                      
+                      {/* Button */}
+                      <div className="mt-auto">
+                        <Link 
+                          href={`/acara/${event.id}`}
+                          className="inline-block font-medium py-2 px-4 rounded-md text-sm bg-[#f06d98] text-white hover:bg-[#ffe066] hover:text-black transition-colors"
+                        >
+                          Lebih Lanjut
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>

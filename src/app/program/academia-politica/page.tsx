@@ -13,7 +13,7 @@ const AcademiaPoliticaPage = () => {
       <p>
         Bekerja sama dengan institusi pendidikan terkemuka, Academia Politica menawarkan program pendidikan politik yang lebih mendalam dan terstruktur. Program ini dirancang untuk membekali peserta dengan pengetahuan teoritis dan keterampilan praktis dalam analisis politik dan kebijakan.
       </p>
-       <h2 className="text-2xl font-semibold mt-8 mb-4">Kurikulum</h2>
+       <h2 className="text-2xl font-semibold mt-8 mb-4 text-primary" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>Kurikulum</h2>
       <p>
         Kurikulum kami mencakup topik-topik seperti sistem politik Indonesia, pembuatan kebijakan publik, hubungan internasional, komunikasi politik, dan partisipasi warga negara. Pembelajaran dilakukan melalui kuliah, diskusi, studi kasus, dan simulasi.
       </p>

@@ -36,43 +36,160 @@ ChartJS.register(
 
 // Data for provinces with activity information
 const provinceData = [
-  { id: 'ID-AC', name: 'Aceh', value: 75, activities: 12 },
-  { id: 'ID-SU', name: 'Sumatera Utara', value: 65, activities: 10 },
-  { id: 'ID-SB', name: 'Sumatera Barat', value: 80, activities: 15 },
-  { id: 'ID-RI', name: 'Riau', value: 60, activities: 8 },
-  { id: 'ID-JA', name: 'Jambi', value: 45, activities: 5 },
-  { id: 'ID-SS', name: 'Sumatera Selatan', value: 70, activities: 11 },
-  { id: 'ID-BE', name: 'Bengkulu', value: 40, activities: 4 },
-  { id: 'ID-LA', name: 'Lampung', value: 55, activities: 7 },
-  { id: 'ID-BB', name: 'Kepulauan Bangka Belitung', value: 30, activities: 3 },
-  { id: 'ID-KR', name: 'Kepulauan Riau', value: 35, activities: 4 },
-  { id: 'ID-JK', name: 'DKI Jakarta', value: 95, activities: 25 },
-  { id: 'ID-JB', name: 'Jawa Barat', value: 90, activities: 20 },
-  { id: 'ID-JT', name: 'Jawa Tengah', value: 85, activities: 18 },
-  { id: 'ID-YO', name: 'DI Yogyakarta', value: 88, activities: 19 },
-  { id: 'ID-JI', name: 'Jawa Timur', value: 82, activities: 17 },
-  { id: 'ID-BT', name: 'Banten', value: 75, activities: 12 },
-  { id: 'ID-BA', name: 'Bali', value: 78, activities: 14 },
-  { id: 'ID-NB', name: 'Nusa Tenggara Barat', value: 60, activities: 8 },
-  { id: 'ID-NT', name: 'Nusa Tenggara Timur', value: 50, activities: 6 },
-  { id: 'ID-KB', name: 'Kalimantan Barat', value: 45, activities: 5 },
-  { id: 'ID-KT', name: 'Kalimantan Tengah', value: 40, activities: 4 },
-  { id: 'ID-KS', name: 'Kalimantan Selatan', value: 55, activities: 7 },
-  { id: 'ID-KI', name: 'Kalimantan Timur', value: 60, activities: 8 },
-  { id: 'ID-KU', name: 'Kalimantan Utara', value: 35, activities: 4 },
-  { id: 'ID-SA', name: 'Sulawesi Utara', value: 50, activities: 6 },
-  { id: 'ID-ST', name: 'Sulawesi Tengah', value: 45, activities: 5 },
-  { id: 'ID-SN', name: 'Sulawesi Selatan', value: 65, activities: 10 },
-  { id: 'ID-SG', name: 'Sulawesi Tenggara', value: 40, activities: 4 },
-  { id: 'ID-GO', name: 'Gorontalo', value: 30, activities: 3 },
-  { id: 'ID-SR', name: 'Sulawesi Barat', value: 25, activities: 2 },
-  { id: 'ID-MA', name: 'Maluku', value: 35, activities: 4 },
-  { id: 'ID-MU', name: 'Maluku Utara', value: 30, activities: 3 },
-  { id: 'ID-PA', name: 'Papua', value: 40, activities: 4 },
-  { id: 'ID-PB', name: 'Papua Barat', value: 35, activities: 4 },
+  // WIB (UTC+7) Timezone
+  { id: 'ID-AC', name: 'Aceh', value: 75, activities: 12, timezone: 'WIB' },
+  { id: 'ID-SU', name: 'Sumatera Utara', value: 65, activities: 10, timezone: 'WIB' },
+  { id: 'ID-SB', name: 'Sumatera Barat', value: 80, activities: 15, timezone: 'WIB' },
+  { id: 'ID-RI', name: 'Riau', value: 60, activities: 8, timezone: 'WIB' },
+  { id: 'ID-JA', name: 'Jambi', value: 45, activities: 5, timezone: 'WIB' },
+  { id: 'ID-SS', name: 'Sumatera Selatan', value: 70, activities: 11, timezone: 'WIB' },
+  { id: 'ID-BE', name: 'Bengkulu', value: 40, activities: 4, timezone: 'WIB' },
+  { id: 'ID-LA', name: 'Lampung', value: 55, activities: 7, timezone: 'WIB' },
+  { id: 'ID-BB', name: 'Kepulauan Bangka Belitung', value: 30, activities: 3, timezone: 'WIB' },
+  { id: 'ID-KR', name: 'Kepulauan Riau', value: 35, activities: 4, timezone: 'WIB' },
+  { id: 'ID-JK', name: 'DKI Jakarta', value: 95, activities: 25, timezone: 'WIB' },
+  { id: 'ID-JB', name: 'Jawa Barat', value: 90, activities: 20, timezone: 'WIB' },
+  { id: 'ID-JT', name: 'Jawa Tengah', value: 85, activities: 18, timezone: 'WIB' },
+  { id: 'ID-YO', name: 'DI Yogyakarta', value: 88, activities: 19, timezone: 'WIB' },
+  { id: 'ID-JI', name: 'Jawa Timur', value: 82, activities: 17, timezone: 'WIB' },
+  { id: 'ID-BT', name: 'Banten', value: 75, activities: 12, timezone: 'WIB' },
+  { id: 'ID-KB', name: 'Kalimantan Barat', value: 45, activities: 5, timezone: 'WIB' },
+  { id: 'ID-KT', name: 'Kalimantan Tengah', value: 40, activities: 4, timezone: 'WIB' },
+  
+  // WITA (UTC+8) Timezone
+  { id: 'ID-BA', name: 'Bali', value: 78, activities: 14, timezone: 'WITA' },
+  { id: 'ID-NB', name: 'Nusa Tenggara Barat', value: 60, activities: 8, timezone: 'WITA' },
+  { id: 'ID-NT', name: 'Nusa Tenggara Timur', value: 50, activities: 6, timezone: 'WITA' },
+  { id: 'ID-KS', name: 'Kalimantan Selatan', value: 55, activities: 7, timezone: 'WITA' },
+  { id: 'ID-KI', name: 'Kalimantan Timur', value: 60, activities: 8, timezone: 'WITA' },
+  { id: 'ID-KU', name: 'Kalimantan Utara', value: 35, activities: 4, timezone: 'WITA' },
+  { id: 'ID-SA', name: 'Sulawesi Utara', value: 50, activities: 6, timezone: 'WITA' },
+  { id: 'ID-ST', name: 'Sulawesi Tengah', value: 45, activities: 5, timezone: 'WITA' },
+  { id: 'ID-SN', name: 'Sulawesi Selatan', value: 65, activities: 10, timezone: 'WITA' },
+  { id: 'ID-SG', name: 'Sulawesi Tenggara', value: 40, activities: 4, timezone: 'WITA' },
+  { id: 'ID-GO', name: 'Gorontalo', value: 30, activities: 3, timezone: 'WITA' },
+  { id: 'ID-SR', name: 'Sulawesi Barat', value: 25, activities: 2, timezone: 'WITA' },
+  
+  // WIT (UTC+9) Timezone
+  { id: 'ID-MA', name: 'Maluku', value: 35, activities: 4, timezone: 'WIT' },
+  { id: 'ID-MU', name: 'Maluku Utara', value: 30, activities: 3, timezone: 'WIT' },
+  { id: 'ID-PA', name: 'Papua', value: 40, activities: 4, timezone: 'WIT' },
+  { id: 'ID-PB', name: 'Papua Barat', value: 35, activities: 4, timezone: 'WIT' },
 ];
 
-// National data - aggregated from province data
+// Calculate aggregated data by timezone
+const timezoneData = {
+  'WIB': {
+    totalActivities: provinceData.filter(p => p.timezone === 'WIB').reduce((sum, province) => sum + province.activities, 0),
+    avgValue: Math.round(provinceData.filter(p => p.timezone === 'WIB').reduce((sum, province) => sum + province.value, 0) / 
+              provinceData.filter(p => p.timezone === 'WIB').length),
+    count: provinceData.filter(p => p.timezone === 'WIB').length,
+    color: '#4299e1', // Blue
+    provinces: provinceData.filter(p => p.timezone === 'WIB').map(p => p.name),
+    participants: provinceData.filter(p => p.timezone === 'WIB').reduce((sum, province) => sum + province.activities * 120, 0),
+    monthlyActivities: {
+      'Jan': 28,
+      'Feb': 32,
+      'Mar': 38,
+      'Apr': 42,
+      'Mei': 45,
+      'Jun': 52,
+      'Jul': 48,
+      'Agu': 58,
+      'Sep': 47,
+      'Okt': 44,
+      'Nov': 38,
+      'Des': 33
+    },
+    activityTypes: {
+      'Workshop': 42,
+      'Seminar': 28,
+      'Dialog Publik': 15,
+      'Pelatihan': 10,
+      'Festival': 5
+    },
+    participantsByAge: {
+      '16-20': 35,
+      '21-25': 42,
+      '26-30': 15,
+      '31-35': 8
+    }
+  },
+  'WITA': {
+    totalActivities: provinceData.filter(p => p.timezone === 'WITA').reduce((sum, province) => sum + province.activities, 0),
+    avgValue: Math.round(provinceData.filter(p => p.timezone === 'WITA').reduce((sum, province) => sum + province.value, 0) / 
+              provinceData.filter(p => p.timezone === 'WITA').length),
+    count: provinceData.filter(p => p.timezone === 'WITA').length,
+    color: '#48bb78', // Green
+    provinces: provinceData.filter(p => p.timezone === 'WITA').map(p => p.name),
+    participants: provinceData.filter(p => p.timezone === 'WITA').reduce((sum, province) => sum + province.activities * 100, 0),
+    monthlyActivities: {
+      'Jan': 18,
+      'Feb': 22,
+      'Mar': 25,
+      'Apr': 30,
+      'Mei': 33,
+      'Jun': 38,
+      'Jul': 35,
+      'Agu': 40,
+      'Sep': 32,
+      'Okt': 28,
+      'Nov': 24,
+      'Des': 20
+    },
+    activityTypes: {
+      'Workshop': 38,
+      'Seminar': 25,
+      'Dialog Publik': 18,
+      'Pelatihan': 12,
+      'Festival': 7
+    },
+    participantsByAge: {
+      '16-20': 32,
+      '21-25': 40,
+      '26-30': 18,
+      '31-35': 10
+    }
+  },
+  'WIT': {
+    totalActivities: provinceData.filter(p => p.timezone === 'WIT').reduce((sum, province) => sum + province.activities, 0),
+    avgValue: Math.round(provinceData.filter(p => p.timezone === 'WIT').reduce((sum, province) => sum + province.value, 0) / 
+              provinceData.filter(p => p.timezone === 'WIT').length),
+    count: provinceData.filter(p => p.timezone === 'WIT').length,
+    color: '#ed8936', // Orange
+    provinces: provinceData.filter(p => p.timezone === 'WIT').map(p => p.name),
+    participants: provinceData.filter(p => p.timezone === 'WIT').reduce((sum, province) => sum + province.activities * 80, 0),
+    monthlyActivities: {
+      'Jan': 8,
+      'Feb': 10,
+      'Mar': 12,
+      'Apr': 15,
+      'Mei': 18,
+      'Jun': 20,
+      'Jul': 18,
+      'Agu': 22,
+      'Sep': 16,
+      'Okt': 14,
+      'Nov': 12,
+      'Des': 10
+    },
+    activityTypes: {
+      'Workshop': 35,
+      'Seminar': 30,
+      'Dialog Publik': 20,
+      'Pelatihan': 10,
+      'Festival': 5
+    },
+    participantsByAge: {
+      '16-20': 30,
+      '21-25': 45,
+      '26-30': 15,
+      '31-35': 10
+    }
+  }
+};
+
+// National data - aggregated from province data, now including timezone distribution
 const nationalData = {
   name: 'Indonesia',
   totalActivities: provinceData.reduce((sum, province) => sum + province.activities, 0),
@@ -84,6 +201,14 @@ const nationalData = {
     'Sulawesi': 12,
     'Bali & Nusa Tenggara': 5,
     'Maluku & Papua': 3
+  },
+  participantsByTimezone: {
+    'WIB (UTC+7)': Math.round((timezoneData.WIB.totalActivities / 
+                    (timezoneData.WIB.totalActivities + timezoneData.WITA.totalActivities + timezoneData.WIT.totalActivities)) * 100),
+    'WITA (UTC+8)': Math.round((timezoneData.WITA.totalActivities / 
+                     (timezoneData.WIB.totalActivities + timezoneData.WITA.totalActivities + timezoneData.WIT.totalActivities)) * 100),
+    'WIT (UTC+9)': Math.round((timezoneData.WIT.totalActivities / 
+                    (timezoneData.WIB.totalActivities + timezoneData.WITA.totalActivities + timezoneData.WIT.totalActivities)) * 100)
   },
   participantsByAge: {
     '16-20': 35,
@@ -135,17 +260,32 @@ interface ProvinceData {
   name: string;
   value: number;
   activities: number;
+  timezone: string;
 }
 
-// Add interface for chart data
+// Add interface for chart data with timezone data
 interface ChartData {
   name: string;
   totalActivities: number;
   avgValue: number;
   participantsByRegion: Record<string, number>;
   participantsByAge: Record<string, number>;
+  participantsByTimezone?: Record<string, number>;
   activityTypes: Record<string, number>;
   monthlyActivities: Record<string, number>;
+}
+
+// Interface for timezone data
+interface TimezoneData {
+  totalActivities: number;
+  avgValue: number;
+  count: number;
+  color: string;
+  provinces: string[];
+  participants: number;
+  monthlyActivities: Record<string, number>;
+  activityTypes: Record<string, number>;
+  participantsByAge: Record<string, number>;
 }
 
 const LeafletMap = () => {
@@ -154,6 +294,8 @@ const LeafletMap = () => {
   const [error, setError] = useState<string | null>(null);
   const [selectedProvince, setSelectedProvince] = useState<ProvinceData | null>(null);
   const [chartData, setChartData] = useState<ChartData>(nationalData);
+  const [viewMode, setViewMode] = useState<'province' | 'timezone'>('timezone');
+  const [selectedTimezone, setSelectedTimezone] = useState<string | null>(null);
 
   // Fix Leaflet icon issue in Next.js
   useEffect(() => {
@@ -224,6 +366,7 @@ const LeafletMap = () => {
         name: cleanName,
         value: 30,
         activities: 2,
+        timezone: 'unknown',
         id: 'unknown'
       };
     }
@@ -247,64 +390,110 @@ const LeafletMap = () => {
     
     layer.on({
       click: () => {
-        setSelectedProvince(prevState => {
-          const newState = prevState && prevState.name === province.name ? null : province;
+        if (viewMode === 'timezone') {
+          // In timezone mode, clicking selects the timezone instead of the province
+          setSelectedTimezone(prevTimezone => prevTimezone === province.timezone ? null : province.timezone);
+          setSelectedProvince(null);
           
-          // If province is deselected, show national data
-          if (newState === null) {
+          // Update chart data based on timezone
+          if (selectedTimezone === province.timezone) {
+            // If deselecting, show national data
             setChartData(nationalData);
           } else {
-            // Create custom chart data for the selected province
-            setChartData({
-              name: province.name,
-              totalActivities: province.activities,
-              avgValue: province.value,
-              participantsByRegion: { [province.name]: 100 },
-              participantsByAge: {
-                '16-20': 30 + ((province.activities * 7) % 15),
-                '21-25': 35 + ((province.activities * 3) % 15),
-                '26-30': 10 + ((province.activities * 5) % 15),
-                '31-35': 5 + ((province.activities * 2) % 10)
-              },
-              activityTypes: {
-                'Workshop': 30 + ((province.activities * 2) % 30),
-                'Seminar': 20 + ((province.activities * 3) % 20),
-                'Dialog Publik': 10 + ((province.activities * 4) % 15),
-                'Pelatihan': 5 + ((province.activities * 5) % 10),
-                'Festival': 0 + ((province.activities * 6) % 10)
-              },
-              monthlyActivities: {
-                'Jan': (province.activities + 1) % 12 || 1,
-                'Feb': (province.activities + 2) % 15 || 1,
-                'Mar': (province.activities + 3) % 18 || 1,
-                'Apr': (province.activities + 4) % 22 || 1,
-                'Mei': (province.activities + 5) % 25 || 1,
-                'Jun': (province.activities + 6) % 30 || 1,
-                'Jul': (province.activities + 7) % 28 || 1,
-                'Agu': (province.activities + 8) % 32 || 1,
-                'Sep': (province.activities + 9) % 27 || 1,
-                'Okt': (province.activities + 10) % 24 || 1,
-                'Nov': (province.activities + 11) % 20 || 1,
-                'Des': (province.activities + 12) % 17 || 1
-              }
-            });
+            // Get timezone data for the selected timezone
+            const tzData = timezoneData[province.timezone as keyof typeof timezoneData];
+            if (tzData) {
+              setChartData({
+                name: `Zona ${province.timezone} (${province.timezone === 'WIB' ? 'UTC+7' : province.timezone === 'WITA' ? 'UTC+8' : 'UTC+9'})`,
+                totalActivities: tzData.totalActivities,
+                avgValue: tzData.avgValue,
+                participantsByRegion: { 
+                  [`Zona ${province.timezone}`]: 100 
+                },
+                participantsByTimezone: { 
+                  [`${province.timezone} (${province.timezone === 'WIB' ? 'UTC+7' : province.timezone === 'WITA' ? 'UTC+8' : 'UTC+9'})`]: 100 
+                },
+                participantsByAge: tzData.participantsByAge,
+                activityTypes: tzData.activityTypes,
+                monthlyActivities: tzData.monthlyActivities
+              });
+            }
           }
-          
-          return newState;
-        });
+        } else {
+          // Original province selection behavior
+          setSelectedProvince(prevState => {
+            const newState = prevState && prevState.name === province.name ? null : province;
+            
+            // If province is deselected, show national data
+            if (newState === null) {
+              setChartData(nationalData);
+            } else {
+              // Create custom chart data for the selected province
+              setChartData({
+                name: province.name,
+                totalActivities: province.activities,
+                avgValue: province.value,
+                participantsByRegion: { [province.name]: 100 },
+                participantsByTimezone: { 
+                  [`${province.timezone} (${province.timezone === 'WIB' ? 'UTC+7' : province.timezone === 'WITA' ? 'UTC+8' : 'UTC+9'})`]: 100 
+                },
+                participantsByAge: {
+                  '16-20': 30 + ((province.activities * 7) % 15),
+                  '21-25': 35 + ((province.activities * 3) % 15),
+                  '26-30': 10 + ((province.activities * 5) % 15),
+                  '31-35': 5 + ((province.activities * 2) % 10)
+                },
+                activityTypes: {
+                  'Workshop': 30 + ((province.activities * 2) % 30),
+                  'Seminar': 20 + ((province.activities * 3) % 20),
+                  'Dialog Publik': 10 + ((province.activities * 4) % 15),
+                  'Pelatihan': 5 + ((province.activities * 5) % 10),
+                  'Festival': 0 + ((province.activities * 6) % 10)
+                },
+                monthlyActivities: {
+                  'Jan': (province.activities + 1) % 12 || 1,
+                  'Feb': (province.activities + 2) % 15 || 1,
+                  'Mar': (province.activities + 3) % 18 || 1,
+                  'Apr': (province.activities + 4) % 22 || 1,
+                  'Mei': (province.activities + 5) % 25 || 1,
+                  'Jun': (province.activities + 6) % 30 || 1,
+                  'Jul': (province.activities + 7) % 28 || 1,
+                  'Agu': (province.activities + 8) % 32 || 1,
+                  'Sep': (province.activities + 9) % 27 || 1,
+                  'Okt': (province.activities + 10) % 24 || 1,
+                  'Nov': (province.activities + 11) % 20 || 1,
+                  'Des': (province.activities + 12) % 17 || 1
+                }
+              });
+            }
+            
+            return newState;
+          });
+        }
       }
     });
     
     layer.bindTooltip(`
       <div>
-        <strong>${province.name}</strong><br/>
-        Tingkat Aktivitas: ${province.value}%<br/>
-        Jumlah Kegiatan: ${province.activities}
+        <strong>${viewMode === 'timezone' ? `Zona ${province.timezone}` : province.name}</strong><br/>
+        ${viewMode === 'timezone' ? `(${province.timezone === 'WIB' ? 'UTC+7' : province.timezone === 'WITA' ? 'UTC+8' : 'UTC+9'})` : 
+        `Zona Waktu: ${province.timezone} (${province.timezone === 'WIB' ? 'UTC+7' : province.timezone === 'WITA' ? 'UTC+8' : 'UTC+9'})`}<br/>
+        ${viewMode === 'timezone' ? 
+          `Jumlah Provinsi: ${timezoneData[province.timezone as keyof typeof timezoneData]?.count || 0}<br/>
+          Total Kegiatan: ${timezoneData[province.timezone as keyof typeof timezoneData]?.totalActivities || 0}` :
+          `Tingkat Aktivitas: ${province.value}%<br/>
+          Jumlah Kegiatan: ${province.activities}`
+        }
       </div>
     `, { sticky: true });
   };
 
-  // Define style function with proper typing for react-leaflet
+  // Get color based on timezone when in timezone view mode
+  const getTimezoneColor = (timezone: string) => {
+    return timezoneData[timezone as keyof typeof timezoneData]?.color || '#cccccc';
+  };
+
+  // Define style function with timezone coloring option
   const geoJSONStyle = (feature: Feature<Geometry, FeatureProperties> | undefined): PathOptions => {
     if (!feature || !feature.properties) {
       return {
@@ -322,7 +511,7 @@ const LeafletMap = () => {
     const province = getProvinceData(provinceName);
     
     return {
-      fillColor: getColor(province.value),
+      fillColor: viewMode === 'timezone' ? getTimezoneColor(province.timezone) : getColor(province.value),
       weight: 1,
       opacity: 1,
       color: 'white',
@@ -359,26 +548,80 @@ const LeafletMap = () => {
 
   return (
     <div className="relative">
-      {/* Legend */}
+      {/* View Mode Toggle */}
+      <div className="absolute top-4 left-4 bg-white p-3 rounded-md shadow-md z-[500]">
+        <h4 className="text-sm font-semibold mb-2">Tampilan Peta</h4>
+        <div className="flex gap-2">
+          <button
+            onClick={() => {
+              setViewMode('province');
+              setSelectedTimezone(null);
+            }}
+            className={`px-3 py-1 text-xs rounded ${
+              viewMode === 'province' 
+                ? 'bg-pink-600 text-white' 
+                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+            }`}
+          >
+            Provinsi
+          </button>
+          <button
+            onClick={() => {
+              setViewMode('timezone');
+              setSelectedProvince(null);
+            }}
+            className={`px-3 py-1 text-xs rounded ${
+              viewMode === 'timezone' 
+                ? 'bg-pink-600 text-white' 
+                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+            }`}
+          >
+            Zona Waktu
+          </button>
+        </div>
+      </div>
+
+      {/* Legend - Dynamic based on view mode */}
       <div className="absolute top-4 right-4 bg-white p-3 rounded-md shadow-md z-[500]">
-        <h4 className="text-sm font-semibold mb-2">Tingkat Aktivitas</h4>
+        <h4 className="text-sm font-semibold mb-2">
+          {viewMode === 'timezone' ? 'Zona Waktu' : 'Tingkat Aktivitas'}
+        </h4>
         <div className="flex flex-col gap-1">
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4" style={{ backgroundColor: '#d53f8c' }}></div>
-            <span className="text-xs">Sangat Tinggi (80-100)</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4" style={{ backgroundColor: '#e779ba' }}></div>
-            <span className="text-xs">Tinggi (60-79)</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4" style={{ backgroundColor: '#f0a6d2' }}></div>
-            <span className="text-xs">Sedang (40-59)</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4" style={{ backgroundColor: '#f8d4e8' }}></div>
-            <span className="text-xs">Rendah (0-39)</span>
-          </div>
+          {viewMode === 'timezone' ? (
+            <>
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-4" style={{ backgroundColor: timezoneData.WIB.color }}></div>
+                <span className="text-xs">WIB (UTC+7) - {timezoneData.WIB.count} provinsi</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-4" style={{ backgroundColor: timezoneData.WITA.color }}></div>
+                <span className="text-xs">WITA (UTC+8) - {timezoneData.WITA.count} provinsi</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-4" style={{ backgroundColor: timezoneData.WIT.color }}></div>
+                <span className="text-xs">WIT (UTC+9) - {timezoneData.WIT.count} provinsi</span>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-4" style={{ backgroundColor: '#d53f8c' }}></div>
+                <span className="text-xs">Sangat Tinggi (80-100)</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-4" style={{ backgroundColor: '#e779ba' }}></div>
+                <span className="text-xs">Tinggi (60-79)</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-4" style={{ backgroundColor: '#f0a6d2' }}></div>
+                <span className="text-xs">Sedang (40-59)</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-4" style={{ backgroundColor: '#f8d4e8' }}></div>
+                <span className="text-xs">Rendah (0-39)</span>
+              </div>
+            </>
+          )}
         </div>
       </div>
 
@@ -404,12 +647,88 @@ const LeafletMap = () => {
         )}
       </div>
       
-      {/* Selected Province Details */}
-      {selectedProvince && (
+      {/* Selected Timezone Details */}
+      {selectedTimezone && viewMode === 'timezone' && (
+        <div className="mt-6 p-4 bg-pink-50 rounded-lg mb-6">
+          <h3 className="text-xl font-bold text-pink-700 mb-2">
+            Zona {selectedTimezone} ({selectedTimezone === 'WIB' ? 'UTC+7' : selectedTimezone === 'WITA' ? 'UTC+8' : 'UTC+9'})
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <p className="text-gray-700">Jumlah Provinsi: <span className="font-semibold">{timezoneData[selectedTimezone as keyof typeof timezoneData]?.count || 0}</span></p>
+              <p className="text-gray-700">Total Kegiatan: <span className="font-semibold">{timezoneData[selectedTimezone as keyof typeof timezoneData]?.totalActivities || 0}</span></p>
+              <p className="text-gray-700">Total Peserta: <span className="font-semibold">{timezoneData[selectedTimezone as keyof typeof timezoneData]?.participants || 0}</span></p>
+              <p className="text-gray-700">Rata-rata Aktivitas: <span className="font-semibold">{timezoneData[selectedTimezone as keyof typeof timezoneData]?.avgValue || 0}%</span></p>
+              
+              <div className="mt-4">
+                <h4 className="font-semibold text-pink-700 mb-2">Provinsi dalam Zona {selectedTimezone}:</h4>
+                <div className="flex flex-wrap gap-1 mt-1">
+                  {timezoneData[selectedTimezone as keyof typeof timezoneData]?.provinces.map((province, index) => (
+                    <span key={index} className="inline-block bg-white px-2 py-1 text-xs rounded shadow-sm">
+                      {province}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+            <div>
+              <h4 className="font-semibold text-pink-700 mb-1">Perbandingan Zona Waktu:</h4>
+              <div className="space-y-2 mt-2">
+                <div>
+                  <div className="flex justify-between text-xs">
+                    <span>WIB (UTC+7)</span>
+                    <span>{timezoneData.WIB.totalActivities} kegiatan</span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-2">
+                    <div className="bg-blue-500 h-2 rounded-full" 
+                      style={{ width: `${(timezoneData.WIB.totalActivities / (timezoneData.WIB.totalActivities + timezoneData.WITA.totalActivities + timezoneData.WIT.totalActivities)) * 100}%` }}>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <div className="flex justify-between text-xs">
+                    <span>WITA (UTC+8)</span>
+                    <span>{timezoneData.WITA.totalActivities} kegiatan</span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-2">
+                    <div className="bg-green-500 h-2 rounded-full" 
+                      style={{ width: `${(timezoneData.WITA.totalActivities / (timezoneData.WIB.totalActivities + timezoneData.WITA.totalActivities + timezoneData.WIT.totalActivities)) * 100}%` }}>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <div className="flex justify-between text-xs">
+                    <span>WIT (UTC+9)</span>
+                    <span>{timezoneData.WIT.totalActivities} kegiatan</span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-2">
+                    <div className="bg-orange-500 h-2 rounded-full" 
+                      style={{ width: `${(timezoneData.WIT.totalActivities / (timezoneData.WIB.totalActivities + timezoneData.WITA.totalActivities + timezoneData.WIT.totalActivities)) * 100}%` }}>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="mt-4 p-3 bg-white rounded shadow-sm">
+                <h4 className="font-semibold text-pink-700 mb-1">Program Unggulan</h4>
+                <ul className="list-disc list-inside text-sm text-gray-700">
+                  <li>Gerakan Literasi Politik Zona {selectedTimezone}</li>
+                  <li>Pelatihan Kepemimpinan Wilayah {selectedTimezone}</li>
+                  <li>Dialog Pemuda Antar Provinsi</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      
+      {/* Selected Province Details (only shown in province view mode) */}
+      {selectedProvince && viewMode === 'province' && (
         <div className="mt-6 p-4 bg-pink-50 rounded-lg mb-6">
           <h3 className="text-xl font-bold text-pink-700 mb-2">{selectedProvince.name}</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
+              <p className="text-gray-700">Zona Waktu: <span className="font-semibold">{selectedProvince.timezone} ({selectedProvince.timezone === 'WIB' ? 'UTC+7' : selectedProvince.timezone === 'WITA' ? 'UTC+8' : 'UTC+9'})</span></p>
               <p className="text-gray-700">Tingkat Aktivitas: <span className="font-semibold">{selectedProvince.value}%</span></p>
               <p className="text-gray-700">Jumlah Kegiatan: <span className="font-semibold">{selectedProvince.activities}</span></p>
               <div className="mt-2 w-full bg-gray-200 rounded-full h-2.5">
@@ -493,7 +812,7 @@ const LeafletMap = () => {
         </h3>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {/* Pie Chart */}
+          {/* Pie Chart for Region Distribution */}
           <div className="bg-white p-4 rounded-lg shadow-sm">
             <h4 className="font-semibold text-pink-700 mb-3 text-sm">Distribusi Wilayah</h4>
             <div className="relative h-48">
@@ -506,6 +825,47 @@ const LeafletMap = () => {
                       backgroundColor: [
                         '#d53f8c', '#e779ba', '#f0a6d2', '#f8d4e8', 
                         '#9f7aea', '#667eea', '#4299e1'
+                      ],
+                      borderColor: '#ffffff',
+                      borderWidth: 1,
+                    },
+                  ],
+                }}
+                options={{
+                  plugins: {
+                    legend: {
+                      position: 'bottom',
+                      labels: {
+                        boxWidth: 10,
+                        font: {
+                          size: 10
+                        }
+                      }
+                    }
+                  }
+                }}
+              />
+            </div>
+          </div>
+          
+          {/* New Pie Chart for Timezone Distribution */}
+          <div className="bg-white p-4 rounded-lg shadow-sm">
+            <h4 className="font-semibold text-pink-700 mb-3 text-sm">Distribusi Zona Waktu</h4>
+            <div className="relative h-48">
+              <Pie 
+                data={{
+                  labels: chartData.participantsByTimezone ? 
+                         Object.keys(chartData.participantsByTimezone) :
+                         Object.keys(nationalData.participantsByTimezone),
+                  datasets: [
+                    {
+                      data: chartData.participantsByTimezone ? 
+                            Object.values(chartData.participantsByTimezone) :
+                            Object.values(nationalData.participantsByTimezone),
+                      backgroundColor: [
+                        timezoneData.WIB.color,
+                        timezoneData.WITA.color,
+                        timezoneData.WIT.color
                       ],
                       borderColor: '#ffffff',
                       borderWidth: 1,

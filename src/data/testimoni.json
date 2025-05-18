@@ -30,37 +30,5 @@
     "school": "Universitas Mulawarman",
     "image": "/images/testimonials/jumpa.png",
     "quote": "Saya senang bisa bergabung dengan komunitas yang memperhatikan pendidikan politik anak muda. Di YPM, kami diberi ruang untuk berpendapat tanpa takut salah."
-  },
-  {
-    "id": 5,
-    "name": "Alya Rivana Ananditri",
-    "age": 18,
-    "school": "Universitas Pakuan Bogor",
-    "image": "/images/testimonials/alya.png",
-    "quote": "Sebagai pelajar SMA, politik selalu terasa jauh dan membingungkan. Berkat workshop YPM, sekarang saya paham bahwa anak muda juga perlu terlibat dalam pengambilan kebijakan."
-  },
-  {
-    "id": 6,
-    "name": "Farhan Akbar",
-    "age": 23,
-    "school": "Universitas Padjadjaran",
-    "image": "/images/testimonials/alya.png",
-    "quote": "Diskusi politik yang dibawakan YPM sangat kekinian dan sesuai dengan isu yang kita hadapi sekarang. Tidak membosankan dan membuat saya jadi lebih aware."
-  },
-  {
-    "id": 7,
-    "name": "Siti Nurhaliza",
-    "age": 19,
-    "school": "Universitas Diponegoro",
-    "image": "/images/testimonials/alya.png",
-    "quote": "Lewat YPM, saya jadi punya perspektif baru tentang keterlibatan perempuan dalam politik. Saya merasa terdorong untuk mengambil peran lebih aktif di komunitas saya."
-  },
-  {
-    "id": 8,
-    "name": "Reza Mahendra",
-    "age": 20,
-    "school": "Universitas Brawijaya",
-    "image": "/images/testimonials/alya.png",
-    "quote": "Yang saya suka dari YPM adalah bagaimana mereka menjelaskan topik kompleks dengan bahasa yang mudah dipahami. Politik jadi terasa lebih masuk akal dan relevan dengan kehidupan kita."
   }
 ] 

@@ -18,7 +18,7 @@ const EngagementBanner = () => {
             transition={{ duration: 0.6 }}
             viewport={{ once: true, amount: 0.3 }}
           >
-            Bergabunglah dengan Ribuan Anak Muda Indonesia yang Membuat Perbedaan
+            Bergabunglah bersama orang muda yang sudah berpartisipasi pada demokrasi dan membuat perubahan
           </motion.h2>
           <motion.p 
             className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto"
@@ -27,7 +27,7 @@ const EngagementBanner = () => {
             transition={{ duration: 0.6, delay: 0.2 }}
             viewport={{ once: true, amount: 0.3 }}
           >
-            Melalui program kami, pemuda di seluruh Indonesia menemukan suara politik mereka dan mengambil tindakan di komunitas mereka.
+            Kami mengubah semangat menjadi aksi nyata demi masa depan berkelanjutan, dengan membina calon pemimpin muda lokal untuk menciptakan perubahan nyata di komunitas mereka.
           </motion.p>
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}

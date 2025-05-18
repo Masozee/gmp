@@ -17,13 +17,13 @@ const ProgramDetail: React.FC<ProgramDetailProps> = ({
     <>
       {/* Hero Section */}
       <section 
-        className="relative py-32 text-center bg-sky-500 text-white"
+        className="relative py-32 text-center bg-primary text-black"
       >
         {/* Overlay */}
         {/* <div className="absolute inset-0 bg-black opacity-60"></div> */}
         {/* Content */}
         <div className="relative container mx-auto px-4 z-10 flex flex-col justify-center items-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">{title}</h1>
+          <h1 className="text-4xl md:text-5xl font-bold mb-4" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>{title}</h1>
           {/* Optional: Add a subtitle here if needed */}
         </div>
       </section>
@@ -37,7 +37,7 @@ const ProgramDetail: React.FC<ProgramDetailProps> = ({
         {/* Optional Image Gallery */}
         {galleryImages.length > 0 && (
           <div className="mt-16">
-            <h2 className="text-2xl font-bold mb-6 text-center text-secondary">Galeri Kegiatan</h2>
+            <h2 className="text-2xl font-bold mb-6 text-center text-primary" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>Galeri Kegiatan</h2>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
               {galleryImages.map((imgSrc, index) => (
                 <div key={index} className="relative aspect-square rounded-lg overflow-hidden shadow-md">

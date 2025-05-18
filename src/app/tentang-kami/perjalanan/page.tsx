@@ -40,7 +40,7 @@ const PerjalananPage = () => {
         {/* <div className="absolute inset-0 bg-black opacity-50"></div> */}
         {/* Content */}
         <div className="relative container mx-auto px-4 z-10">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">Perjalanan Kami</h1>
+          <h1 className="text-4xl md:text-5xl font-bold mb-4" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>Perjalanan Kami</h1>
           <p className="text-lg md:text-xl text-gray-100 max-w-2xl mx-auto">
             Menelusuri langkah Yayasan Partisipasi Muda dari awal hingga kini.
           </p>
@@ -74,7 +74,7 @@ const PerjalananPage = () => {
                       className="rounded-t-2xl object-cover w-full h-56 md:h-72 border-b border-gray-100"
                     />
                     <div className="p-8">
-                      <h3 className="font-extrabold text-2xl mb-3 text-primary group-hover:text-black tracking-tight drop-shadow-sm">{item.year}</h3>
+                      <h3 className="font-extrabold text-2xl mb-3 text-pink-500 group-hover:text-black tracking-tight drop-shadow-sm" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>{item.year}</h3>
                       <p className="text-lg text-gray-700 group-hover:text-black leading-relaxed font-medium">
                         {item.description}
                       </p>

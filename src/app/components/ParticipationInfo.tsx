@@ -68,8 +68,8 @@ const ParticipationInfo = () => {
                 whileHover={{ y: -5, boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)" }}
               >
                 <Users className="w-9 h-9 mb-3 text-pink-400" />
-                <div className="font-bold text-lg mb-1 text-gray-900">Diskusi</div>
-                <div className="text-sm text-gray-700">Sesi diskusi politik yang menyenangkan dan interaktif bersama anak muda lainnya.</div>
+                <div className="font-bold text-lg mb-1 text-gray-900">Diskusi Publik</div>
+                <div className="text-sm text-gray-700">Kami menyelenggarakan inisiatif edukasi yang berdampak—memberdayakan mereka untuk mengambil tindakan yang tepat demi masa depan! 📚🔥</div>
               </motion.div>
               
               <motion.div 
@@ -79,7 +79,7 @@ const ParticipationInfo = () => {
               >
                 <UserCheck className="w-9 h-9 mb-3 text-yellow-400" />
                 <div className="font-bold text-lg mb-1 text-gray-900">Temu Kandidat</div>
-                <div className="text-sm text-gray-700">Dialog langsung dengan calon pemimpin masa depan Indonesia.</div>
+                <div className="text-sm text-gray-700">Memberdayakan pemuda Indonesia dengan ruang yang aman dan demokratis untuk berdialog terkait agenda mereka kepada pemangku kebijakan.</div>
               </motion.div>
               
               <motion.div 
@@ -89,7 +89,8 @@ const ParticipationInfo = () => {
               >
                 <GraduationCap className="w-9 h-9 mb-3 text-green-400" />
                 <div className="font-bold text-lg mb-1 text-gray-900">Academia Politica</div>
-                <div className="text-sm text-gray-700">Program pengembangan kapasitas dan kepemimpinan politik untuk pemuda.</div>
+                <div className="text-sm text-gray-700">Lokakarya bermain peran tentang kepemimpinan dan advokasi. Program TERFAVORIT dari kami.
+                </div>
               </motion.div>
               
               <motion.div 
@@ -99,7 +100,7 @@ const ParticipationInfo = () => {
               >
                 <Sparkles className="w-9 h-9 mb-3 text-sky-400" />
                 <div className="font-bold text-lg mb-1 text-gray-900">Council of Gen Z</div>
-                <div className="text-sm text-gray-700">Komunitas anak muda yang mendorong perubahan nyata di Indonesia.</div>
+                <div className="text-sm text-gray-700">Platform town hall di mana para orang muda secara langsung menyuarakan tuntutan mereka kepada pemangku kebijakan.                </div>
               </motion.div>
             </motion.div>
           </div>

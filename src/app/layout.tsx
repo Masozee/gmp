@@ -1,10 +1,16 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Figtree, Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import AccessibilityButton from "./components/AccessibilityButton";
 import { AccessibilityProvider } from "@/lib/accessibility-context";
+
+const figtree = Figtree({
+  variable: "--font-figtree",
+  subsets: ["latin"],
+  display: "swap",
+});
 
 const inter = Inter({
   variable: "--font-inter",
@@ -47,11 +53,11 @@ export default function RootLayout({
       <head>
         <link rel="icon" href="/images/logo/favicon.png" />
         <style>
-          @import url(&apos;https://fonts.googleapis.com/css2?family=Annapurna+SIL:wght@400;700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap&apos;);
+          {`@import url('https://fonts.googleapis.com/css2?family=Ancizar+Serif:ital,wght@0,300..900;1,300..900&family=Figtree:ital,wght@0,300..900;1,300..900&family=Inter:wght@100..900&display=swap');`}
         </style>
       </head>
       <body
-        className={`${inter.variable} antialiased`}
+        className={`${figtree.variable} ${inter.variable} antialiased`}
       >
         <AccessibilityProvider>
           <a href="#main-content" className="skip-to-content">

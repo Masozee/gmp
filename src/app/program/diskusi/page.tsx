@@ -53,11 +53,11 @@ const DiskusiPage = () => {
     <>
       {/* Hero Section (General Program Info) */}
       <section 
-        className="relative py-32 text-center bg-sky-500 text-white"
+        className="relative py-32 text-center bg-primary text-black"
       >
         <div className="relative container mx-auto px-4 z-10">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">{programTitle}</h1>
-          <p className="text-lg md:text-xl text-gray-100 max-w-2xl mx-auto">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>{programTitle}</h1>
+          <p className="text-lg md:text-xl text-gray-800 max-w-2xl mx-auto">
             {programHeroDescription}
           </p>
         </div>
@@ -65,7 +65,7 @@ const DiskusiPage = () => {
 
       {/* Past Events List Section */}
       <div className="container mx-auto px-4 py-16 max-w-7xl">
-        <h2 className="text-3xl font-bold mb-12 text-center text-primary">Dokumentasi Kegiatan</h2>
+        <h2 className="text-3xl font-bold mb-12 text-center text-primary" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>Dokumentasi Kegiatan</h2>
         
         {/* Handle Loading and Error States */}
         {isLoading && <div className="text-center">Memuat kegiatan...</div>}
@@ -90,7 +90,7 @@ const DiskusiPage = () => {
                     />
                   </div>
                   <div className="p-6 flex flex-col flex-grow">
-                    <h3 className="font-semibold text-lg text-white mb-2 line-clamp-2 group-hover:text-black group-active:text-black group-focus:text-black">{event.title}</h3>
+                    <h3 className="font-semibold text-lg text-white mb-2 line-clamp-2 group-hover:text-black group-active:text-black group-focus:text-black" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>{event.title}</h3>
                     <p className="text-sm text-pink-100 mb-1 group-hover:text-black group-active:text-black group-focus:text-black">{event.date}</p>
                     <p className="text-sm text-white mb-4 flex-grow line-clamp-3 group-hover:text-black group-active:text-black group-focus:text-black">{event.description}</p>
                     <span className="text-sm text-white font-semibold mt-auto group-hover:text-black group-active:text-black group-focus:text-black">

@@ -12,7 +12,6 @@ import ParticipationInfo from './components/ParticipationInfo';
 import EngagementBanner from './components/EngagementBanner';
 import TestimonialsCarousel from './components/TestimonialsCarousel';
 import Partners from './components/Partners';
-import NewsletterSignup from './components/NewsletterSignup';
 import UpcomingEvents from './components/UpcomingEvents';
 
 // Animation variants for section transitions
@@ -105,15 +104,6 @@ export default function Home() {
         variants={sectionVariants}
       >
         <UpcomingEvents />
-      </motion.div>
-      
-      <motion.div
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.1 }}
-        variants={sectionVariants}
-      >
-        <NewsletterSignup />
       </motion.div>
     </main>
   );

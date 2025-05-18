@@ -1,7 +1,16 @@
+'use client';
+
 import Link from 'next/link';
 import Image from 'next/image';
+import { useState } from 'react';
 
 const Footer = () => {
+  const [language, setLanguage] = useState('ID');
+
+  const toggleLanguage = (lang: string) => {
+    setLanguage(lang);
+  };
+
   return (
     <footer className="bg-secondary text-white py-12">
       <div className="container mx-auto px-4 max-w-7xl">
@@ -18,9 +27,7 @@ const Footer = () => {
               />
             </div>
             <p className="text-white mb-4">
-              Generasi Melek Politik (GMP) adalah sebuah organisasi non-profit
-              yang bergerak untuk memberikan pendidikan politik untuk anak muda
-              (17-25 tahun) dengan cara yang menyenangkan!
+            Yayasan Partisipasi Muda adalah organisasi nirlaba yang dinamis dan berdedikasi untuk mengubah budaya demokrasi di Indonesia agar suara anak muda didengar dan berdampak.
             </p>
             <div className="flex space-x-4">
               <a
@@ -74,14 +81,30 @@ const Footer = () => {
           </div>
 
           <div>
-            <h3 className="text-lg font-heading font-semibold mb-4">Menu</h3>
+            <h3 className="text-lg font-heading font-semibold mb-4" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>Menu</h3>
             <ul className="space-y-2">
               <li>
                 <Link
                   href="/tentang-kami/tujuan"
                   className="text-white hover:text-primary transition"
                 >
-                  Tentang Kami
+                  Tujuan Kami
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/tentang-kami/perjalanan"
+                  className="text-white hover:text-primary transition"
+                >
+                  Perjalanan Kami
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/tentang-kami/board-pengurus"
+                  className="text-white hover:text-primary transition"
+                >
+                  Board dan Pengurus
                 </Link>
               </li>
               <li>
@@ -89,7 +112,15 @@ const Footer = () => {
                   href="/program/diskusi"
                   className="text-white hover:text-primary transition"
                 >
-                  Program
+                  Diskusi Publik
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/program/temu-kandidat"
+                  className="text-white hover:text-primary transition"
+                >
+                  Temu Kandidat
                 </Link>
               </li>
               <li>
@@ -98,14 +129,6 @@ const Footer = () => {
                   className="text-white hover:text-primary transition"
                 >
                   Publikasi
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/donasi"
-                  className="text-white hover:text-primary transition"
-                >
-                  Donasi dan Kolaborasi
                 </Link>
               </li>
               <li>
@@ -120,40 +143,24 @@ const Footer = () => {
           </div>
 
           <div>
-            <h3 className="text-lg font-heading font-semibold mb-4">
-              Get Involved
+            <h3 className="text-lg font-heading font-semibold mb-4" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>
+              Ikut Berperan
             </h3>
             <ul className="space-y-2">
               <li>
                 <Link
-                  href="/volunteer"
+                  href="/donasi"
                   className="text-white hover:text-primary transition"
                 >
-                  Volunteer
+                  Donasi dan Kolaborasi
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/donate"
+                  href="/karir"
                   className="text-white hover:text-primary transition"
                 >
-                  Donate
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/partner"
-                  className="text-white hover:text-primary transition"
-                >
-                  Partner With Us
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/careers"
-                  className="text-white hover:text-primary transition"
-                >
-                  Careers
+                  Karir
                 </Link>
               </li>
               <li>
@@ -165,10 +172,31 @@ const Footer = () => {
                 </Link>
               </li>
             </ul>
+            
+            {/* Language Switcher */}
+            <div className="mt-6">
+              <h3 className="text-lg font-heading font-semibold mb-4" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>
+                Bahasa
+              </h3>
+              <div className="flex flex-col space-y-2">
+                <button 
+                  onClick={() => toggleLanguage('EN')}
+                  className={`text-left text-white hover:text-primary transition ${language === 'EN' ? 'font-bold text-primary' : ''}`}
+                >
+                  English
+                </button>
+                <button 
+                  onClick={() => toggleLanguage('ID')}
+                  className={`text-left text-white hover:text-primary transition ${language === 'ID' ? 'font-bold text-primary' : ''}`}
+                >
+                  Bahasa Indonesia
+                </button>
+              </div>
+            </div>
           </div>
 
           <div>
-            <h3 className="text-lg font-heading font-semibold mb-4">
+            <h3 className="text-lg font-heading font-semibold mb-4" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>
               Yayasan Partisipasi Muda
             </h3>
             <address className="not-italic text-white">

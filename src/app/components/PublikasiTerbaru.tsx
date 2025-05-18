@@ -39,11 +39,11 @@ const PublikasiTerbaru = ({ publikasi }: PublikasiTerbaruProps) => {
   };
 
   return (
-    <section className="py-16 bg-gray-50">
+    <section className="py-16 bg-white">
       <div className="container mx-auto px-4 max-w-7xl">
         <h2 className="text-3xl font-bold text-center mb-4 text-gray-900">Publikasi Terbaru</h2>
         <p className="text-lg text-center mb-12 text-gray-600 max-w-3xl mx-auto">
-          Lihat publikasi terbaru kami tentang isu-isu politik terkini dan analisis mendalam.
+        Lihat publikasi terbaru kami tentang isu-isu yang kami perjuangkan.
         </p>
         
         <div className="grid md:grid-cols-3 gap-8">
@@ -72,9 +72,9 @@ const PublikasiTerbaru = ({ publikasi }: PublikasiTerbaruProps) => {
                   </span>
                 </div>
                 <h3 className="text-xl font-bold mb-2 text-white group-hover:text-black group-active:text-black group-focus:text-black">{item.title}</h3>
-                <span className="text-white font-medium group-hover:text-black group-active:text-black group-focus:text-black">
-                  Baca Selengkapnya
-                </span>
+                <button className="mt-3 px-4 py-2 rounded-full bg-[#ffe066] text-black font-medium group-hover:bg-[#f06d98] group-hover:text-white transition-colors duration-300">
+                  Selengkapnya
+                </button>
               </div>
             </Link>
           ))}

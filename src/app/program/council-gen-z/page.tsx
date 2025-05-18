@@ -13,7 +13,7 @@ const CouncilGenZPage = () => {
       <p>
         Council of Gen Z adalah sebuah forum eksklusif yang didedikasikan untuk memberdayakan suara Generasi Z dalam lanskap politik Indonesia. Kami menyediakan platform bagi anak muda untuk berkolaborasi, merumuskan gagasan, dan mengadvokasi isu-isu yang penting bagi generasi mereka.
       </p>
-      <h2 className="text-2xl font-semibold mt-8 mb-4">Fokus Utama</h2>
+      <h2 className="text-2xl font-semibold mt-8 mb-4 text-primary" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>Fokus Utama</h2>
       <p>
          Fokus kami meliputi advokasi kebijakan, pengembangan kepemimpinan muda, riset isu-isu generasi Z, dan pembangunan jaringan antar aktivis muda.
       </p>
