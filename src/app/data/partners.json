@@ -1,0 +1,136 @@
+{
+  "partners": [
+    {
+      "order": 1,
+      "name": "David and Lucile Packard Foundation",
+      "logo": "/images/partner/14.png",
+      "url": "https://www.packard.org/"
+    },
+    {
+      "order": 2,
+      "name": "Climate and Land Use Alliance",
+      "logo": "/images/partner/climate.png",
+      "url": "https://www.climateandlandusealliance.org"
+    },
+    {
+      "order": 3,
+      "name": "Lingkar Temu kabupaten Lestari",
+      "logo": "/images/partner/15.png",
+      "url": "https://kabupatenlestari.org/"
+    },
+    {
+      "order": 4,
+      "name": "International Republican Institute",
+      "logo": "/images/partner/iri.png",
+      "url": "https://www.iri.org"
+    },
+    {
+      "order": 5,
+      "name": "Greenpeace",
+      "logo": "/images/partner/greenpeace.png",
+      "url": "https://www.greenpeace.org"
+    },
+    {
+      "order": 6,
+      "name": "Yayasan Madani Berkelanjutan",
+      "logo": "/images/partner/16.png",
+      "url": "https://madaniberkelanjutan.id/"
+    },
+    {
+      "order": 7,
+      "name": "Universitas Indonesia",
+      "logo": "/images/partner/17.png",
+      "url": "https://ui.ac.id/"
+    },
+    {
+      "order": 8,
+      "name": "Universitas Gadjah Mada",
+      "logo": "/images/partner/18.png",
+      "url": "https://ugm.ac.id"
+    },
+    {
+      "order": 9,
+      "name": "Universitas Padjajaran",
+      "logo": "/images/partner/19.png",
+      "url": "https://unpad.ac.id/"
+    },
+    {
+      "order": 10,
+      "name": "Universitas Hasanuddin",
+      "logo": "/images/partner/20.png",
+      "url": "https://unhas.ac.id/"
+    },
+    {
+      "order": 11,
+      "name": "kementerian Tenaga Kerja",
+      "logo": "/images/partner/21.png",
+      "url": "https://kemnaker.go.id/"
+    },
+    {
+      "order": 12,
+      "name": "Walhi",
+      "logo": "/images/partner/22.png",
+      "url": "https://walhi.or.id/"
+    },
+    {
+      "order": 13,
+      "name": "Indo Relawan",
+      "logo": "/images/partner/23.png",
+      "url": "https://indorelawan.org/"
+    },
+    {
+      "order": 14,
+      "name": "Turun Tangan",
+      "logo": "/images/partner/24.png",
+      "url": "https://gerakanturuntangan.org/"
+    },
+    {
+      "order": 15,
+      "name": "Majelis Lucu Indonesia",
+      "logo": "/images/partner/25.png",
+      "url": "https://majelislucuindonesia.com/"
+    },
+    {
+      "order": 16,
+      "name": "Facebook",
+      "logo": "/images/partner/26.png",
+      "url": "https://facebook.com/"
+    },
+    {
+      "order": 17,
+      "name": "@america",
+      "logo": "/images/partner/27.png",
+      "url": "https://atamerica.or.id/"
+    },
+    {
+      "order": 18,
+      "name": "Universitas Bakrie",
+      "logo": "/images/partner/bakrie.png",
+      "url": "https://bakrie.ac.id/"
+    },
+    {
+      "order": 19,
+      "name": "Asumsi",
+      "logo": "/images/partner/30.png",
+      "url": "https://asumsi.co/"
+    },
+    {
+      "order": 20,
+      "name": "Qlue",
+      "logo": "/images/partner/28.png",
+      "url": "#"
+    },
+    {
+      "order": 21,
+      "name": "Kolega Coworking Space",
+      "logo": "/images/partner/29.png",
+      "url": "https://kolega.co/"
+    },
+    {
+      "order": 22,
+      "name": "Suara Kami",
+      "logo": "/images/partner/31.png",
+      "url": "https://suarakami.id/"
+    }
+  ]
+} 

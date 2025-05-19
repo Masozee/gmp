@@ -3,46 +3,17 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
+import partnersData from '../data/partners.json';
 
 interface Partner {
+  order: number;
   name: string;
   logo: string;
   url: string;
 }
 
 const Partners = () => {
-  const partners: Partner[] = [
-    {
-      name: 'Universitas Bakrie',
-      logo: '/images/partner/bakrie.png',
-      url: 'https://bakrie.ac.id'
-    },
-    {
-      name: 'Climate and Land Use Alliance',
-      logo: '/images/partner/climate.png',
-      url: 'https://www.climateandlandusealliance.org'
-    },
-    {
-      name: 'Greenpeace',
-      logo: '/images/partner/greenpeace.png',
-      url: 'https://www.greenpeace.org'
-    },
-    {
-      name: 'International Republican Institute',
-      logo: '/images/partner/iri.png',
-      url: 'https://www.iri.org'
-    },
-    {
-      name: 'Greenpeace 2',
-      logo: '/images/partner/greenpeace.png',
-      url: 'https://www.greenpeace.org'
-    },
-    {
-      name: 'International Republican Institute 2',
-      logo: '/images/partner/iri.png',
-      url: 'https://www.iri.org'
-    }
-  ];
+  const partners: Partner[] = partnersData.partners;
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -97,29 +68,22 @@ const Partners = () => {
               key={partner.name}
               target="_blank" 
               rel="noopener noreferrer" 
-              className="group h-full flex-shrink-0 snap-center"
+              className="flex-shrink-0 snap-center"
               ref={index === 0 ? slideRef : null}
             >
-              <div className="bg-white w-48 h-48 md:w-56 md:h-56 rounded-lg hover:bg-gray-50 transition-all duration-300 flex flex-col items-center justify-center flex-shrink-0 snap-center">
-                <div className="flex-1 flex items-center justify-center w-full py-4">
-                  <Image 
-                    src={partner.logo} 
-                    alt={`${partner.name} logo`} 
-                    width={180} 
-                    height={180} 
-                    className="object-contain transition-all group-hover:scale-105"
-                    style={{
-                      maxHeight: '140px',
-                      maxWidth: '140px',
-                      width: '100%',
-                      height: 'auto'
-                    }}
-                  />
-                </div>
-                <span className="text-center font-medium text-gray-800 group-hover:text-primary transition text-sm mt-4">
-                  {partner.name}
-                </span>
-              </div>
+              <Image 
+                src={partner.logo} 
+                alt={`${partner.name} logo`} 
+                width={180} 
+                height={180} 
+                className="object-contain"
+                style={{
+                  maxHeight: '140px',
+                  maxWidth: '140px',
+                  width: '100%',
+                  height: 'auto'
+                }}
+              />
             </Link>
           ))}
         </div>
