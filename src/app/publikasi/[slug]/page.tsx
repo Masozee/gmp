@@ -1,3 +1,4 @@
+import React from 'react';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link'; // Import Link for related publications
@@ -72,6 +73,32 @@ export async function generateMetadata(
   return metadata;
 }
 
+// Helper to clean and format publication content
+function cleanAndFormatPublicationContent(content: string, title: string, date: string): (string | React.ReactNode)[] {
+  let cleaned = content;
+  // Remove repeated title and date (case-insensitive, with or without extra whitespace)
+  const patterns = [
+    new RegExp(title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi'),
+    new RegExp(date.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi'),
+  ];
+  patterns.forEach((pattern) => {
+    cleaned = cleaned.replace(pattern, '');
+  });
+  // Remove multiple consecutive newlines
+  cleaned = cleaned.replace(/\n{2,}/g, '\n\n');
+  // Trim leading/trailing whitespace and newlines
+  cleaned = cleaned.trim();
+
+  // Split by escaped double quotes (\") and alternate between normal and bold
+  const parts = cleaned.split(/(\\"[^\\"]+\\")/g);
+  return parts.map((part, idx) => {
+    if (/^\\".*\\"$/.test(part)) {
+      return <b key={idx}>{part.replace(/\\"/g, '')}</b>;
+    }
+    return part;
+  });
+}
+
 // Detail Page Component
 export default async function PublicationDetailPage({ params }: PageProps) {
   const resolvedParams = await params;
@@ -125,7 +152,9 @@ export default async function PublicationDetailPage({ params }: PageProps) {
             </div>
           )}
 
-          <div className="whitespace-pre-line">{publication.content}</div>
+          <div className="whitespace-pre-line">
+            {cleanAndFormatPublicationContent(publication.content, publication.title, publication.date)}
+          </div>
 
           {publication.pdf_url && (
             <div className="not-prose mt-8 flex justify-center">

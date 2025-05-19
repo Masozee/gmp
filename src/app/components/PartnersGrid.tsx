@@ -17,7 +17,6 @@ const PartnersGrid = () => {
   return (
     <section className="py-12 bg-white text-gray-900">
       <div className="container mx-auto px-4 max-w-7xl">
-        <h2 className="text-center text-xl md:text-2xl font-bold mb-8">Mitra Strategis</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {partners.map((partner) => (
             <Link 
