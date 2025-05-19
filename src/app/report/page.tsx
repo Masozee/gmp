@@ -36,43 +36,25 @@ const ReportPage = () => {
     },
   ];
 
-  // Sample publications data
-  const publications = [
-    {
-      id: 1,
-      title: 'Laporan Tahunan 2024',
-      description: 'Laporan kegiatan dan pencapaian Generasi Melek Politik sepanjang tahun 2024.',
-      image: '/images/report/pub-1.jpg',
-      link: '#',
-      date: 'Juni 2024',
-    },
-    {
-      id: 2,
-      title: 'Studi Kasus: Partisipasi Pemilih Muda',
-      description: 'Analisis mendalam tentang pola partisipasi pemilih muda dalam Pemilu 2024.',
-      image: '/images/report/pub-2.jpg',
-      link: '#',
-      date: 'April 2024',
-    },
-    {
-      id: 3,
-      title: 'Panduan Pendidikan Politik',
-      description: 'Panduan praktis untuk pendidikan politik bagi generasi muda Indonesia.',
-      image: '/images/report/pub-3.jpg',
-      link: '#',
-      date: 'Maret 2024',
-    },
-  ];
+  // Single publication data
+  const publication = {
+    id: 1,
+    title: 'Understanding Youth Engagement and Civic Space in Indonesia',
+    description: 'This study investigates how young Indonesians (ages 18-25) navigate shrinking civic space, including their perceptions of safe and youth-friendly public spaces, the challenges they face in accessing them, and their views on government responsiveness. By analyzing both politically engaged youth and those outside formal activism, this research offers a comprehensive understanding of how democratic backsliding is lived, interpreted, and resisted at the grassroots level.',
+    image: '/images/bg/creative-christians-HN6uXG7GzTE-unsplash.jpg',
+    link: '#',
+    date: 'Mei 2025',
+  };
 
   return (
     <>
       {/* Hero Section with Pink Background */}
-      <section className="bg-pink-600 py-32 text-white">
+      <section className="bg-[#f06d98] py-32 text-white">
         <div className="container mx-auto max-w-7xl px-4 text-center">
-          <h1 className="mb-4 text-4xl font-bold md:text-5xl">
+          <h1 className="mb-4 text-4xl font-extrabold md:text-5xl font-heading">
             Laporan & Pencapaian
           </h1>
-          <p className="text-lg text-pink-100 max-w-2xl mx-auto">
+          <p className="text-lg text-white/90 max-w-2xl mx-auto">
             Melihat dampak dan jangkauan program Generasi Melek Politik di seluruh Indonesia.
           </p>
         </div>
@@ -81,12 +63,12 @@ const ReportPage = () => {
       {/* Achievements Section */}
       <section className="py-16 bg-white">
         <div className="container mx-auto max-w-7xl px-4">
-          <h2 className="text-3xl font-bold text-center mb-12">Pencapaian Kami</h2>
+          <h2 className="text-3xl font-extrabold text-center mb-12 font-heading">Pencapaian Kami</h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {achievements.map((item) => (
               <div key={item.id} className="bg-white p-6 rounded-lg shadow-md text-center hover:shadow-lg transition-shadow">
-                <div className="w-16 h-16 mx-auto mb-4 flex items-center justify-center bg-pink-100 rounded-full">
+                <div className="w-16 h-16 mx-auto mb-4 flex items-center justify-center bg-[#f06d98]/10 rounded-full">
                   <Image 
                     src={item.icon} 
                     alt={item.title} 
@@ -94,7 +76,7 @@ const ReportPage = () => {
                     height={32}
                   />
                 </div>
-                <h3 className="text-3xl font-bold text-pink-600 mb-2">{item.title}</h3>
+                <h3 className="text-3xl font-extrabold text-[#f06d98] mb-2">{item.title}</h3>
                 <p className="text-gray-600">{item.description}</p>
               </div>
             ))}
@@ -105,7 +87,7 @@ const ReportPage = () => {
       {/* Map Section */}
       <section className="py-16 bg-gray-50">
         <div className="container mx-auto max-w-7xl px-4">
-          <h2 className="text-3xl font-bold text-center mb-6">Jangkauan Program</h2>
+          <h2 className="text-3xl font-extrabold text-center mb-6 font-heading">Jangkauan Program</h2>
           <p className="text-center text-gray-600 max-w-2xl mx-auto mb-12">
             Peta interaktif menunjukkan jangkauan program Generasi Melek Politik di seluruh Indonesia.
             Klik pada provinsi untuk melihat detail kegiatan.
@@ -117,38 +99,34 @@ const ReportPage = () => {
         </div>
       </section>
 
-      {/* Publications Section */}
+      {/* Single Publication Section */}
       <section className="py-16 bg-white">
         <div className="container mx-auto max-w-7xl px-4">
-          <h2 className="text-3xl font-bold text-center mb-12">Publikasi Kami</h2>
+          <h2 className="text-3xl font-extrabold text-center mb-12 font-heading">Publikasi Kami</h2>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {publications.map((pub) => (
-              <div key={pub.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
-                <div className="relative h-48">
-                  <Image 
-                    src={pub.image} 
-                    alt={pub.title} 
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-                <div className="p-6">
-                  <p className="text-sm text-pink-600 mb-2">{pub.date}</p>
-                  <h3 className="text-xl font-bold mb-2">{pub.title}</h3>
-                  <p className="text-gray-600 mb-4">{pub.description}</p>
-                  <a 
-                    href={pub.link} 
-                    className="inline-flex items-center text-pink-600 hover:text-pink-800"
-                  >
-                    Baca Selengkapnya
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                    </svg>
-                  </a>
-                </div>
-              </div>
-            ))}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            <div className="relative h-[400px] w-full">
+              <Image 
+                src={publication.image} 
+                alt={publication.title} 
+                fill
+                className="object-cover rounded-lg"
+              />
+            </div>
+            <div>
+              <p className="text-sm text-[#f06d98] mb-2">{publication.date}</p>
+              <h3 className="text-3xl font-extrabold mb-4">{publication.title}</h3>
+              <p className="text-gray-600 mb-6 text-lg leading-relaxed">{publication.description}</p>
+              <a 
+                href={publication.link} 
+                className="inline-flex items-center text-[#f06d98] hover:text-[#f06d98]/80 font-medium text-lg"
+              >
+                Baca Selengkapnya
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                </svg>
+              </a>
+            </div>
           </div>
         </div>
       </section>
