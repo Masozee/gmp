@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Figtree, Inter } from "next/font/google";
 import "./globals.css";
-import Navbar from "./components/Navbar";
-import Footer from "./components/Footer";
+import ConditionalNavbar from "./components/ConditionalNavbar";
+import ConditionalFooter from "./components/ConditionalFooter";
 import AccessibilityButton from "./components/AccessibilityButton";
 import { AccessibilityProvider } from "@/lib/accessibility-context";
 
@@ -63,12 +63,12 @@ export default function RootLayout({
           <a href="#main-content" className="skip-to-content">
             Loncat ke konten utama
           </a>
-        <Navbar />
+        <ConditionalNavbar />
           <main id="main-content" tabIndex={-1}>
             {children}
           </main>
           <AccessibilityButton />
-        <Footer />
+        <ConditionalFooter />
         </AccessibilityProvider>
       </body>
     </html>

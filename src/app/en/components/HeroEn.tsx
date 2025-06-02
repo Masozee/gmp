@@ -2,7 +2,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 
-const Hero = () => {
+const HeroEn = () => {
   return (
     <section className="relative h-screen text-white overflow-hidden flex items-center">
       <motion.div 
@@ -33,7 +33,7 @@ const Hero = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            Yayasan Partisipasi Muda
+            Partisipasi Muda Foundation
           </motion.h1>
           <motion.p 
             className="text-lg md:text-xl mb-6 max-w-3xl"
@@ -41,7 +41,7 @@ const Hero = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
           >
-            Yayasan Partisipasi Muda adalah organisasi nirlaba yang dinamis dengan tujuan membangun generasi pembawa perubahan melalui pemberdayaan orang muda Indonesia umur 17-25 tahun untuk berpartisipasi dalam demokrasi dan perumusan kebijakan publik.
+            Partisipasi Muda Foundation is a dynamic non-profit organization dedicated to building a generation of changemakers by empowering Indonesian youth aged 17-25 to participate in democracy and public policy formulation.
           </motion.p>
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
@@ -51,10 +51,10 @@ const Hero = () => {
             whileTap={{ scale: 0.95 }}
           >
             <Link 
-              href="/tentang-kami/tujuan"
+              href="/en/about-us/mission"
               className="bg-primary text-black hover:bg-pink-500 hover:text-white px-8 py-3 rounded-full font-bold text-lg inline-block transition duration-300 ease-in-out"
             >
-              Pelajari Lebih Lanjut
+              Learn More
             </Link>
           </motion.div>
         </div>
@@ -63,4 +63,4 @@ const Hero = () => {
   );
 };
 
-export default Hero; 
+export default HeroEn; 

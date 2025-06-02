@@ -1,31 +1,31 @@
 import React from 'react';
 import Image from 'next/image';
 
-const PerjalananPage = () => {
+const JourneyPage = () => {
   const timelineData = [
     {
       year: '2017',
-      description: 'Gagasan Generasi Melek Politik (GMP) lahir dari keresahan Pilkada DKI Jakarta 2017 yang dipenuhi narasi SARA. Co-founder mencari anggota awal melalui indorelawan.org.',
+      description: 'The idea of Generasi Melek Politik (GMP) was born from concerns about the 2017 Jakarta Regional Election filled with SARA narratives. Co-founders sought initial members through indorelawan.org.',
       imageSrc: '/images/bg/about.jpg',
     },
     {
       year: '2017-2018',
-      description: 'GMP mengadakan diskusi publik dengan modal minim (Rp 0), berkolaborasi dengan berbagai tempat sebagai venue.',
+      description: 'GMP held public discussions with minimal budget (Rp 0), collaborating with various venues as locations.',
       imageSrc: '/images/bg/about.jpg',
     },
     {
       year: '2018',
-      description: 'Organisasi resmi dilegalkan menjadi Yayasan Partisipasi Muda, terdaftar di Kemenkumham RI (No: 5018071931100892).',
+      description: 'The organization was officially legalized as Partisipasi Muda Foundation, registered with the Ministry of Law and Human Rights RI (No: 5018071931100892).',
       imageSrc: '/images/bg/about.jpg',
     },
     {
       year: '2018-2019',
-      description: 'Berkolaborasi mengembangkan diskusi, meluncurkan Academia Politik (bersama Universitas Indonesia) dan Kongres Millennial (bersama Universitas Bakrie).',
+      description: 'Collaborated to develop discussions, launched Academia Politica (with University of Indonesia) and Millennial Congress (with Bakrie University).',
       imageSrc: '/images/bg/about.jpg',
     },
     {
       year: '2020',
-      description: 'Dipercaya oleh lembaga donor untuk menjalankan Temu Kandidat, digital townhall meeting pertama di Indonesia bertema kebijakan lingkungan.',
+      description: 'Trusted by donor institutions to run Candidate Meetings, Indonesia\'s first digital townhall meeting themed on environmental policy.',
       imageSrc: '/images/bg/about.jpg',
     },
   ];
@@ -40,9 +40,9 @@ const PerjalananPage = () => {
         {/* <div className="absolute inset-0 bg-black opacity-50"></div> */}
         {/* Content */}
         <div className="relative container mx-auto px-4 z-10">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>Perjalanan Kami</h1>
+          <h1 className="text-4xl md:text-5xl font-bold mb-4" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>Our Journey</h1>
           <p className="text-lg md:text-xl text-gray-100 max-w-2xl mx-auto">
-            Menelusuri langkah Yayasan Partisipasi Muda dari awal hingga kini.
+            Tracing the steps of Partisipasi Muda Foundation from the beginning to now.
           </p>
         </div>
       </section>
@@ -68,7 +68,7 @@ const PerjalananPage = () => {
                   <div className="bg-white/90 backdrop-blur-lg rounded-2xl p-0 shadow-xl border border-gray-100 transition-all duration-300 hover:bg-yellow-300 hover:text-black cursor-pointer w-full max-w-2xl">
                     <Image
                       src={item.imageSrc}
-                      alt={`Perjalanan ${item.year}`}
+                      alt={`Journey ${item.year}`}
                       width={640}
                       height={320}
                       className="rounded-t-2xl object-cover w-full h-56 md:h-72 border-b border-gray-100"
@@ -87,26 +87,26 @@ const PerjalananPage = () => {
         </div>
         {/* Right: Section Title and Description (sticky on desktop) */}
         <div className="md:w-1/3 w-full md:sticky md:top-32 h-fit flex flex-col justify-start space-y-6">
-          <h2 className="text-2xl font-bold text-gray-800">Semua bermula dari sebuah pertanyaan:</h2>
+          <h2 className="text-2xl font-bold text-gray-800">It all started with a question:</h2>
           <p className="text-xl italic font-medium text-pink-500">
-            Bagaimana jika politik bisa terasa lebih manusiawi?
+            What if politics could feel more humane?
           </p>
           
           <div className="space-y-4">
             <p className="text-lg text-gray-700">
-              Bermula dari rasa frustrasi dan harapan, Yayasan Partisipasi Muda dimulai sebagai sebuah mimpi kecil pada tahun 2017—untuk membuka pintu politik dan perumusan kebijakan bagi anak muda Indonesia yang merasa terpinggirkan dari percakapan ini.
+              Born from frustration and hope, Partisipasi Muda Foundation began as a small dream in 2017—to open the doors of politics and policy formulation for Indonesian youth who felt marginalized from this conversation.
             </p>
             
             <p className="text-lg text-gray-700">
-              Kami memulai tanpa pengikut, tanpa kantor, dan tanpa peta jalan—hanya beberapa orang dengan semangat dan keyakinan bersama bahwa anak muda pantas mendapatkan tempat di meja perundingan. Terinspirasi oleh pemimpin muda dunia dan didorong oleh kreativitas dan semangat keterlibatan sipil, kami bertekad untuk membuat demokrasi lebih mudah diakses, lebih relevan, dan inklusif.
+              We started without followers, without an office, and without a roadmap—just a few people with shared passion and belief that young people deserve a seat at the negotiating table. Inspired by young leaders worldwide and driven by creativity and civic engagement spirit, we were determined to make democracy more accessible, more relevant, and inclusive.
             </p>
             
             <p className="text-lg text-gray-700">
-              Dari pertemuan di kafe hingga ruang kelas, dari kampanye digital hingga lokakarya kebijakan, misi kami selalu sama: memberdayakan anak muda Indonesia untuk berpartisipasi dalam membentuk masa depan komunitas mereka dan negara mereka.
+              From café meetings to classrooms, from digital campaigns to policy workshops, our mission has always been the same: empowering Indonesian youth to participate in shaping the future of their communities and their country.
             </p>
             
             <p className="text-lg font-bold text-gray-800">
-              Kami sudah menempuh perjalanan panjang—tapi perjalanan kami baru saja dimulai.
+              We've come a long way—but our journey has just begun.
             </p>
           </div>
         </div>
@@ -115,4 +115,4 @@ const PerjalananPage = () => {
   );
 };
 
-export default PerjalananPage; 
+export default JourneyPage; 

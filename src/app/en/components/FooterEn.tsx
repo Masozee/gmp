@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 
-const Footer = () => {
+const FooterEn = () => {
   return (
     <footer className="bg-[#f06d98] text-white py-12">
       <div className="container mx-auto px-4 max-w-7xl">
@@ -20,7 +20,7 @@ const Footer = () => {
               />
             </div>
             <p className="text-white mb-4">
-            Yayasan Partisipasi Muda adalah organisasi nirlaba yang dinamis dan berdedikasi untuk mengubah budaya demokrasi di Indonesia agar suara anak muda didengar dan berdampak.
+            Partisipasi Muda Foundation is a dynamic and dedicated non-profit organization committed to transforming Indonesia's democratic culture so that young voices are heard and impactful.
             </p>
             <div className="flex space-x-4">
               <a
@@ -78,58 +78,58 @@ const Footer = () => {
             <ul className="space-y-2">
               <li>
                 <Link
-                  href="/tentang-kami/tujuan"
+                  href="/en/about-us/mission"
                   className="text-white hover:text-primary transition"
                 >
-                  Tujuan Kami
+                  Our Mission
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/tentang-kami/perjalanan"
+                  href="/en/about-us/journey"
                   className="text-white hover:text-primary transition"
                 >
-                  Perjalanan Kami
+                  Our Journey
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/tentang-kami/board-pengurus"
+                  href="/en/about-us/board-management"
                   className="text-white hover:text-primary transition"
                 >
-                  Board dan Pengurus
+                  Board & Management
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/program/diskusi"
+                  href="/en/programs/discussions"
                   className="text-white hover:text-primary transition"
                 >
-                  Diskusi Publik
+                  Public Discussions
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/program/temu-kandidat"
+                  href="/en/programs/candidate-meetings"
                   className="text-white hover:text-primary transition"
                 >
-                  Temu Kandidat
+                  Candidate Meetings
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/publikasi"
+                  href="/en/publications"
                   className="text-white hover:text-primary transition"
                 >
-                  Publikasi
+                  Publications
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/acara"
+                  href="/en/events"
                   className="text-white hover:text-primary transition"
                 >
-                  Acara
+                  Events
                 </Link>
               </li>
             </ul>
@@ -137,31 +137,31 @@ const Footer = () => {
 
           <div>
             <h3 className="text-lg font-heading font-semibold mb-4" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>
-              Ikut Berperan
+              Get Involved
             </h3>
             <ul className="space-y-2">
               <li>
                 <Link
-                  href="/donasi"
+                  href="/en/donate"
                   className="text-white hover:text-primary transition"
                 >
-                  Donasi dan Kolaborasi
+                  Donate & Collaborate
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/karir"
+                  href="/en/careers"
                   className="text-white hover:text-primary transition"
                 >
-                  Karir
+                  Careers
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/mitra-strategis"
+                  href="/en/strategic-partners"
                   className="text-white hover:text-primary transition"
                 >
-                  Mitra Strategis
+                  Strategic Partners
                 </Link>
               </li>
             </ul>
@@ -169,25 +169,25 @@ const Footer = () => {
             {/* Language Switcher */}
             <div className="mt-6">
               <h3 className="text-lg font-heading font-semibold mb-4" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>
-                Bahasa
+                Language
               </h3>
               <div className="flex flex-col space-y-2">
+                <span className="text-left text-white font-bold text-primary">
+                  English
+                </span>
                 <Link 
-                  href="/en"
+                  href="/"
                   className="text-left text-white hover:text-primary transition"
                 >
-                  English
-                </Link>
-                <span className="text-left text-white font-bold text-primary">
                   Bahasa Indonesia
-                </span>
+                </Link>
               </div>
             </div>
           </div>
 
           <div>
             <h3 className="text-lg font-heading font-semibold mb-4" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>
-              Yayasan Partisipasi Muda
+              Partisipasi Muda Foundation
             </h3>
             <address className="not-italic text-white">
               <p className="mb-2">
@@ -217,10 +217,9 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="border-t border-gray-800 mt-10 pt-6 text-center text-white">
-          <p>
-            &copy; {new Date().getFullYear()} Yayasan Partisipasi Muda. All
-            rights reserved.
+        <div className="border-t border-pink-400 mt-8 pt-8 text-center">
+          <p className="text-sm">
+            © 2024 Partisipasi Muda Foundation. All rights reserved.
           </p>
         </div>
       </div>
@@ -228,4 +227,4 @@ const Footer = () => {
   );
 };
 
-export default Footer; 
+export default FooterEn; 

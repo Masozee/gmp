@@ -14,7 +14,7 @@ interface Event {
   isRegistrationOpen: boolean;
 }
 
-const UpcomingEvents = () => {
+const UpcomingEventsEn = () => {
   const [events, setEvents] = useState<Event[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   
@@ -75,7 +75,7 @@ const UpcomingEvents = () => {
     return (
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4 max-w-7xl">
-          <h2 className="text-3xl md:text-4xl font-heading font-bold mb-8 text-center">Acara Mendatang</h2>
+          <h2 className="text-3xl md:text-4xl font-heading font-bold mb-8 text-center">Upcoming Events</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[1, 2, 3].map((i) => (
               <div key={i} className="bg-gray-100 rounded-lg p-6 animate-pulse h-96"></div>
@@ -93,9 +93,9 @@ const UpcomingEvents = () => {
   return (
     <section className="py-16 bg-white">
       <div className="container mx-auto px-4 max-w-7xl">
-        <h2 className="text-3xl md:text-4xl font-heading font-bold mb-4 text-center">Acara Mendatang</h2>
+        <h2 className="text-3xl md:text-4xl font-heading font-bold mb-4 text-center">Upcoming Events</h2>
         <p className="text-lg text-gray-600 mb-8 text-center max-w-3xl mx-auto">
-          Jelajahi acara-acara kami yang menarik dan bermanfaat. Bergabunglah bersama kami untuk meningkatkan kapasitas dan keterlibatan politik anda.
+          Explore our exciting and beneficial events. Join us to enhance your capacity and political engagement.
         </p>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -133,11 +133,11 @@ const UpcomingEvents = () => {
                 </div>
                 
                 <div className="mt-4">
-                  <Link href={`/acara/${event.id}`}
+                  <Link href={`/en/events/${event.id}`}
                     className={`inline-block w-full text-center py-2 px-4 rounded-full font-medium transition-all hover:bg-[#f06d98] hover:text-white ${
                       event.isRegistrationOpen ? 'bg-[#ffcb57] text-black' : 'bg-gray-300 text-gray-600 cursor-not-allowed hover:bg-gray-300 hover:text-gray-600'
                     }`}>
-                    {event.isRegistrationOpen ? 'Daftar Sekarang' : 'Pendaftaran Ditutup'}
+                    {event.isRegistrationOpen ? 'Register Now' : 'Registration Closed'}
                   </Link>
                 </div>
               </div>
@@ -146,9 +146,9 @@ const UpcomingEvents = () => {
         </div>
         
         <div className="text-center mt-10">
-          <Link href="/acara" 
+          <Link href="/en/events" 
             className="inline-block bg-[#ffcb57] hover:bg-[#f06d98] text-black hover:text-white rounded-full px-6 py-3 font-medium transition-colors">
-            Lihat Semua Acara
+            View All Events
           </Link>
         </div>
       </div>
@@ -156,4 +156,4 @@ const UpcomingEvents = () => {
   );
 };
 
-export default UpcomingEvents; 
+export default UpcomingEventsEn; 

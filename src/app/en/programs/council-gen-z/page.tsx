@@ -13,7 +13,7 @@ const CouncilGenZPage = () => {
         <div className="relative container mx-auto px-4 z-10">
           <h1 className="text-4xl md:text-5xl font-bold mb-4" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>{pageTitle}</h1>
           <p className="text-lg md:text-xl text-[rgb(41,56,87/90%)] max-w-3xl mx-auto mb-6">
-            Ruang Aspirasi Anak Muda Akan Krisis Iklim Untuk Prabowo-Gibran
+            Young People's Aspirational Space on Climate Crisis for Prabowo-Gibran
           </p>
         </div>
       </section>
@@ -31,12 +31,12 @@ const CouncilGenZPage = () => {
             />
           </div>
           <div className="w-full md:w-1/2">
-            <h2 className="text-2xl md:text-3xl font-semibold text-primary mb-4" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>Menjembatani Aspirasi Generasi Muda</h2>
+            <h2 className="text-2xl md:text-3xl font-semibold text-primary mb-4" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>Bridging Young Generation Aspirations</h2>
             <p className="text-[rgb(41,56,87/90%)] leading-relaxed mb-4">
-              <strong>Jakarta, 21 September 2024</strong> – Di Indonesia, Gen Z adalah bonus demografi yang terus dianggap sebagai pemilih penting dalam pemilihan umum. Namun ironisnya, ruang bagi mereka menyampaikan aspirasi langsung ke pemerintah nyaris tidak ada. Padahal, Gen Z adalah generasi yang akan menghadapi dampak langsung dari keputusan hari ini, termasuk di daerah kecil yang sering luput dari perhatian.
+              <strong>Jakarta, September 21, 2024</strong> – In Indonesia, Gen Z is a demographic bonus that continues to be considered as important voters in general elections. But ironically, there is virtually no space for them to convey aspirations directly to the government. Yet, Gen Z is the generation that will face the direct impact of today's decisions, including in small areas that often escape attention.
             </p>
             <p className="text-[rgb(41,56,87/90%)] leading-relaxed">
-              Dalam negara demokratis, budaya dialog terbuka seperti <em>town hall meeting</em> menjadi bagian dari proses politik. Misalnya di Amerika Serikat, Finlandia, New Zealand, dan Inggris yang mempunyai Youth Parliament Forum untuk memungkinkan anak muda menyampaikan kritik dan aspirasi langsung kepada pemerintah. Namun, di Indonesia, budaya dialog semacam ini masih minim, terutama bagi generasi muda.
+              In democratic countries, open dialogue culture like <em>town hall meetings</em> becomes part of the political process. For example in the United States, Finland, New Zealand, and the United Kingdom which have Youth Parliament Forums to enable young people to convey criticism and aspirations directly to the government. However, in Indonesia, such dialogue culture is still minimal, especially for young people.
             </p>
           </div>
         </div>
@@ -56,12 +56,12 @@ const CouncilGenZPage = () => {
               />
             </div>
             <div className="w-full md:w-1/2 md:order-first"> {/* Text on left */}
-              <h2 className="text-2xl md:text-3xl font-semibold text-primary mb-4" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>Inisiatif Council of Gen Z</h2>
+              <h2 className="text-2xl md:text-3xl font-semibold text-primary mb-4" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>Council of Gen Z Initiative</h2>
               <p className="text-[rgb(41,56,87/90%)] leading-relaxed mb-4">
-                Menyadari pentingnya partisipasi generasi muda dalam demokrasi, <strong>Generasi Melek Politik</strong> di bawah naungan <strong>Yayasan Partisipasi Muda</strong> berkomitmen menjadi pelopor dalam memperkuat partisipasi anak muda. Hadirnya <strong>Council of Gen Z</strong> (COGZ) dengan tema <strong>"Kebijakan Krisis Iklim di Pemerintahan Baru: Indonesia Emas Atau Indonesia Cemas?"</strong> adalah inisiatif yang bertujuan menciptakan ruang partisipasi politik yang aman dan inklusif bagi anak muda.
+                Recognizing the importance of young generation participation in democracy, <strong>Generasi Melek Politik</strong> under the auspices of <strong>Partisipasi Muda Foundation</strong> is committed to being a pioneer in strengthening youth participation. The presence of <strong>Council of Gen Z</strong> (COGZ) with the theme <strong>"Climate Crisis Policy in the New Government: Golden Indonesia or Anxious Indonesia?"</strong> is an initiative that aims to create a safe and inclusive political participation space for young people.
               </p>
               <p className="text-[rgb(41,56,87/90%)] leading-relaxed">
-                COGZ berhasil mempertemukan 10 perwakilan Gen Z peserta terbaik Academia Politica, yang berasal dari berbagai daerah yakni Kalimantan, Bandung, Yogyakarta, Jabodetabek, dan Sulawesi. Para peserta COGZ secara langsung menyampaikan isu-isu daerah mereka kepada perwakilan pemerintah baru Prabowo-Gibran, yaitu Triana Krisandini Tandjung, Gemintang Kejora Mallarangeng, dan Faiz Arsyad.
+                COGZ successfully brought together 10 Gen Z representatives who were the best participants of Academia Politica, coming from various regions namely Kalimantan, Bandung, Yogyakarta, Jabodetabek, and Sulawesi. COGZ participants directly conveyed their regional issues to representatives of the new Prabowo-Gibran government, namely Triana Krisandini Tandjung, Gemintang Kejora Mallarangeng, and Faiz Arsyad.
               </p>
             </div>
           </div>
@@ -71,7 +71,7 @@ const CouncilGenZPage = () => {
       {/* Section 3: Youth Demands Heading */}
       <section className="container mx-auto px-4 py-16 max-w-6xl">
         <div className="text-center mb-12">
-          <h2 className="text-2xl md:text-3xl font-semibold text-primary mb-4" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>Tuntutan Aspirasi Anak Muda dari 5 Daerah ke Representasi Pemerintahan Prabowo-Gibran</h2>
+          <h2 className="text-2xl md:text-3xl font-semibold text-primary mb-4" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>Young People's Aspirational Demands from 5 Regions to Prabowo-Gibran Government Representatives</h2>
         </div>
         
         {/* Kalimantan */}
@@ -79,17 +79,17 @@ const CouncilGenZPage = () => {
           <div className="w-full md:w-1/3">
             <Image 
               src="/images/program/DSC08852-a.jpg" // Use an existing image as placeholder
-              alt="Kalimantan - Kota Berkelanjutan"
+              alt="Kalimantan - Sustainable Cities"
               width={500}
               height={400}
               className="rounded-lg shadow-md object-cover w-full"
             />
-            <h3 className="text-xl font-semibold text-primary mt-4 mb-2" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700 }}>Kalimantan - Kota Berkelanjutan</h3>
+            <h3 className="text-xl font-semibold text-primary mt-4 mb-2" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700 }}>Kalimantan - Sustainable Cities</h3>
           </div>
           <div className="w-full md:w-2/3">
             <ul className="list-disc list-outside pl-5 space-y-2 text-[rgb(41,56,87/90%)]">
-              <li>Pembangunan di Kalimantan harus berlandaskan pada prinsip keberlanjutan. Tidak hanya mempertimbangkan aspek ekonomi, tetapi juga sosial dan lingkungan, terutama dalam pembangunan Ibu Kota Nusantara (IKN).</li>
-              <li>Pemerintah harus melakukan studi lingkungan yang mendalam dan melibatkan masyarakat lokal dalam pengambilan keputusan.</li>
+              <li>Development in Kalimantan must be based on sustainability principles. Not only considering economic aspects, but also social and environmental, especially in the development of the Nusantara Capital City (IKN).</li>
+              <li>The government must conduct in-depth environmental studies and involve local communities in decision-making.</li>
             </ul>
           </div>
         </div>
@@ -99,18 +99,18 @@ const CouncilGenZPage = () => {
           <div className="w-full md:w-1/3">
             <Image 
               src="/images/program/DSC08852-a.jpg" // Use an existing image as placeholder
-              alt="Bandung - Transportasi Berkelanjutan"
+              alt="Bandung - Sustainable Transportation"
               width={500}
               height={400}
               className="rounded-lg shadow-md object-cover w-full"
             />
-            <h3 className="text-xl font-semibold text-primary mt-4 mb-2" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700 }}>Bandung - Transportasi Berkelanjutan</h3>
+            <h3 className="text-xl font-semibold text-primary mt-4 mb-2" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700 }}>Bandung - Sustainable Transportation</h3>
           </div>
           <div className="w-full md:w-2/3">
             <ul className="list-disc list-outside pl-5 space-y-2 text-[rgb(41,56,87/90%)]">
-              <li>Penggunaan kendaraan listrik dapat terus digaungkan. Mulai dari mempermudah regulasi, mendukung pembangunan infrastruktur sarana prasarana pendukung operasional kendaraan listrik, hingga pemberian subsidi untuk meringankan harga kendaraan listrik.</li>
-              <li>Peningkatan kualitas pelayanan transportasi umum melalui penyediaan layanan yang terintegrasi dalam segi rute, manajemen, hingga sistem pembayaran.</li>
-              <li>Peningkatan kualitas trotoar melalui penghijauan dan pemberian pengamanan bagi pejalan kaki.</li>
+              <li>The use of electric vehicles can continue to be promoted. Starting from simplifying regulations, supporting the development of supporting infrastructure for electric vehicle operations, to providing subsidies to reduce electric vehicle prices.</li>
+              <li>Improving public transportation service quality through providing integrated services in terms of routes, management, and payment systems.</li>
+              <li>Improving sidewalk quality through greening and providing security for pedestrians.</li>
             </ul>
           </div>
         </div>
@@ -120,18 +120,18 @@ const CouncilGenZPage = () => {
           <div className="w-full md:w-1/3">
             <Image 
               src="/images/program/DSC08852-a.jpg" // Use an existing image as placeholder
-              alt="Jabodetabek - Pengelolaan Limbah Berkelanjutan"
+              alt="Jabodetabek - Sustainable Waste Management"
               width={500}
               height={400}
               className="rounded-lg shadow-md object-cover w-full"
             />
-            <h3 className="text-xl font-semibold text-primary mt-4 mb-2" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700 }}>Jabodetabek - Pengelolaan Limbah Berkelanjutan</h3>
+            <h3 className="text-xl font-semibold text-primary mt-4 mb-2" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700 }}>Jabodetabek - Sustainable Waste Management</h3>
           </div>
           <div className="w-full md:w-2/3">
             <ul className="list-disc list-outside pl-5 space-y-2 text-[rgb(41,56,87/90%)]">
-              <li>Membuat kebijakan berdasarkan asas ramah lingkungan.</li>
-              <li>Membentuk kolaborasi antar <em>stakeholder</em> untuk mengatasi masalah sampah dan lingkungan.</li>
-              <li>Membentuk program <em>Green Certification</em> untuk memastikan praktik industri berjalan sesuai asas peduli lingkungan.</li>
+              <li>Creating policies based on environmentally friendly principles.</li>
+              <li>Building collaboration between <em>stakeholders</em> to address waste and environmental problems.</li>
+              <li>Establishing <em>Green Certification</em> programs to ensure industrial practices run according to environmentally conscious principles.</li>
             </ul>
           </div>
         </div>
@@ -141,18 +141,18 @@ const CouncilGenZPage = () => {
           <div className="w-full md:w-1/3">
             <Image 
               src="/images/program/DSC08852-a.jpg" // Use an existing image as placeholder
-              alt="Yogyakarta - Pariwisata Berkelanjutan"
+              alt="Yogyakarta - Sustainable Tourism"
               width={500}
               height={400}
               className="rounded-lg shadow-md object-cover w-full"
             />
-            <h3 className="text-xl font-semibold text-primary mt-4 mb-2" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700 }}>Yogyakarta - Pariwisata Berkelanjutan</h3>
+            <h3 className="text-xl font-semibold text-primary mt-4 mb-2" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700 }}>Yogyakarta - Sustainable Tourism</h3>
           </div>
           <div className="w-full md:w-2/3">
             <ul className="list-disc list-outside pl-5 space-y-2 text-[rgb(41,56,87/90%)]">
-              <li>Memperkuat regulasi Analisis Mengenai Dampak Lingkungan Hidup (AMDAL).</li>
-              <li>Penyuluhan menyeluruh terhadap masyarakat terkait pembangunan objek wisata yang <em>sustainable</em> dan bebas dari pungutan liar.</li>
-              <li>Memastikan pembangunan sudah memikirkan keadaan lingkungan jangka panjang untuk lingkungan alam dan masyarakat sekitar.</li>
+              <li>Strengthening Environmental Impact Assessment (AMDAL) regulations.</li>
+              <li>Comprehensive education to the community regarding <em>sustainable</em> tourism development and free from illegal levies.</li>
+              <li>Ensuring development has considered long-term environmental conditions for the natural environment and surrounding communities.</li>
             </ul>
           </div>
         </div>
@@ -162,19 +162,19 @@ const CouncilGenZPage = () => {
           <div className="w-full md:w-1/3">
             <Image 
               src="/images/program/DSC08852-a.jpg" // Use an existing image as placeholder
-              alt="Sulawesi - Polusi Laut"
+              alt="Sulawesi - Marine Pollution"
               width={500}
               height={400}
               className="rounded-lg shadow-md object-cover w-full"
             />
-            <h3 className="text-xl font-semibold text-primary mt-4 mb-2" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700 }}>Sulawesi - Polusi Laut</h3>
+            <h3 className="text-xl font-semibold text-primary mt-4 mb-2" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700 }}>Sulawesi - Marine Pollution</h3>
           </div>
           <div className="w-full md:w-2/3">
             <ul className="list-disc list-outside pl-5 space-y-2 text-[rgb(41,56,87/90%)]">
-              <li>Peningkatan pengetahuan dan kesadaran lingkungan masyarakat dan perusahaan demi kelestarian sumber daya laut.</li>
-              <li>Pengembangan ekonomi lokal harus didorong melalui praktik yang ramah lingkungan dan pembinaan ekonomi kreatif.</li>
-              <li>Pemberlakuan sistem <em>reward and punishment</em> dari pemerintah terkait lingkungan laut.</li>
-              <li>Mengikutsertakan masyarakat lokal dan pemangku kepentingan lain dalam perumusan dan penerapan kebijakan.</li>
+              <li>Increasing environmental knowledge and awareness of communities and companies for marine resource conservation.</li>
+              <li>Local economic development must be encouraged through environmentally friendly practices and creative economy development.</li>
+              <li>Implementation of <em>reward and punishment</em> systems from the government regarding marine environment.</li>
+              <li>Involving local communities and other stakeholders in policy formulation and implementation.</li>
             </ul>
           </div>
         </div>
@@ -184,10 +184,10 @@ const CouncilGenZPage = () => {
       <section className="bg-gray-50 py-16">
         <div className="container mx-auto px-4 max-w-6xl">
           <div className="text-center mb-12">
-            <h2 className="text-2xl md:text-3xl font-semibold text-primary mb-4" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>Tanggapan Representasi Pemerintahan Prabowo-Gibran Terkait Aspirasi Anak Muda</h2>
+            <h2 className="text-2xl md:text-3xl font-semibold text-primary mb-4" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>Prabowo-Gibran Government Representatives' Responses to Young People's Aspirations</h2>
           </div>
           
-          {/* Tanggapan Grid */}
+          {/* Response Grid */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Triana */}
             <div className="bg-white rounded-lg overflow-hidden shadow-md">
@@ -205,18 +205,18 @@ const CouncilGenZPage = () => {
                 
                 <div className="space-y-4">
                   <div>
-                    <h4 className="font-semibold text-[rgb(41,56,87/90%)] mb-1">Kota Berkelanjutan</h4>
-                    <p className="text-[rgb(41,56,87/90%)] text-sm">Masyarakat, NGO, perusahaan, dan pemerintah memiliki peran yang sama pentingnya dalam membangun kota yang ramah lingkungan tanpa merusak ekosistem yang ada khususnya dalam pembangunan IKN.</p>
+                    <h4 className="font-semibold text-[rgb(41,56,87/90%)] mb-1">Sustainable Cities</h4>
+                    <p className="text-[rgb(41,56,87/90%)] text-sm">Communities, NGOs, companies, and government have equally important roles in building environmentally friendly cities without damaging existing ecosystems, especially in IKN development.</p>
                   </div>
                   
                   <div>
-                    <h4 className="font-semibold text-[rgb(41,56,87/90%)] mb-1">Transportasi Berkelanjutan</h4>
-                    <p className="text-[rgb(41,56,87/90%)] text-sm">Indonesia harus mencontoh Singapura yang berhasil menurunkan hampir setengah emisinya dengan membuat atap di atas trotoar demi kenyamanan pejalan kaki.</p>
+                    <h4 className="font-semibold text-[rgb(41,56,87/90%)] mb-1">Sustainable Transportation</h4>
+                    <p className="text-[rgb(41,56,87/90%)] text-sm">Indonesia should follow Singapore's example which successfully reduced almost half of its emissions by creating roofs over sidewalks for pedestrian comfort.</p>
                   </div>
                   
                   <div>
-                    <h4 className="font-semibold text-[rgb(41,56,87/90%)] mb-1">Pariwisata, Limbah & Polusi Laut</h4>
-                    <p className="text-[rgb(41,56,87/90%)] text-sm">Menghidupkan pemahaman tambahan bahwa sampah tidak cukup hanya dibuang melainkan harus dipilah dengan benar sebagai bentuk mitigasi penumpukan sampah dengan kandungan gas metana yang tinggi.</p>
+                    <h4 className="font-semibold text-[rgb(41,56,87/90%)] mb-1">Tourism, Waste & Marine Pollution</h4>
+                    <p className="text-[rgb(41,56,87/90%)] text-sm">Fostering additional understanding that waste is not enough to just be thrown away but must be properly sorted as a form of mitigation for waste accumulation with high methane content.</p>
                   </div>
                 </div>
               </div>
@@ -238,18 +238,18 @@ const CouncilGenZPage = () => {
                 
                 <div className="space-y-4">
                   <div>
-                    <h4 className="font-semibold text-[rgb(41,56,87/90%)] mb-1">Kota Berkelanjutan</h4>
-                    <p className="text-[rgb(41,56,87/90%)] text-sm">Sebelum mengeluarkan Izin Usaha Pertambangan (IUP), diperlukan proses verifikasi secara jelas dari Kementerian ESDM serta Kementerian lainnya yang sifatnya bukan hanya sekadar formalitas di lapangan.</p>
+                    <h4 className="font-semibold text-[rgb(41,56,87/90%)] mb-1">Sustainable Cities</h4>
+                    <p className="text-[rgb(41,56,87/90%)] text-sm">Before issuing Mining Business Permits (IUP), a clear verification process is needed from the Ministry of Energy and Mineral Resources and other Ministries that is not just a formality in the field.</p>
                   </div>
                   
                   <div>
-                    <h4 className="font-semibold text-[rgb(41,56,87/90%)] mb-1">Transportasi Berkelanjutan</h4>
-                    <p className="text-[rgb(41,56,87/90%)] text-sm">Seperti di Rusia, Indonesia memerlukan integrasi transportasi publik dari satu daerah ke daerah lain sehingga memudahkan mobilitas pengguna.</p>
+                    <h4 className="font-semibold text-[rgb(41,56,87/90%)] mb-1">Sustainable Transportation</h4>
+                    <p className="text-[rgb(41,56,87/90%)] text-sm">Like in Russia, Indonesia needs public transportation integration from one region to another to facilitate user mobility.</p>
                   </div>
                   
                   <div>
-                    <h4 className="font-semibold text-[rgb(41,56,87/90%)] mb-1">Pariwisata, Limbah & Polusi Laut</h4>
-                    <p className="text-[rgb(41,56,87/90%)] text-sm">Terus menyuarakan usulan dan gagasan anak muda di forum audiensi serta membawa data atau jurnal pendukung sehingga mudah diimplementasikan.</p>
+                    <h4 className="font-semibold text-[rgb(41,56,87/90%)] mb-1">Tourism, Waste & Marine Pollution</h4>
+                    <p className="text-[rgb(41,56,87/90%)] text-sm">Continue to voice young people's proposals and ideas in audience forums and bring supporting data or journals so they are easy to implement.</p>
                   </div>
                 </div>
               </div>
@@ -271,18 +271,18 @@ const CouncilGenZPage = () => {
                 
                 <div className="space-y-4">
                   <div>
-                    <h4 className="font-semibold text-[rgb(41,56,87/90%)] mb-1">Kota Berkelanjutan</h4>
-                    <p className="text-[rgb(41,56,87/90%)] text-sm">Pentingnya mengutamakan pembangunan yang sesuai dengan karakteristik Indonesia dan bersifat transit oriented. Tidak hanya itu, krusialnya peran masyarakat lokal dalam mengawasi pembangunan IKN agar selalu sustainable.</p>
+                    <h4 className="font-semibold text-[rgb(41,56,87/90%)] mb-1">Sustainable Cities</h4>
+                    <p className="text-[rgb(41,56,87/90%)] text-sm">The importance of prioritizing development that suits Indonesia's characteristics and is transit oriented. Not only that, the crucial role of local communities in monitoring IKN development to always be sustainable.</p>
                   </div>
                   
                   <div>
-                    <h4 className="font-semibold text-[rgb(41,56,87/90%)] mb-1">Transportasi & Pariwisata</h4>
-                    <p className="text-[rgb(41,56,87/90%)] text-sm">Memperhatikan kesamaan standar polusi udara antara Kementerian atau institusi di Indonesia dengan institusi global. Masyarakat lokal harus mencontohkan perilaku turisme yang baik.</p>
+                    <h4 className="font-semibold text-[rgb(41,56,87/90%)] mb-1">Transportation & Tourism</h4>
+                    <p className="text-[rgb(41,56,87/90%)] text-sm">Paying attention to the similarity of air pollution standards between Ministries or institutions in Indonesia with global institutions. Local communities must exemplify good tourism behavior.</p>
                   </div>
                   
                   <div>
-                    <h4 className="font-semibold text-[rgb(41,56,87/90%)] mb-1">Limbah & Polusi Laut</h4>
-                    <p className="text-[rgb(41,56,87/90%)] text-sm">Perlunya regulasi yang ketat terkait pengolahan limbah bagi setiap industri. Terus mengadvokasi para pebisnis dan elit politik di daerah terkait pentingnya menjaga ekosistem laut.</p>
+                    <h4 className="font-semibold text-[rgb(41,56,87/90%)] mb-1">Waste & Marine Pollution</h4>
+                    <p className="text-[rgb(41,56,87/90%)] text-sm">The need for strict regulations regarding waste processing for every industry. Continue advocating businesspeople and political elites in regions regarding the importance of maintaining marine ecosystems.</p>
                   </div>
                 </div>
               </div>
@@ -297,20 +297,20 @@ const CouncilGenZPage = () => {
           <div className="w-full md:w-1/2">
             <Image 
               src="/images/program/DSC08852-a.jpg" // Use an existing image as placeholder
-              alt="Tentang Generasi Melek Politik"
+              alt="About Generasi Melek Politik"
               width={500}
               height={400}
               className="rounded-lg shadow-md object-cover w-full"
             />
           </div>
           <div className="w-full md:w-1/2">
-            <h2 className="text-2xl md:text-3xl font-semibold text-primary mb-4" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>Tentang Generasi Melek Politik</h2>
+            <h2 className="text-2xl md:text-3xl font-semibold text-primary mb-4" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>About Generasi Melek Politik</h2>
             <p className="text-[rgb(41,56,87/90%)] leading-relaxed">
-              Generasi Melek Politik adalah sebuah organisasi yang berfokus pada edukasi partisipasi politik anak muda, di bawah Yayasan Partisipasi Muda yang didirikan pada tahun 2017. Generasi Melek Politik memiliki tiga tujuan besar dalam mendorong keterlibatan generasi muda dalam ranah politik yaitu memberikan edukasi kepada anak muda tentang pentingnya partisipasi politik, menyiapkan pemimpin masa depan Indonesia menggunakan sesi pelatihan kebijakan publik, serta memberikan ruang inklusif bagi anak muda untuk bersuara dan berkontribusi dalam menentukan arahan kebijakan publik Indonesia bersama dengan politisi, pemerintah, dan aktor masyarakat sipil.
+              Generasi Melek Politik is an organization that focuses on educating young people's political participation, under Partisipasi Muda Foundation established in 2017. Generasi Melek Politik has three major goals in encouraging young generation involvement in the political sphere: providing education to young people about the importance of political participation, preparing Indonesia's future leaders using public policy training sessions, and providing inclusive space for young people to voice and contribute in determining Indonesia's public policy direction together with politicians, government, and civil society actors.
             </p>
             
             <div className="mt-6 bg-gray-50 p-4 rounded-lg">
-              <h3 className="font-semibold text-primary mb-2">Narahubung</h3>
+              <h3 className="font-semibold text-primary mb-2">Contact Person</h3>
               <div className="flex items-start gap-4">
                 <div className="w-16 h-16 relative">
                   <Image 

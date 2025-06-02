@@ -2,7 +2,7 @@
 import { Users, UserCheck, GraduationCap, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-const ParticipationInfo = () => {
+const ParticipationInfoEn = () => {
   // Animation variants
   const textVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -44,9 +44,9 @@ const ParticipationInfo = () => {
             viewport={{ once: true, amount: 0.3 }}
             variants={textVariants}
           >
-            <h2 className="text-3xl md:text-4xl font-bold mb-3 text-gray-900">Kamu Juga Bisa Ikut Berpartisipasi.</h2>
+            <h2 className="text-3xl md:text-4xl font-bold mb-3 text-gray-900">You Can Also Participate.</h2>
             <p className="text-lg text-gray-700 max-w-2xl mb-3">
-            Dengan semangat gotong royong, kamu bisa berkontribusi untuk mengubah wajah demokrasi Indonesia, di mana suara orang muda tak hanya terdengar—tetapi juga diperhitungkan.
+            With the spirit of collaboration, you can contribute to transforming Indonesia's democratic landscape, where young voices are not only heard—but also valued and impactful.
             </p>
             
           </motion.div>
@@ -66,8 +66,8 @@ const ParticipationInfo = () => {
                 whileHover={{ y: -5, boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)" }}
               >
                 <Users className="w-9 h-9 mb-3 text-pink-400" />
-                <div className="font-bold text-lg mb-1 text-gray-900">Diskusi Publik</div>
-                <div className="text-sm text-gray-700">Kami menyelenggarakan inisiatif edukasi yang berdampak—memberdayakan mereka untuk mengambil tindakan yang tepat demi masa depan! 📚🔥</div>
+                <div className="font-bold text-lg mb-1 text-gray-900">Public Discussions</div>
+                <div className="text-sm text-gray-700">We organize impactful educational initiatives—empowering them to take the right actions for the future! 📚🔥</div>
               </motion.div>
               
               <motion.div 
@@ -76,9 +76,9 @@ const ParticipationInfo = () => {
                 whileHover={{ y: -5, boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)" }}
               >
                 <UserCheck className="w-9 h-9 mb-3 text-yellow-400" />
-                <div className="font-bold text-lg mb-1 text-gray-900">Council of Gen Z & Temu Kandidat
+                <div className="font-bold text-lg mb-1 text-gray-900">Council of Gen Z & Candidate Meetings
                 </div>
-                <div className="text-sm text-gray-700">Ruang demokrasi yang aman untuk orang muda untuk menyuarakan keresahan dan aspirasi terkait masalah daerahnya kepada pemerintah.</div>
+                <div className="text-sm text-gray-700">A safe democratic space for young people to voice their concerns and aspirations regarding local issues to the government.</div>
               </motion.div>
               
               <motion.div 
@@ -88,7 +88,7 @@ const ParticipationInfo = () => {
               >
                 <GraduationCap className="w-9 h-9 mb-3 text-green-400" />
                 <div className="font-bold text-lg mb-1 text-gray-900">Academia Politica</div>
-                <div className="text-sm text-gray-700">Pelatihan pembuatan kebijakan publik dengan pendekatan <i>roleplay</i>, di mana anak muda berperan sebagai pemangku kebijakan. Lewat kegiatan ini, peserta dibekali wawasan seputar kebijakan publik dan <i>soft skill</i> demokratis seperti <i>public speaking</i> dan negosiasi.
+                <div className="text-sm text-gray-700">Public policy-making training with a roleplay approach, where young people act as policy stakeholders. Through this activity, participants are equipped with insights about public policy and democratic soft skills such as public speaking and negotiation.
                 </div>
               </motion.div>
               
@@ -99,7 +99,7 @@ const ParticipationInfo = () => {
               >
                 <Sparkles className="w-9 h-9 mb-3 text-sky-400" />
                 <div className="font-bold text-lg mb-1 text-gray-900">Class of Climate Leaders</div>
-                <div className="text-sm text-gray-700">Program inkubasi intensif bagi para agen perubahan muda untuk membekali mereka dengan kapasitas membangun gerakan sosial di komunitas lokalnya.</div>
+                <div className="text-sm text-gray-700">An intensive incubation program for young change agents to equip them with the capacity to build social movements in their local communities.</div>
               </motion.div>
             </motion.div>
           </div>
@@ -109,4 +109,4 @@ const ParticipationInfo = () => {
   );
 };
 
-export default ParticipationInfo; 
+export default ParticipationInfoEn; 
