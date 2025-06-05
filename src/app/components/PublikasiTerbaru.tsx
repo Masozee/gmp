@@ -28,9 +28,49 @@ const PublikasiTerbaru = ({ publikasi }: PublikasiTerbaruProps) => {
     return null; 
   }
 
-  // Function to format date
+  // Function to format date - handles multiple date formats
   const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
+    if (!dateString) return '';
+    
+    let date: Date = new Date(); // Initialize with current date as fallback
+    
+    // Handle DD/MM/YYYY format
+    if (dateString.includes('/')) {
+      const parts = dateString.split('/');
+      if (parts.length === 3) {
+        // Format: DD/MM/YYYY
+        date = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
+      } else if (parts.length === 2) {
+        // Format: MM/YYYY
+        date = new Date(`${parts[1]}-${parts[0]}-01`);
+      }
+    } 
+    // Handle "DD Month YYYY" format in Indonesian
+    else if (dateString.includes(' ')) {
+      const monthMap: { [key: string]: string } = {
+        'Januari': '01', 'Februari': '02', 'Maret': '03', 'April': '04',
+        'Mei': '05', 'Juni': '06', 'Juli': '07', 'Agustus': '08',
+        'September': '09', 'Oktober': '10', 'November': '11', 'Desember': '12'
+      };
+      
+      const parts = dateString.split(' ');
+      if (parts.length === 3) {
+        const day = parts[0].padStart(2, '0');
+        const month = monthMap[parts[1]] || '01';
+        const year = parts[2];
+        date = new Date(`${year}-${month}-${day}`);
+      }
+    } 
+    // Default attempt with standard date parsing
+    else {
+      date = new Date(dateString);
+    }
+    
+    // Check if date is valid
+    if (isNaN(date.getTime())) {
+      return 'Tanggal tidak tersedia';
+    }
+    
     return date.toLocaleDateString('id-ID', { 
       day: 'numeric', 
       month: 'long', 
@@ -78,6 +118,13 @@ const PublikasiTerbaru = ({ publikasi }: PublikasiTerbaruProps) => {
               </div>
             </Link>
           ))}
+        </div>
+        
+        <div className="text-center mt-10">
+          <Link href="/publikasi" 
+            className="inline-block bg-[#ffe066] hover:bg-[#f06d98] text-black hover:text-white rounded-full px-6 py-3 font-medium transition-colors">
+            Lihat Semua Publikasi
+          </Link>
         </div>
       </div>
     </section>
