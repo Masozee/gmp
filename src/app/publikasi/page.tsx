@@ -21,6 +21,44 @@ interface Publication {
 
 const publications: Publication[] = publicationsData as Publication[];
 
+// Helper function to format dates as "05 Juni 2025" style
+function formatPublicationDate(dateString: string): string {
+  if (!dateString) return '';
+  
+  // Indonesian month names
+  const indonesianMonths: { [key: number]: string } = {
+    0: 'Januari', 1: 'Februari', 2: 'Maret', 3: 'April',
+    4: 'Mei', 5: 'Juni', 6: 'Juli', 7: 'Agustus',
+    8: 'September', 9: 'Oktober', 10: 'November', 11: 'Desember'
+  };
+  
+  let date: Date;
+  
+  // Handle DD/MM/YYYY format
+  if (dateString.includes('/')) {
+    const parts = dateString.split('/');
+    const day = parseInt(parts[0], 10);
+    const month = parseInt(parts[1], 10);
+    const year = parseInt(parts[2], 10);
+    date = new Date(year, month - 1, day); // Month is 0-indexed in JS Date
+  } else {
+    // Fallback to default parsing
+    date = new Date(dateString);
+  }
+  
+  // Check if date is valid
+  if (isNaN(date.getTime())) {
+    return dateString; // Return original if parsing fails
+  }
+  
+  // Format as "05 Juni 2025" style
+  const day = date.getDate().toString().padStart(2, '0');
+  const month = indonesianMonths[date.getMonth()];
+  const year = date.getFullYear();
+  
+  return `${day} ${month} ${year}`;
+}
+
 // --- Metadata is static for this page, keep it outside the component ---
 // export const metadata = {
 //   title: 'Publikasi | Partisipasi Muda',
@@ -31,6 +69,7 @@ const publications: Publication[] = publicationsData as Publication[];
 
 export default function PublikasiPage() {
   const [activeFilter, setActiveFilter] = useState('all'); // 'all', 'article', 'survey'
+  const [searchQuery, setSearchQuery] = useState('');
 
   const filterOptions = [
     { label: 'Semua', value: 'all' },
@@ -40,8 +79,15 @@ export default function PublikasiPage() {
   ];
 
   const filteredPublications = publications.filter((pub) => {
-    if (activeFilter === 'all') return true;
-    return pub.type.toLowerCase() === activeFilter;
+    // Filter by type
+    const typeMatch = activeFilter === 'all' || pub.type.toLowerCase() === activeFilter;
+    
+    // Filter by search query
+    const searchMatch = searchQuery === '' || 
+      pub.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+      pub.content.toLowerCase().includes(searchQuery.toLowerCase());
+    
+    return typeMatch && searchMatch;
   });
 
   return (
@@ -60,18 +106,43 @@ export default function PublikasiPage() {
 
       {/* Main Content Section with Filters */}
       <section className="container mx-auto max-w-7xl px-4 py-8 md:py-12">
-        {/* Filter Buttons */}
-        <div className="mb-8 flex justify-center space-x-2 md:space-x-4">
-          {filterOptions.map((option) => (
-            <Button
-              key={option.value}
-              variant={activeFilter === option.value ? 'default' : 'outline'}
-              onClick={() => setActiveFilter(option.value)}
-              className="transition-colors duration-200"
+        {/* Search and Filter Row */}
+        <div className="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          {/* Filter Dropdown */}
+          <div className="relative w-full md:w-48 order-2 md:order-1">
+            <select
+              value={activeFilter}
+              onChange={(e) => setActiveFilter(e.target.value)}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent bg-white cursor-pointer"
             >
-              {option.label}
-            </Button>
-          ))}
+              {filterOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+            <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </div>
+          </div>
+          
+          {/* Search Bar */}
+          <div className="relative flex-grow max-w-full md:max-w-md order-1 md:order-2">
+            <input
+              type="text"
+              placeholder="Cari publikasi..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+            />
+            <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
+          </div>
         </div>
 
         {/* Publication Grid */}
@@ -106,9 +177,9 @@ export default function PublikasiPage() {
                       {pub.type.charAt(0).toUpperCase() + pub.type.slice(1)}
                     </span>
                     
-                    {/* Title second (as a link) */}
+                    {/* Title second (as a link) - removed line-clamp-2 to show full title */}
                     <Link href={`/publikasi/${slug}`}>
-                      <h2 className="mb-3 line-clamp-2 text-lg font-semibold text-white group-hover:text-black hover:underline" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>
+                      <h2 className="mb-3 text-lg font-semibold text-white group-hover:text-black hover:underline" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>
                         {pub.title}
                       </h2>
                     </Link>
@@ -119,8 +190,8 @@ export default function PublikasiPage() {
                     </p>
                     
                     <div className="flex justify-between items-center">
-                      {/* Date third */}
-                      <p className="text-xs text-white group-hover:text-black">{pub.date}</p>
+                      {/* Date third - formatted as dd/mmmm/yyyy */}
+                      <p className="text-xs text-white group-hover:text-black">{formatPublicationDate(pub.date)}</p>
                       
                       {/* View counter fourth */}
                       <div className="text-xs text-white group-hover:text-black">

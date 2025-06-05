@@ -24,8 +24,9 @@ export const metadata: Metadata = {
   keywords: ["political education", "Indonesian youth", "civic engagement", "Partisipasi Muda", "democracy", "youth empowerment"],
   authors: [{ name: "Yayasan Partisipasi Muda" }],
   icons: {
-    icon: '/images/logo/favicon.png',
-    apple: '/images/logo/favicon.png',
+    icon: [{ url: '/images/logo/favicon.png' }],
+    apple: [{ url: '/images/logo/favicon.png' }],
+    shortcut: [{ url: '/images/logo/favicon.png' }],
   },
   openGraph: {
     title: "Yayasan Partisipasi Muda",
@@ -51,7 +52,7 @@ export default function RootLayout({
   return (
     <html lang="id">
       <head>
-        <link rel="icon" href="/images/logo/favicon.png" />
+        {/* Favicon is now handled by metadata config */}
         <style>
           {`@import url('https://fonts.googleapis.com/css2?family=Ancizar+Serif:ital,wght@0,300..900;1,300..900&family=Figtree:ital,wght@0,300..900;1,300..900&family=Inter:wght@100..900&display=swap');`}
         </style>
