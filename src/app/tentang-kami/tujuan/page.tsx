@@ -11,7 +11,7 @@ const TujuanPage = () => {
         <div className="relative container mx-auto px-4 z-10">
           <h1 className="text-4xl md:text-5xl font-bold mb-4 text-white" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>Tujuan Kami</h1>
           <p className="text-lg md:text-xl text-gray-100 max-w-2xl mx-auto">
-            Mendorong partisipasi politik anak muda Indonesia melalui edukasi yang relevan dan engaging.
+          Memberdayakan anak muda Indonesia untuk berpartisipasi dalam demokrasi dan perumusan kebijakan publik.
           </p>
         </div>
       </section>
@@ -50,7 +50,7 @@ const TujuanPage = () => {
 
         <div className="mt-12 flex justify-center">
           <Image
-            src="/images/bg/about.jpg" // Placeholder image path
+            src="/images/bg/about.jpg" // ganti Carousel
             alt="Placeholder Image for Tujuan Page"
             width={600}
             height={400}

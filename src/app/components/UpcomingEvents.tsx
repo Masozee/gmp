@@ -92,10 +92,10 @@ const UpcomingEvents = () => {
   
   return (
     <section className="py-16 bg-white">
-      <div className="container mx-auto px-4 max-w-7xl">
+      <div className="container mx-auto px-2 max-w-7xl">
         <h2 className="text-3xl md:text-4xl font-heading font-bold mb-4 text-center">Acara Mendatang</h2>
-        <p className="text-lg text-gray-600 mb-8 text-center max-w-3xl mx-auto">
-          Jelajahi acara-acara kami yang menarik dan bermanfaat. Bergabunglah bersama kami untuk meningkatkan kapasitas dan keterlibatan politik anda.
+        <p className="text-lg text-gray-600 mb-8 text-center max-w-2xl mx-auto">
+        Jangan lewatkan acara-acara kami untuk meningkatkan partisipasi dan kemampuan di berbagai isu
         </p>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">

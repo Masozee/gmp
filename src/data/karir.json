@@ -1,123 +1,17 @@
 [
   {
-    "id": "intern-penelitian-2023",
-    "title": "Magang Asisten Peneliti",
+    "id": "talent-pool-2025",
+    "title": "Talent Pool 2025",
     "type": "internship",
-    "location": "Jakarta",
-    "duration": "3 bulan",
-    "deadline": "2023-12-15",
-    "posted_date": "2023-11-01",
-    "description": "Yayasan Partisipasi Muda membuka kesempatan magang untuk posisi Asisten Peneliti. Magang ini akan fokus pada penelitian partisipasi politik anak muda di Indonesia.",
-    "responsibilities": [
-      "Membantu tim penelitian dalam mengumpulkan dan menganalisis data",
-      "Melakukan studi literatur dan menulis laporan",
-      "Membantu dalam persiapan dan pelaksanaan Focus Group Discussion (FGD)",
-      "Mendukung publikasi hasil penelitian"
-    ],
-    "requirements": [
-      "Mahasiswa/i tingkat akhir atau fresh graduate dari jurusan Ilmu Politik, Hubungan Internasional, Sosiologi, atau bidang terkait",
-      "Memiliki minat yang kuat dalam isu-isu politik dan kepemudaan",
-      "Kemampuan analitis yang baik dan atensi terhadap detail",
-      "Mampu bekerja secara mandiri maupun dalam tim",
-      "Terbiasa dengan Microsoft Office dan Google Workspace"
-    ],
-    "benefits": [
-      "Tunjangan transportasi",
-      "Sertifikat magang",
-      "Pengalaman bekerja di NGO terkemuka",
-      "Kesempatan networking dengan profesional di bidang politik dan kebijakan publik"
-    ],
-    "apply_url": "/karir/intern-penelitian-2023"
-  },
-  {
-    "id": "intern-komunikasi-2023",
-    "title": "Magang Komunikasi dan Media Sosial",
-    "type": "internship",
-    "location": "Jakarta",
-    "duration": "6 bulan",
-    "deadline": "2023-12-20",
-    "posted_date": "2023-11-05",
-    "description": "Yayasan Partisipasi Muda mencari individu kreatif dan bersemangat untuk bergabung dengan tim komunikasi kami sebagai Magang Komunikasi dan Media Sosial.",
-    "responsibilities": [
-      "Membantu dalam pengembangan dan pelaksanaan strategi media sosial",
-      "Membuat konten untuk berbagai platform media sosial",
-      "Memantau dan melaporkan kinerja media sosial",
-      "Membantu dalam produksi konten visual dan audio",
-      "Mendukung aktivitas komunikasi eksternal organisasi"
-    ],
-    "requirements": [
-      "Mahasiswa/i tingkat akhir atau fresh graduate dari jurusan Komunikasi, Jurnalisme, Marketing, atau bidang terkait",
-      "Keterampilan menulis yang sangat baik dalam Bahasa Indonesia, Bahasa Inggris menjadi nilai tambah",
-      "Pengalaman dalam mengelola akun media sosial",
-      "Familiar dengan platform desain seperti Canva atau Adobe Creative Suite",
-      "Kreatif dan memiliki pemahaman tentang tren media sosial terkini"
-    ],
-    "benefits": [
-      "Tunjangan transportasi",
-      "Sertifikat magang",
-      "Portofolio yang kuat untuk karir di bidang komunikasi",
-      "Kesempatan untuk belajar dari profesional komunikasi berpengalaman"
-    ],
-    "apply_url": "/karir/intern-komunikasi-2023"
-  },
-  {
-    "id": "volunteer-fasilitator-2023",
-    "title": "Relawan Fasilitator Program",
-    "type": "volunteer",
-    "location": "Jakarta, Surabaya, Makassar",
-    "duration": "Project-based",
-    "deadline": "2023-12-30",
-    "posted_date": "2023-11-10",
-    "description": "Yayasan Partisipasi Muda membutuhkan relawan fasilitator untuk program pendidikan politik bagi pemuda. Program ini akan berlangsung di beberapa kota besar di Indonesia.",
-    "responsibilities": [
-      "Memfasilitasi diskusi dan workshop dengan peserta program",
-      "Membantu dalam koordinasi logistik acara",
-      "Memberikan pendampingan kepada peserta program",
-      "Membantu dalam evaluasi program"
-    ],
-    "requirements": [
-      "Berusia 20-35 tahun",
-      "Memiliki pengalaman sebagai fasilitator atau public speaker",
-      "Memiliki pengetahuan dasar tentang sistem politik Indonesia",
-      "Mampu berkomitmen sesuai jadwal program",
-      "Memiliki keterampilan komunikasi yang baik"
-    ],
-    "benefits": [
-      "Pelatihan fasilitator",
-      "Sertifikat relawan",
-      "Penggantian biaya transportasi dan konsumsi selama kegiatan",
-      "Kesempatan untuk memperluas jaringan"
-    ],
-    "apply_url": "/karir/volunteer-fasilitator-2023"
-  },
-  {
-    "id": "volunteer-content-creator-2023",
-    "title": "Relawan Content Creator",
-    "type": "volunteer",
-    "location": "Remote",
-    "duration": "3 bulan",
-    "deadline": "2023-12-25",
-    "posted_date": "2023-11-15",
-    "description": "Yayasan Partisipasi Muda mencari relawan content creator yang dapat membantu kami dalam memproduksi konten edukatif tentang partisipasi politik pemuda di Indonesia.",
-    "responsibilities": [
-      "Membuat konten visual (infografis, poster, video pendek) tentang isu politik dan kepemudaan",
-      "Menulis artikel dan blog post tentang topik-topik terkait",
-      "Membantu dalam pengembangan materi edukasi",
-      "Berkolaborasi dengan tim komunikasi untuk strategi konten"
-    ],
-    "requirements": [
-      "Memiliki kemampuan desain grafis atau video editing",
-      "Keterampilan menulis yang baik",
-      "Kreatif dan inovatif dalam penyampaian informasi",
-      "Memiliki pemahaman tentang isu-isu politik dan kepemudaan",
-      "Mampu bekerja secara mandiri dengan minimal supervisi"
-    ],
-    "benefits": [
-      "Sertifikat relawan",
-      "Portfolio untuk karir di bidang konten dan komunikasi",
-      "Kesempatan untuk berkontribusi pada perubahan sosial",
-      "Pengalaman bekerja dengan organisasi kepemudaan terkemuka"
-    ],
-    "apply_url": "/karir/volunteer-content-creator-2023"
+    "location": "-",
+    "duration": "-",
+    "deadline": "-",
+    "posted_date": "2025-06-07",
+    "poster": "/images/cover/intern-penelitian-2023.png",
+    "description": "Yayasan Partisipasi Muda sedang mencari beberapa posisi freelance untuk kebutuhan saat ini dan mendatang! \n Bergabunglah bersama kami dalam meningkatkan partisipasi anak muda di ruang publik terkait isu krisis iklim dan ruang sipil. \n 👉 bit.ly/YPMTalentPool2025 👈 \n *ps: tunjukkan portofolio terbaikmu 😎 dan hanya kandidat terpilih yang akan dihubungi!",
+    "responsibilities": " ",
+    "requirements": " ",
+    "benefits": " ",
+    "apply_url": "https://bit.ly/YPMTalentPool2025"
   }
 ] 

@@ -5,14 +5,14 @@
     "position": "Co-founder & Director"
   },
   {
-    "photo": "https://www.generasimelekpolitik.org/wp-content/uploads/2023/05/1619545744_alva.jpg",
-    "name": "Alva Lazuardi",
-    "position": "Co-founder & Program Officer"
-  },
-  {
     "photo": "https://www.generasimelekpolitik.org/wp-content/uploads/2023/05/1619545835_ichsan.jpg",
     "name": "M. Ichsan Fathan",
     "position": "Co-founder & Public Relations"
+  },
+  {
+    "photo": "https://www.generasimelekpolitik.org/wp-content/uploads/2023/05/1619545744_alva.jpg",
+    "name": "Alva Lazuardi",
+    "position": "Co-founder & Program Officer"
   },
   {
     "photo": "https://www.generasimelekpolitik.org/wp-content/uploads/2023/05/1619545879_ersa.jpg",
@@ -25,33 +25,8 @@
     "position": "Co-founder & Researcher"
   },
   {
-    "photo": "https://www.generasimelekpolitik.org/wp-content/uploads/2023/05/1619546038_belinda.jpg",
-    "name": "Belinda Sahadati Amri",
-    "position": "Researcher"
-  },
-  {
-    "photo": "https://www.generasimelekpolitik.org/wp-content/uploads/2023/05/1619546142_adinda.jpg",
-    "name": "Adinda Aniza",
-    "position": "Video Editor"
-  },
-  {
-    "photo": "https://www.generasimelekpolitik.org/wp-content/uploads/2023/05/1619546305_hilarius.jpg",
-    "name": "Hilarius Bryan",
-    "position": "Junior Researcher"
-  },
-  {
-    "photo": "https://www.generasimelekpolitik.org/wp-content/uploads/2023/05/1619546354_putri_mita.jpg",
-    "name": "Mita Putri Novita Sari",
-    "position": "Junior Researcher"
-  },
-  {
-    "photo": "https://www.generasimelekpolitik.org/wp-content/uploads/2023/05/1619546414_m_ghazi.jpg",
-    "name": "M. Ghazi Iman H.",
-    "position": "Monitoring & Evaluation"
-  },
-  {
-    "photo": "https://www.generasimelekpolitik.org/wp-content/uploads/2023/05/1619546539_laurentius.jpg",
-    "name": "Laurentius J. Sitepu",
-    "position": "Photographer"
+    "photo": "https://www.generasimelekpolitik.org/wp-content/uploads/2023/05/1619545744_alva.jpg",
+    "name": "Ayu Ardaniyah",
+    "position": "Finance Manager"
   }
 ]

@@ -42,7 +42,8 @@ const PerjalananPage = () => {
         <div className="relative container mx-auto px-4 z-10">
           <h1 className="text-4xl md:text-5xl font-bold mb-4" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>Perjalanan Kami</h1>
           <p className="text-lg md:text-xl text-gray-100 max-w-2xl mx-auto">
-            Menelusuri langkah Yayasan Partisipasi Muda dari awal hingga kini.
+          Berawal dari komunitas relawan, kami tumbuh menjadi organisasi nirlaba yang dinamis dan berdampak. Dipimpin oleh anak muda, untuk memberdayakan sesama anak muda.
+
           </p>
         </div>
       </section>
@@ -60,12 +61,9 @@ const PerjalananPage = () => {
                   key={index}
                   className="flex justify-center relative group animate-fadeInUp"
                 >
-                  {/* Timeline Dot */}
-                  <div className="hidden md:block absolute left-1/2 top-8 -translate-x-1/2 -translate-y-1/2 z-20">
-                    <div className="w-6 h-6 rounded-full bg-white border-4 border-yellow-400 shadow-lg" />
-                  </div>
+                  {/* Timeline Dot removed */}
                   {/* Single Card with Image and Description */}
-                  <div className="bg-white/90 backdrop-blur-lg rounded-2xl p-0 shadow-xl border border-gray-100 transition-all duration-300 hover:bg-yellow-300 hover:text-black cursor-pointer w-full max-w-2xl">
+                  <div className="bg-white/90 backdrop-blur-lg rounded-2xl p-0 shadow-xl border border-gray-100 w-full max-w-2xl">
                     <Image
                       src={item.imageSrc}
                       alt={`Perjalanan ${item.year}`}

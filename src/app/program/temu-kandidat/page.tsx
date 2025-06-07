@@ -13,7 +13,8 @@ const TemuKandidatPage = () => {
         <div className="relative container mx-auto px-4 z-10">
           <h1 className="text-4xl md:text-5xl font-bold mb-4" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>{pageTitle}</h1>
           <p className="text-lg md:text-xl text-gray-800 max-w-3xl mx-auto mb-6">
-            Wadah Anak Muda Menyuarakan Kepedulian terhadap Krisis Iklim kepada Calon Pemimpin Daerah.
+          Memberdayakan anak muda Indonesia di daerah yang rentan terhadap perubahan iklim dengan ruang demokratis yang aman untuk menyuarakan kekhawatiran mereka kepada calon Kepala Daerah dalam Pilkada dan Pemilu.
+
           </p>
           
         </div>

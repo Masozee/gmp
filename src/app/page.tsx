@@ -7,8 +7,26 @@ import { motion } from 'framer-motion';
 import PublikasiTerbaru, { Publikasi } from './components/PublikasiTerbaru';
 
 // Import other components 
-import Hero from './components/Hero';
+// import Hero from './components/Hero'; // Preserved for later use
 import ParticipationInfo from './components/ParticipationInfo';
+import dynamic from 'next/dynamic';
+
+// Dynamic import for client-side only components
+const InteractiveMap = dynamic(() => import('./components/InteractiveMap'), {
+  ssr: false,
+  loading: () => (
+    <section className="relative w-full h-screen overflow-hidden bg-gray-100">
+      <div className="flex items-center justify-center h-full">
+        <div className="text-center">
+          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-pink-600 mb-2"></div>
+          <p className="text-gray-500">Loading interactive map...</p>
+        </div>
+      </div>
+    </section>
+  )
+});
+
+
 import EngagementBanner from './components/EngagementBanner';
 import TestimonialsCarousel from './components/TestimonialsCarousel';
 import Partners from './components/Partners';
@@ -50,7 +68,7 @@ export default function Home() {
 
   return (
     <main className="min-h-screen">
-      <Hero />
+      <InteractiveMap />
       
       <motion.div
         initial="hidden"

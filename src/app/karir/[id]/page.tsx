@@ -88,38 +88,32 @@ export default function KarirDetailPage({ params }: KarirDetailPageProps) {
             {/* Description */}
             <section className="mb-10">
               <h2 className="text-2xl font-bold mb-4 text-gray-900" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>Deskripsi</h2>
-              <p className="text-gray-700 mb-4">{karir.description}</p>
+              <div className="text-gray-700 mb-4 whitespace-pre-line">{karir.description}</div>
             </section>
 
-            {/* Responsibilities */}
-            <section className="mb-10">
-              <h2 className="text-2xl font-bold mb-4 text-gray-900" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>Tanggung Jawab</h2>
-              <ul className="list-disc pl-5 space-y-2 text-gray-700">
-                {karir.responsibilities.map((item, index) => (
-                  <li key={index}>{item}</li>
-                ))}
-              </ul>
-            </section>
+            {/* Responsibilities - Only show if not empty */}
+            {karir.responsibilities && karir.responsibilities.trim() !== '' && (
+              <section className="mb-10">
+                <h2 className="text-2xl font-bold mb-4 text-gray-900" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>Tanggung Jawab</h2>
+                <div className="text-gray-700 whitespace-pre-line">{karir.responsibilities}</div>
+              </section>
+            )}
 
-            {/* Requirements */}
-            <section className="mb-10">
-              <h2 className="text-2xl font-bold mb-4 text-gray-900" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>Persyaratan</h2>
-              <ul className="list-disc pl-5 space-y-2 text-gray-700">
-                {karir.requirements.map((item, index) => (
-                  <li key={index}>{item}</li>
-                ))}
-              </ul>
-            </section>
+            {/* Requirements - Only show if not empty */}
+            {karir.requirements && karir.requirements.trim() !== '' && (
+              <section className="mb-10">
+                <h2 className="text-2xl font-bold mb-4 text-gray-900" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>Persyaratan</h2>
+                <div className="text-gray-700 whitespace-pre-line">{karir.requirements}</div>
+              </section>
+            )}
 
-            {/* Benefits */}
-            <section className="mb-10">
-              <h2 className="text-2xl font-bold mb-4 text-gray-900" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>Manfaat</h2>
-              <ul className="list-disc pl-5 space-y-2 text-gray-700">
-                {karir.benefits.map((item, index) => (
-                  <li key={index}>{item}</li>
-                ))}
-              </ul>
-            </section>
+            {/* Benefits - Only show if not empty */}
+            {karir.benefits && karir.benefits.trim() !== '' && (
+              <section className="mb-10">
+                <h2 className="text-2xl font-bold mb-4 text-gray-900" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>Manfaat</h2>
+                <div className="text-gray-700 whitespace-pre-line">{karir.benefits}</div>
+              </section>
+            )}
           </div>
 
           {/* Right column - Info card */}
@@ -128,26 +122,30 @@ export default function KarirDetailPage({ params }: KarirDetailPageProps) {
               <h3 className="text-lg font-bold mb-4 text-gray-900" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>Informasi Lowongan</h3>
               
               <div className="space-y-4">
-                <div className="flex items-start">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3 text-gray-500 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                  </svg>
-                  <div>
-                    <p className="font-medium text-gray-900">Lokasi</p>
-                    <p className="text-gray-600">{karir.location}</p>
+                {karir.location && karir.location !== '-' && (
+                  <div className="flex items-start">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3 text-gray-500 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    <div>
+                      <p className="font-medium text-gray-900">Lokasi</p>
+                      <p className="text-gray-600">{karir.location}</p>
+                    </div>
                   </div>
-                </div>
+                )}
 
-                <div className="flex items-start">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3 text-gray-500 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  <div>
-                    <p className="font-medium text-gray-900">Durasi</p>
-                    <p className="text-gray-600">{karir.duration}</p>
+                {karir.duration && karir.duration !== '-' && (
+                  <div className="flex items-start">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3 text-gray-500 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <div>
+                      <p className="font-medium text-gray-900">Durasi</p>
+                      <p className="text-gray-600">{karir.duration}</p>
+                    </div>
                   </div>
-                </div>
+                )}
 
                 <div className="flex items-start">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3 text-gray-500 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -159,20 +157,33 @@ export default function KarirDetailPage({ params }: KarirDetailPageProps) {
                   </div>
                 </div>
 
-                <div className="flex items-start">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3 text-gray-500 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  <div>
-                    <p className="font-medium text-gray-900">Deadline Pendaftaran</p>
-                    <p className="text-gray-600">{formatDate(karir.deadline)}</p>
+                {karir.deadline && karir.deadline !== '-' && (
+                  <div className="flex items-start">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-3 text-gray-500 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <div>
+                      <p className="font-medium text-gray-900">Deadline Pendaftaran</p>
+                      <p className="text-gray-600">{formatDate(karir.deadline)}</p>
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
 
-              <button className="mt-6 w-full bg-[#f06d98] text-white hover:bg-pink-600 font-bold py-3 px-4 rounded-full transition duration-300">
-                Daftar Sekarang
-              </button>
+              {karir.apply_url ? (
+                <a 
+                  href={karir.apply_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-6 w-full bg-[#f06d98] text-white hover:bg-pink-600 font-bold py-3 px-4 rounded-full transition duration-300 block text-center"
+                >
+                  Daftar Sekarang
+                </a>
+              ) : (
+                <button className="mt-6 w-full bg-[#f06d98] text-white hover:bg-pink-600 font-bold py-3 px-4 rounded-full transition duration-300">
+                  Daftar Sekarang
+                </button>
+              )}
             </div>
           </div>
         </div>

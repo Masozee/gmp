@@ -21,7 +21,7 @@ interface PastEvent {
 
 const DiskusiPage = () => {
   const programTitle = "Diskusi Publik";
-  const programHeroDescription = "Wadah diskusi terbuka membahas isu-isu politik terkini yang relevan bagi anak muda.";
+  const programHeroDescription = "Untuk membekali generasi muda dengan pengetahuan tentang isu-isu terkini, kami menghadirkan inisiatif edukasi yang berdampak—memberdayakan mereka untuk bergerak dan ambil aksi demi masa depan yang lebih baik! 📚🔥";
   // Remove unused variable
   // const programHeroImage = "/images/program/hero-diskusi-placeholder.jpg"; 
 

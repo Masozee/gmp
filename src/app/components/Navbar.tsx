@@ -189,7 +189,7 @@ const Navbar = () => {
             <Link href="/report" className={`transition-colors py-2 font-extrabold ${
               hasScrolled ? 'hover:text-pink-500 text-gray-800' : 'hover:text-pink-500 text-white'
             }`}>
-              Laporan
+              Ruang Sipil
             </Link>
             <Link href="/acara" className={`transition-colors py-2 font-extrabold ${
               hasScrolled ? 'hover:text-pink-500 text-gray-800' : 'hover:text-pink-500 text-white'

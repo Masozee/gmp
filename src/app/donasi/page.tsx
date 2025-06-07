@@ -3,7 +3,7 @@ import Image from 'next/image';
 
 export const metadata = {
   title: 'Donasi & Kolaborasi | Partisipasi Muda',
-  description: 'Dukung Generasi Melek Politik dalam memperbaiki ekosistem politik Indonesia melalui donasi atau kolaborasi.',
+  description: 'Dukung Yayasan Partisipasi Muda dalam memperbaiki ekosistem politik Indonesia melalui donasi atau kolaborasi.',
 };
 
 const DonasiPage = () => {
@@ -16,7 +16,7 @@ const DonasiPage = () => {
             Donasi & Kolaborasi
           </h1>
           <p className="text-lg text-green-100">
-            Mari bersama membangun masa depan politik Indonesia yang lebih baik.
+          Mari bersama membangun masa depan yang lebih baik dan partisipasi yang lebih bermakna pada demokrasi & kebijakan publik.
           </p>
         </div>
       </section>
@@ -67,11 +67,11 @@ const DonasiPage = () => {
             <h2 className="text-3xl font-bold mb-4 text-green-700">Kolaborasi Bersama</h2>
             <div className="prose prose-lg">
               <p>
-                Generasi Melek Politik terbuka kepada individu, organisasi, ataupun
+                Yayasan Partisipasi Muda terbuka kepada individu, organisasi, ataupun
                 perusahaan yang ingin memperbaiki ekosistem politik Indonesia.
               </p>
               <p>
-                Generasi Melek Politik juga terbuka dengan penawaran kerjasama untuk
+                Yayasan Partisipasi Muda juga terbuka dengan penawaran kerjasama untuk
                 kampanye digital, event digital, maupun program yang dilakukan
                 secara offline.
               </p>
