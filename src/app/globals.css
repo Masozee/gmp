@@ -39,7 +39,7 @@
 
   /* Navbar and navigation styles */
   nav, .navbar, header nav {
-    font-family: 'Figtree', sans-serif !important;
+    font-family: 'Inter', sans-serif !important;
     font-weight: 800 !important;
   }
 
@@ -49,14 +49,14 @@
   .navbar .submenu,
   nav ul ul,
   nav .subnav {
-    font-family: 'Figtree', sans-serif !important;
-    font-weight: 600 !important;
+    font-family: 'Inter', sans-serif !important;
+    font-weight: 700 !important;
   }
 
-  /* Ensure all buttons use Figtree font */
+  /* Ensure all buttons use Inter font */
   button, .button, a[href], [role="button"], 
   [type="button"], [type="submit"], [type="reset"] {
-    font-family: 'Figtree', sans-serif !important;
+    font-family: 'Inter', sans-serif !important;
   }
   :root {
     --background: 0 0% 100%;
@@ -132,7 +132,7 @@
 @layer components {
   .btn {
     @apply px-4 py-2 rounded-md font-medium transition-colors;
-    font-family: 'Figtree', sans-serif !important;
+    font-family: 'Inter', sans-serif !important;
   }
   
   .btn-primary {

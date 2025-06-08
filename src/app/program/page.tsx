@@ -32,6 +32,13 @@ const programs = [
     image: '/images/program/placeholder-council.jpg',
     link: '/program/council-gen-z'
   },
+  {
+    slug: 'class-of-climate-leaders',
+    title: 'Class of Climate Leaders',
+    description: 'Bootcamp kepemimpinan iklim untuk peserta terbaik Academia Politica, mempersiapkan mereka menjadi agen perubahan di komunitasnya.',
+    image: '/images/program/placeholder-climate.jpg',
+    link: '/program/class-of-climate-leaders'
+  },
 ];
 
 const ProgramPage = () => {

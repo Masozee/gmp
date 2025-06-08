@@ -176,6 +176,7 @@ const Navbar = () => {
                   <Link href="/program/diskusi" className={`block px-4 py-2 text-sm ${hasScrolled ? 'text-gray-700 hover:bg-gray-100 hover:text-pink-500' : 'text-white hover:bg-gray-700 hover:text-pink-500'}`}>Diskusi</Link>
                   <Link href="/program/temu-kandidat" className={`block px-4 py-2 text-sm ${hasScrolled ? 'text-gray-700 hover:bg-gray-100 hover:text-pink-500' : 'text-white hover:bg-gray-700 hover:text-pink-500'}`}>Temu Kandidat</Link>
                   <Link href="/program/academia-politica" className={`block px-4 py-2 text-sm ${hasScrolled ? 'text-gray-700 hover:bg-gray-100 hover:text-pink-500' : 'text-white hover:bg-gray-700 hover:text-pink-500'}`}>Academia Politica</Link>
+                  <Link href="/program/class-of-climate-leaders" className={`block px-4 py-2 text-sm ${hasScrolled ? 'text-gray-700 hover:bg-gray-100 hover:text-pink-500' : 'text-white hover:bg-gray-700 hover:text-pink-500'}`}>Class of Climate Leader</Link>
                   <Link href="/program/council-gen-z" className={`block px-4 py-2 text-sm ${hasScrolled ? 'text-gray-700 hover:bg-gray-100 hover:text-pink-500' : 'text-white hover:bg-gray-700 hover:text-pink-500'}`}>Council of Gen Z</Link>
                 </div>
               )}
