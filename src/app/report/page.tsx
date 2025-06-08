@@ -1,40 +1,25 @@
+'use client';
+
 import React from 'react';
 import Image from 'next/image';
-import MapWrapper from '../components/MapWrapper';
+import dynamic from 'next/dynamic';
 
-export const metadata = {
-  title: 'Report | Partisipasi Muda',
-  description: 'Laporan kegiatan dan pencapaian Generasi Melek Politik di seluruh Indonesia.',
-};
+// Dynamic import for client-side only components
+const ReportInteractiveMap = dynamic(() => import('../components/ReportInteractiveMap'), {
+  ssr: false,
+  loading: () => (
+    <section className="relative w-full h-screen overflow-hidden bg-gray-100">
+      <div className="flex items-center justify-center h-full">
+        <div className="text-center">
+          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-pink-600 mb-2"></div>
+          <p className="text-gray-500">Loading interactive map...</p>
+        </div>
+      </div>
+    </section>
+  )
+});
 
 const ReportPage = () => {
-  // Sample achievements data
-  const achievements = [
-    {
-      id: 1,
-      title: '34',
-      description: 'Provinsi di Indonesia',
-      icon: '/icons/pin.png',
-    },
-    {
-      id: 2,
-      title: '250+',
-      description: 'Kegiatan Terlaksana',
-      icon: '/icons/communication.png',
-    },
-    {
-      id: 3,
-      title: '5000+',
-      description: 'Peserta Teredukasi',
-      icon: '/icons/global-network.png',
-    },
-    {
-      id: 4,
-      title: '100+',
-      description: 'Mitra Kolaborasi',
-      icon: '/icons/team-work.png',
-    },
-  ];
 
   // Single publication data
   const publication = {
@@ -60,44 +45,8 @@ const ReportPage = () => {
         </div>
       </section>
 
-      {/* Achievements Section */}
-      <section className="py-16 bg-white">
-        <div className="container mx-auto max-w-7xl px-4">
-          <h2 className="text-3xl font-extrabold text-center mb-12 font-heading">Pencapaian Kami</h2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {achievements.map((item) => (
-              <div key={item.id} className="bg-white p-6 rounded-lg shadow-md text-center hover:shadow-lg transition-shadow">
-                <div className="w-16 h-16 mx-auto mb-4 flex items-center justify-center bg-[#f06d98]/10 rounded-full">
-                  <Image 
-                    src={item.icon} 
-                    alt={item.title} 
-                    width={32} 
-                    height={32}
-                  />
-                </div>
-                <h3 className="text-3xl font-extrabold text-[#f06d98] mb-2">{item.title}</h3>
-                <p className="text-gray-600">{item.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Map Section */}
-      <section className="py-16 bg-gray-50">
-        <div className="container mx-auto max-w-7xl px-4">
-          <h2 className="text-3xl font-extrabold text-center mb-6 font-heading">Jangkauan Program</h2>
-          <p className="text-center text-gray-600 max-w-2xl mx-auto mb-12">
-            Peta interaktif menunjukkan jangkauan program Generasi Melek Politik di seluruh Indonesia.
-            Klik pada provinsi untuk melihat detail kegiatan.
-          </p>
-          
-          <div className="bg-white rounded-lg shadow-md p-4 md:p-6">
-            <MapWrapper />
-          </div>
-        </div>
-      </section>
+      {/* Full Screen Interactive Map */}
+      <ReportInteractiveMap />
 
       {/* Single Publication Section */}
       <section className="py-16 bg-white">

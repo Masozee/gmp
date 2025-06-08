@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
-import partnersData from '../../data/partners.json';
+import partnersData from '../../../data/partners.json';
 
 interface Partner {
   order: number;

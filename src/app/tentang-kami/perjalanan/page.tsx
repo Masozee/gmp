@@ -5,27 +5,37 @@ const PerjalananPage = () => {
   const timelineData = [
     {
       year: '2017',
-      description: 'Gagasan Generasi Melek Politik (GMP) lahir dari keresahan Pilkada DKI Jakarta 2017 yang dipenuhi narasi SARA. Co-founder mencari anggota awal melalui indorelawan.org.',
+      description: 'Gagasan Generasi Melek Politik (GMP) lahir dari keresahan pendiri, Neildeva Despendya, terhadap politik di Indonesia yang terasa seperti sirkus, dimana lebih dihargai sensasi daripada substansi. Yang lebih buruk lagi, percakapan politik terasa terkunci di balik gerbang—gerbang yang dibangun dengan jargon, elitisme, dan kompleksitas. Seakan politik bukan untuk rakyat.',
       imageSrc: '/images/bg/about.jpg',
     },
     {
       year: '2017-2018',
-      description: 'GMP mengadakan diskusi publik dengan modal minim (Rp 0), berkolaborasi dengan berbagai tempat sebagai venue.',
+      description: 'GMP mulai dipertemukan dengan orang-orang yang satu visi dan misi untuk membuat politik lebih menyenangkan. Terbentuk anggota melalui indorelawan.org. Perjalanan di mulai dengan mengadakan diskusi publik dengan bermodal kolaborasi dan uang kas, serta pembuatan konten edukasi di media sosial.',
       imageSrc: '/images/bg/about.jpg',
     },
     {
       year: '2018',
-      description: 'Organisasi resmi dilegalkan menjadi Yayasan Partisipasi Muda, terdaftar di Kemenkumham RI (No: 5018071931100892).',
+      description: 'Sadar akan pentingnya legalitas organisasi, GMP melegalkan diri menjadi Yayasan Partisipasi Muda (YPM). Saat ini kami terdaftar di Kemenkumham RI dengan nomor: 5018071931100892.',
       imageSrc: '/images/bg/about.jpg',
     },
     {
       year: '2018-2019',
-      description: 'Berkolaborasi mengembangkan diskusi, meluncurkan Academia Politik (bersama Universitas Indonesia) dan Kongres Millennial (bersama Universitas Bakrie).',
+      description: 'YPM mulai meluncurkan program Academia Politica untuk membekali anak muda dengan pemahaman kebijakan publik dan keterampilan lunak demokrasi yang penting. YPM ikut serta meramaikan pesta demokrasi Pemilihan Umum 2019 dengan berpartisipasi pada sesi diskusi Festival Relawan dari Indorelawan, ditonton oleh ribuan pengunjung.',
       imageSrc: '/images/bg/about.jpg',
     },
     {
-      year: '2020',
-      description: 'Dipercaya oleh lembaga donor untuk menjalankan Temu Kandidat, digital townhall meeting pertama di Indonesia bertema kebijakan lingkungan.',
+      year: '2020-2021',
+      description: 'Dipercaya mengelola dana hibah perdana dari lembaga donor untuk meluncurkan program Temu Kandidat, digital town hall meeting pertama di Indonesia. Program ini bertujuan menyediakan ruang inklusif untuk menjembatani orang muda dengan kandidat kepala daerah di 4 kota/kabupaten/provinsi rawan krisis iklim.',
+      imageSrc: '/images/bg/about.jpg',
+    },
+    {
+      year: '2022-2024',
+      description: 'Kepercayaan lembaga donor meningkat, sehingga program andalan Academia Politica kembali hadir dengan fokus kebijakan publik di isu krisis iklim. Program tersebar di 5 provinsi Indonesia.',
+      imageSrc: '/images/bg/about.jpg',
+    },
+    {
+      year: '2025-sekarang',
+      description: 'YPM melanjutkan program Academia Politica yang berfokus pada isu krisis iklim dengan cakupan yang lebih luas, khususnya di bagian timur Indonesia. Pada periode ini, YPM juga meluncurkan riset komprehensif pertama tentang pemahaman orang muda terhadap ruang sipil publik dengan responden seluruh Indonesia.',
       imageSrc: '/images/bg/about.jpg',
     },
   ];

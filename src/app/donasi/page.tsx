@@ -21,7 +21,7 @@ const DonasiPage = () => {
         </div>
       </section>
 
-      {/* Section 1: Buy Me a Coffee - Text on left, Image on right */}
+      {/* Section 1: Buy Me a Coffee - Text on left, Image on right 
       <section className="container mx-auto max-w-6xl px-4 py-16">
         <div className="flex flex-col md:flex-row items-center gap-8 md:gap-16">
           <div className="w-full md:w-1/2">
@@ -59,6 +59,7 @@ const DonasiPage = () => {
           </div>
         </div>
       </section>
+      */}
 
       {/* Section 2: Current Text - Image on left, Text on right */}
       <section className="container mx-auto max-w-6xl px-4 py-16">

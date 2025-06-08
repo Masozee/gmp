@@ -37,6 +37,21 @@ const processOverallData = () => {
   const quiteUnderstand = civspaceData.find(item => item.Category === 'Cukup paham')?.Percentage || '0';
   const veryUnderstand = civspaceData.find(item => item.Category === 'Sangat paham')?.Percentage || '0';
   
+  // Extract civic engagement data for bottom overlay
+  const voicingData = overallData.filter(item => item.Variable === 'issue_commited_voicing');
+  const activeVoicing = voicingData.find(item => item.Category === 'Sering terlibat')?.Percentage || '0';
+  const occasionalVoicing = voicingData.find(item => item.Category === 'Kadang-kadang terlibat')?.Percentage || '0';
+  
+  // Extract future engagement willingness
+  const engagementData = overallData.filter(item => item.Question_Label === 'Sangat mungkin');
+  const willingToEngage = engagementData.find(item => item.Frequency === 125)?.Percentage || '24,8';
+  const mightEngage = overallData.filter(item => item.Question_Label === 'Mungkin').find(item => item.Frequency === 217)?.Percentage || '43';
+  
+  // Extract safety concerns
+  const concernData = overallData.filter(item => item.Variable === 'concern_engagement');
+  const veryWorried = concernData.find(item => item.Category === 'Sangat khawatir')?.Percentage || '0';
+  const quiteWorried = concernData.find(item => item.Category === 'Cukup khawatir')?.Percentage || '0';
+  
   return {
     totalRespondents,
     regions: {
@@ -52,6 +67,14 @@ const processOverallData = () => {
       oftenDiscuss: { percentage: often },
       quiteUnderstandCivspace: { percentage: quiteUnderstand },
       veryUnderstandCivspace: { percentage: veryUnderstand }
+    },
+    civicEngagement: {
+      activeVoicing: { percentage: activeVoicing },
+      occasionalVoicing: { percentage: occasionalVoicing },
+      willingToEngage: { percentage: willingToEngage },
+      mightEngage: { percentage: mightEngage },
+      veryWorried: { percentage: veryWorried },
+      quiteWorried: { percentage: quiteWorried }
     }
   };
 };
@@ -129,7 +152,7 @@ interface ProvinceData {
   timezone: string;
 }
 
-const InteractiveMap = () => {
+const ReportInteractiveMap = () => {
   const [geoData, setGeoData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -137,6 +160,34 @@ const InteractiveMap = () => {
 
   // Process survey data
   const surveyStats = processOverallData();
+
+  // Survey achievements data based on real civic engagement data
+  const achievements = [
+    {
+      id: 1,
+      title: `${surveyStats.civicEngagement.activeVoicing.percentage}%`,
+      description: 'Sering Bersuara',
+      icon: '/icons/communication.png',
+    },
+    {
+      id: 2,
+      title: `${surveyStats.civicEngagement.willingToEngage.percentage}%`,
+      description: 'Siap Berpartisipasi',
+      icon: '/icons/team-work.png',
+    },
+    {
+      id: 3,
+      title: `${surveyStats.civicEngagement.quiteWorried.percentage}%`,
+      description: 'Khawatir Keamanan',
+      icon: '/icons/pin.png',
+    },
+    {
+      id: 4,
+      title: surveyStats.totalRespondents.toString(),
+      description: 'Total Responden',
+      icon: '/icons/global-network.png',
+    },
+  ];
 
   // Fix Leaflet icon issue in Next.js
   useEffect(() => {
@@ -287,13 +338,11 @@ const InteractiveMap = () => {
 
   if (loading) {
     return (
-      <section className="w-full bg-gradient-to-br from-blue-50 via-white to-pink-50 py-20">
-        <div className="container mx-auto px-6 max-w-7xl">
-          <div className="h-[600px] w-full flex items-center justify-center bg-gray-100 rounded-lg">
-            <div className="text-center">
-              <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-pink-600 mb-2"></div>
-              <p className="text-gray-500">Loading map data...</p>
-            </div>
+      <section className="relative w-full h-screen overflow-hidden bg-gray-100">
+        <div className="flex items-center justify-center h-full">
+          <div className="text-center">
+            <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-pink-600 mb-2"></div>
+            <p className="text-gray-500">Loading interactive map...</p>
           </div>
         </div>
       </section>
@@ -302,18 +351,16 @@ const InteractiveMap = () => {
 
   if (error) {
     return (
-      <section className="w-full bg-gradient-to-br from-blue-50 via-white to-pink-50 py-20">
-        <div className="container mx-auto px-6 max-w-7xl">
-          <div className="h-[600px] w-full flex items-center justify-center bg-gray-100 rounded-lg">
-            <div className="text-center p-4 max-w-md">
-              <p className="text-red-500 font-semibold">Error loading map: {error}</p>
-              <button 
-                onClick={() => window.location.reload()} 
-                className="mt-2 px-4 py-2 bg-pink-600 text-white rounded-md hover:bg-pink-700"
-              >
-                Reload
-              </button>
-            </div>
+      <section className="relative w-full h-screen overflow-hidden bg-gray-100">
+        <div className="flex items-center justify-center h-full">
+          <div className="text-center p-4 max-w-md">
+            <p className="text-red-500 font-semibold">Error loading map: {error}</p>
+            <button 
+              onClick={() => window.location.reload()} 
+              className="mt-2 px-4 py-2 bg-pink-600 text-white rounded-md hover:bg-pink-700"
+            >
+              Reload
+            </button>
           </div>
         </div>
       </section>
@@ -330,50 +377,38 @@ const InteractiveMap = () => {
     >
       {/* Map Section - Full Width and Full Height */}
       <div className="relative w-full h-full">
-        {/* Legend */}
-       
-        {/* Title and Description - Left Bottom */}
+        {/* Achievements Overlay - Bottom */}
         <div className="absolute bottom-6 left-0 w-full z-[500]">
           <div className="container mx-auto px-6 max-w-7xl">
-            <div className="bg-white/90 backdrop-blur-sm p-6 rounded-xl shadow-xl max-w-2xl">
-          <motion.div
-            className="flex gap-4"
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-          >
-            {/* Publication Image - Left */}
-            <div className="flex-shrink-0">
-              <img 
-                src="http://localhost:3000/images/cover/LaporanGorontalo.png"
-                alt="Laporan Riset Ruang Sipil Gorontalo"
-                className="w-32 h-48 object-cover rounded-lg shadow-md"
-              />
-            </div>
-            
-            {/* Content - Right */}
-            <div className="flex-1">
-              <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-3">
-               Understanding Youth Engagement and Civic Space in Indonesia
-              </h2>
-              <p className="text-sm md:text-base text-gray-600 mb-4 leading-relaxed">
-                Eksplorasi mendalam terhadap dinamika partisipasi pemuda dalam ruang sipil Indonesia. 
-                Pemetaan ini menunjukkan sebaran geografis kegiatan dan tingkat keterlibatan masyarakat 
-                sipil di berbagai zona waktu.
-              </p>
-              
-              {/* Yellow Button to Publications */}
-              <motion.a
-                href="/publikasi"
-                className="inline-block bg-yellow-400 hover:bg-yellow-500 text-gray-800 font-semibold px-4 py-2 rounded-full text-sm transition-colors duration-300"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+            <div className="bg-white/90 backdrop-blur-sm p-6 rounded-xl shadow-xl">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8, delay: 0.4 }}
               >
-                Lihat Semua Publikasi
-              </motion.a>
-            </div>
-          </motion.div>
+                
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  {achievements.map((item) => (
+                    <motion.div 
+                      key={item.id} 
+                      className="text-center"
+                      whileHover={{ scale: 1.05 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <div className="w-12 h-12 mx-auto mb-2 flex items-center justify-center bg-[#f06d98]/10 rounded-full">
+                        <img 
+                          src={item.icon} 
+                          alt={item.title} 
+                          className="w-6 h-6"
+                        />
+                      </div>
+                      <h3 className="text-2xl font-extrabold text-[#f06d98] mb-1">{item.title}</h3>
+                      <p className="text-xs text-gray-600">{item.description}</p>
+                    </motion.div>
+                  ))}
+                </div>
+              </motion.div>
             </div>
           </div>
         </div>
@@ -425,89 +460,4 @@ const InteractiveMap = () => {
   );
 };
 
-// Statistics Component - Separate section after the map
-const MapStatistics = () => {
-  const [selectedTimezone, setSelectedTimezone] = useState<string | null>(null);
-
-  return (
-    <section className="w-full bg-gradient-to-br from-blue-50 via-white to-pink-50 py-20">
-      <div className="container mx-auto px-6 max-w-7xl">
-        {/* Statistics Section */}
-        <motion.div 
-          className="grid grid-cols-1 md:grid-cols-3 gap-8"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8, delay: 0.4 }}
-        >
-          {Object.entries(timezoneData).map(([timezone, data]) => (
-            <motion.div
-              key={timezone}
-              className={`bg-white p-6 rounded-xl shadow-lg border-l-4 cursor-pointer transition-all duration-300 ${
-                selectedTimezone === timezone 
-                  ? 'transform scale-105 shadow-xl' 
-                  : 'hover:shadow-lg'
-              }`}
-              style={{ borderLeftColor: data.color }}
-              onClick={() => setSelectedTimezone(selectedTimezone === timezone ? null : timezone)}
-              whileHover={{ y: -5 }}
-            >
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-xl font-bold text-gray-800">
-                  Zona {timezone}
-                </h3>
-                <div 
-                  className="w-6 h-6 rounded-full"
-                  style={{ backgroundColor: data.color }}
-                ></div>
-              </div>
-              <div className="space-y-2">
-                <p className="text-gray-600">
-                  <span className="font-semibold">{data.count}</span> Provinsi
-                </p>
-                <p className="text-gray-600">
-                  <span className="font-semibold">{data.totalActivities}</span> Total Kegiatan
-                </p>
-                <p className="text-gray-600">
-                  <span className="font-semibold">{data.participants.toLocaleString()}</span> Peserta
-                </p>
-              </div>
-              <div className="mt-4 w-full bg-gray-200 rounded-full h-2">
-                <div 
-                  className="h-2 rounded-full transition-all duration-500"
-                  style={{ 
-                    backgroundColor: data.color,
-                    width: `${(data.totalActivities / Math.max(...Object.values(timezoneData).map(tz => tz.totalActivities))) * 100}%`
-                  }}
-                ></div>
-              </div>
-            </motion.div>
-          ))}
-        </motion.div>
-
-        {/* Call to Action */}
-        <motion.div 
-          className="text-center mt-16"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.6 }}
-        >
-          <p className="text-lg text-gray-600 mb-6">
-            Tertarik bergabung dengan kegiatan di daerah Anda?
-          </p>
-          <motion.button
-            className="bg-gradient-to-r from-pink-500 to-pink-600 text-white px-8 py-3 rounded-full font-semibold text-lg hover:from-pink-600 hover:to-pink-700 transition-all duration-300 shadow-lg"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            Jelajahi Program Kami
-          </motion.button>
-        </motion.div>
-      </div>
-    </section>
-  );
-};
-
-export default InteractiveMap;
-export { MapStatistics }; 
+export default ReportInteractiveMap; 

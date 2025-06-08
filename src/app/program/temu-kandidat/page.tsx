@@ -33,9 +33,9 @@ const TemuKandidatPage = () => {
             />
           </div>
           <div className="w-full md:w-1/2">
-            <h2 className="text-2xl md:text-3xl font-semibold text-primary mb-4" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>Ruang Demokrasi Inklusif</h2>
+            <h2 className="text-2xl md:text-3xl font-semibold text-primary mb-4" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>Digital Town Hall Meeting Pertama di Indonesia</h2>
             <p className="text-gray-700 leading-relaxed">
-              Salah satu tujuan utama Generasi Melek Politik (GMP) adalah menciptakan ruang demokrasi yang inklusif bagi kaum muda dengan menyediakan wadah untuk menyampaikan aspirasi mereka kepada pemerintah. Untuk mewujudkannya, GMP menginisiasi program <strong>&quot;Temu Kandidat&quot;</strong>.
+            Sebuah wadah penyambung aspirasi antara orang mudak dengan kandidat pemimpin daerah. Program ini mewujudkan salah satu tujuan Yayasan Partisipasi Muda (YPM) untuk menciptakan ruang demokrasi yang inklusif.
             </p>
           </div>
         </div>
@@ -55,15 +55,16 @@ const TemuKandidatPage = () => {
               />
             </div>
             <div className="w-full md:w-1/2 md:order-first"> {/* Text on left */}
-              <h2 className="text-2xl md:text-3xl font-semibold text-primary mb-4" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>Pelaksanaan Program (2020-2021)</h2>
+              <h2 className="text-2xl md:text-3xl font-semibold text-primary mb-4" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>Jangkauan Program</h2>
               <p className="text-gray-700 leading-relaxed mb-3">
-                Program berlangsung secara daring sepanjang tahun <strong>2020–2021</strong> di empat daerah strategis:
+              Temu Kandidat berlangsung secara daring selama pandemi tahun 2020-2021 di 4 kota/kabupaten/provinsi yang rentan terhadap perubahan iklim, yaitu:
               </p>
               <ul className="list-disc list-outside pl-5 space-y-1 text-gray-700">
-                  <li>Provinsi Gorontalo dan Sulawesi Tengah</li>
-                  <li>Provinsi Kalimantan Barat</li>
-                  <li>Kabupaten Siak (Riau)</li>
-                  <li>Kabupaten Sintang (Kalimantan Barat)</li>
+                  <li>Provinsi Gorontalo </li>
+                  <li>Provinsi Sulawesi Tengah</li>
+                  <li>Kabupaten Sintang, Provinsi Kalimantan Barat</li>
+                  <li>Kabupaten Siak, Provinsi Riau</li>
+                  
               </ul>
             </div>
           </div>
@@ -83,9 +84,9 @@ const TemuKandidatPage = () => {
             />
           </div>
           <div className="w-full md:w-1/2">
-            <h2 className="text-2xl md:text-3xl font-semibold text-primary mb-4" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>Dampak Langsung bagi Pemuda</h2>
+            <h2 className="text-2xl md:text-3xl font-semibold text-primary mb-4" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>Penerima Manfaat</h2>
             <p className="text-gray-700 leading-relaxed mb-4">
-              Temu Kandidat menjadi ruang bagi <strong>205 anak muda</strong> untuk menyampaikan kekhawatiran dan harapan mereka terkait krisis iklim di daerah masing-masing langsung kepada para calon kepala daerah.
+            Sebanyak 205 aktivis lokal telah terlibat dalam menyuarakan isu-isu perubahan iklim di daerah kepada calon kepala daerah selama Pilkada 2020.
             </p>
              <blockquote className="border-l-4 border-secondary pl-4 italic text-gray-600 text-sm">
                 Contoh kandidat yang hadir: <strong>Husni Merza</strong> (Calon Wabup Siak 01) & <strong>Sujarwo</strong> (Calon Wabup Siak 02).
@@ -93,52 +94,6 @@ const TemuKandidatPage = () => {
           </div>
         </div>
       </section>
-
-      {/* Section 4: Reach (Text Left, Image Right) */}
-      <section className="bg-gray-50 py-16">
-        <div className="container mx-auto px-4 max-w-6xl">
-          <div className="flex flex-col md:flex-row items-center gap-8 md:gap-12">
-            <div className="w-full md:w-1/2 md:order-last"> {/* Image on right */}
-              <Image 
-                src="/images/placeholder-streaming.jpg" // Placeholder
-                alt="Live Streaming Temu Kandidat"
-                width={500}
-                height={400}
-                className="rounded-lg shadow-md object-cover w-full"
-              />
-            </div>
-            <div className="w-full md:w-1/2 md:order-first"> {/* Text on left */}
-              <h2 className="text-2xl md:text-3xl font-semibold text-primary mb-4" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>Menjangkau Lebih Luas</h2>
-              <p className="text-gray-700 leading-relaxed">
-                Untuk menjangkau lebih banyak anak muda di seluruh Indonesia, Temu Kandidat juga disiarkan secara <strong>live streaming</strong> di YouTube Majelis Lucu Indonesia, dengan total <strong>77.555 penonton</strong>.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-        {/* Section 5: Vision (Image Left, Text Right) */}
-      <section className="container mx-auto px-4 py-16 max-w-6xl">
-        <div className="flex flex-col md:flex-row items-center gap-8 md:gap-12">
-          <div className="w-full md:w-1/2">
-            <Image 
-              src="/images/placeholder-vision.jpg" // Placeholder
-              alt="Visi Masa Depan Demokrasi Indonesia"
-              width={500}
-              height={400}
-              className="rounded-lg shadow-md object-cover w-full"
-            />
-          </div>
-          <div className="w-full md:w-1/2">
-            <h2 className="text-2xl md:text-3xl font-semibold text-primary mb-4" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>Visi ke Depan</h2>
-            <p className="text-gray-700 leading-relaxed">
-              GMP berharap Temu Kandidat dapat menjadi pionir dalam mengubah sistem demokrasi Indonesia, di mana budaya <strong>&quot;town hall meeting&quot;</strong> menjadi sesuatu yang lumrah. Ke depan, semakin banyak ruang seperti ini perlu diciptakan agar para kandidat politik dapat lebih mendengar dan memahami aspirasi anak muda, terutama terkait isu-isu krusial bagi masa depan mereka, seperti krisis iklim.
-            </p>
-          </div>
-        </div>
-        
-      </section>
-      
     </>
   );
 };
