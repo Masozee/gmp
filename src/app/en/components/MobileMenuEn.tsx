@@ -115,6 +115,9 @@ const MobileMenuEn = ({ isOpen, onClose }: MobileMenuEnProps) => {
                       <Link href="/en/programs/academia-politica" className="block text-gray-600 hover:text-pink-500" onClick={onClose}>
                         Academia Politica
                       </Link>
+                      <Link href="/en/programs/class-of-climate-leaders" className="block text-gray-600 hover:text-pink-500" onClick={onClose}>
+                        Class of Climate Leaders
+                      </Link>
                       <Link href="/en/programs/council-gen-z" className="block text-gray-600 hover:text-pink-500" onClick={onClose}>
                         Council of Gen Z
                       </Link>
@@ -126,8 +129,8 @@ const MobileMenuEn = ({ isOpen, onClose }: MobileMenuEnProps) => {
                 <Link href="/en/publications" className="block text-gray-800 hover:text-pink-500 font-semibold" onClick={onClose}>
                   Publications
                 </Link>
-                <Link href="/en/reports" className="block text-gray-800 hover:text-pink-500 font-semibold" onClick={onClose}>
-                  Reports
+                <Link href="/en/civic-space" className="block text-gray-800 hover:text-pink-500 font-semibold" onClick={onClose}>
+                  Civic Space
                 </Link>
                 <Link href="/en/events" className="block text-gray-800 hover:text-pink-500 font-semibold" onClick={onClose}>
                   Events

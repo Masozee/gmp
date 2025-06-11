@@ -176,6 +176,7 @@ const NavbarEn = () => {
                   <Link href="/en/programs/discussions" className={`block px-4 py-2 text-sm ${hasScrolled ? 'text-gray-700 hover:bg-gray-100 hover:text-pink-500' : 'text-white hover:bg-gray-700 hover:text-pink-500'}`}>Public Discussions</Link>
                   <Link href="/en/programs/candidate-meetings" className={`block px-4 py-2 text-sm ${hasScrolled ? 'text-gray-700 hover:bg-gray-100 hover:text-pink-500' : 'text-white hover:bg-gray-700 hover:text-pink-500'}`}>Candidate Meetings</Link>
                   <Link href="/en/programs/academia-politica" className={`block px-4 py-2 text-sm ${hasScrolled ? 'text-gray-700 hover:bg-gray-100 hover:text-pink-500' : 'text-white hover:bg-gray-700 hover:text-pink-500'}`}>Academia Politica</Link>
+                  <Link href="/en/programs/class-of-climate-leaders" className={`block px-4 py-2 text-sm ${hasScrolled ? 'text-gray-700 hover:bg-gray-100 hover:text-pink-500' : 'text-white hover:bg-gray-700 hover:text-pink-500'}`}>Class of Climate Leaders</Link>
                   <Link href="/en/programs/council-gen-z" className={`block px-4 py-2 text-sm ${hasScrolled ? 'text-gray-700 hover:bg-gray-100 hover:text-pink-500' : 'text-white hover:bg-gray-700 hover:text-pink-500'}`}>Council of Gen Z</Link>
                 </div>
               )}
@@ -186,10 +187,10 @@ const NavbarEn = () => {
             }`}>
               Publications
             </Link>
-            <Link href="/en/reports" className={`transition-colors py-2 font-extrabold ${
+            <Link href="/en/civic-space" className={`transition-colors py-2 font-extrabold ${
               hasScrolled ? 'hover:text-pink-500 text-gray-800' : 'hover:text-pink-500 text-white'
             }`}>
-              Reports
+              Civic Space
             </Link>
             <Link href="/en/events" className={`transition-colors py-2 font-extrabold ${
               hasScrolled ? 'hover:text-pink-500 text-gray-800' : 'hover:text-pink-500 text-white'

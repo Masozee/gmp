@@ -2,17 +2,32 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import dynamic from 'next/dynamic';
 
 // Import component and type
 import PublikasiTerbaruEn, { Publikasi } from './components/PublikasiTerbaruEn';
 
 // Import other components 
-import HeroEn from './components/HeroEn';
 import ParticipationInfoEn from './components/ParticipationInfoEn';
 import EngagementBannerEn from './components/EngagementBannerEn';
 import TestimonialsCarouselEn from './components/TestimonialsCarouselEn';
 import PartnersEn from './components/PartnersEn';
 import UpcomingEventsEn from './components/UpcomingEventsEn';
+
+// Dynamic import for client-side only components
+const InteractiveMap = dynamic(() => import('../components/InteractiveMap'), {
+  ssr: false,
+  loading: () => (
+    <section className="relative w-full h-screen overflow-hidden bg-gray-100">
+      <div className="flex items-center justify-center h-full">
+        <div className="text-center">
+          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-pink-600 mb-2"></div>
+          <p className="text-gray-500">Loading interactive map...</p>
+        </div>
+      </div>
+    </section>
+  )
+});
 
 // Animation variants for section transitions
 const sectionVariants = {
@@ -50,7 +65,7 @@ export default function HomeEn() {
 
   return (
     <main className="min-h-screen">
-      <HeroEn />
+      <InteractiveMap />
       
       <motion.div
         initial="hidden"
