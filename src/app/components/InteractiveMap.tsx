@@ -37,6 +37,21 @@ const processOverallData = () => {
   const quiteUnderstand = civspaceData.find(item => item.Category === 'Cukup paham')?.Percentage || '0';
   const veryUnderstand = civspaceData.find(item => item.Category === 'Sangat paham')?.Percentage || '0';
   
+  // Extract civic engagement data for bottom overlay
+  const voicingData = overallData.filter(item => item.Variable === 'issue_commited_voicing');
+  const activeVoicing = voicingData.find(item => item.Category === 'Sering terlibat')?.Percentage || '0';
+  const occasionalVoicing = voicingData.find(item => item.Category === 'Kadang-kadang terlibat')?.Percentage || '0';
+  
+  // Extract future engagement willingness
+  const engagementData = overallData.filter(item => item.Question_Label === 'Sangat mungkin');
+  const willingToEngage = engagementData.find(item => item.Frequency === 125)?.Percentage || '24,8';
+  const mightEngage = overallData.filter(item => item.Question_Label === 'Mungkin').find(item => item.Frequency === 217)?.Percentage || '43';
+  
+  // Extract safety concerns
+  const concernData = overallData.filter(item => item.Variable === 'concern_engagement');
+  const veryWorried = concernData.find(item => item.Category === 'Sangat khawatir')?.Percentage || '0';
+  const quiteWorried = concernData.find(item => item.Category === 'Cukup khawatir')?.Percentage || '0';
+  
   return {
     totalRespondents,
     regions: {
@@ -52,6 +67,14 @@ const processOverallData = () => {
       oftenDiscuss: { percentage: often },
       quiteUnderstandCivspace: { percentage: quiteUnderstand },
       veryUnderstandCivspace: { percentage: veryUnderstand }
+    },
+    civicEngagement: {
+      activeVoicing: { percentage: activeVoicing },
+      occasionalVoicing: { percentage: occasionalVoicing },
+      willingToEngage: { percentage: willingToEngage },
+      mightEngage: { percentage: mightEngage },
+      veryWorried: { percentage: veryWorried },
+      quiteWorried: { percentage: quiteWorried }
     }
   };
 };
@@ -104,19 +127,19 @@ const timezoneData = {
   'WIB': {
     totalActivities: provinceData.filter(p => p.timezone === 'WIB').reduce((sum, province) => sum + province.activities, 0),
     count: provinceData.filter(p => p.timezone === 'WIB').length,
-    color: '#4299e1', // Blue
+    color: '#ffcb57', // Primary - Yellow
     participants: provinceData.filter(p => p.timezone === 'WIB').reduce((sum, province) => sum + province.activities * 120, 0),
   },
   'WITA': {
     totalActivities: provinceData.filter(p => p.timezone === 'WITA').reduce((sum, province) => sum + province.activities, 0),
     count: provinceData.filter(p => p.timezone === 'WITA').length,
-    color: '#48bb78', // Green
+    color: '#59caf5', // Secondary - Blue
     participants: provinceData.filter(p => p.timezone === 'WITA').reduce((sum, province) => sum + province.activities * 100, 0),
   },
   'WIT': {
     totalActivities: provinceData.filter(p => p.timezone === 'WIT').reduce((sum, province) => sum + province.activities, 0),
     count: provinceData.filter(p => p.timezone === 'WIT').length,
-    color: '#ed8936', // Orange
+    color: '#f06d98', // Accent - Pink
     participants: provinceData.filter(p => p.timezone === 'WIT').reduce((sum, province) => sum + province.activities * 80, 0),
   }
 };
@@ -137,6 +160,34 @@ const InteractiveMap = () => {
 
   // Process survey data
   const surveyStats = processOverallData();
+
+  // Survey achievements data based on real civic engagement data
+  const achievements = [
+    {
+      id: 1,
+      title: `${surveyStats.civicEngagement.activeVoicing.percentage}%`,
+      description: 'Sering Bersuara',
+      icon: '/icons/communication.png',
+    },
+    {
+      id: 2,
+      title: `${surveyStats.civicEngagement.willingToEngage.percentage}%`,
+      description: 'Siap Berpartisipasi',
+      icon: '/icons/team-work.png',
+    },
+    {
+      id: 3,
+      title: `${surveyStats.civicEngagement.quiteWorried.percentage}%`,
+      description: 'Khawatir Keamanan',
+      icon: '/icons/pin.png',
+    },
+    {
+      id: 4,
+      title: surveyStats.totalRespondents.toString(),
+      description: 'Total Responden',
+      icon: '/icons/global-network.png',
+    },
+  ];
 
   // Fix Leaflet icon issue in Next.js
   useEffect(() => {
@@ -173,7 +224,7 @@ const InteractiveMap = () => {
         setLoading(false);
       }
     };
-    
+
     fetchGeoData();
   }, []);
 
@@ -263,11 +314,11 @@ const InteractiveMap = () => {
   const geoJSONStyle = (feature: Feature<Geometry, FeatureProperties> | undefined): PathOptions => {
     if (!feature || !feature.properties) {
       return {
-        fillColor: '#f8d4e8',
+        fillColor: '#e5e7eb',
         weight: 1,
         opacity: 1,
         color: 'white',
-        fillOpacity: 0.7
+        fillOpacity: 0.9
       };
     }
     
@@ -278,10 +329,10 @@ const InteractiveMap = () => {
     
     return {
       fillColor: getTimezoneColor(province.timezone),
-      weight: selectedTimezone === province.timezone ? 3 : 1,
+      weight: selectedTimezone === province.timezone ? 4 : 2,
       opacity: 1,
-      color: selectedTimezone === province.timezone ? '#333' : 'white',
-      fillOpacity: selectedTimezone === province.timezone ? 0.9 : 0.7
+      color: selectedTimezone === province.timezone ? '#1f2937' : 'white',
+      fillOpacity: selectedTimezone === province.timezone ? 1.0 : 0.9
     };
   };
 
@@ -330,50 +381,48 @@ const InteractiveMap = () => {
     >
       {/* Map Section - Full Width and Full Height */}
       <div className="relative w-full h-full">
-        {/* Legend */}
-       
         {/* Title and Description - Left Bottom */}
         <div className="absolute bottom-6 left-0 w-full z-[500]">
           <div className="container mx-auto px-6 max-w-7xl">
             <div className="bg-white/90 backdrop-blur-sm p-6 rounded-xl shadow-xl max-w-2xl">
-          <motion.div
-            className="flex gap-4"
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-          >
-            {/* Publication Image - Left */}
-            <div className="flex-shrink-0">
-              <img 
-                src="http://localhost:3000/images/cover/LaporanGorontalo.png"
-                alt="Laporan Riset Ruang Sipil Gorontalo"
-                className="w-32 h-48 object-cover rounded-lg shadow-md"
-              />
-            </div>
-            
-            {/* Content - Right */}
-            <div className="flex-1">
-              <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-3">
-               Understanding Youth Engagement and Civic Space in Indonesia
-              </h2>
-              <p className="text-sm md:text-base text-gray-600 mb-4 leading-relaxed">
-                Eksplorasi mendalam terhadap dinamika partisipasi pemuda dalam ruang sipil Indonesia. 
-                Pemetaan ini menunjukkan sebaran geografis kegiatan dan tingkat keterlibatan masyarakat 
-                sipil di berbagai zona waktu.
-              </p>
-              
-              {/* Yellow Button to Publications */}
-              <motion.a
-                href="/publikasi"
-                className="inline-block bg-yellow-400 hover:bg-yellow-500 text-gray-800 font-semibold px-4 py-2 rounded-full text-sm transition-colors duration-300"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+              <motion.div
+                className="flex gap-4"
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8, delay: 0.4 }}
               >
-                Lihat Semua Publikasi
-              </motion.a>
-            </div>
-          </motion.div>
+                {/* Publication Image - Left */}
+                <div className="flex-shrink-0">
+                  <img 
+                    src="/images/cover/LaporanGorontalo.png"
+                    alt="Laporan Riset Ruang Sipil Gorontalo"
+                    className="w-32 h-48 object-cover rounded-lg shadow-md"
+                  />
+                </div>
+                
+                {/* Content - Right */}
+                <div className="flex-1">
+                  <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-3">
+                    Understanding Youth Engagement and Civic Space in Indonesia
+                  </h2>
+                  <p className="text-sm md:text-base text-gray-600 mb-4 leading-relaxed">
+                    Eksplorasi mendalam terhadap dinamika partisipasi pemuda dalam ruang sipil Indonesia. 
+                    Pemetaan ini menunjukkan sebaran geografis kegiatan dan tingkat keterlibatan masyarakat 
+                    sipil di berbagai zona waktu.
+                  </p>
+                  
+                  {/* Yellow Button to Publications */}
+                  <motion.a
+                    href="/publikasi"
+                    className="inline-block bg-yellow-400 hover:bg-yellow-500 text-gray-800 font-semibold px-4 py-2 rounded-full text-sm transition-colors duration-300"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    Lihat Semua Publikasi
+                  </motion.a>
+                </div>
+              </motion.div>
             </div>
           </div>
         </div>
@@ -412,11 +461,11 @@ const InteractiveMap = () => {
             </MapContainer>
           )}
           
-          {/* Light gradient overlay */}
+          {/* Gradient overlay - only darken top nav area */}
           <div 
             className="absolute inset-0 pointer-events-none z-20" 
             style={{ 
-              background: "linear-gradient(360deg, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.15) 40%, rgba(0,0,0,0.4) 80%, rgba(0,0,0,0.6) 100%)"
+              background: "linear-gradient(180deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.3) 15%, rgba(0,0,0,0.1) 30%, rgba(0,0,0,0) 50%)"
             }}
           ></div>
         </motion.div>

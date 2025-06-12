@@ -111,6 +111,11 @@ const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
               </Link>
             </li>
             <li>
+              <Link href="/ruang-sipil" onClick={onClose} className="block w-full text-left px-4 py-4 rounded-lg text-lg font-semibold text-gray-800 hover:bg-pink-50 hover:text-pink-600 transition">
+                Ruang Sipil
+              </Link>
+            </li>
+            <li>
               <Link href="/donasi" onClick={onClose} className="block w-full text-left px-4 py-4 rounded-lg text-lg font-semibold text-gray-800 hover:bg-pink-50 hover:text-pink-600 transition">
                 Donasi & Kolaborasi
               </Link>

@@ -187,7 +187,7 @@ const Navbar = () => {
             }`}>
               Publikasi
             </Link>
-            <Link href="/report" className={`transition-colors py-2 font-extrabold ${
+                            <Link href="/ruang-sipil" className={`transition-colors py-2 font-extrabold ${
               hasScrolled ? 'hover:text-pink-500 text-gray-800' : 'hover:text-pink-500 text-white'
             }`}>
               Ruang Sipil

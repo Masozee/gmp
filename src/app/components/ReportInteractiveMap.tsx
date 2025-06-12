@@ -127,19 +127,19 @@ const timezoneData = {
   'WIB': {
     totalActivities: provinceData.filter(p => p.timezone === 'WIB').reduce((sum, province) => sum + province.activities, 0),
     count: provinceData.filter(p => p.timezone === 'WIB').length,
-    color: '#4299e1', // Blue
+    color: '#ffcb57', // Primary - Yellow
     participants: provinceData.filter(p => p.timezone === 'WIB').reduce((sum, province) => sum + province.activities * 120, 0),
   },
   'WITA': {
     totalActivities: provinceData.filter(p => p.timezone === 'WITA').reduce((sum, province) => sum + province.activities, 0),
     count: provinceData.filter(p => p.timezone === 'WITA').length,
-    color: '#48bb78', // Green
+    color: '#59caf5', // Secondary - Blue
     participants: provinceData.filter(p => p.timezone === 'WITA').reduce((sum, province) => sum + province.activities * 100, 0),
   },
   'WIT': {
     totalActivities: provinceData.filter(p => p.timezone === 'WIT').reduce((sum, province) => sum + province.activities, 0),
     count: provinceData.filter(p => p.timezone === 'WIT').length,
-    color: '#ed8936', // Orange
+    color: '#f06d98', // Accent - Pink
     participants: provinceData.filter(p => p.timezone === 'WIT').reduce((sum, province) => sum + province.activities * 80, 0),
   }
 };
@@ -157,9 +157,15 @@ const ReportInteractiveMap = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedTimezone, setSelectedTimezone] = useState<string | null>(null);
+  const [isClient, setIsClient] = useState(false);
 
   // Process survey data
   const surveyStats = processOverallData();
+
+  // Ensure component only renders on client side
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   // Survey achievements data based on real civic engagement data
   const achievements = [
@@ -194,11 +200,16 @@ const ReportInteractiveMap = () => {
     if (typeof window !== 'undefined') {
       import('leaflet').then((L) => {
         L.Icon.Default.imagePath = 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/';
+      }).catch((err) => {
+        console.error('Failed to load Leaflet:', err);
+        setError('Failed to load map library');
       });
     }
   }, []);
 
   useEffect(() => {
+    if (!isClient) return;
+    
     const fetchGeoData = async () => {
       setLoading(true);
       setError(null);
@@ -226,7 +237,7 @@ const ReportInteractiveMap = () => {
     };
     
     fetchGeoData();
-  }, []);
+  }, [isClient]);
 
   // Find province data by name
   const getProvinceData = (name: string): ProvinceData => {
@@ -314,11 +325,11 @@ const ReportInteractiveMap = () => {
   const geoJSONStyle = (feature: Feature<Geometry, FeatureProperties> | undefined): PathOptions => {
     if (!feature || !feature.properties) {
       return {
-        fillColor: '#f8d4e8',
+        fillColor: '#e5e7eb',
         weight: 1,
         opacity: 1,
         color: 'white',
-        fillOpacity: 0.7
+        fillOpacity: 0.9
       };
     }
     
@@ -329,14 +340,14 @@ const ReportInteractiveMap = () => {
     
     return {
       fillColor: getTimezoneColor(province.timezone),
-      weight: selectedTimezone === province.timezone ? 3 : 1,
+      weight: selectedTimezone === province.timezone ? 4 : 2,
       opacity: 1,
-      color: selectedTimezone === province.timezone ? '#333' : 'white',
-      fillOpacity: selectedTimezone === province.timezone ? 0.9 : 0.7
+      color: selectedTimezone === province.timezone ? '#1f2937' : 'white',
+      fillOpacity: selectedTimezone === province.timezone ? 1.0 : 0.9
     };
   };
 
-  if (loading) {
+  if (!isClient || loading) {
     return (
       <section className="relative w-full h-screen overflow-hidden bg-gray-100">
         <div className="flex items-center justify-center h-full">
@@ -421,37 +432,42 @@ const ReportInteractiveMap = () => {
           viewport={{ once: true }}
           transition={{ duration: 1.2, delay: 0.2 }}
         >
-          {geoData && (
-            <MapContainer
-              center={[-2.5, 118]}
-              zoom={5}
-              style={{ height: "100%", width: "100%", background: '#f5f5f5', zIndex: 10 }}
-              zoomControl={false}
-              scrollWheelZoom={false}
-              doubleClickZoom={false}
-              touchZoom={false}
-              boxZoom={false}
-              keyboard={false}
-              dragging={true}
-              className="z-10"
-            >
-              <TileLayer
-                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              />
-              <GeoJSON 
-                data={geoData}
-                style={geoJSONStyle}
-                onEachFeature={onEachFeature}
-              />
-            </MapContainer>
+          {geoData && isClient && (
+            <div style={{ height: "100%", width: "100%" }}>
+              <MapContainer
+                center={[-2.5, 118]}
+                zoom={5}
+                style={{ height: "100%", width: "100%", background: '#f5f5f5', zIndex: 10 }}
+                zoomControl={false}
+                scrollWheelZoom={false}
+                doubleClickZoom={false}
+                touchZoom={false}
+                boxZoom={false}
+                keyboard={false}
+                dragging={true}
+                className="z-10"
+                whenReady={() => {
+                  // Map is ready - no additional initialization needed
+                }}
+              >
+                <TileLayer
+                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                />
+                <GeoJSON 
+                  data={geoData}
+                  style={geoJSONStyle}
+                  onEachFeature={onEachFeature}
+                />
+              </MapContainer>
+            </div>
           )}
           
-          {/* Light gradient overlay */}
+          {/* Gradient overlay - only darken top nav area */}
           <div 
             className="absolute inset-0 pointer-events-none z-20" 
             style={{ 
-              background: "linear-gradient(360deg, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.15) 40%, rgba(0,0,0,0.4) 80%, rgba(0,0,0,0.6) 100%)"
+              background: "linear-gradient(180deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.3) 15%, rgba(0,0,0,0.1) 30%, rgba(0,0,0,0) 50%)"
             }}
           ></div>
         </motion.div>
