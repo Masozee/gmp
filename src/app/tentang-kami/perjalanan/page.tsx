@@ -6,37 +6,37 @@ const PerjalananPage = () => {
     {
       year: '2017',
       description: 'Gagasan Generasi Melek Politik (GMP) lahir dari keresahan pendiri, Neildeva Despendya, terhadap politik di Indonesia yang terasa seperti sirkus, dimana lebih dihargai sensasi daripada substansi. Yang lebih buruk lagi, percakapan politik terasa terkunci di balik gerbang—gerbang yang dibangun dengan jargon, elitisme, dan kompleksitas. Seakan politik bukan untuk rakyat.',
-      imageSrc: '/images/bg/about.jpg',
+      imageSrc: '/images/bg/atamerica.jpeg',
     },
     {
       year: '2017-2018',
       description: 'GMP mulai dipertemukan dengan orang-orang yang satu visi dan misi untuk membuat politik lebih menyenangkan. Terbentuk anggota melalui indorelawan.org. Perjalanan di mulai dengan mengadakan diskusi publik dengan bermodal kolaborasi dan uang kas, serta pembuatan konten edukasi di media sosial.',
-      imageSrc: '/images/bg/about.jpg',
+      imageSrc: '/images/bg/qlue.jpeg',
     },
     {
       year: '2018',
       description: 'Sadar akan pentingnya legalitas organisasi, GMP melegalkan diri menjadi Yayasan Partisipasi Muda (YPM). Saat ini kami terdaftar di Kemenkumham RI dengan nomor: 5018071931100892.',
-      imageSrc: '/images/bg/about.jpg',
+      imageSrc: '/images/bg/kemkumham.jpeg',
     },
     {
       year: '2018-2019',
       description: 'YPM mulai meluncurkan program Academia Politica untuk membekali anak muda dengan pemahaman kebijakan publik dan keterampilan lunak demokrasi yang penting. YPM ikut serta meramaikan pesta demokrasi Pemilihan Umum 2019 dengan berpartisipasi pada sesi diskusi Festival Relawan dari Indorelawan, ditonton oleh ribuan pengunjung.',
-      imageSrc: '/images/bg/about.jpg',
+      imageSrc: '/images/bg/acpolui.jpeg',
     },
     {
       year: '2020-2021',
       description: 'Dipercaya mengelola dana hibah perdana dari lembaga donor untuk meluncurkan program Temu Kandidat, digital town hall meeting pertama di Indonesia. Program ini bertujuan menyediakan ruang inklusif untuk menjembatani orang muda dengan kandidat kepala daerah di 4 kota/kabupaten/provinsi rawan krisis iklim.',
-      imageSrc: '/images/bg/about.jpg',
+      imageSrc: '/images/bg/temukandidat.jpeg',
     },
     {
       year: '2022-2024',
       description: 'Kepercayaan lembaga donor meningkat, sehingga program andalan Academia Politica kembali hadir dengan fokus kebijakan publik di isu krisis iklim. Program tersebar di 5 provinsi Indonesia.',
-      imageSrc: '/images/bg/about.jpg',
+      imageSrc: '/images/bg/2024.jpeg',
     },
     {
       year: '2025-sekarang',
       description: 'YPM melanjutkan program Academia Politica yang berfokus pada isu krisis iklim dengan cakupan yang lebih luas, khususnya di bagian timur Indonesia. Pada periode ini, YPM juga meluncurkan riset komprehensif pertama tentang pemahaman orang muda terhadap ruang sipil publik dengan responden seluruh Indonesia.',
-      imageSrc: '/images/bg/about.jpg',
+      imageSrc: '/images/bg/2025.jpg',
     },
   ];
 
@@ -50,7 +50,7 @@ const PerjalananPage = () => {
         {/* <div className="absolute inset-0 bg-black opacity-50"></div> */}
         {/* Content */}
         <div className="relative container mx-auto px-4 z-10">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>Perjalanan Kami</h1>
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 !text-white" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>Perjalanan Kami</h1>
           <p className="text-lg md:text-xl text-gray-100 max-w-2xl mx-auto">
           Berawal dari komunitas relawan, kami tumbuh menjadi organisasi nirlaba yang dinamis dan berdampak. Dipimpin oleh anak muda, untuk memberdayakan sesama anak muda.
 
@@ -72,18 +72,18 @@ const PerjalananPage = () => {
                   className="flex justify-center relative group animate-fadeInUp"
                 >
                   {/* Timeline Dot removed */}
-                  {/* Single Card with Image and Description */}
-                  <div className="bg-white/90 backdrop-blur-lg rounded-2xl p-0 shadow-xl border border-gray-100 w-full max-w-2xl">
+                  {/* Single Card with Image and Description - Pink background with yellow hover */}
+                  <div className="bg-[#f06d98] hover:bg-[#ffcb57] rounded-2xl p-0 shadow-xl border border-pink-200 hover:border-yellow-300 w-full max-w-2xl transition-all duration-300 ease-in-out">
                     <Image
                       src={item.imageSrc}
                       alt={`Perjalanan ${item.year}`}
                       width={640}
                       height={320}
-                      className="rounded-t-2xl object-cover w-full h-56 md:h-72 border-b border-gray-100"
+                      className="rounded-t-2xl object-cover w-full h-56 md:h-72 border-b border-pink-200 group-hover:border-yellow-300"
                     />
                     <div className="p-8">
-                      <h3 className="font-extrabold text-2xl mb-3 text-pink-500 group-hover:text-black tracking-tight drop-shadow-sm" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>{item.year}</h3>
-                      <p className="text-lg text-gray-700 group-hover:text-black leading-relaxed font-medium">
+                      <h3 className="font-extrabold text-2xl mb-3 text-white group-hover:text-black tracking-tight drop-shadow-sm transition-colors duration-300" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>{item.year}</h3>
+                      <p className="text-lg text-white group-hover:text-black leading-relaxed font-medium transition-colors duration-300">
                         {item.description}
                       </p>
                     </div>

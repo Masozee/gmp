@@ -11,8 +11,8 @@ const AcademicaPoliticaPage = () => {
         className="relative py-32 text-center bg-primary text-black"
       >
         <div className="relative container mx-auto px-4 z-10">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>{pageTitle}</h1>
-          <p className="text-lg md:text-xl text-gray-800 max-w-3xl mx-auto mb-6">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 !text-white" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>{pageTitle}</h1>
+          <p className="text-lg md:text-xl text-gray-800 max-w-3xl mx-auto mb-6 !text-white">
             Menciptakan Pemimpin Muda Peduli Iklim Melalui Workshop Interaktif "Role Playing"
           </p>
           
@@ -56,14 +56,19 @@ const AcademicaPoliticaPage = () => {
             <div className="w-full md:w-1/2 md:order-first"> {/* Text on left */}
               <h2 className="text-2xl md:text-3xl font-semibold text-primary mb-4" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>Jangkauan Program</h2>
               <p className="text-gray-700 leading-relaxed mb-3">
-                Program ini hadir di berbagai wilayah yang rentan terhadap krisis iklim di Indonesia:
+              Academia Politica telah diselenggarakan sejak tahun 2019 di berbagai kota dan provinsi di Indonesia, yaitu:
               </p>
               <ul className="list-disc list-outside pl-5 space-y-1 text-gray-700">
-                <li>Jakarta</li>
-                <li>Bandung</li>
-                <li>Yogyakarta</li>
-                <li>Kalimantan Timur</li>
-                <li>Sulawesi Selatan</li>
+                <li>DKI Jakarta</li>
+                <li>Bandung, Jawa Barat</li>
+                <li>Yogyakarta, DIY</li>
+                <li>Samarinda,Kalimantan Timur</li>
+                <li>Makassar,Sulawesi Selatan</li>
+                <li>Ambon, Maluku (coming soon)</li>
+                <li>Manado, Sulawesi Utara (coming soon)</li>
+                <li>Nusa Tenggara Barat (coming soon)</li>
+                <li>Kalimantan Selatan (coming soon)</li>
+                <li>Jambi (coming soon)</li>
               </ul>
             </div>
           </div>
@@ -117,7 +122,7 @@ const AcademicaPoliticaPage = () => {
             <div className="w-full md:w-1/2 md:order-first"> {/* Text on left */}
               <h2 className="text-2xl md:text-3xl font-semibold text-primary mb-4" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>Dampak yang Terukur</h2>
               <p className="text-gray-700 leading-relaxed mb-4">
-                Sejauh ini, Academia Politica telah melatih <strong>245 pemuda</strong> dengan hasil yang luar biasa. Rata-rata peserta mengalami peningkatan kepercayaan diri dalam berbagai aspek:
+              <strong>345 siswa</strong> SMA dan mahasiswa telah diberdayakan dengan pengetahuan tentang isu perubahan iklim dan perumusan kebijakan. Rata-rata penerima manfaat mengalami peningkatan kepercayaan diri dalam berbagai aspek, yaitu:
               </p>
               <div className="grid grid-cols-2 gap-4 mb-4">
                 <div className="bg-white p-4 rounded-lg shadow-sm">

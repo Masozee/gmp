@@ -56,8 +56,8 @@ const DiskusiPage = () => {
         className="relative py-32 text-center bg-primary text-black"
       >
         <div className="relative container mx-auto px-4 z-10">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>{programTitle}</h1>
-          <p className="text-lg md:text-xl text-gray-800 max-w-2xl mx-auto">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 !text-white" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>{programTitle}</h1>
+          <p className="text-lg md:text-xl text-gray-800 max-w-2xl mx-auto !text-white">
             {programHeroDescription}
           </p>
         </div>

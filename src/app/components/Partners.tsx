@@ -76,7 +76,7 @@ const Partners = () => {
                 alt={`${partner.name} logo`} 
                 width={180} 
                 height={180} 
-                className="object-contain"
+                className="object-contain grayscale hover:grayscale-0 transition-all duration-300 ease-in-out"
                 style={{
                   maxHeight: '140px',
                   maxWidth: '140px',

@@ -162,13 +162,13 @@ export default function EventDetailPage({ params }: PageProps) {
       <header className="bg-[#f06d98] py-32 text-white shadow-lg">
         <div className="container mx-auto px-4 max-w-7xl text-center">
           <nav className="mb-4 text-sm text-pink-200 justify-center flex space-x-2">
-            <Link href="/" className="hover:underline">Beranda</Link>
+            <Link href="/" className="hover:underline !text-white">Beranda</Link>
             <span className="text-pink-300">/</span>
-            <Link href="/acara" className="hover:underline">Acara</Link>
+            <Link href="/acara" className="hover:underline !text-white">Acara</Link>
             <span className="text-pink-300">/</span>
-            <span className="text-pink-100 truncate max-w-[200px] md:max-w-md">{event.title}</span>
+            <span className="text-pink-100 truncate max-w-[200px] md:max-w-md !text-white">{event.title}</span>
         </nav>
-          <h1 className="text-4xl md:text-5xl font-bold mt-1 mx-auto">{event.title}</h1>
+          <h1 className="text-4xl md:text-5xl font-bold mt-1 mx-auto !text-white">{event.title}</h1>
         </div>
       </header>
         

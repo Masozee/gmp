@@ -11,36 +11,13 @@ const CouncilGenZPage = () => {
         className="relative py-32 text-center bg-primary text-black"
       >
         <div className="relative container mx-auto px-4 z-10">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>{pageTitle}</h1>
-          <p className="text-lg md:text-xl text-[rgb(41,56,87/90%)] max-w-3xl mx-auto mb-6">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 !text-white" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>{pageTitle}</h1>
+          <p className="text-lg md:text-xl text-[rgb(41,56,87/90%)] max-w-3xl mx-auto mb-6 !text-white">
             Ruang Aspirasi Anak Muda Akan Krisis Iklim Untuk Prabowo-Gibran
           </p>
         </div>
       </section>
 
-      {/* Section 1: Introduction (Image Left, Text Right) */}
-      <section className="container mx-auto px-4 py-16 max-w-6xl">
-        <div className="flex flex-col md:flex-row items-center gap-8 md:gap-12">
-          <div className="w-full md:w-1/2">
-            <Image 
-              src="/images/program/DSC08852-a.jpg" // Use an existing image as placeholder
-              alt="Council of Gen Z Event"
-              width={500}
-              height={400}
-              className="rounded-lg shadow-md object-cover w-full"
-            />
-          </div>
-          <div className="w-full md:w-1/2">
-            <h2 className="text-2xl md:text-3xl font-semibold text-primary mb-4" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>Menjembatani Aspirasi Generasi Muda</h2>
-            <p className="text-[rgb(41,56,87/90%)] leading-relaxed mb-4">
-              <strong>Jakarta, 21 September 2024</strong> – Di Indonesia, Gen Z adalah bonus demografi yang terus dianggap sebagai pemilih penting dalam pemilihan umum. Namun ironisnya, ruang bagi mereka menyampaikan aspirasi langsung ke pemerintah nyaris tidak ada. Padahal, Gen Z adalah generasi yang akan menghadapi dampak langsung dari keputusan hari ini, termasuk di daerah kecil yang sering luput dari perhatian.
-            </p>
-            <p className="text-[rgb(41,56,87/90%)] leading-relaxed">
-              Dalam negara demokratis, budaya dialog terbuka seperti <em>town hall meeting</em> menjadi bagian dari proses politik. Misalnya di Amerika Serikat, Finlandia, New Zealand, dan Inggris yang mempunyai Youth Parliament Forum untuk memungkinkan anak muda menyampaikan kritik dan aspirasi langsung kepada pemerintah. Namun, di Indonesia, budaya dialog semacam ini masih minim, terutama bagi generasi muda.
-            </p>
-          </div>
-        </div>
-      </section>
 
       {/* Section 2: COGZ Initiative (Text Left, Image Right) */}
       <section className="bg-gray-50 py-16">
@@ -56,12 +33,12 @@ const CouncilGenZPage = () => {
               />
             </div>
             <div className="w-full md:w-1/2 md:order-first"> {/* Text on left */}
-              <h2 className="text-2xl md:text-3xl font-semibold text-primary mb-4" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>Inisiatif Council of Gen Z</h2>
+              <h2 className="text-2xl md:text-3xl font-semibold text-primary mb-4" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>Tentang Council of Gen Z</h2>
               <p className="text-[rgb(41,56,87/90%)] leading-relaxed mb-4">
-                Menyadari pentingnya partisipasi generasi muda dalam demokrasi, <strong>Generasi Melek Politik</strong> di bawah naungan <strong>Yayasan Partisipasi Muda</strong> berkomitmen menjadi pelopor dalam memperkuat partisipasi anak muda. Hadirnya <strong>Council of Gen Z</strong> (COGZ) dengan tema <strong>"Kebijakan Krisis Iklim di Pemerintahan Baru: Indonesia Emas Atau Indonesia Cemas?"</strong> adalah inisiatif yang bertujuan menciptakan ruang partisipasi politik yang aman dan inklusif bagi anak muda.
+              Council of Gen Z (COGZ) adalah ruang berpolitik yang aman dan demokratis tempat komunitas anak muda dari daerah rentan iklim dapat mengekspresikan diri tanpa rasa takut untuk menyampaikan aspirasi dan kegelisahan mereka kepada pemerintah terpilih.
               </p>
               <p className="text-[rgb(41,56,87/90%)] leading-relaxed">
-                COGZ berhasil mempertemukan 10 perwakilan Gen Z peserta terbaik Academia Politica, yang berasal dari berbagai daerah yakni Kalimantan, Bandung, Yogyakarta, Jabodetabek, dan Sulawesi. Para peserta COGZ secara langsung menyampaikan isu-isu daerah mereka kepada perwakilan pemerintah baru Prabowo-Gibran, yaitu Triana Krisandini Tandjung, Gemintang Kejora Mallarangeng, dan Faiz Arsyad.
+              Kegiatan ini bertujuan untuk mendorong dialog yang bermakna dan memastikan suara anak muda didengar serta diakui dalam proses pengambilan keputusan, terutama dalam memprioritaskan isu-isu perubahan iklim yang memengaruhi hidup dan masa depan mereka.
               </p>
             </div>
           </div>

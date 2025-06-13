@@ -74,7 +74,7 @@ const Footer = () => {
           </div>
 
           <div>
-            <h3 className="text-lg font-heading font-semibold mb-4" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>Menu</h3>
+            <h3 className="text-lg font-heading font-semibold mb-4 text-white" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>Menu</h3>
             <ul className="space-y-2">
               <li>
                 <Link
@@ -136,7 +136,7 @@ const Footer = () => {
           </div>
 
           <div>
-            <h3 className="text-lg font-heading font-semibold mb-4" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>
+            <h3 className="text-lg font-heading font-semibold mb-4 text-white" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>
               Ikut Berperan
             </h3>
             <ul className="space-y-2">
@@ -168,7 +168,7 @@ const Footer = () => {
             
             {/* Language Switcher */}
             <div className="mt-6">
-              <h3 className="text-lg font-heading font-semibold mb-4" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>
+              <h3 className="text-lg font-heading font-semibold mb-4 text-white" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>
                 Bahasa
               </h3>
               <div className="flex flex-col space-y-2">
@@ -178,7 +178,7 @@ const Footer = () => {
                 >
                   English
                 </Link>
-                <span className="text-left text-white font-bold text-primary">
+                <span className="text-left text-white font-bold">
                   Bahasa Indonesia
                 </span>
               </div>
@@ -186,29 +186,29 @@ const Footer = () => {
           </div>
 
           <div>
-            <h3 className="text-lg font-heading font-semibold mb-4" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>
+            <h3 className="text-lg font-heading font-semibold mb-4 text-white" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>
               Yayasan Partisipasi Muda
             </h3>
             <address className="not-italic text-white">
-              <p className="mb-2">
+              <p className="mb-2 text-white">
                 Bintaro Business Center, 4th Floor, Unit 410, Jl. RC. Veteran
                 Raya No.1i RT.1/RW.3, Bintaro, Kec. Pesanggrahan, Kota Jakarta
                 Selatan 12330
               </p>
-              <p className="mb-2">
+              <p className="mb-2 text-white">
                 Email:{" "}
                 <a
                   href="mailto:admin@partisipasimuda.org"
-                  className="hover:text-primary transition"
+                  className="text-white hover:text-primary transition"
                 >
                   admin@partisipasimuda.org
                 </a>
               </p>
-              <p>
+              <p className="text-white">
                 Phone:{" "}
                 <a
                   href="tel:+6281292310996"
-                  className="hover:text-primary transition"
+                  className="text-white hover:text-primary transition"
                 >
                   +62 812 9231 0996
                 </a>
@@ -218,7 +218,7 @@ const Footer = () => {
         </div>
 
         <div className="border-t border-gray-800 mt-10 pt-6 text-center text-white">
-          <p>
+          <p className="text-white">
             &copy; {new Date().getFullYear()} Yayasan Partisipasi Muda. All
             rights reserved.
           </p>

@@ -131,8 +131,8 @@ export default async function PublicationDetailPage({ params }: PageProps) {
           </div>
         )}
         <div className="relative container mx-auto px-4 z-10 flex flex-col items-center justify-center max-w-7xl">
-          <h1 className="mb-4 text-3xl font-bold md:text-4xl lg:text-5xl drop-shadow-lg" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>{publication.title}</h1>
-          <p className="mb-6 text-lg text-white">{publication.date}</p>
+          <h1 className="mb-4 text-3xl font-bold md:text-4xl lg:text-5xl drop-shadow-lg !text-white" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>{publication.title}</h1>
+          <p className="mb-6 text-lg !text-white">{publication.date}</p>
         </div>
       </section>
 

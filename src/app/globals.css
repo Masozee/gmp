@@ -17,11 +17,15 @@
   /* Font family */
   --font-heading: 'Inter', sans-serif;
   --font-body: 'Figtree', sans-serif;
+  
+  /* Main text color */
+  --text-main: #1C1C1E;
 }
 
 @layer base {
   body {
-    @apply bg-white text-gray-900;
+    @apply bg-white;
+    color: var(--text-main);
     font-family: var(--font-body);
     font-size: 1.05rem;
     font-weight: 500;
@@ -30,11 +34,13 @@
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-heading);
     font-weight: 800;
+    color: var(--text-main);
   }
   
   p, span, div, li {
     font-family: var(--font-body);
     font-weight: 500;
+    color: var(--text-main);
   }
 
   /* Navbar and navigation styles */
@@ -60,11 +66,11 @@
   }
   :root {
     --background: 0 0% 100%;
-    --foreground: 0 0% 3.9%;
+    --foreground: 210 11% 11%; /* #1C1C1E converted to HSL */
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 3.9%;
+    --card-foreground: 210 11% 11%; /* #1C1C1E converted to HSL */
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 3.9%;
+    --popover-foreground: 210 11% 11%; /* #1C1C1E converted to HSL */
     --primary: 44 100% 67%; /* #ffcb57 Yellow */
     --primary-foreground: 0 0% 98%;
     --secondary: 197 88% 66%; /* #59caf5 Blue */
@@ -77,7 +83,7 @@
     --destructive-foreground: 0 0% 98%;
     --border: 0 0% 89.8%;
     --input: 0 0% 89.8%;
-    --ring: 0 0% 3.9%;
+    --ring: 210 11% 11%; /* #1C1C1E converted to HSL */
     --chart-1: 44 100% 67%; /* #ffcb57 Yellow */
     --chart-2: 197 88% 66%; /* #59caf5 Blue */
     --chart-3: 340 85% 68%; /* #f06d98 Pink */
@@ -136,7 +142,8 @@
   }
   
   .btn-primary {
-    @apply bg-primary text-black hover:bg-primary-dark;
+    @apply bg-primary hover:bg-primary-dark;
+    color: var(--text-main);
   }
   
   .btn-secondary {
@@ -144,7 +151,12 @@
   }
   
   .btn-outline {
-    @apply border-2 border-primary text-primary hover:bg-primary hover:text-black;
+    @apply border-2 border-primary hover:bg-primary;
+    color: var(--primary);
+  }
+  
+  .btn-outline:hover {
+    color: var(--text-main);
   }
 }
 
@@ -159,7 +171,7 @@
 /* Custom color utility classes */
 .bg-primary {
   background-color: var(--primary);
-  color: #000000; /* Black text on primary (amber) background */
+  color: var(--text-main); /* Use main text color instead of black */
 }
 
 .bg-secondary {
@@ -173,6 +185,10 @@
 
 .text-secondary {
   color: var(--secondary);
+}
+
+.text-main {
+  color: var(--text-main);
 }
 
 @layer base {

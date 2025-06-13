@@ -38,6 +38,9 @@ module.exports = {
   				DEFAULT: 'var(--success)',
   				dark: 'var(--success-dark)'
   			},
+  			main: {
+  				DEFAULT: 'var(--text-main)'
+  			},
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
   			card: {

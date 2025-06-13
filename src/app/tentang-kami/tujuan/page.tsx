@@ -1,7 +1,31 @@
 import Image from 'next/image';
 import React from 'react';
+import ImageSlideshow from '@/app/components/ImageSlideshow';
 
 const TujuanPage = () => {
+  const slides = [
+    {
+      image: "/images/bg/about.jpg",
+      description: "Mengedukasi anak muda Indonesia tentang politik dan demokrasi dengan cara yang seru dan menarik melalui @generasimelekpolitik."
+    },
+    {
+      image: "/images/bg/about.jpg",
+      description: "Membekali anak muda dengan pemahaman kebijakan publik dan keterampilan lunak demokrasi yang penting."
+    },
+    {
+      image: "/images/bg/about.jpg",
+      description: "Membangun ruang demokrasi yang inklusif di mana suara anak muda didengar."
+    },
+    {
+      image: "/images/bg/about.jpg",
+      description: "Menjembatani hubungan yang bermakna antara pemuda dan pembuat kebijakan."
+    },
+    {
+      image: "/images/bg/about.jpg",
+      description: "Menginspirasi dan mendampingi generasi pemimpin muda berikutnya untuk membawa perubahan nyata di komunitasnya."
+    }
+  ];
+
   return (
     <>
       {/* Hero Section */}
@@ -48,15 +72,8 @@ const TujuanPage = () => {
           </ul>
         </div>
 
-        <div className="mt-12 flex justify-center">
-          <Image
-            src="/images/bg/about.jpg" // ganti Carousel
-            alt="Placeholder Image for Tujuan Page"
-            width={600}
-            height={400}
-            className="rounded-lg shadow-md object-cover"
-          />
-          {/* You can replace the src above with your actual image path later */}
+        <div className="mt-12">
+          <ImageSlideshow slides={slides} />
         </div>
       </div>
     </>

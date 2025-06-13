@@ -95,10 +95,10 @@ export default function PublikasiPage() {
       {/* Hero Section */}
       <section className="bg-green-500 py-32 text-white">
         <div className="container mx-auto max-w-7xl px-4 text-center">
-          <h1 className="mb-4 text-4xl font-bold md:text-5xl" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>
+          <h1 className="mb-4 text-4xl font-bold md:text-5xl !text-white" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>
             Publikasi Kami
           </h1>
-          <p className="text-lg text-white">
+          <p className="text-lg !text-white">
             Jelajahi artikel, laporan, dan hasil survei dari Partisipasi Muda.
           </p>
         </div>

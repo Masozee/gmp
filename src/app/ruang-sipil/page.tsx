@@ -422,10 +422,10 @@ const ReportPage = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <h1 className="mb-4 text-4xl font-bold md:text-5xl" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>
+            <h1 className="mb-4 text-4xl font-bold md:text-5xl !text-white" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>
               Ruang Sipil
             </h1>
-            <p className="text-lg text-white">
+            <p className="text-lg !text-white">
               Analisis komprehensif keterlibatan pemuda dalam ruang sipil dan partisipasi politik
             </p>
             <div className="flex flex-wrap justify-center gap-6 text-sm lg:text-base">

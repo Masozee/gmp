@@ -124,10 +124,10 @@ export default function AcaraPage() {
       {/* Header Section */}
       <header className="bg-blue-500 py-32 text-white shadow-lg">
         <div className="container mx-auto px-4 max-w-7xl text-center">
-          <h1 className="text-4xl md:text-5xl font-heading font-bold mb-4" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>
+          <h1 className="text-4xl md:text-5xl font-heading font-bold mb-4 !text-white" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>
             Acara & Kegiatan
           </h1>
-          <p className="text-lg text-white max-w-3xl mx-auto">
+          <p className="text-lg !text-white max-w-3xl mx-auto">
             Temukan berbagai acara menarik dari Partisipasi Muda untuk meningkatkan kapasitas dan keterlibatan politik pemuda.
           </p>
         </div>
