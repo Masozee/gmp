@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 const EngagementBanner = () => {
   return (
     <section className="py-16 md:py-24 px-10 bg-gray-50">
-      <div className="bg-[#f06d98] text-white rounded-md py-16 md:py-24">
+      <div className="bg-[#f06d98] text-white rounded-lg py-16 md:py-24">
         <div className="relative z-10 container mx-auto px-4 text-center max-w-7xl">
           <motion.div
             initial={{ opacity: 0, y: 30 }}

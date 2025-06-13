@@ -428,17 +428,7 @@ const ReportPage = () => {
             <p className="text-lg !text-white">
               Analisis komprehensif keterlibatan pemuda dalam ruang sipil dan partisipasi politik
             </p>
-            <div className="flex flex-wrap justify-center gap-6 text-sm lg:text-base">
-              <div className="bg-white/20 backdrop-blur-sm px-6 py-3 rounded-full">
-                📊 505 Responden
-              </div>
-              <div className="bg-white/20 backdrop-blur-sm px-6 py-3 rounded-full">
-                🗺️ Seluruh Indonesia
-              </div>
-              <div className="bg-white/20 backdrop-blur-sm px-6 py-3 rounded-full">
-                👥 Usia 18-25 Tahun
-              </div>
-            </div>
+           
           </motion.div>
         </div>
       </section>
@@ -538,44 +528,7 @@ const ReportPage = () => {
       </section>
 
       {/* Footer Info */}
-      <section className="py-16 bg-gray-900 text-white">
-        <div className="container mx-auto max-w-6xl px-6">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center"
-          >
-            <h3 className="text-xl font-semibold mb-6">Tentang Survei</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto text-left">
-              <div>
-                <h4 className="font-semibold text-gray-300 mb-3">Metodologi</h4>
-                <ul className="space-y-2 text-gray-400 text-sm">
-                  <li>• Survei online dan offline</li>
-                  <li>• Sampling purposive dan snowball</li>
-                  <li>• Analisis statistik deskriptif</li>
-                  <li>• Margin error ±4.3%</li>
-                </ul>
-              </div>
-              <div>
-                <h4 className="font-semibold text-gray-300 mb-3">Cakupan</h4>
-                <ul className="space-y-2 text-gray-400 text-sm">
-                  <li>• 505 responden berusia 18-25 tahun</li>
-                  <li>• Representasi seluruh Indonesia</li>
-                  <li>• Periode pengumpulan: 2024</li>
-                  <li>• Fokus: Keterlibatan sipil dan politik</li>
-                </ul>
-              </div>
-            </div>
-            <div className="mt-8 pt-8 border-t border-gray-800">
-              <p className="text-sm text-gray-500 max-w-3xl mx-auto">
-                Data yang disajikan merupakan hasil survei dan analisis Yayasan Partisipasi Muda. 
-                Interpretasi dan kesimpulan sepenuhnya menjadi tanggung jawab peneliti.
-              </p>
-            </div>
-          </motion.div>
-        </div>
-      </section>
+      
     </>
   );
 };
