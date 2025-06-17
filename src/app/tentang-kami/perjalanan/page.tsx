@@ -36,7 +36,7 @@ const PerjalananPage = () => {
     {
       year: '2025-sekarang',
       description: 'YPM melanjutkan program Academia Politica yang berfokus pada isu krisis iklim dengan cakupan yang lebih luas, khususnya di bagian timur Indonesia. Pada periode ini, YPM juga meluncurkan riset komprehensif pertama tentang pemahaman orang muda terhadap ruang sipil publik dengan responden seluruh Indonesia.',
-      imageSrc: '/images/bg/2025.jpg',
+      imageSrc: '/images/bg/DSC00229.jpg',
     },
   ];
 
@@ -49,9 +49,9 @@ const PerjalananPage = () => {
         {/* Overlay */}
         {/* <div className="absolute inset-0 bg-black opacity-50"></div> */}
         {/* Content */}
-        <div className="relative container mx-auto px-4 z-10">
+        <div className="relative container mx-auto px-4 max-w-7xl z-10">
           <h1 className="text-4xl md:text-5xl font-bold mb-4 !text-white" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>Perjalanan Kami</h1>
-          <p className="text-lg md:text-xl text-gray-100 max-w-2xl mx-auto">
+          <p className="text-lg md:text-xl !text-white max-w-2xl mx-auto">
           Berawal dari komunitas relawan, kami tumbuh menjadi organisasi nirlaba yang dinamis dan berdampak. Dipimpin oleh anak muda, untuk memberdayakan sesama anak muda.
 
           </p>
@@ -59,7 +59,7 @@ const PerjalananPage = () => {
       </section>
 
       {/* Two-column layout: left for timeline, right for text */}
-      <div className="container mx-auto px-4 py-16 flex flex-col md:flex-row gap-12">
+      <div className="container mx-auto px-4 max-w-7xl py-16 flex flex-col md:flex-row gap-12">
         {/* Left: Scrollable Timeline */}
         <div className="md:w-2/3 w-full max-h-[80vh] overflow-y-auto pr-2">
           <div className="relative">

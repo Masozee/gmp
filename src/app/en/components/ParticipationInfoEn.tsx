@@ -61,45 +61,45 @@ const ParticipationInfoEn = () => {
               variants={containerVariants}
             >
               <motion.div 
-                className="aspect-square flex flex-col items-start justify-center shadow bg-pink-50 p-6 border border-gray-200 min-h-[180px] rounded-lg" 
+                className="aspect-square flex flex-col items-start justify-center p-6 min-h-[180px] rounded-lg group hover:bg-[#f06d98] transition-all duration-300" 
                 variants={cardVariants}
-                whileHover={{ y: -5, boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)" }}
+                whileHover={{ y: -5 }}
               >
-                <Users className="w-9 h-9 mb-3 text-pink-400" />
-                <div className="font-bold text-lg mb-1 text-gray-900">Public Discussions</div>
-                <div className="text-sm text-gray-700">We organize impactful educational initiatives—empowering them to take the right actions for the future! 📚🔥</div>
+                <Users className="w-9 h-9 mb-3 text-pink-400 group-hover:text-white transition-colors duration-300" />
+                <div className="font-bold text-lg mb-1 text-gray-900 group-hover:text-white transition-colors duration-300">Public Discussions</div>
+                <div className="text-sm text-gray-700 group-hover:text-white transition-colors duration-300">We organize impactful educational initiatives—empowering them to take the right actions for the future! 📚🔥</div>
               </motion.div>
               
               <motion.div 
-                className="aspect-square flex flex-col items-start justify-center shadow bg-yellow-50 p-6 border border-gray-200 min-h-[180px] rounded-lg" 
+                className="aspect-square flex flex-col items-start justify-center p-6 min-h-[180px] rounded-lg group hover:bg-[#f06d98] transition-all duration-300" 
                 variants={cardVariants}
-                whileHover={{ y: -5, boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)" }}
+                whileHover={{ y: -5 }}
               >
-                <UserCheck className="w-9 h-9 mb-3 text-yellow-400" />
-                <div className="font-bold text-lg mb-1 text-gray-900">Council of Gen Z & Candidate Meetings
+                <UserCheck className="w-9 h-9 mb-3 text-yellow-400 group-hover:text-white transition-colors duration-300" />
+                <div className="font-bold text-lg mb-1 text-gray-900 group-hover:text-white transition-colors duration-300">Council of Gen Z & Candidate Meetings
                 </div>
-                <div className="text-sm text-gray-700">A safe democratic space for young people to voice their concerns and aspirations regarding local issues to the government.</div>
+                <div className="text-sm text-gray-700 group-hover:text-white transition-colors duration-300">A safe democratic space for young people to voice their concerns and aspirations regarding local issues to the government.</div>
               </motion.div>
               
               <motion.div 
-                className="aspect-square flex flex-col items-start justify-center shadow bg-green-50 p-6 border border-gray-200 min-h-[180px] rounded-lg" 
+                className="aspect-square flex flex-col items-start justify-center p-6 min-h-[180px] rounded-lg group hover:bg-[#f06d98] transition-all duration-300" 
                 variants={cardVariants}
-                whileHover={{ y: -5, boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)" }}
+                whileHover={{ y: -5 }}
               >
-                <GraduationCap className="w-9 h-9 mb-3 text-green-400" />
-                <div className="font-bold text-lg mb-1 text-gray-900">Academia Politica</div>
-                <div className="text-sm text-gray-700">Public policy-making training with a roleplay approach, where young people act as policy stakeholders. Through this activity, participants are equipped with insights about public policy and democratic soft skills such as public speaking and negotiation.
+                <GraduationCap className="w-9 h-9 mb-3 text-green-400 group-hover:text-white transition-colors duration-300" />
+                <div className="font-bold text-lg mb-1 text-gray-900 group-hover:text-white transition-colors duration-300">Academia Politica</div>
+                <div className="text-sm text-gray-700 group-hover:text-white transition-colors duration-300">Public policy-making training with a roleplay approach, where young people act as policy stakeholders. Through this activity, participants are equipped with insights about public policy and democratic soft skills such as public speaking and negotiation.
                 </div>
               </motion.div>
               
               <motion.div 
-                className="aspect-square flex flex-col items-start justify-center shadow bg-blue-50 p-6 border border-gray-200 min-h-[180px] rounded-lg" 
+                className="aspect-square flex flex-col items-start justify-center p-6 min-h-[180px] rounded-lg group hover:bg-[#f06d98] transition-all duration-300" 
                 variants={cardVariants}
-                whileHover={{ y: -5, boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)" }}
+                whileHover={{ y: -5 }}
               >
-                <Sparkles className="w-9 h-9 mb-3 text-sky-400" />
-                <div className="font-bold text-lg mb-1 text-gray-900">Class of Climate Leaders</div>
-                <div className="text-sm text-gray-700">An intensive incubation program for young change agents to equip them with the capacity to build social movements in their local communities.</div>
+                <Sparkles className="w-9 h-9 mb-3 text-sky-400 group-hover:text-white transition-colors duration-300" />
+                <div className="font-bold text-lg mb-1 text-gray-900 group-hover:text-white transition-colors duration-300">Class of Climate Leaders</div>
+                <div className="text-sm text-gray-700 group-hover:text-white transition-colors duration-300">An intensive incubation program for young change agents to equip them with the capacity to build social movements in their local communities.</div>
               </motion.div>
             </motion.div>
           </div>
