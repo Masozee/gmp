@@ -15,11 +15,7 @@ interface Event {
   en_description: string;
   image: string;
   category: string;
-  isRegistrationOpen: boolean;
   registrationLink: string;
-  isPaid: boolean;
-  capacity: number;
-  registeredCount: number;
 }
 
 const UpcomingEvents = () => {

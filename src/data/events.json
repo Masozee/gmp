@@ -12,9 +12,6 @@
     "image": "/events/02.jpg",
     "category": "Academia Politica",
     "isRegistrationOpen": true,
-    "registrationLink": "https://s.id/AcpolAmbon",
-    "isPaid": false,
-    "capacity": 100,
-    "registeredCount": 45
+    "registrationLink": "https://s.id/AcpolAmbon"
   }
 ] 

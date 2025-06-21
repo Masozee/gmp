@@ -15,12 +15,7 @@ interface Event {
   en_description: string;
   image: string;
   category: string;
-  isPaid: boolean;
-  price?: number;
-  isRegistrationOpen: boolean;
   registrationLink: string;
-  capacity: number;
-  registeredCount: number;
 }
 
 export default function AcaraPage() {
@@ -215,7 +210,7 @@ export default function AcaraPage() {
                       />
                       <div className="absolute top-2 left-2 flex gap-2">
                         <span className="text-xs font-semibold rounded-full px-2 py-0.5 bg-[#ffe066] text-black">
-                          {event.isPaid ? `Rp${event.price?.toLocaleString('id-ID')}` : 'Gratis'}
+                          Gratis
                         </span>
                         <span className="text-xs font-semibold bg-[#ffe066] text-black rounded-full px-2 py-0.5">
                           {event.category}

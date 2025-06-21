@@ -20,12 +20,7 @@ interface Event {
   en_description: string;
   image: string;
   category: string;
-  isPaid: boolean;
-  price?: number;
-  isRegistrationOpen: boolean;
   registrationLink: string;
-  capacity: number;
-  registeredCount: number;
 }
 
 export async function GET(request: NextRequest, { params }: Params) {

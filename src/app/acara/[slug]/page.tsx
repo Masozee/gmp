@@ -18,21 +18,10 @@ interface Event {
   en_description: string;
   image: string;
   category: string;
-  isPaid: boolean;
-  price?: number;
-  isRegistrationOpen: boolean;
   registrationLink: string;
-  capacity: number;
-  registeredCount: number;
 }
 
-interface RegistrationFormData {
-  name: string;
-  email: string;
-  phone: string;
-  organization: string;
-  reason: string;
-}
+
 
 interface PageProps {
   params: Promise<{
@@ -82,29 +71,7 @@ export default function EventDetailPage({ params }: PageProps) {
   // Use our custom hook for fetching event data
   const { event, isLoading } = useEvent(eventSlug);
   
-  const [isRegistering, setIsRegistering] = useState(false);
-  const [showRegisterForm, setShowRegisterForm] = useState(false);
-  const [formData, setFormData] = useState<RegistrationFormData>({
-    name: '',
-    email: '',
-    phone: '',
-    organization: '',
-    reason: ''
-  });
-  const [formSuccess, setFormSuccess] = useState(false);
-  
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
-  
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsRegistering(true);
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    setIsRegistering(false);
-    setFormSuccess(true);
-  };
+
   
   if (isLoading) {
     return (
@@ -157,8 +124,7 @@ export default function EventDetailPage({ params }: PageProps) {
     );
   }
   
-  const registrationProgress = Math.round((event.registeredCount / event.capacity) * 100);
-  const seatsRemaining = event.capacity - event.registeredCount;
+
   
   return (
     <main className="min-h-screen bg-gray-50">
@@ -229,17 +195,7 @@ export default function EventDetailPage({ params }: PageProps) {
                     </div>
                   </div>
                   
-                  {event.isPaid && (
-                    <div className="mb-6 p-4 bg-pink-50 rounded-lg border border-pink-200">
-                      <h3 className="text-lg font-semibold mb-2 text-primary">Informasi Biaya</h3>
-                      <p className="text-gray-700">
-                        Biaya pendaftaran: <span className="font-medium text-primary-dark">Rp {event.price?.toLocaleString('id-ID')}</span>
-                      </p>
-                      <p className="text-sm text-gray-600 mt-2">
-                        Informasi pembayaran akan dikirimkan setelah pendaftaran dikonfirmasi.
-                      </p>
-                    </div>
-                  )}
+
                 </div>
               </div>
             </div>
@@ -269,47 +225,18 @@ export default function EventDetailPage({ params }: PageProps) {
             <div className="bg-gray-50 p-6 rounded-lg border border-gray-200 mb-6 w-full">
               <h3 className="text-xl font-semibold mb-4 text-gray-800">Pendaftaran</h3>
               <div className="mb-4">
-                <p className="flex justify-between font-medium mb-1">
-                  <span>Status:</span>
-                  <span className={event.isRegistrationOpen ? 'text-green-600' : 'text-red-600'}>
-                    {event.isRegistrationOpen ? 'Dibuka' : 'Ditutup'}
-                  </span>
+                <p className="text-center text-gray-700 mb-4">
+                  Acara ini gratis dan terbuka untuk umum
                 </p>
-                <p className="flex justify-between text-gray-700 text-sm mb-1">
-                  <span>Kapasitas:</span>
-                  <span>{event.capacity} peserta</span>
-                </p>
-                <p className="flex justify-between text-gray-700 text-sm mb-1">
-                  <span>Terdaftar:</span>
-                  <span>{event.registeredCount} peserta</span>
-                </p>
-                <p className="flex justify-between text-gray-700 text-sm mb-2">
-                  <span>Sisa Kuota:</span>
-                  <span className={seatsRemaining > 0 ? 'text-green-600 font-medium' : 'text-red-600 font-medium'}>{seatsRemaining > 0 ? `${seatsRemaining} kursi` : 'Penuh'}</span>
-                </p>
-                <div className="w-full bg-gray-200 rounded-full h-2.5 mb-1">
-                  <div 
-                    className={`${registrationProgress > 80 ? 'bg-red-500' : 'bg-primary'} h-2.5 rounded-full transition-all duration-500 ease-out`} 
-                    style={{ width: `${registrationProgress}%` }}
-                  ></div>
-                </div>
-                <p className="text-xs text-gray-500 text-right">{registrationProgress}% terisi</p>
               </div>
-              {event.isRegistrationOpen && seatsRemaining > 0 ? (
-                <button
-                  onClick={() => setShowRegisterForm(true)}
-                  className="w-full py-3 px-4 bg-secondary hover:bg-secondary-dark text-white rounded-md font-medium transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary"
-                >
-                  Daftar Sekarang
-                </button>
-              ) : (
-                <button
-                  disabled
-                  className="w-full py-3 px-4 bg-gray-300 text-gray-600 rounded-md font-medium cursor-not-allowed"
-                >
-                  {seatsRemaining <= 0 && event.isRegistrationOpen ? 'Kuota Penuh' : 'Pendaftaran Ditutup'}
-                </button>
-              )}
+              <a
+                href={event.registrationLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full py-3 px-4 bg-[#f06d98] hover:bg-[#e05a87] text-white rounded-md font-medium transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#f06d98] block text-center"
+              >
+                Daftar Sekarang
+              </a>
             </div>
             {/* Share Card */}
             <div className="bg-gray-50 p-6 rounded-lg border border-gray-200 w-full">
@@ -330,74 +257,7 @@ export default function EventDetailPage({ params }: PageProps) {
             </div>
           </aside>
         </div>
-        
-        {showRegisterForm && (
-          <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-lg shadow-lg p-6 md:p-8 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-              {!formSuccess ? (
-                <>
-                  <div className="flex justify-between items-start mb-6">
-                    <div>
-                      <h2 className="text-2xl font-bold text-gray-900">Formulir Pendaftaran</h2>
-                      <p className="text-sm text-gray-600">untuk acara: {event.title}</p>
-                    </div>
-                    <button 
-                      onClick={() => setShowRegisterForm(false)}
-                      className="text-gray-500 hover:text-gray-700 p-1"
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                      </svg>
-                    </button>
-                  </div>
-                  
-                  <form onSubmit={handleSubmit} className="space-y-4">
-                    <div>
-                      <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap*</label>
-                      <input type="text" id="name" name="name" required value={formData.name} onChange={handleInputChange} className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary" />
-                    </div>
-                    <div>
-                      <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">Email*</label>
-                      <input type="email" id="email" name="email" required value={formData.email} onChange={handleInputChange} className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary" />
-                    </div>
-                    <div>
-                      <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">Nomor Telepon*</label>
-                      <input type="tel" id="phone" name="phone" required value={formData.phone} onChange={handleInputChange} className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary" />
-                    </div>
-                    <div>
-                      <label htmlFor="organization" className="block text-sm font-medium text-gray-700 mb-1">Asal Institusi/Organisasi</label>
-                      <input type="text" id="organization" name="organization" value={formData.organization} onChange={handleInputChange} className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary" />
-                    </div>
-                    <div>
-                      <label htmlFor="reason" className="block text-sm font-medium text-gray-700 mb-1">Alasan Mengikuti Acara*</label>
-                      <textarea id="reason" name="reason" required rows={3} value={formData.reason} onChange={handleInputChange} className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"></textarea>
-                    </div>
-                    <div className="mt-6">
-                      <button type="submit" disabled={isRegistering} className="w-full py-3 px-4 bg-secondary hover:bg-secondary-dark text-white rounded-md font-medium transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary disabled:bg-gray-400 disabled:cursor-not-allowed">
-                        {isRegistering ? 'Mengirim Pendaftaran...' : 'Kirim Pendaftaran'}
-                      </button>
-                    </div>
-                  </form>
-                </>
-              ) : (
-                <div className="text-center py-8">
-                  <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-                    </svg>
-                  </div>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-2">Pendaftaran Berhasil!</h2>
-                  <p className="text-gray-600 mb-6">
-                    Terima kasih telah mendaftar untuk acara: <span className="font-semibold">{event.title}</span>. <br/> Konfirmasi akan dikirimkan ke email Anda.
-                  </p>
-                  <button onClick={() => { setShowRegisterForm(false); setFormSuccess(false); }} className="inline-block bg-primary hover:bg-primary-dark text-white font-medium py-2 px-6 rounded-md transition">
-                    Tutup
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
-        )}
+
       </div>
     </main>
   );
