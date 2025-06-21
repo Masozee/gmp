@@ -2,17 +2,19 @@
   {
     "id": 1,
     "title": "Dampak Perubahan Iklim Ambon: Nelayan Sulit Dapat Ikan, Kita Sulit Dapat Makan",
+    "slug": "dampak-perubahan-iklim-ambon-nelayan-sulit-dapat-ikan",
     "date": "28 Juni 2025",
     "time": "09:00 - 14:00 WIT",
     "location": "Aula FISIP Lt. 3 Universitas Pattimura",
     "address": "Jl. Ir. M. Putuhena, Poka, Kec. Tlk. Ambon, Kota Ambon, Maluku",
-    "description": "Workshop ini bertujuan untuk meningkatkan pemahaman pemuda tentang literasi digital, keamanan online, dan pemanfaatan teknologi untuk partisipasi demokrasi. Peserta akan mendapatkan sertifikat dan materi digital.",
-    "en_description": "This workshop aims to enhance youth understanding of digital literacy, online security, and the use of technology for democratic participation. Participants will receive certificates and digital materials.",
+    "description": "Academia Politica Ambon menghadirkan diskusi mendalam tentang dampak perubahan iklim terhadap kehidupan nelayan dan ketahanan pangan di Maluku. Workshop ini akan membahas bagaimana perubahan iklim mempengaruhi pola tangkapan ikan, strategi adaptasi nelayan, dan dampaknya terhadap ketersediaan pangan masyarakat. Peserta akan diajak untuk memahami hubungan kompleks antara lingkungan, ekonomi, dan ketahanan pangan dalam konteks perubahan iklim global. ",
+    "en_description": "Academia Politica Ambon presents an in-depth discussion on the impact of climate change on fishermen's lives and food security in Maluku. This workshop will discuss how climate change affects fishing patterns, fishermen's adaptation strategies, and its impact on community food availability. Participants will be invited to understand the complex relationship between environment, economy, and food security in the context of global climate change.",
     "image": "/events/02.jpg",
     "category": "Academia Politica",
-    "isPaid": false,
     "isRegistrationOpen": true,
+    "registrationLink": "https://s.id/AcpolAmbon",
+    "isPaid": false,
     "capacity": 100,
-    "registeredCount": 65
+    "registeredCount": 45
   }
 ] 

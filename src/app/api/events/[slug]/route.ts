@@ -4,39 +4,43 @@ import path from 'path';
 
 interface Params {
   params: {
-    id: string;
+    slug: string;
   };
 }
 
 interface Event {
   id: number;
   title: string;
+  slug: string;
   date: string;
   time: string;
   location: string;
+  address?: string;
+  description: string;
+  en_description: string;
   image: string;
   category: string;
-  isPaid?: boolean;
+  isPaid: boolean;
   price?: number;
   isRegistrationOpen: boolean;
-  capacity?: number;
-  registeredCount?: number;
-  [key: string]: string | number | boolean | undefined;
+  registrationLink: string;
+  capacity: number;
+  registeredCount: number;
 }
 
 export async function GET(request: NextRequest, { params }: Params) {
   try {
     // Handle async params
-    const id = await Promise.resolve(params.id);
+    const slug = await Promise.resolve(params.slug);
     
     // Read the events data from the JSON file
     const filePath = path.join(process.cwd(), 'src', 'data', 'events.json');
     const jsonData = fs.readFileSync(filePath, 'utf-8');
     const eventsData = JSON.parse(jsonData);
 
-    // Find the event with the matching ID
+    // Find the event with the matching slug
     const event = eventsData.find((item: Event) => 
-      item.id === parseInt(id, 10)
+      item.slug === slug
     );
 
     if (!event) {

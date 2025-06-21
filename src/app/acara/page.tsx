@@ -6,16 +6,19 @@ import Link from 'next/link';
 interface Event {
   id: number;
   title: string;
+  slug: string;
   date: string;
   time: string;
   location: string;
   address?: string;
   description: string;
+  en_description: string;
   image: string;
   category: string;
   isPaid: boolean;
   price?: number;
   isRegistrationOpen: boolean;
+  registrationLink: string;
   capacity: number;
   registeredCount: number;
 }
@@ -266,7 +269,7 @@ export default function AcaraPage() {
                       {/* Button */}
                       <div className="mt-auto">
                         <Link 
-                          href={`/acara/${event.id}`}
+                          href={`/acara/${event.slug}`}
                           className="inline-block font-medium py-2 px-4 rounded-md text-sm bg-[#f06d98] text-white hover:bg-[#ffe066] hover:text-black transition-colors"
                         >
                           Lebih Lanjut

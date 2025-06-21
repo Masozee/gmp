@@ -9,16 +9,19 @@ import { useRouter } from 'next/navigation';
 interface Event {
   id: number;
   title: string;
+  slug: string;
   date: string;
   time: string;
   location: string;
   address?: string;
   description: string;
+  en_description: string;
   image: string;
   category: string;
   isPaid: boolean;
   price?: number;
   isRegistrationOpen: boolean;
+  registrationLink: string;
   capacity: number;
   registeredCount: number;
 }
@@ -33,21 +36,21 @@ interface RegistrationFormData {
 
 interface PageProps {
   params: {
-    id: string;
+    slug: string;
   };
 }
 
 // Create a custom hook to fetch event data
-function useEvent(eventId: string) {
+function useEvent(eventSlug: string) {
   const router = useRouter();
   const [event, setEvent] = useState<Event | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Use a regular useEffect with eventId as a dependency
+  // Use a regular useEffect with eventSlug as a dependency
   React.useEffect(() => {
     async function fetchEvent() {
       try {
-        const response = await fetch(`/api/events/${eventId}`);
+        const response = await fetch(`/api/events/${eventSlug}`);
         if (!response.ok) {
           if (response.status === 404) {
             router.push('/acara');
@@ -66,17 +69,17 @@ function useEvent(eventId: string) {
     }
     
     fetchEvent();
-  }, [eventId, router]);
+  }, [eventSlug, router]);
 
   return { event, isLoading };
 }
 
 export default function EventDetailPage({ params }: PageProps) {
-  // Extract the id from params and use it directly - this avoids the async params issue
-  const eventId = params.id;
+  // Extract the slug from params and use it directly - this avoids the async params issue
+  const eventSlug = params.slug;
   
   // Use our custom hook for fetching event data
-  const { event, isLoading } = useEvent(eventId);
+  const { event, isLoading } = useEvent(eventSlug);
   
   const [isRegistering, setIsRegistering] = useState(false);
   const [showRegisterForm, setShowRegisterForm] = useState(false);

@@ -6,12 +6,20 @@ import Link from 'next/link';
 interface Event {
   id: number;
   title: string;
+  slug: string;
   date: string;
   time: string;
   location: string;
+  address?: string;
+  description: string;
+  en_description: string;
   image: string;
   category: string;
   isRegistrationOpen: boolean;
+  registrationLink: string;
+  isPaid: boolean;
+  capacity: number;
+  registeredCount: number;
 }
 
 const UpcomingEvents = () => {
@@ -135,11 +143,9 @@ const UpcomingEvents = () => {
                 </div>
                 
                 <div className="mt-4">
-                  <Link href={`/acara/${event.id}`}
-                    className={`inline-block w-full text-center py-2 px-4 rounded-full font-medium transition-all hover:bg-[#f06d98] hover:text-white ${
-                      event.isRegistrationOpen ? 'bg-[#ffcb57] text-black' : 'bg-gray-300 text-gray-600 cursor-not-allowed hover:bg-gray-300 hover:text-gray-600'
-                    }`}>
-                    {event.isRegistrationOpen ? 'Daftar Sekarang' : 'Pendaftaran Ditutup'}
+                  <Link href={`/acara/${event.slug}`}
+                    className="inline-block w-full text-center py-2 px-4 rounded-full font-medium transition-all hover:bg-[#f06d98] hover:text-white bg-[#ffcb57] text-black">
+                    Lebih lanjut
                   </Link>
                 </div>
               </div>
