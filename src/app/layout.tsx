@@ -3,7 +3,8 @@ import { Figtree, Inter } from "next/font/google";
 import "./globals.css";
 import ConditionalNavbar from "./components/ConditionalNavbar";
 import ConditionalFooter from "./components/ConditionalFooter";
-import AccessibilityButton from "./components/AccessibilityButton";
+import ConditionalAccessibilityButton from "./components/ConditionalAccessibilityButton";
+import ConditionalSkipLink from "./components/ConditionalSkipLink";
 import { AccessibilityProvider } from "@/lib/accessibility-context";
 
 const figtree = Figtree({
@@ -59,16 +60,15 @@ export default function RootLayout({
       </head>
       <body
         className={`${figtree.variable} ${inter.variable} antialiased`}
+        suppressHydrationWarning={true}
       >
         <AccessibilityProvider>
-          <a href="#main-content" className="skip-to-content">
-            Loncat ke konten utama
-          </a>
+          <ConditionalSkipLink />
         <ConditionalNavbar />
           <main id="main-content" tabIndex={-1}>
             {children}
           </main>
-          <AccessibilityButton />
+          <ConditionalAccessibilityButton />
         <ConditionalFooter />
         </AccessibilityProvider>
       </body>

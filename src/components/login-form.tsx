@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useState, FormEvent, useEffect } from "react"
-import { createBrowserClient } from '@supabase/ssr'
 import { useRouter } from "next/navigation"
 
 export function LoginForm({
@@ -16,32 +15,29 @@ export function LoginForm({
   const [password, setPassword] = useState("")
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [envWarning, setEnvWarning] = useState<string | null>(null)
   const router = useRouter()
 
-  // Create a Supabase client for the browser
-  const supabase = createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL || '',
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
-  )
-
   useEffect(() => {
-    // Check if the Supabase environment variables are set
-    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL === 'your-supabase-url') {
-      setEnvWarning('Supabase environment variables are not set. Please check your .env.local file.')
-    }
-
     // Check if the user is already logged in
     const checkSession = async () => {
-      const { data } = await supabase.auth.getSession();
-      if (data.session) {
-        // If already logged in, redirect to admin dashboard
-        router.push('/admin');
+      try {
+        const response = await fetch('/api/auth/login', {
+          method: 'GET',
+          credentials: 'include',
+        });
+        
+        if (response.ok) {
+          // If already logged in, redirect to admin dashboard
+          router.push('/admin');
+        }
+      } catch (error) {
+        // Not logged in, stay on login page
+        console.log('Not logged in');
       }
     };
 
     checkSession();
-  }, [router, supabase.auth]);
+  }, [router]);
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault()
@@ -49,18 +45,32 @@ export function LoginForm({
     setError(null)
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password
-      })
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          email,
+          password,
+        }),
+      });
 
-      if (error) {
-        setError(error.message)
-        setLoading(false)
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.error || 'Login failed');
+        setLoading(false);
+        return;
+      }
+
+      if (data.success) {
+        // Successfully logged in
+        router.push('/admin');
       } else {
-        // Successfully logged in - middleware will handle redirect
-        // But we'll also push here for better UX
-        router.push('/admin')
+        setError('Login failed');
+        setLoading(false);
       }
     } catch (err) {
       setError('An unexpected error occurred')
@@ -81,11 +91,6 @@ export function LoginForm({
           Enter your credentials to access the admin dashboard
         </p>
       </div>
-      {envWarning && (
-        <div className="p-3 bg-yellow-100 border border-yellow-300 text-yellow-700 rounded">
-          {envWarning}
-        </div>
-      )}
       {error && (
         <div className="p-3 bg-red-100 border border-red-300 text-red-500 rounded">
           {error}
@@ -121,7 +126,7 @@ export function LoginForm({
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
-        <Button type="submit" className="w-full" disabled={loading || !!envWarning}>
+        <Button type="submit" className="w-full" disabled={loading}>
           {loading ? "Logging in..." : "Login"}
         </Button>
       </div>

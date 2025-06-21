@@ -37,6 +37,9 @@ export const useAccessibility = () => {
 };
 
 export const AccessibilityProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  // Track if component is mounted to prevent hydration mismatch
+  const [isMounted, setIsMounted] = useState(false);
+  
   // Initialize state with values from localStorage (if available)
   const [fontSize, setFontSize] = useState<FontSize>("normal");
   const [cursorSize, setCursorSize] = useState<CursorSize>("normal");
@@ -48,9 +51,14 @@ export const AccessibilityProvider: React.FC<{ children: React.ReactNode }> = ({
   const [dyslexiaFont, setDyslexiaFont] = useState(false);
   const [reduceMotion, setReduceMotion] = useState(false);
 
+  // Set mounted flag after component mounts
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   // Load settings from localStorage on first render
   useEffect(() => {
-    if (typeof window !== "undefined") {
+    if (typeof window !== "undefined" && isMounted) {
       const savedSettings = localStorage.getItem("accessibility-settings");
       if (savedSettings) {
         const settings = JSON.parse(savedSettings);
@@ -65,7 +73,7 @@ export const AccessibilityProvider: React.FC<{ children: React.ReactNode }> = ({
         setReduceMotion(settings.reduceMotion || false);
       }
     }
-  }, []);
+  }, [isMounted]);
 
   // Save settings to localStorage when they change
   useEffect(() => {
@@ -97,6 +105,9 @@ export const AccessibilityProvider: React.FC<{ children: React.ReactNode }> = ({
 
   // Apply settings to the DOM
   useEffect(() => {
+    // Only apply DOM changes after component is mounted
+    if (!isMounted) return;
+    
     // Apply font size
     document.documentElement.dataset.fontSize = fontSize;
 
@@ -154,6 +165,7 @@ export const AccessibilityProvider: React.FC<{ children: React.ReactNode }> = ({
       document.documentElement.classList.remove("reduce-motion");
     }
   }, [
+    isMounted,
     fontSize,
     cursorSize,
     highContrast,

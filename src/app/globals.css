@@ -622,3 +622,41 @@
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
 }
+
+/* Markdown Editor Custom Styles */
+.w-md-editor {
+  background-color: white !important;
+}
+
+.w-md-editor-text-input, 
+.w-md-editor-text-area, 
+.w-md-editor-text {
+  color: var(--text-main) !important;
+  font-family: var(--font-body) !important;
+  font-size: 14px !important;
+  line-height: 1.5 !important;
+}
+
+.w-md-editor-bar {
+  border-bottom: 1px solid #e5e7eb !important;
+}
+
+.w-md-editor-toolbar {
+  background-color: #f9fafb !important;
+  border-bottom: 1px solid #e5e7eb !important;
+}
+
+.w-md-editor-toolbar button {
+  color: #6b7280 !important;
+  font-family: var(--font-body) !important;
+}
+
+.w-md-editor-toolbar button:hover {
+  background-color: #e5e7eb !important;
+  color: var(--text-main) !important;
+}
+
+.w-md-editor-focus {
+  border-color: hsl(var(--ring)) !important;
+  box-shadow: 0 0 0 2px hsl(var(--ring) / 0.2) !important;
+}

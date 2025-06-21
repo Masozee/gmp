@@ -100,23 +100,25 @@ const UpcomingEvents = () => {
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {events.map((event) => (
-            <div key={event.id} className="relative shadow-xl overflow-hidden rounded-2xl transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 h-[450px] group">
-              <div className="absolute inset-0 w-full h-full transition-transform duration-700 ease-in-out group-hover:scale-110 group-hover:rotate-1" 
-                style={{ 
-                  backgroundImage: `url('${event.image}')`, 
-                  backgroundSize: 'cover', 
-                  backgroundPosition: 'center'
-                }}>
+            <div key={event.id} className="group">
+              {/* Poster Image */}
+              <div className="relative overflow-hidden transition-all duration-300 hover:-translate-y-1">
+                <img 
+                  src={event.image} 
+                  alt={event.title}
+                  className="w-full h-auto object-cover transition-transform duration-700 ease-in-out group-hover:scale-105"
+                />
+                <div className="absolute top-3 right-3 bg-primary text-white text-sm font-medium px-3 py-1 rounded-full">
+                  {event.category}
+                </div>
               </div>
-              <div className="absolute inset-0" style={{ background: 'linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.6) 50%, rgba(0,0,0,0.9) 100%)' }}></div>
               
-              <div className="absolute top-0 right-0 z-10 bg-primary text-white text-sm font-medium px-3 py-1">{event.category}</div>
-              
-              <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
-                <h3 className="text-xl font-bold mb-4">{event.title}</h3>
+              {/* Content Section */}
+              <div className="mt-4">
+                <h3 className="text-xl font-bold mb-3 text-gray-900">{event.title}</h3>
                 
-                <div className="flex items-center mb-2">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <div className="flex items-center mb-2 text-gray-600 text-sm">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                   </svg>
                   <span>{event.date}</span>
@@ -124,8 +126,8 @@ const UpcomingEvents = () => {
                   <span>{event.time}</span>
                 </div>
                 
-                <div className="flex items-center mb-4">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <div className="flex items-center mb-4 text-gray-600 text-sm">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                   </svg>
@@ -147,7 +149,7 @@ const UpcomingEvents = () => {
         
         <div className="text-center mt-10">
           <Link href="/acara" 
-            className="inline-block bg-[#ffcb57] hover:bg-[#f06d98] text-black hover:text-white rounded-full px-6 py-3 font-medium transition-colors">
+            className="inline-block bg-[#ffcb57] hover:bg-[#f06d98] text-black hover:!text-white rounded-full px-6 py-3 font-medium transition-colors">
             Lihat Semua Acara
           </Link>
         </div>

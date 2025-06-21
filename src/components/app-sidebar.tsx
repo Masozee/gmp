@@ -2,22 +2,22 @@
 
 import * as React from "react"
 import Image from "next/image"
-import { supabase } from "@/app/lib/supabase"
+import { useRouter } from "next/navigation"
 import {
   BarChartIcon,
-  CameraIcon,
+  BookOpenIcon,
+  CalendarIcon,
   ClipboardListIcon,
   DatabaseIcon,
-  FileCodeIcon,
   FileIcon,
-  FileTextIcon,
-  FolderIcon,
   HelpCircleIcon,
   LayoutDashboardIcon,
-  ListIcon,
   SearchIcon,
   SettingsIcon,
   UsersIcon,
+  FolderIcon,
+  MessageSquareIcon,
+  BriefcaseIcon,
 } from "lucide-react"
 
 import { NavDocuments } from "@/components/nav-documents"
@@ -36,116 +36,85 @@ import {
 
 const data = {
   user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
+    name: "Admin User",
+    email: "admin@partisipasimuda.org",
+    avatar: "/images/logo/logo.png",
   },
   navMain: [
     {
       title: "Dashboard",
-      url: "#",
+      url: "/admin",
       icon: LayoutDashboardIcon,
     },
     {
       title: "Publikasi",
       url: "/admin/publikasi",
-      icon: ListIcon,
+      icon: BookOpenIcon,
     },
     {
       title: "Acara",
-      url: "#",
-      icon: BarChartIcon,
+      url: "/admin/acara",
+      icon: CalendarIcon,
     },
     {
-      title: "Projects",
-      url: "#",
+      title: "Karir",
+      url: "/admin/karir",
+      icon: BriefcaseIcon,
+    },
+    {
+      title: "Program",
+      url: "/admin/program",
       icon: FolderIcon,
+      items: [
+        {
+          title: "Diskusi",
+          url: "/admin/program/diskusi",
+          icon: MessageSquareIcon,
+        },
+      ],
     },
     {
-      title: "Team",
-      url: "#",
+      title: "Pengguna",
+      url: "/admin/users",
       icon: UsersIcon,
     },
-  ],
-  navClouds: [
     {
-      title: "Capture",
-      icon: CameraIcon,
-      isActive: true,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Proposal",
-      icon: FileTextIcon,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Prompts",
-      icon: FileCodeIcon,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
+      title: "Laporan",
+      url: "/admin/reports", 
+      icon: BarChartIcon,
     },
   ],
   navSecondary: [
     {
-      title: "Settings",
-      url: "#",
+      title: "Pengaturan",
+      url: "/admin/settings",
       icon: SettingsIcon,
     },
     {
-      title: "Get Help",
-      url: "#",
+      title: "Bantuan",
+      url: "/admin/help",
       icon: HelpCircleIcon,
     },
     {
-      title: "Search",
-      url: "#",
+      title: "Pencarian",
+      url: "/admin/search",
       icon: SearchIcon,
     },
   ],
   documents: [
     {
       name: "Data Library",
-      url: "#",
+      url: "/admin/data",
       icon: DatabaseIcon,
     },
     {
       name: "Reports",
-      url: "#",
+      url: "/admin/reports",
       icon: ClipboardListIcon,
     },
     {
       name: "Word Assistant",
-      url: "#",
+      url: "/admin/assistant",
       icon: FileIcon,
     },
   ],
@@ -153,18 +122,30 @@ const data = {
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const [user, setUser] = React.useState(data.user);
+  const router = useRouter();
 
+  // Fetch user data from our new authentication system
   React.useEffect(() => {
     async function fetchUserData() {
-      const { data: { user: authUser } } = await supabase.auth.getUser();
-      if (!authUser) return;
-      const { data: dbUser, error } = await supabase
-        .from("users")
-        .select("full_name, email, avatar_url")
-        .eq("id", authUser.id)
-        .single();
-      if (error) console.error("Error fetching user:", error);
-      else setUser({ name: dbUser.full_name, email: dbUser.email, avatar: dbUser.avatar_url });
+      try {
+        const response = await fetch('/api/auth/login', {
+          method: 'GET',
+          credentials: 'include',
+        });
+        
+        if (response.ok) {
+          const userData = await response.json();
+          if (userData.user) {
+            setUser({
+              name: userData.user.name,
+              email: userData.user.email,
+              avatar: "/images/logo/logo.png", // Use logo as avatar for now
+            });
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching user:", error);
+      }
     }
     fetchUserData();
   }, []);
@@ -176,9 +157,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <SidebarMenu>
             <SidebarMenuItem>
               <SidebarMenuButton asChild className="data-[slot=sidebar-menu-button]:!p-1.5">
-                <a href="#" className="flex items-center">
+                <a href="/admin" className="flex items-center">
                   <Image src="/images/logo/logo.png" alt="Logo" width={28} height={28} />
-                  <span className="text-base font-semibold ml-2">Partisipasi Muda</span>
+                  <span className="text-base font-semibold ml-2">Admin Panel</span>
                 </a>
               </SidebarMenuButton>
             </SidebarMenuItem>

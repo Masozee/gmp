@@ -207,7 +207,8 @@ const Footer = () => {
               <p className="text-white">
                 Phone:{" "}
                 <a
-                  href="tel:+6281292310996"
+                  href="https://wa.me/6281292310996"
+                  target="_blank"
                   className="text-white hover:text-primary transition"
                 >
                   +62 812 9231 0996

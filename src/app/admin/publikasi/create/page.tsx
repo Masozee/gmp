@@ -3,220 +3,226 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { ArrowLeft, Save } from "lucide-react";
+import { WysiwygEditor } from "@/components/ui/wysiwyg-editor";
+import { FileUpload } from "@/components/ui/file-upload";
 
-export default function CreatePublicationPage() {
+interface PublikasiData {
+  title: string;
+  slug: string;
+  type: 'riset' | 'artikel' | 'dampak';
+  author: string;
+  date: string;
+  description: string;
+  content: string;
+  image_url: string;
+  pdf_url: string;
+}
+
+export default function CreatePublikasiPage() {
   const router = useRouter();
-  const [formData, setFormData] = useState({
-    id: "", // Usually auto-generated, but schema shows it's a string
-    title: "",
-    slug: "",
-    abstract: "",
-    content: "",
-    publicationdate: new Date().toISOString().split("T")[0], // Default to today's date
-    coverimage: "",
-    imagecredit: "",
-    published: 0, // Default to unpublished
-    categoryid: ""
+  const [isLoading, setIsLoading] = useState(false);
+  const [formData, setFormData] = useState<PublikasiData>({
+    title: '',
+    slug: '',
+    type: 'artikel',
+    author: '',
+    date: new Date().toISOString().split('T')[0],
+    description: '',
+    content: '',
+    image_url: '',
+    pdf_url: '',
   });
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value, type } = e.target;
-    let processedValue = value;
-    
-    // Convert checkbox value to number (0 or 1)
-    if (type === 'checkbox') {
-      const checkbox = e.target as HTMLInputElement;
-      processedValue = checkbox.checked ? "1" : "0";
-    }
-    
+  const generateSlug = (title: string) => {
+    return title
+      .toLowerCase()
+      .replace(/[^a-z0-9\s-]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
+      .trim();
+  };
+
+  const handleTitleChange = (value: string) => {
     setFormData(prev => ({
       ...prev,
-      [name]: processedValue
+      title: value,
+      slug: generateSlug(value)
     }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-    setError(null);
-
-    // Format the date for the API
-    const apiData = {
-      ...formData,
-      publicationdate: new Date(formData.publicationdate).toISOString(),
-      published: parseInt(formData.published.toString(), 10)
-    };
+    setIsLoading(true);
 
     try {
-      const res = await fetch("/api/admin/publikasi", {
-        method: "POST",
+      const response = await fetch('/api/admin/publikasi', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json"
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(apiData)
+        body: JSON.stringify(formData),
       });
 
-      const data = await res.json();
-      
-      if (!res.ok) {
-        throw new Error(data.error || "Failed to create publication");
-      }
-      
-      // Redirect to publications list
-      router.push("/admin/publikasi");
-      router.refresh();
-    } catch (err) {
-      if (err instanceof Error) {
-        setError(err.message);
+      if (response.ok) {
+        router.push('/admin/publikasi');
       } else {
-        setError("An unknown error occurred");
+        const error = await response.json();
+        alert(error.error || 'Gagal membuat publikasi');
       }
+    } catch (error) {
+      console.error('Error creating publikasi:', error);
+      alert('Terjadi kesalahan saat membuat publikasi');
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="container mx-auto py-8">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Create New Publication</h1>
-        <Link href="/admin/publikasi" className="bg-gray-200 text-gray-800 px-4 py-2 rounded hover:bg-gray-300 transition">
-          Cancel
+    <div className="space-y-6">
+      <div className="flex items-center gap-4">
+        <Link href="/admin/publikasi">
+          <Button variant="outline" size="sm">
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Kembali
+          </Button>
         </Link>
+        <div>
+          <h1 className="text-2xl font-bold">Buat Publikasi Baru</h1>
+          <p className="text-muted-foreground">Tambahkan publikasi baru ke dalam sistem</p>
+        </div>
       </div>
 
-      {error && <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">{error}</div>}
+      <Card>
+        <CardHeader>
+          <CardTitle>Informasi Publikasi</CardTitle>
+          <CardDescription>
+            Isi form di bawah untuk membuat publikasi baru
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <Label htmlFor="title">Judul *</Label>
+                <Input
+                  id="title"
+                  value={formData.title}
+                  onChange={(e) => handleTitleChange(e.target.value)}
+                  placeholder="Masukkan judul publikasi"
+                  required
+                />
+              </div>
 
-      <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-md">
-        <div className="grid md:grid-cols-2 gap-6">
-          <div className="mb-4">
-            <label htmlFor="title" className="block text-gray-700 font-medium mb-2">Title*</label>
-            <input
-              type="text"
-              id="title"
-              name="title"
-              value={formData.title}
-              onChange={handleChange}
-              required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
+              <div className="space-y-2">
+                <Label htmlFor="slug">Slug *</Label>
+                <Input
+                  id="slug"
+                  value={formData.slug}
+                  onChange={(e) => setFormData(prev => ({ ...prev, slug: e.target.value }))}
+                  placeholder="url-friendly-slug"
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="space-y-2">
+                <Label htmlFor="type">Jenis Publikasi *</Label>
+                <Select
+                  value={formData.type}
+                  onValueChange={(value: 'riset' | 'artikel' | 'dampak') => 
+                    setFormData(prev => ({ ...prev, type: value }))
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Pilih jenis" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="riset">Riset</SelectItem>
+                    <SelectItem value="artikel">Artikel</SelectItem>
+                    <SelectItem value="dampak">Dampak</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="author">Penulis *</Label>
+                <Input
+                  id="author"
+                  value={formData.author}
+                  onChange={(e) => setFormData(prev => ({ ...prev, author: e.target.value }))}
+                  placeholder="Nama penulis"
+                  required
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="date">Tanggal Publikasi *</Label>
+                <Input
+                  id="date"
+                  type="date"
+                  value={formData.date}
+                  onChange={(e) => setFormData(prev => ({ ...prev, date: e.target.value }))}
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="description">Deskripsi Singkat *</Label>
+              <Input
+                id="description"
+                value={formData.description}
+                onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                placeholder="Deskripsi singkat publikasi"
+                required
+              />
+            </div>
+
+            <WysiwygEditor
+              label="Konten *"
+              value={formData.content}
+              onChange={(value) => setFormData(prev => ({ ...prev, content: value }))}
+              placeholder="Tulis konten publikasi di sini..."
+              height={400}
             />
-          </div>
 
-          <div className="mb-4">
-            <label htmlFor="slug" className="block text-gray-700 font-medium mb-2">Slug*</label>
-            <input
-              type="text"
-              id="slug"
-              name="slug"
-              value={formData.slug}
-              onChange={handleChange}
-              required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
-            />
-          </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <FileUpload
+                type="image"
+                label="Gambar Utama"
+                value={formData.image_url}
+                onChange={(url) => setFormData(prev => ({ ...prev, image_url: url }))}
+              />
 
-          <div className="mb-4">
-            <label htmlFor="publicationdate" className="block text-gray-700 font-medium mb-2">Publication Date*</label>
-            <input
-              type="date"
-              id="publicationdate"
-              name="publicationdate"
-              value={formData.publicationdate}
-              onChange={handleChange}
-              required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
-            />
-          </div>
+              <FileUpload
+                type="pdf"
+                label="File PDF"
+                value={formData.pdf_url}
+                onChange={(url) => setFormData(prev => ({ ...prev, pdf_url: url }))}
+              />
+            </div>
 
-          <div className="mb-4">
-            <label htmlFor="categoryid" className="block text-gray-700 font-medium mb-2">Category ID*</label>
-            <input
-              type="text"
-              id="categoryid"
-              name="categoryid"
-              value={formData.categoryid}
-              onChange={handleChange}
-              required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
-            />
-          </div>
-
-          <div className="mb-4">
-            <label htmlFor="coverimage" className="block text-gray-700 font-medium mb-2">Cover Image URL*</label>
-            <input
-              type="text"
-              id="coverimage"
-              name="coverimage"
-              value={formData.coverimage}
-              onChange={handleChange}
-              required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
-            />
-          </div>
-
-          <div className="mb-4">
-            <label htmlFor="imagecredit" className="block text-gray-700 font-medium mb-2">Image Credit</label>
-            <input
-              type="text"
-              id="imagecredit"
-              name="imagecredit"
-              value={formData.imagecredit}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
-            />
-          </div>
-
-          <div className="mb-4 flex items-center">
-            <input
-              type="checkbox"
-              id="published"
-              name="published"
-              checked={formData.published === 1}
-              onChange={handleChange}
-              className="h-4 w-4 text-pink-600 focus:ring-pink-500 border-gray-300 rounded"
-            />
-            <label htmlFor="published" className="ml-2 block text-gray-700">Published</label>
-          </div>
-        </div>
-
-        <div className="mb-4">
-          <label htmlFor="abstract" className="block text-gray-700 font-medium mb-2">Abstract*</label>
-          <textarea
-            id="abstract"
-            name="abstract"
-            value={formData.abstract}
-            onChange={handleChange}
-            required
-            rows={3}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
-          />
-        </div>
-
-        <div className="mb-6">
-          <label htmlFor="content" className="block text-gray-700 font-medium mb-2">Content*</label>
-          <textarea
-            id="content"
-            name="content"
-            value={formData.content}
-            onChange={handleChange}
-            required
-            rows={10}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500"
-          />
-        </div>
-
-        <div className="text-right">
-          <button
-            type="submit"
-            disabled={loading}
-            className={`bg-pink-600 text-white px-6 py-2 rounded hover:bg-pink-700 transition ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
-          >
-            {loading ? 'Creating...' : 'Create Publication'}
-          </button>
-        </div>
-      </form>
+            <div className="flex justify-end gap-4">
+              <Link href="/admin/publikasi">
+                <Button type="button" variant="outline">
+                  Batal
+                </Button>
+              </Link>
+              <Button type="submit" disabled={isLoading}>
+                <Save className="h-4 w-4 mr-2" />
+                {isLoading ? 'Menyimpan...' : 'Simpan Publikasi'}
+              </Button>
+            </div>
+          </form>
+        </CardContent>
+      </Card>
     </div>
   );
 } 

@@ -2,29 +2,36 @@
 
 import { useEffect, useState, ReactNode } from "react";
 import { useRouter } from "next/navigation";
-import { createBrowserClient } from "@supabase/ssr";
 
 export function ProtectedClientPage({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
+  const [user, setUser] = useState<any>(null);
   const router = useRouter();
   
-  // Check authentication on the client side for additional protection
+  // Check authentication on the client side
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const supabase = createBrowserClient(
-          process.env.NEXT_PUBLIC_SUPABASE_URL || "",
-          process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ""
-        );
+        const response = await fetch('/api/auth/login', {
+          method: 'GET',
+          credentials: 'include',
+        });
         
-        const { data } = await supabase.auth.getSession();
-        
-        if (!data.session) {
+        if (!response.ok) {
           // If no session, redirect to login
           router.replace('/login');
-        } else {
+          return;
+        }
+
+        const data = await response.json();
+        
+        if (data.success && data.user) {
           // If session exists, show content
+          setUser(data.user);
           setIsLoading(false);
+        } else {
+          // If no valid session, redirect to login
+          router.replace('/login');
         }
       } catch (error) {
         console.error("Authentication error:", error);
@@ -35,7 +42,7 @@ export function ProtectedClientPage({ children }: { children: ReactNode }) {
     checkAuth();
   }, [router]);
   
-  // Show nothing while checking authentication
+  // Show loading while checking authentication
   if (isLoading) {
     return (
       <div className="flex h-screen w-full items-center justify-center">
@@ -44,6 +51,6 @@ export function ProtectedClientPage({ children }: { children: ReactNode }) {
     );
   }
   
-  // If not loading, we have a session, so show the protected content
+  // If not loading and we have a user, show the protected content
   return <>{children}</>;
 } 
