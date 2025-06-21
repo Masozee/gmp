@@ -3,9 +3,9 @@ import fs from 'fs';
 import path from 'path';
 
 interface Params {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }
 
 interface Event {
@@ -31,7 +31,8 @@ interface Event {
 export async function GET(request: NextRequest, { params }: Params) {
   try {
     // Handle async params
-    const slug = await Promise.resolve(params.slug);
+    const resolvedParams = await params;
+    const slug = resolvedParams.slug;
     
     // Read the events data from the JSON file
     const filePath = path.join(process.cwd(), 'src', 'data', 'events.json');

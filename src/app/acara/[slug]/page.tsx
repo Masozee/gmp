@@ -35,9 +35,9 @@ interface RegistrationFormData {
 }
 
 interface PageProps {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }
 
 // Create a custom hook to fetch event data
@@ -75,8 +75,9 @@ function useEvent(eventSlug: string) {
 }
 
 export default function EventDetailPage({ params }: PageProps) {
-  // Extract the slug from params and use it directly - this avoids the async params issue
-  const eventSlug = params.slug;
+  // Extract the slug from params using React.use() for Next.js 15 compatibility
+  const resolvedParams = React.use(params);
+  const eventSlug = resolvedParams.slug;
   
   // Use our custom hook for fetching event data
   const { event, isLoading } = useEvent(eventSlug);
