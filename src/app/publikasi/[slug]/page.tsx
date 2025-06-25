@@ -5,6 +5,7 @@ import Link from 'next/link'; // Import Link for related publications
 import publicationsData from '@/data/publikasi.json'; // Rename import for clarity
 import { slugify, parseIndonesianDate } from '@/lib/utils';
 import type { Metadata /*, ResolvingMetadata*/ } from 'next';
+import PublicationClientComponent from './PublicationClientComponent';
 
 // Define a type for the publication data
 interface Publication {
@@ -30,6 +31,44 @@ interface PageProps {
 // Find publication by slug
 function getPublicationBySlug(slug: string): Publication | undefined {
   return publications.find((pub) => slugify(pub.title) === slug);
+}
+
+// Format date to DD MMMM YYYY format
+function formatPublicationDate(dateString: string): string {
+  if (!dateString) return '';
+  
+  // Indonesian month names
+  const indonesianMonths: { [key: number]: string } = {
+    0: 'Januari', 1: 'Februari', 2: 'Maret', 3: 'April',
+    4: 'Mei', 5: 'Juni', 6: 'Juli', 7: 'Agustus',
+    8: 'September', 9: 'Oktober', 10: 'November', 11: 'Desember'
+  };
+  
+  let date: Date;
+  
+  // Handle DD/MM/YYYY format
+  if (dateString.includes('/')) {
+    const parts = dateString.split('/');
+    const day = parseInt(parts[0], 10);
+    const month = parseInt(parts[1], 10);
+    const year = parseInt(parts[2], 10);
+    date = new Date(year, month - 1, day); // Month is 0-indexed in JS Date
+  } else {
+    // Fallback to default parsing
+    date = new Date(dateString);
+  }
+  
+  // Check if date is valid
+  if (isNaN(date.getTime())) {
+    return dateString; // Return original if parsing fails
+  }
+  
+  // Format as "05 Juni 2025" style
+  const day = date.getDate().toString().padStart(2, '0');
+  const month = indonesianMonths[date.getMonth()];
+  const year = date.getFullYear();
+  
+  return `${day} ${month} ${year}`;
 }
 
 // Generate static paths for all publications
@@ -117,22 +156,10 @@ export default async function PublicationDetailPage({ params }: PageProps) {
   return (
     <>
       {/* Hero Section */}
-      <section className="relative py-32 text-center bg-green-500 text-white">
-        {publication.image && (
-          <div className="absolute inset-0 w-full h-full">
-            <Image
-              src={publication.image}
-              alt={publication.title}
-              fill
-              className="object-cover object-center opacity-60"
-              priority
-            />
-            <div className="absolute inset-0 bg-green-500 opacity-80"></div>
-          </div>
-        )}
-        <div className="relative container mx-auto px-4 z-10 flex flex-col items-center justify-center max-w-7xl">
-          <h1 className="mb-4 text-3xl font-bold md:text-4xl lg:text-5xl drop-shadow-lg !text-white" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>{publication.title}</h1>
-          <p className="mb-6 text-lg !text-white">{publication.date}</p>
+      <section className="py-32 text-center text-white" style={{backgroundColor: 'var(--success)'}}>
+        <div className="container mx-auto px-4 flex flex-col items-center justify-center max-w-7xl">
+          <h1 className="mb-4 text-3xl font-bold md:text-4xl lg:text-5xl !text-white" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>{publication.title}</h1>
+          <p className="mb-6 text-lg !text-white">{formatPublicationDate(publication.date)}</p>
         </div>
       </section>
 
@@ -156,18 +183,10 @@ export default async function PublicationDetailPage({ params }: PageProps) {
             {cleanAndFormatPublicationContent(publication.content, publication.title, publication.date)}
           </div>
 
-          {publication.pdf_url && (
-            <div className="not-prose mt-8 flex justify-center">
-              <a
-                href={publication.pdf_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-block rounded bg-green-600 px-4 py-2 font-semibold text-white no-underline hover:bg-green-700"
-              >
-                Download PDF
-              </a>
-            </div>
-          )}
+          <PublicationClientComponent 
+            publication={publication} 
+            currentSlug={currentSlug} 
+          />
 
           <div className="mt-12 text-center">
             <Link href="/publikasi" className="text-green-600 hover:underline">
@@ -188,10 +207,9 @@ export default async function PublicationDetailPage({ params }: PageProps) {
               {relatedPublications.map((relatedPub) => {
                 const relatedSlug = slugify(relatedPub.title);
                 return (
-                  <Link 
+                  <div 
                     key={relatedSlug} 
-                    href={`/publikasi/${relatedSlug}`} 
-                    className="block overflow-hidden rounded-2xl shadow-lg bg-[#f06d98] transition-all duration-300 hover:bg-[#ffe066] hover:shadow-xl hover:-translate-y-1 active:bg-[#ffe066] focus:bg-[#ffe066] group"
+                    className="flex flex-col overflow-hidden rounded-2xl shadow-lg bg-[#f06d98] transition-all duration-300 hover:bg-[#ffe066] hover:shadow-xl hover:-translate-y-1 active:bg-[#ffe066] focus:bg-[#ffe066] group"
                   >
                     <div className="relative h-48 w-full overflow-hidden">
                       {relatedPub.image ? (
@@ -209,36 +227,44 @@ export default async function PublicationDetailPage({ params }: PageProps) {
                         </div>
                       )}
                     </div>
-                    <div className="p-4">
-                      <span className="mb-1 inline-block rounded bg-[#ffe066] px-2 py-0.5 text-xs font-medium text-black group-hover:bg-[#f06d98] group-hover:text-white">
+                    <div className="p-4 flex flex-col h-full">
+                      {/* Category first */}
+                      <span className="mb-2 inline-block rounded bg-[#ffe066] px-2 py-1 text-xs font-medium text-black group-hover:bg-[#f06d98] group-hover:text-white w-fit">
                         {relatedPub.type.charAt(0).toUpperCase() + relatedPub.type.slice(1)}
                       </span>
-                      <div className="mb-1 text-xs text-white group-hover:text-black">
-                        <span className="inline-flex items-center">
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                          </svg>
-                          {relatedPub.count} kali dilihat
-                        </span>
-                      </div>
-                      <h3 className="mb-2 line-clamp-2 text-lg font-semibold text-white group-hover:text-black" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>
-                        {relatedPub.title}
-                      </h3>
-                      <p className="mb-3 text-sm text-white line-clamp-3 group-hover:text-black">
+                      
+                      {/* Title second (as a link) */}
+                      <Link href={`/publikasi/${relatedSlug}`}>
+                        <h3 className="mb-3 text-lg font-semibold text-white group-hover:text-black hover:underline" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>
+                          {relatedPub.title}
+                        </h3>
+                      </Link>
+                      
+                      {/* Content snippet - takes remaining space */}
+                      <p className="mb-4 text-sm text-white line-clamp-3 group-hover:text-black flex-grow">
                         {relatedPub.content.substring(0, 150)}...
                       </p>
-                      <div className="flex justify-between items-center">
-                        <p className="text-xs text-white group-hover:text-black">{relatedPub.date}</p>
-                        <span className="text-sm font-semibold text-white flex items-center group-hover:underline group-hover:text-black">
-                          Lebih lanjut
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                          </svg>
-                        </span>
+                      
+                      {/* Date and view count at bottom - always at bottom */}
+                      <div className="mt-auto pt-3 border-t border-white/20 group-hover:border-black/20">
+                        <div className="flex justify-between items-center text-xs">
+                          {/* Date - formatted as dd/mmmm/yyyy */}
+                          <p className="text-white group-hover:text-white">{formatPublicationDate(relatedPub.date)}</p>
+                          
+                          {/* View counter */}
+                          <div>
+                            <span className="inline-flex items-center text-white group-hover:text-white">
+                              <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-1 text-white group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                              </svg>
+                              {relatedPub.count} kali dilihat
+                            </span>
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  </Link>
+                  </div>
                 );
               })}
             </div>

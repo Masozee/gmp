@@ -5,6 +5,7 @@ import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useVisitorTracking } from '@/hooks/use-visitor-tracking';
 
 interface Event {
   id: number;
@@ -70,6 +71,14 @@ export default function EventDetailPage({ params }: PageProps) {
   
   // Use our custom hook for fetching event data
   const { event, isLoading } = useEvent(eventSlug);
+
+  // Use visitor tracking hook
+  useVisitorTracking({
+    contentType: 'acara',
+    contentId: eventSlug,
+    contentTitle: event?.title || '',
+    enabled: !!event && !isLoading
+  });
   
 
   
@@ -129,7 +138,7 @@ export default function EventDetailPage({ params }: PageProps) {
   return (
     <main className="min-h-screen bg-gray-50">
       {/* Header Section */}
-      <header className="bg-[#f06d98] py-32 text-white shadow-lg">
+      <header className="py-32 text-white shadow-lg" style={{backgroundColor: 'var(--secondary)'}}>
         <div className="container mx-auto px-4 max-w-7xl text-center">
           <nav className="mb-4 text-sm text-pink-200 justify-center flex space-x-2">
             <Link href="/" className="hover:underline !text-white">Beranda</Link>
@@ -224,11 +233,7 @@ export default function EventDetailPage({ params }: PageProps) {
             {/* Registration Info */}
             <div className="bg-gray-50 p-6 rounded-lg border border-gray-200 mb-6 w-full">
               <h3 className="text-xl font-semibold mb-4 text-gray-800">Pendaftaran</h3>
-              <div className="mb-4">
-                <p className="text-center text-gray-700 mb-4">
-                  Acara ini gratis dan terbuka untuk umum
-                </p>
-              </div>
+              
               <a
                 href={event.registrationLink}
                 target="_blank"

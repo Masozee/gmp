@@ -115,8 +115,8 @@ export function DashboardChart() {
                       style={{ width: `${maxValue > 0 ? (data.events / maxValue) * 100 : 0}%` }}
                     ></div>
                     <div 
-                      className="bg-green-500 transition-all duration-300"
-                      style={{ width: `${maxValue > 0 ? (data.publications / maxValue) * 100 : 0}%` }}
+                      className="transition-all duration-300"
+                      style={{backgroundColor: 'var(--success)', width: `${maxValue > 0 ? (data.publications / maxValue) * 100 : 0}%`}}
                     ></div>
                     <div 
                       className="bg-purple-500 transition-all duration-300"
@@ -142,7 +142,7 @@ export function DashboardChart() {
               <span>Acara</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+              <div className="w-3 h-3 rounded-full" style={{backgroundColor: 'var(--success)'}}></div>
               <span>Publikasi</span>
             </div>
             <div className="flex items-center gap-2">

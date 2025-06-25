@@ -93,7 +93,7 @@ export default function PublicationsPage() {
   return (
     <>
       {/* Hero Section */}
-      <section className="bg-green-500 py-32 text-white">
+      <section className="py-32 text-white" style={{backgroundColor: 'var(--success)'}}>
         <div className="container mx-auto max-w-7xl px-4 text-center">
           <h1 className="mb-4 text-4xl font-bold md:text-5xl" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>
             Our Publications
@@ -113,7 +113,8 @@ export default function PublicationsPage() {
             <select
               value={activeFilter}
               onChange={(e) => setActiveFilter(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent bg-white cursor-pointer"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:border-transparent bg-white cursor-pointer"
+              style={{'--tw-ring-color': 'var(--success)'} as React.CSSProperties}
             >
               {filterOptions.map((option) => (
                 <option key={option.value} value={option.value}>
@@ -135,7 +136,8 @@ export default function PublicationsPage() {
               placeholder="Search publications..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent"
+              style={{'--tw-ring-color': 'var(--success)'} as React.CSSProperties}
             />
             <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">

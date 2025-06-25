@@ -18,35 +18,44 @@ interface Event {
   registrationLink: string;
 }
 
-const UpcomingEvents = () => {
+interface UpcomingEventsProps {
+  events?: Event[];
+}
+
+const UpcomingEvents = ({ events: propEvents }: UpcomingEventsProps) => {
   const [events, setEvents] = useState<Event[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   
   useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        const response = await fetch('/api/events');
-        if (!response.ok) throw new Error('Failed to fetch events');
-        const data = await response.json();
-        
-        // Sort events by date (assuming the date format is "DD Month YYYY")
-        const sortedEvents = [...data].sort((a, b) => {
-          const dateA = parseIndonesianDate(a.date);
-          const dateB = parseIndonesianDate(b.date);
-          return dateA && dateB ? dateA.getTime() - dateB.getTime() : 0;
-        });
-        
-        setEvents(sortedEvents.slice(0, 3)); // Get only 3 nearest events
-      } catch (error) {
-        console.error('Error fetching events:', error);
-        setEvents([]);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    
-    fetchEvents();
-  }, []);
+    if (propEvents && propEvents.length > 0) {
+      setEvents(propEvents);
+      setIsLoading(false);
+    } else {
+      const fetchEvents = async () => {
+        try {
+          const response = await fetch('/api/events');
+          if (!response.ok) throw new Error('Failed to fetch events');
+          const data = await response.json();
+          
+          // Sort events by date (assuming the date format is "DD Month YYYY")
+          const sortedEvents = [...data].sort((a, b) => {
+            const dateA = parseIndonesianDate(a.date);
+            const dateB = parseIndonesianDate(b.date);
+            return dateA && dateB ? dateA.getTime() - dateB.getTime() : 0;
+          });
+          
+          setEvents(sortedEvents.slice(0, 3)); // Get only 3 nearest events
+        } catch (error) {
+          console.error('Error fetching events:', error);
+          setEvents([]);
+        } finally {
+          setIsLoading(false);
+        }
+      };
+      
+      fetchEvents();
+    }
+  }, [propEvents]);
   
   // Helper function to parse Indonesian dates
   const parseIndonesianDate = (dateString: string): Date | null => {
@@ -140,7 +149,7 @@ const UpcomingEvents = () => {
                 
                 <div className="mt-4">
                   <Link href={`/acara/${event.slug}`}
-                    className="inline-block w-full text-center py-2 px-4 rounded-full font-medium transition-all hover:bg-[#f06d98] hover:text-white bg-[#ffcb57] text-black">
+                    className="inline-block w-full text-center py-2 px-4 rounded-full font-medium transition-all hover:bg-[#f06d98] hover:text-white bg-[#ffcb57] text-white">
                     Lebih lanjut
                   </Link>
                 </div>
@@ -151,7 +160,7 @@ const UpcomingEvents = () => {
         
         <div className="text-center mt-10">
           <Link href="/acara" 
-            className="inline-block bg-[#ffcb57] hover:bg-[#f06d98] text-black hover:!text-white rounded-full px-6 py-3 font-medium transition-colors">
+            className="inline-block bg-[#ffcb57] hover:bg-[#f06d98] text-white hover:!text-white rounded-full px-6 py-3 font-medium transition-colors">
             Lihat Semua Acara
           </Link>
         </div>

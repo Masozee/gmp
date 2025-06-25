@@ -1,14 +1,14 @@
 'use client'; // Need client component for state
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import publicationsData from '@/data/publikasi.json';
 import { slugify } from '@/lib/utils';
 import { Button } from '@/components/ui/button'; // Assuming shadcn/ui Button
 
 // Define type (can be shared or redefined here)
 interface Publication {
+  id: number;
   title: string;
   url: string;
   date: string;
@@ -16,10 +16,10 @@ interface Publication {
   image: string | null;
   type: string; // Used for filtering
   pdf_url: string | null;
+  author: string;
+  order: number;
   content: string;
 }
-
-const publications: Publication[] = publicationsData as Publication[];
 
 // Helper function to format dates as "05 Juni 2025" style
 function formatPublicationDate(dateString: string): string {
@@ -70,6 +70,8 @@ function formatPublicationDate(dateString: string): string {
 export default function PublikasiPage() {
   const [activeFilter, setActiveFilter] = useState('all'); // 'all', 'article', 'survey'
   const [searchQuery, setSearchQuery] = useState('');
+  const [publications, setPublications] = useState<Publication[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const filterOptions = [
     { label: 'Semua', value: 'all' },
@@ -78,7 +80,28 @@ export default function PublikasiPage() {
     { label: 'Dampak', value: 'dampak' },
   ];
 
-  const filteredPublications = publications.filter((pub) => {
+  // Fetch publications from API
+  useEffect(() => {
+    const fetchPublications = async () => {
+      try {
+        const response = await fetch('/api/publikasi');
+        if (!response.ok) {
+          throw new Error('Failed to fetch publications');
+        }
+        const data = await response.json();
+        setPublications(data);
+      } catch (error) {
+        console.error('Error fetching publications:', error);
+        setPublications([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPublications();
+  }, []);
+
+  const filteredPublications = publications.filter((pub: Publication) => {
     // Filter by type
     const typeMatch = activeFilter === 'all' || pub.type.toLowerCase() === activeFilter;
     
@@ -93,7 +116,7 @@ export default function PublikasiPage() {
   return (
     <>
       {/* Hero Section */}
-      <section className="bg-green-500 py-32 text-white">
+      <section className="py-32 text-white" style={{backgroundColor: 'var(--success)'}}>
         <div className="container mx-auto max-w-7xl px-4 text-center">
           <h1 className="mb-4 text-4xl font-bold md:text-5xl !text-white" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>
             Publikasi Kami
@@ -113,7 +136,8 @@ export default function PublikasiPage() {
             <select
               value={activeFilter}
               onChange={(e) => setActiveFilter(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent bg-white cursor-pointer"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg appearance-none focus:outline-none focus:ring-2 focus:border-transparent bg-white cursor-pointer"
+              style={{'--tw-ring-color': 'var(--success)'} as React.CSSProperties}
             >
               {filterOptions.map((option) => (
                 <option key={option.value} value={option.value}>
@@ -135,7 +159,8 @@ export default function PublikasiPage() {
               placeholder="Cari publikasi..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:border-transparent"
+              style={{'--tw-ring-color': 'var(--success)'} as React.CSSProperties}
             />
             <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -147,13 +172,30 @@ export default function PublikasiPage() {
 
         {/* Publication Grid */}
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {filteredPublications.length > 0 ? (
-            filteredPublications.map((pub) => {
+          {loading ? (
+            // Loading skeleton
+            Array.from({ length: 6 }).map((_, index) => (
+              <div key={index} className="block overflow-hidden rounded-2xl shadow-lg bg-gray-200 animate-pulse">
+                <div className="h-48 w-full bg-gray-300"></div>
+                <div className="p-4">
+                  <div className="h-4 bg-gray-300 rounded mb-2 w-16"></div>
+                  <div className="h-6 bg-gray-300 rounded mb-3 w-full"></div>
+                  <div className="h-4 bg-gray-300 rounded mb-1 w-full"></div>
+                  <div className="h-4 bg-gray-300 rounded mb-3 w-3/4"></div>
+                  <div className="flex justify-between items-center">
+                    <div className="h-3 bg-gray-300 rounded w-20"></div>
+                    <div className="h-3 bg-gray-300 rounded w-24"></div>
+                  </div>
+                </div>
+              </div>
+            ))
+          ) : filteredPublications.length > 0 ? (
+            filteredPublications.map((pub: Publication) => {
               const slug = slugify(pub.title);
               return (
                 <div 
                   key={slug} 
-                  className="block overflow-hidden rounded-2xl shadow-lg bg-[#f06d98] transition-all duration-300 hover:bg-[#ffe066] hover:shadow-xl hover:-translate-y-1 active:bg-[#ffe066] focus:bg-[#ffe066] group"
+                  className="flex flex-col overflow-hidden rounded-2xl shadow-lg bg-[#f06d98] transition-all duration-300 hover:bg-[#ffe066] hover:shadow-xl hover:-translate-y-1 active:bg-[#ffe066] focus:bg-[#ffe066] group"
                 >
                   <div className="relative h-48 w-full overflow-hidden">
                     {pub.image ? (
@@ -171,37 +213,40 @@ export default function PublikasiPage() {
                       </div>
                     )}
                   </div>
-                  <div className="p-4">
+                  <div className="p-4 flex flex-col h-full">
                     {/* Category first */}
-                    <span className="mb-2 inline-block rounded bg-[#ffe066] px-2 py-0.5 text-xs font-medium text-black group-hover:bg-[#f06d98] group-hover:text-white">
+                    <span className="mb-2 inline-block rounded bg-[#ffe066] px-2 py-1 text-xs font-medium text-black group-hover:bg-[#f06d98] group-hover:text-white w-fit">
                       {pub.type.charAt(0).toUpperCase() + pub.type.slice(1)}
                     </span>
                     
-                    {/* Title second (as a link) - removed line-clamp-2 to show full title */}
+                    {/* Title second (as a link) */}
                     <Link href={`/publikasi/${slug}`}>
                       <h2 className="mb-3 text-lg font-semibold text-white group-hover:text-black hover:underline" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>
                         {pub.title}
                       </h2>
                     </Link>
                     
-                    {/* Content snippet */}
-                    <p className="mb-3 text-sm text-white line-clamp-3 group-hover:text-black">
+                    {/* Content snippet - takes remaining space */}
+                    <p className="mb-4 text-sm text-white line-clamp-3 group-hover:text-black flex-grow">
                       {pub.content.substring(0, 150)}...
                     </p>
                     
-                    <div className="flex justify-between items-center">
-                      {/* Date third - formatted as dd/mmmm/yyyy */}
-                      <p className="text-xs text-white group-hover:text-black">{formatPublicationDate(pub.date)}</p>
-                      
-                      {/* View counter fourth */}
-                      <div className="text-xs text-white group-hover:text-black">
-                        <span className="inline-flex items-center">
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                          </svg>
-                          {pub.count} kali dilihat
-                        </span>
+                    {/* Date and view count at bottom - always at bottom */}
+                    <div className="mt-auto pt-3 border-t border-white/20 group-hover:border-black/20">
+                      <div className="flex justify-between items-center text-xs">
+                        {/* Date - formatted as dd/mmmm/yyyy */}
+                        <p className="text-white group-hover:text-white">{formatPublicationDate(pub.date)}</p>
+                        
+                        {/* View counter */}
+                        <div>
+                          <span className="inline-flex items-center text-white group-hover:text-white">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-1 text-white group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                            </svg>
+                            {pub.count} kali dilihat
+                          </span>
+                        </div>
                       </div>
                     </div>
                   </div>

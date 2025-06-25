@@ -98,7 +98,7 @@ export default function AcaraPage() {
   if (isLoading) {
     return (
       <main className="min-h-screen bg-gray-50">
-        <header className="bg-blue-500 py-10 text-white">
+        <header className="py-10 text-white" style={{backgroundColor: 'var(--secondary)'}}>
         <div className="container mx-auto px-4 max-w-7xl">
             <h1 className="text-4xl md:text-5xl font-heading font-bold text-center" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>Acara & Kegiatan</h1>
           </div>
@@ -120,7 +120,7 @@ export default function AcaraPage() {
   return (
     <main className="min-h-screen bg-gray-50">
       {/* Header Section */}
-      <header className="bg-blue-500 py-32 text-white shadow-lg">
+      <header className="py-32 text-white shadow-lg" style={{backgroundColor: 'var(--secondary)'}}>
         <div className="container mx-auto px-4 max-w-7xl text-center">
           <h1 className="text-4xl md:text-5xl font-heading font-bold mb-4 !text-white" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>
             Acara & Kegiatan

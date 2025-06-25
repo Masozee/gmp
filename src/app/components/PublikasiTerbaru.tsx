@@ -112,7 +112,7 @@ const PublikasiTerbaru = ({ publikasi }: PublikasiTerbaruProps) => {
                   </span>
                 </div>
                 <h3 className="text-xl font-bold mb-2 text-white group-hover:text-black group-active:text-black group-focus:text-black">{item.title}</h3>
-                <button className="mt-3 px-4 py-2 rounded-full bg-[#ffe066] text-black font-medium group-hover:bg-[#f06d98] group-hover:text-white transition-colors duration-300">
+                <button className="mt-3 px-4 py-2 rounded-full bg-[#ffe066] text-white font-medium group-hover:bg-[#f06d98] group-hover:text-white transition-colors duration-300">
                   Selengkapnya
                 </button>
               </div>
@@ -122,7 +122,7 @@ const PublikasiTerbaru = ({ publikasi }: PublikasiTerbaruProps) => {
         
         <div className="text-center mt-10">
           <Link href="/publikasi" 
-            className="inline-block bg-[#ffe066] hover:bg-[#f06d98] text-black hover:text-white rounded-full px-6 py-3 font-medium transition-colors">
+            className="inline-block bg-[#ffe066] hover:bg-[#f06d98] text-white hover:text-white rounded-full px-6 py-3 font-medium transition-colors">
             Lihat Semua Publikasi
           </Link>
         </div>
