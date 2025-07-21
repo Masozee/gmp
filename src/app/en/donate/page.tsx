@@ -10,12 +10,12 @@ const DonatePage = () => {
   return (
     <>
       {/* Hero Section */}
-      <section className="bg-green-600 py-32 text-white">
+      <section className="bg-success py-32 !text-white">
         <div className="container mx-auto max-w-7xl px-4 text-center">
-          <h1 className="mb-4 text-4xl font-bold md:text-5xl">
+          <h1 className="mb-4 text-4xl font-bold md:text-5xl !text-white">
             Donate & Collaborate
           </h1>
-          <p className="text-lg text-green-100">
+          <p className="text-lg !text-white">
             Let's work together to build a better political future for Indonesia.
           </p>
         </div>

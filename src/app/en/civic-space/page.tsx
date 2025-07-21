@@ -83,4 +83,4 @@ const CivicSpacePage = () => {
   );
 };
 
-export default CivicSpacePage; 
+export default CivicSpacePage;

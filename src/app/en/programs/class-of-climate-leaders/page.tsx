@@ -46,12 +46,12 @@ const ClassOfClimateLeadersPage = () => {
   return (
     <>
       {/* Hero Section */}
-      <section className="relative py-32 text-center bg-primary text-black">
+      <section className="relative py-32 text-center text-black" style={{ backgroundColor: '#59caf5' }}>
         <div className="relative container mx-auto px-4 z-10">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 !text-white" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>
             Class of Climate Leaders
           </h1>
-          <p className="text-lg md:text-xl text-gray-800 max-w-3xl mx-auto mb-8">
+          <p className="text-lg md:text-xl max-w-3xl mx-auto mb-8 !text-white">
             An exclusive climate leadership bootcamp for the best participants of Academia Politica, preparing them to become agents of change in their communities. 🌱🌍
           </p>
           <div className="flex flex-wrap justify-center gap-3 mt-6">

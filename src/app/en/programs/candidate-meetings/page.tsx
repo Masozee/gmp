@@ -9,11 +9,12 @@ const CandidateMeetingsPage = () => {
     <>
       {/* Hero Section */}
       <section 
-        className="relative py-32 text-center bg-primary text-black"
+        className="relative py-32 text-center text-black"
+        style={{ backgroundColor: '#59caf5' }}
       >
         <div className="relative container mx-auto px-4 z-10">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>{pageTitle}</h1>
-          <p className="text-lg md:text-xl text-gray-800 max-w-3xl mx-auto">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 !text-white" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>{pageTitle}</h1>
+          <p className="text-lg md:text-xl max-w-3xl mx-auto !text-white">
             Empowering Indonesian youth in regions vulnerable to climate change with a safe democratic space to voice their concerns to Regional Head candidates in local and general elections.
           </p>
           

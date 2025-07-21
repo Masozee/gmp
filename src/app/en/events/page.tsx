@@ -122,12 +122,12 @@ export default function EventsPage() {
   return (
     <main className="min-h-screen bg-gray-50">
       {/* Header Section */}
-      <header className="bg-blue-500 py-32 text-white shadow-lg">
+      <header className="py-32 text-white shadow-lg" style={{backgroundColor: 'var(--secondary)'}}>
         <div className="container mx-auto px-4 max-w-7xl text-center">
-          <h1 className="text-4xl md:text-5xl font-heading font-bold mb-4" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>
+          <h1 className="text-4xl md:text-5xl font-heading font-bold mb-4 !text-white" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>
             Events & Activities
           </h1>
-          <p className="text-lg text-white max-w-3xl mx-auto">
+          <p className="text-lg !text-white max-w-3xl mx-auto">
             Discover various exciting events from Partisipasi Muda to enhance youth capacity and political engagement.
           </p>
         </div>

@@ -8,11 +8,12 @@ const CouncilGenZPage = () => {
     <>
       {/* Hero Section */}
       <section 
-        className="relative py-32 text-center bg-primary text-black"
+        className="relative py-32 text-center text-black"
+        style={{ backgroundColor: '#59caf5' }}
       >
         <div className="relative container mx-auto px-4 z-10">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>{pageTitle}</h1>
-          <p className="text-lg md:text-xl text-[rgb(41,56,87/90%)] max-w-3xl mx-auto mb-6">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 !text-white" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>{pageTitle}</h1>
+          <p className="text-lg md:text-xl max-w-3xl mx-auto mb-6 !text-white">
             Young People's Aspirational Space on Climate Crisis for Prabowo-Gibran
           </p>
         </div>
