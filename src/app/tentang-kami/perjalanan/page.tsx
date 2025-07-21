@@ -59,12 +59,12 @@ const PerjalananPage = () => {
       </section>
 
       {/* Two-column layout: left for timeline, right for text */}
-      <div className="container mx-auto px-4 max-w-7xl py-16 flex flex-col md:flex-row gap-12">
-        {/* Left: Scrollable Timeline */}
-        <div className="md:w-2/3 w-full max-h-[80vh] overflow-y-auto pr-2">
+      <div className="container mx-auto px-4 max-w-7xl py-16 flex flex-col md:flex-row gap-12 min-h-screen">
+        {/* Left: Full Height Timeline */}
+        <div className="md:w-1/2 w-full pr-2">
           <div className="relative">
             {/* Vertical line with accent */}
-            <div className="absolute left-1/2 top-0 w-1 bg-gradient-to-b from-pink-400 via-yellow-300 to-pink-400 h-full -translate-x-1/2 z-0" />
+            <div className="absolute left-1/2 top-0 w-1 bg-gradient-to-b from-pink-400 via-pink-600 to-pink-400 h-full -translate-x-1/2 z-0" />
             <div className="flex flex-col gap-24 relative z-10">
               {timelineData.map((item, index) => (
                 <div
@@ -72,18 +72,18 @@ const PerjalananPage = () => {
                   className="flex justify-center relative group animate-fadeInUp"
                 >
                   {/* Timeline Dot removed */}
-                  {/* Single Card with Image and Description - Pink background with yellow hover */}
-                  <div className="bg-[#f06d98] hover:bg-[#ffcb57] rounded-2xl p-0 shadow-xl border border-pink-200 hover:border-yellow-300 w-full max-w-2xl transition-all duration-300 ease-in-out">
+                  {/* Single Card with Image and Description - Pink background with darker pink hover */}
+                  <div className="bg-[#f06d98] hover:bg-[#d63384] rounded-2xl p-0 shadow-xl border border-pink-200 hover:border-pink-400 w-full max-w-2xl transition-all duration-300 ease-in-out">
                     <Image
                       src={item.imageSrc}
                       alt={`Perjalanan ${item.year}`}
                       width={640}
                       height={320}
-                      className="rounded-t-2xl object-cover w-full h-56 md:h-72 border-b border-pink-200 group-hover:border-yellow-300"
+                      className="rounded-t-2xl object-cover w-full h-56 md:h-72 border-b border-pink-200 group-hover:border-pink-400"
                     />
                     <div className="p-8">
-                      <h3 className="font-extrabold text-2xl mb-3 text-white group-hover:text-black tracking-tight drop-shadow-sm transition-colors duration-300" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>{item.year}</h3>
-                      <p className="text-lg text-white group-hover:text-black leading-relaxed font-medium transition-colors duration-300">
+                      <h3 className="font-extrabold text-2xl mb-3 !text-white tracking-tight drop-shadow-sm transition-colors duration-300" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>{item.year}</h3>
+                      <p className="text-lg !text-white leading-relaxed font-medium transition-colors duration-300">
                         {item.description}
                       </p>
                     </div>
@@ -94,7 +94,7 @@ const PerjalananPage = () => {
           </div>
         </div>
         {/* Right: Section Title and Description (sticky on desktop) */}
-        <div className="md:w-1/3 w-full md:sticky md:top-32 h-fit flex flex-col justify-start space-y-6">
+        <div className="md:w-1/2 w-full md:sticky md:top-24 md:self-start h-fit flex flex-col justify-start space-y-6">
           <h2 className="text-2xl font-bold text-gray-800">Semua bermula dari sebuah pertanyaan:</h2>
           <p className="text-xl italic font-medium text-pink-500">
             Bagaimana jika politik bisa terasa lebih manusiawi?

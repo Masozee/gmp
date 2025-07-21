@@ -1,126 +1,126 @@
 [
   {
     "Variable": "age",
-    "Question_Label": "",
-    "Category": 18,
+    "Question_Label": null,
+    "Category": "18",
     "Frequency": 54,
     "Percentage": "10,7"
   },
   {
     "Variable": "age",
-    "Question_Label": "",
-    "Category": 19,
+    "Question_Label": null,
+    "Category": "19",
     "Frequency": 60,
     "Percentage": "11,9"
   },
   {
     "Variable": "age",
-    "Question_Label": "",
-    "Category": 20,
+    "Question_Label": null,
+    "Category": "20",
     "Frequency": 60,
     "Percentage": "11,9"
   },
   {
     "Variable": "age",
-    "Question_Label": "",
-    "Category": 21,
+    "Question_Label": null,
+    "Category": "21",
     "Frequency": 58,
     "Percentage": "11,5"
   },
   {
     "Variable": "age",
-    "Question_Label": "",
-    "Category": 22,
+    "Question_Label": null,
+    "Category": "22",
     "Frequency": 55,
     "Percentage": "10,9"
   },
   {
     "Variable": "age",
-    "Question_Label": "",
-    "Category": 23,
+    "Question_Label": null,
+    "Category": "23",
     "Frequency": 77,
     "Percentage": "15,2"
   },
   {
     "Variable": "age",
-    "Question_Label": "",
-    "Category": 24,
+    "Question_Label": null,
+    "Category": "24",
     "Frequency": 58,
     "Percentage": "11,5"
   },
   {
     "Variable": "age",
-    "Question_Label": "",
-    "Category": 25,
+    "Question_Label": null,
+    "Category": "25",
     "Frequency": 83,
     "Percentage": "16,4"
   },
   {
     "Variable": "age",
-    "Question_Label": "",
+    "Question_Label": null,
     "Category": "NA",
     "Frequency": 0,
     "Percentage": 0
   },
   {
     "Variable": "region_live",
-    "Question_Label": "",
+    "Question_Label": null,
     "Category": "Central",
     "Frequency": 63,
     "Percentage": "12,5"
   },
   {
     "Variable": "region_live",
-    "Question_Label": "",
+    "Question_Label": null,
     "Category": "East",
     "Frequency": 144,
     "Percentage": "28,5"
   },
   {
     "Variable": "region_live",
-    "Question_Label": "",
+    "Question_Label": null,
     "Category": "Overseas",
     "Frequency": 2,
     "Percentage": "0,4"
   },
   {
     "Variable": "region_live",
-    "Question_Label": "",
+    "Question_Label": null,
     "Category": "West",
     "Frequency": 296,
     "Percentage": "58,6"
   },
   {
     "Variable": "region_live",
-    "Question_Label": "",
+    "Question_Label": null,
     "Category": "NA",
     "Frequency": 0,
     "Percentage": 0
   },
   {
     "Variable": "region_birth",
-    "Question_Label": "",
+    "Question_Label": null,
     "Category": "Central",
     "Frequency": 62,
     "Percentage": "12,3"
   },
   {
     "Variable": "region_birth",
-    "Question_Label": "",
+    "Question_Label": null,
     "Category": "East",
     "Frequency": 140,
     "Percentage": "27,7"
   },
   {
     "Variable": "region_birth",
-    "Question_Label": "",
+    "Question_Label": null,
     "Category": "West",
     "Frequency": 303,
     "Percentage": 60
   },
   {
     "Variable": "region_birth",
-    "Question_Label": "",
+    "Question_Label": null,
     "Category": "NA",
     "Frequency": 0,
     "Percentage": 0
@@ -289,128 +289,44 @@
   {
     "Variable": "expense",
     "Question_Label": "Berapa rata-rata pengeluaran bulanan kamu?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "",
-    "Question_Label": "",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Termasuk pengeluaran untuk makanan, transportasi, sewa, hiburan, dan pengeluaran rutin lainnya.)",
-    "Question_Label": "Kurang dari Rp 1.000.000",
-    "Category": 203,
+    "Category": "Kurang dari Rp 1.000.000",
     "Frequency": "40,2",
-    "Percentage": ""
+    "Percentage": null
   },
   {
     "Variable": "expense",
     "Question_Label": "Berapa rata-rata pengeluaran bulanan kamu?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "",
-    "Question_Label": "",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Termasuk pengeluaran untuk makanan, transportasi, sewa, hiburan, dan pengeluaran rutin lainnya.)",
-    "Question_Label": "Lebih dari Rp 5.000.000",
-    "Category": 27,
+    "Category": "Lebih dari Rp 5.000.000",
     "Frequency": "5,3",
-    "Percentage": ""
+    "Percentage": null
   },
   {
     "Variable": "expense",
     "Question_Label": "Berapa rata-rata pengeluaran bulanan kamu?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "",
-    "Question_Label": "",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Termasuk pengeluaran untuk makanan, transportasi, sewa, hiburan, dan pengeluaran rutin lainnya.)",
-    "Question_Label": "Rp 1.000.000 – Rp 2.000.000",
-    "Category": 178,
+    "Category": "Rp 1.000.000 – Rp 2.000.000",
     "Frequency": "35,2",
-    "Percentage": ""
+    "Percentage": null
   },
   {
     "Variable": "expense",
     "Question_Label": "Berapa rata-rata pengeluaran bulanan kamu?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "",
-    "Question_Label": "",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Termasuk pengeluaran untuk makanan, transportasi, sewa, hiburan, dan pengeluaran rutin lainnya.)",
-    "Question_Label": "Rp 2.000.001 – Rp 3.000.000",
-    "Category": 69,
+    "Category": "Rp 2.000.001 – Rp 3.000.000",
     "Frequency": "13,7",
-    "Percentage": ""
+    "Percentage": null
   },
   {
     "Variable": "expense",
     "Question_Label": "Berapa rata-rata pengeluaran bulanan kamu?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "",
-    "Question_Label": "",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Termasuk pengeluaran untuk makanan, transportasi, sewa, hiburan, dan pengeluaran rutin lainnya.)",
-    "Question_Label": "Rp 3.000.001 – Rp 5.000.000",
-    "Category": 28,
+    "Category": "Rp 3.000.001 – Rp 5.000.000",
     "Frequency": "5,5",
-    "Percentage": ""
+    "Percentage": null
   },
   {
     "Variable": "expense",
     "Question_Label": "Berapa rata-rata pengeluaran bulanan kamu?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "",
-    "Question_Label": "",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Termasuk pengeluaran untuk makanan, transportasi, sewa, hiburan, dan pengeluaran rutin lainnya.)",
-    "Question_Label": "NA",
-    "Category": 0,
+    "Category": "NA",
     "Frequency": 0,
-    "Percentage": ""
+    "Percentage": null
   },
   {
     "Variable": "activism",
@@ -435,253 +351,85 @@
   },
   {
     "Variable": "leisure_weekdays",
-    "Question_Label": "Berapa banyak waktu luang yang kamu miliki setiap hari?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "",
-    "Question_Label": "",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Waktu luang merujuk pada waktu bebas yang tidak kamu gunakan untuk pekerjaan, sekolah, atau tanggung jawab lain seperti pekerjaan rumah tangga.) - Hari Kerja (Senin sampai Jumat)",
-    "Question_Label": "1-2 jam",
-    "Category": "",
+    "Question_Label": "Berapa banyak waktu luang yang kamu miliki setiap hari? - Hari Kerja",
+    "Category": "1-2 jam",
     "Frequency": 85,
     "Percentage": "16,8"
   },
   {
     "Variable": "leisure_weekdays",
-    "Question_Label": "Berapa banyak waktu luang yang kamu miliki setiap hari?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "",
-    "Question_Label": "",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Waktu luang merujuk pada waktu bebas yang tidak kamu gunakan untuk pekerjaan, sekolah, atau tanggung jawab lain seperti pekerjaan rumah tangga.) - Hari Kerja (Senin sampai Jumat)",
-    "Question_Label": "3-4 jam",
-    "Category": "",
+    "Question_Label": "Berapa banyak waktu luang yang kamu miliki setiap hari? - Hari Kerja",
+    "Category": "3-4 jam",
     "Frequency": 172,
     "Percentage": "34,1"
   },
   {
     "Variable": "leisure_weekdays",
-    "Question_Label": "Berapa banyak waktu luang yang kamu miliki setiap hari?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "",
-    "Question_Label": "",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Waktu luang merujuk pada waktu bebas yang tidak kamu gunakan untuk pekerjaan, sekolah, atau tanggung jawab lain seperti pekerjaan rumah tangga.) - Hari Kerja (Senin sampai Jumat)",
-    "Question_Label": "5-6 jam",
-    "Category": "",
+    "Question_Label": "Berapa banyak waktu luang yang kamu miliki setiap hari? - Hari Kerja",
+    "Category": "5-6 jam",
     "Frequency": 127,
     "Percentage": "25,1"
   },
   {
     "Variable": "leisure_weekdays",
-    "Question_Label": "Berapa banyak waktu luang yang kamu miliki setiap hari?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "",
-    "Question_Label": "",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Waktu luang merujuk pada waktu bebas yang tidak kamu gunakan untuk pekerjaan, sekolah, atau tanggung jawab lain seperti pekerjaan rumah tangga.) - Hari Kerja (Senin sampai Jumat)",
-    "Question_Label": "Kurang dari 1 jam",
-    "Category": "",
+    "Question_Label": "Berapa banyak waktu luang yang kamu miliki setiap hari? - Hari Kerja",
+    "Category": "Kurang dari 1 jam",
     "Frequency": 22,
     "Percentage": "4,4"
   },
   {
     "Variable": "leisure_weekdays",
-    "Question_Label": "Berapa banyak waktu luang yang kamu miliki setiap hari?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "",
-    "Question_Label": "",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Waktu luang merujuk pada waktu bebas yang tidak kamu gunakan untuk pekerjaan, sekolah, atau tanggung jawab lain seperti pekerjaan rumah tangga.) - Hari Kerja (Senin sampai Jumat)",
-    "Question_Label": "Lebih dari 6 jam",
-    "Category": "",
+    "Question_Label": "Berapa banyak waktu luang yang kamu miliki setiap hari? - Hari Kerja",
+    "Category": "Lebih dari 6 jam",
     "Frequency": 96,
     "Percentage": 19
   },
   {
     "Variable": "leisure_weekdays",
-    "Question_Label": "Berapa banyak waktu luang yang kamu miliki setiap hari?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "",
-    "Question_Label": "",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Waktu luang merujuk pada waktu bebas yang tidak kamu gunakan untuk pekerjaan, sekolah, atau tanggung jawab lain seperti pekerjaan rumah tangga.) - Hari Kerja (Senin sampai Jumat)",
-    "Question_Label": "NA",
-    "Category": "",
+    "Question_Label": "Berapa banyak waktu luang yang kamu miliki setiap hari? - Hari Kerja",
+    "Category": "NA",
     "Frequency": 3,
     "Percentage": "0,6"
   },
   {
-    "Variable": "leiusure_weekends",
-    "Question_Label": "Berapa banyak waktu luang yang kamu miliki setiap hari?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "",
-    "Question_Label": "",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Waktu luang merujuk pada waktu bebas yang tidak kamu gunakan untuk pekerjaan, sekolah, atau tanggung jawab lain seperti pekerjaan rumah tangga.) - Akhir Pekan (Sabtu dan Minggu)",
-    "Question_Label": "1-2 jam",
-    "Category": "",
+    "Variable": "leisure_weekends",
+    "Question_Label": "Berapa banyak waktu luang yang kamu miliki setiap hari? - Akhir Pekan",
+    "Category": "1-2 jam",
     "Frequency": 33,
     "Percentage": "6,5"
   },
   {
-    "Variable": "leiusure_weekends",
-    "Question_Label": "Berapa banyak waktu luang yang kamu miliki setiap hari?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "",
-    "Question_Label": "",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Waktu luang merujuk pada waktu bebas yang tidak kamu gunakan untuk pekerjaan, sekolah, atau tanggung jawab lain seperti pekerjaan rumah tangga.) - Akhir Pekan (Sabtu dan Minggu)",
-    "Question_Label": "3-4 jam",
-    "Category": "",
+    "Variable": "leisure_weekends",
+    "Question_Label": "Berapa banyak waktu luang yang kamu miliki setiap hari? - Akhir Pekan",
+    "Category": "3-4 jam",
     "Frequency": 72,
     "Percentage": "14,3"
   },
   {
-    "Variable": "leiusure_weekends",
-    "Question_Label": "Berapa banyak waktu luang yang kamu miliki setiap hari?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "",
-    "Question_Label": "",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Waktu luang merujuk pada waktu bebas yang tidak kamu gunakan untuk pekerjaan, sekolah, atau tanggung jawab lain seperti pekerjaan rumah tangga.) - Akhir Pekan (Sabtu dan Minggu)",
-    "Question_Label": "5-6 jam",
-    "Category": "",
+    "Variable": "leisure_weekends",
+    "Question_Label": "Berapa banyak waktu luang yang kamu miliki setiap hari? - Akhir Pekan",
+    "Category": "5-6 jam",
     "Frequency": 123,
     "Percentage": "24,4"
   },
   {
-    "Variable": "leiusure_weekends",
-    "Question_Label": "Berapa banyak waktu luang yang kamu miliki setiap hari?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "",
-    "Question_Label": "",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Waktu luang merujuk pada waktu bebas yang tidak kamu gunakan untuk pekerjaan, sekolah, atau tanggung jawab lain seperti pekerjaan rumah tangga.) - Akhir Pekan (Sabtu dan Minggu)",
-    "Question_Label": "Kurang dari 1 jam",
-    "Category": "",
+    "Variable": "leisure_weekends",
+    "Question_Label": "Berapa banyak waktu luang yang kamu miliki setiap hari? - Akhir Pekan",
+    "Category": "Kurang dari 1 jam",
     "Frequency": 19,
     "Percentage": "3,8"
   },
   {
-    "Variable": "leiusure_weekends",
-    "Question_Label": "Berapa banyak waktu luang yang kamu miliki setiap hari?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "",
-    "Question_Label": "",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Waktu luang merujuk pada waktu bebas yang tidak kamu gunakan untuk pekerjaan, sekolah, atau tanggung jawab lain seperti pekerjaan rumah tangga.) - Akhir Pekan (Sabtu dan Minggu)",
-    "Question_Label": "Lebih dari 6 jam",
-    "Category": "",
+    "Variable": "leisure_weekends",
+    "Question_Label": "Berapa banyak waktu luang yang kamu miliki setiap hari? - Akhir Pekan",
+    "Category": "Lebih dari 6 jam",
     "Frequency": 249,
     "Percentage": "49,3"
   },
   {
-    "Variable": "leiusure_weekends",
-    "Question_Label": "Berapa banyak waktu luang yang kamu miliki setiap hari?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "",
-    "Question_Label": "",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Waktu luang merujuk pada waktu bebas yang tidak kamu gunakan untuk pekerjaan, sekolah, atau tanggung jawab lain seperti pekerjaan rumah tangga.) - Akhir Pekan (Sabtu dan Minggu)",
-    "Question_Label": "NA",
-    "Category": "",
+    "Variable": "leisure_weekends",
+    "Question_Label": "Berapa banyak waktu luang yang kamu miliki setiap hari? - Akhir Pekan",
+    "Category": "NA",
     "Frequency": 9,
     "Percentage": "1,8"
   },
@@ -812,564 +560,242 @@
     "Percentage": "1,2"
   },
   {
-    "Variable": "socmed_ig",
-    "Question_Label": "Silakan urutkan platform media sosial yang kamu gunakan.",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "Kamu bisa geser opsi di bawah dan urutkan dari nomor 1 sebagai yang paling sering, dan no 6 paling jarang - Instagram",
-    "Question_Label": 1,
-    "Category": "",
+    "Variable": "socmed_ranking_instagram",
+    "Question_Label": "Ranking penggunaan media sosial - Instagram",
+    "Category": null,
     "Frequency": 177,
     "Percentage": 35
   },
   {
-    "Variable": "socmed_ig",
-    "Question_Label": "Silakan urutkan platform media sosial yang kamu gunakan.",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "Kamu bisa geser opsi di bawah dan urutkan dari nomor 1 sebagai yang paling sering, dan no 6 paling jarang - Instagram",
-    "Question_Label": 2,
-    "Category": "",
+    "Variable": "socmed_ranking_instagram",
+    "Question_Label": "Ranking penggunaan media sosial - Instagram",
+    "Category": null,
     "Frequency": 159,
     "Percentage": "31,5"
   },
   {
-    "Variable": "socmed_ig",
-    "Question_Label": "Silakan urutkan platform media sosial yang kamu gunakan.",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "Kamu bisa geser opsi di bawah dan urutkan dari nomor 1 sebagai yang paling sering, dan no 6 paling jarang - Instagram",
-    "Question_Label": 3,
-    "Category": "",
+    "Variable": "socmed_ranking_instagram",
+    "Question_Label": "Ranking penggunaan media sosial - Instagram",
+    "Category": null,
     "Frequency": 114,
     "Percentage": "22,6"
   },
   {
-    "Variable": "socmed_ig",
-    "Question_Label": "Silakan urutkan platform media sosial yang kamu gunakan.",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "Kamu bisa geser opsi di bawah dan urutkan dari nomor 1 sebagai yang paling sering, dan no 6 paling jarang - Instagram",
-    "Question_Label": 4,
-    "Category": "",
+    "Variable": "socmed_ranking_instagram",
+    "Question_Label": "Ranking penggunaan media sosial - Instagram",
+    "Category": null,
     "Frequency": 41,
     "Percentage": "8,1"
   },
   {
-    "Variable": "socmed_ig",
-    "Question_Label": "Silakan urutkan platform media sosial yang kamu gunakan.",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "Kamu bisa geser opsi di bawah dan urutkan dari nomor 1 sebagai yang paling sering, dan no 6 paling jarang - Instagram",
-    "Question_Label": 5,
-    "Category": "",
+    "Variable": "socmed_ranking_instagram",
+    "Question_Label": "Ranking penggunaan media sosial - Instagram",
+    "Category": null,
     "Frequency": 14,
     "Percentage": "2,8"
   },
   {
-    "Variable": "socmed_ig",
-    "Question_Label": "Silakan urutkan platform media sosial yang kamu gunakan.",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "Kamu bisa geser opsi di bawah dan urutkan dari nomor 1 sebagai yang paling sering, dan no 6 paling jarang - Instagram",
-    "Question_Label": "NA",
-    "Category": "",
-    "Frequency": 0,
-    "Percentage": 0
-  },
-  {
-    "Variable": "socmed_tiktok",
-    "Question_Label": "Silakan urutkan platform media sosial yang kamu gunakan.",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "Kamu bisa geser opsi di bawah dan urutkan dari nomor 1 sebagai yang paling sering, dan no 6 paling jarang - TikTok",
-    "Question_Label": 1,
-    "Category": "",
+    "Variable": "socmed_ranking_tiktok",
+    "Question_Label": "Ranking penggunaan media sosial - TikTok",
+    "Category": null,
     "Frequency": 72,
     "Percentage": "14,3"
   },
   {
-    "Variable": "socmed_tiktok",
-    "Question_Label": "Silakan urutkan platform media sosial yang kamu gunakan.",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "Kamu bisa geser opsi di bawah dan urutkan dari nomor 1 sebagai yang paling sering, dan no 6 paling jarang - TikTok",
-    "Question_Label": 2,
-    "Category": "",
+    "Variable": "socmed_ranking_tiktok",
+    "Question_Label": "Ranking penggunaan media sosial - TikTok",
+    "Category": null,
     "Frequency": 150,
     "Percentage": "29,7"
   },
   {
-    "Variable": "socmed_tiktok",
-    "Question_Label": "Silakan urutkan platform media sosial yang kamu gunakan.",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "Kamu bisa geser opsi di bawah dan urutkan dari nomor 1 sebagai yang paling sering, dan no 6 paling jarang - TikTok",
-    "Question_Label": 3,
-    "Category": "",
+    "Variable": "socmed_ranking_tiktok",
+    "Question_Label": "Ranking penggunaan media sosial - TikTok",
+    "Category": null,
     "Frequency": 92,
     "Percentage": "18,2"
   },
   {
-    "Variable": "socmed_tiktok",
-    "Question_Label": "Silakan urutkan platform media sosial yang kamu gunakan.",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "Kamu bisa geser opsi di bawah dan urutkan dari nomor 1 sebagai yang paling sering, dan no 6 paling jarang - TikTok",
-    "Question_Label": 4,
-    "Category": "",
+    "Variable": "socmed_ranking_tiktok",
+    "Question_Label": "Ranking penggunaan media sosial - TikTok",
+    "Category": null,
     "Frequency": 75,
     "Percentage": "14,9"
   },
   {
-    "Variable": "socmed_tiktok",
-    "Question_Label": "Silakan urutkan platform media sosial yang kamu gunakan.",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "Kamu bisa geser opsi di bawah dan urutkan dari nomor 1 sebagai yang paling sering, dan no 6 paling jarang - TikTok",
-    "Question_Label": 5,
-    "Category": "",
+    "Variable": "socmed_ranking_tiktok",
+    "Question_Label": "Ranking penggunaan media sosial - TikTok",
+    "Category": null,
     "Frequency": 62,
     "Percentage": "12,3"
   },
   {
-    "Variable": "socmed_tiktok",
-    "Question_Label": "Silakan urutkan platform media sosial yang kamu gunakan.",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "Kamu bisa geser opsi di bawah dan urutkan dari nomor 1 sebagai yang paling sering, dan no 6 paling jarang - TikTok",
-    "Question_Label": 6,
-    "Category": "",
+    "Variable": "socmed_ranking_tiktok",
+    "Question_Label": "Ranking penggunaan media sosial - TikTok",
+    "Category": null,
     "Frequency": 54,
     "Percentage": "10,7"
   },
   {
-    "Variable": "socmed_tiktok",
-    "Question_Label": "Silakan urutkan platform media sosial yang kamu gunakan.",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "Kamu bisa geser opsi di bawah dan urutkan dari nomor 1 sebagai yang paling sering, dan no 6 paling jarang - TikTok",
-    "Question_Label": "NA",
-    "Category": "",
-    "Frequency": 0,
-    "Percentage": 0
-  },
-  {
-    "Variable": "socmed_wa",
-    "Question_Label": "Silakan urutkan platform media sosial yang kamu gunakan.",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "Kamu bisa geser opsi di bawah dan urutkan dari nomor 1 sebagai yang paling sering, dan no 6 paling jarang - WhatsApp",
-    "Question_Label": 1,
-    "Category": "",
+    "Variable": "socmed_ranking_whatsapp",
+    "Question_Label": "Ranking penggunaan media sosial - WhatsApp",
+    "Category": null,
     "Frequency": 200,
     "Percentage": "39,6"
   },
   {
-    "Variable": "socmed_wa",
-    "Question_Label": "Silakan urutkan platform media sosial yang kamu gunakan.",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "Kamu bisa geser opsi di bawah dan urutkan dari nomor 1 sebagai yang paling sering, dan no 6 paling jarang - WhatsApp",
-    "Question_Label": 2,
-    "Category": "",
+    "Variable": "socmed_ranking_whatsapp",
+    "Question_Label": "Ranking penggunaan media sosial - WhatsApp",
+    "Category": null,
     "Frequency": 117,
     "Percentage": "23,2"
   },
   {
-    "Variable": "socmed_wa",
-    "Question_Label": "Silakan urutkan platform media sosial yang kamu gunakan.",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "Kamu bisa geser opsi di bawah dan urutkan dari nomor 1 sebagai yang paling sering, dan no 6 paling jarang - WhatsApp",
-    "Question_Label": 3,
-    "Category": "",
+    "Variable": "socmed_ranking_whatsapp",
+    "Question_Label": "Ranking penggunaan media sosial - WhatsApp",
+    "Category": null,
     "Frequency": 145,
     "Percentage": "28,7"
   },
   {
-    "Variable": "socmed_wa",
-    "Question_Label": "Silakan urutkan platform media sosial yang kamu gunakan.",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "Kamu bisa geser opsi di bawah dan urutkan dari nomor 1 sebagai yang paling sering, dan no 6 paling jarang - WhatsApp",
-    "Question_Label": 4,
-    "Category": "",
+    "Variable": "socmed_ranking_whatsapp",
+    "Question_Label": "Ranking penggunaan media sosial - WhatsApp",
+    "Category": null,
     "Frequency": 31,
     "Percentage": "6,1"
   },
   {
-    "Variable": "socmed_wa",
-    "Question_Label": "Silakan urutkan platform media sosial yang kamu gunakan.",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "Kamu bisa geser opsi di bawah dan urutkan dari nomor 1 sebagai yang paling sering, dan no 6 paling jarang - WhatsApp",
-    "Question_Label": 5,
-    "Category": "",
+    "Variable": "socmed_ranking_whatsapp",
+    "Question_Label": "Ranking penggunaan media sosial - WhatsApp",
+    "Category": null,
     "Frequency": 12,
     "Percentage": "2,4"
   },
   {
-    "Variable": "socmed_wa",
-    "Question_Label": "Silakan urutkan platform media sosial yang kamu gunakan.",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "Kamu bisa geser opsi di bawah dan urutkan dari nomor 1 sebagai yang paling sering, dan no 6 paling jarang - WhatsApp",
-    "Question_Label": "NA",
-    "Category": "",
-    "Frequency": 0,
-    "Percentage": 0
-  },
-  {
-    "Variable": "socmed_x",
-    "Question_Label": "Silakan urutkan platform media sosial yang kamu gunakan.",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "Kamu bisa geser opsi di bawah dan urutkan dari nomor 1 sebagai yang paling sering, dan no 6 paling jarang - Twitter (X)",
-    "Question_Label": 1,
-    "Category": "",
+    "Variable": "socmed_ranking_twitter",
+    "Question_Label": "Ranking penggunaan media sosial - Twitter (X)",
+    "Category": null,
     "Frequency": 27,
     "Percentage": "5,3"
   },
   {
-    "Variable": "socmed_x",
-    "Question_Label": "Silakan urutkan platform media sosial yang kamu gunakan.",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "Kamu bisa geser opsi di bawah dan urutkan dari nomor 1 sebagai yang paling sering, dan no 6 paling jarang - Twitter (X)",
-    "Question_Label": 2,
-    "Category": "",
+    "Variable": "socmed_ranking_twitter",
+    "Question_Label": "Ranking penggunaan media sosial - Twitter (X)",
+    "Category": null,
     "Frequency": 25,
     "Percentage": 5
   },
   {
-    "Variable": "socmed_x",
-    "Question_Label": "Silakan urutkan platform media sosial yang kamu gunakan.",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "Kamu bisa geser opsi di bawah dan urutkan dari nomor 1 sebagai yang paling sering, dan no 6 paling jarang - Twitter (X)",
-    "Question_Label": 3,
-    "Category": "",
+    "Variable": "socmed_ranking_twitter",
+    "Question_Label": "Ranking penggunaan media sosial - Twitter (X)",
+    "Category": null,
     "Frequency": 28,
     "Percentage": "5,5"
   },
   {
-    "Variable": "socmed_x",
-    "Question_Label": "Silakan urutkan platform media sosial yang kamu gunakan.",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "Kamu bisa geser opsi di bawah dan urutkan dari nomor 1 sebagai yang paling sering, dan no 6 paling jarang - Twitter (X)",
-    "Question_Label": 4,
-    "Category": "",
+    "Variable": "socmed_ranking_twitter",
+    "Question_Label": "Ranking penggunaan media sosial - Twitter (X)",
+    "Category": null,
     "Frequency": 147,
     "Percentage": "29,1"
   },
   {
-    "Variable": "socmed_x",
-    "Question_Label": "Silakan urutkan platform media sosial yang kamu gunakan.",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "Kamu bisa geser opsi di bawah dan urutkan dari nomor 1 sebagai yang paling sering, dan no 6 paling jarang - Twitter (X)",
-    "Question_Label": 5,
-    "Category": "",
+    "Variable": "socmed_ranking_twitter",
+    "Question_Label": "Ranking penggunaan media sosial - Twitter (X)",
+    "Category": null,
     "Frequency": 147,
     "Percentage": "29,1"
   },
   {
-    "Variable": "socmed_x",
-    "Question_Label": "Silakan urutkan platform media sosial yang kamu gunakan.",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "Kamu bisa geser opsi di bawah dan urutkan dari nomor 1 sebagai yang paling sering, dan no 6 paling jarang - Twitter (X)",
-    "Question_Label": 6,
-    "Category": "",
+    "Variable": "socmed_ranking_twitter",
+    "Question_Label": "Ranking penggunaan media sosial - Twitter (X)",
+    "Category": null,
     "Frequency": 131,
     "Percentage": "25,9"
   },
   {
-    "Variable": "socmed_x",
-    "Question_Label": "Silakan urutkan platform media sosial yang kamu gunakan.",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "Kamu bisa geser opsi di bawah dan urutkan dari nomor 1 sebagai yang paling sering, dan no 6 paling jarang - Twitter (X)",
-    "Question_Label": "NA",
-    "Category": "",
-    "Frequency": 0,
-    "Percentage": 0
-  },
-  {
-    "Variable": "socmed_fb",
-    "Question_Label": "Silakan urutkan platform media sosial yang kamu gunakan.",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "Kamu bisa geser opsi di bawah dan urutkan dari nomor 1 sebagai yang paling sering, dan no 6 paling jarang - Facebook",
-    "Question_Label": 1,
-    "Category": "",
+    "Variable": "socmed_ranking_facebook",
+    "Question_Label": "Ranking penggunaan media sosial - Facebook",
+    "Category": null,
     "Frequency": 12,
     "Percentage": "2,4"
   },
   {
-    "Variable": "socmed_fb",
-    "Question_Label": "Silakan urutkan platform media sosial yang kamu gunakan.",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "Kamu bisa geser opsi di bawah dan urutkan dari nomor 1 sebagai yang paling sering, dan no 6 paling jarang - Facebook",
-    "Question_Label": 2,
-    "Category": "",
+    "Variable": "socmed_ranking_facebook",
+    "Question_Label": "Ranking penggunaan media sosial - Facebook",
+    "Category": null,
     "Frequency": 17,
     "Percentage": "3,4"
   },
   {
-    "Variable": "socmed_fb",
-    "Question_Label": "Silakan urutkan platform media sosial yang kamu gunakan.",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "Kamu bisa geser opsi di bawah dan urutkan dari nomor 1 sebagai yang paling sering, dan no 6 paling jarang - Facebook",
-    "Question_Label": 3,
-    "Category": "",
+    "Variable": "socmed_ranking_facebook",
+    "Question_Label": "Ranking penggunaan media sosial - Facebook",
+    "Category": null,
     "Frequency": 31,
     "Percentage": "6,1"
   },
   {
-    "Variable": "socmed_fb",
-    "Question_Label": "Silakan urutkan platform media sosial yang kamu gunakan.",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "Kamu bisa geser opsi di bawah dan urutkan dari nomor 1 sebagai yang paling sering, dan no 6 paling jarang - Facebook",
-    "Question_Label": 4,
-    "Category": "",
+    "Variable": "socmed_ranking_facebook",
+    "Question_Label": "Ranking penggunaan media sosial - Facebook",
+    "Category": null,
     "Frequency": 71,
     "Percentage": "14,1"
   },
   {
-    "Variable": "socmed_fb",
-    "Question_Label": "Silakan urutkan platform media sosial yang kamu gunakan.",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "Kamu bisa geser opsi di bawah dan urutkan dari nomor 1 sebagai yang paling sering, dan no 6 paling jarang - Facebook",
-    "Question_Label": 5,
-    "Category": "",
+    "Variable": "socmed_ranking_facebook",
+    "Question_Label": "Ranking penggunaan media sosial - Facebook",
+    "Category": null,
     "Frequency": 148,
     "Percentage": "29,3"
   },
   {
-    "Variable": "socmed_fb",
-    "Question_Label": "Silakan urutkan platform media sosial yang kamu gunakan.",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "Kamu bisa geser opsi di bawah dan urutkan dari nomor 1 sebagai yang paling sering, dan no 6 paling jarang - Facebook",
-    "Question_Label": 6,
-    "Category": "",
+    "Variable": "socmed_ranking_facebook",
+    "Question_Label": "Ranking penggunaan media sosial - Facebook",
+    "Category": null,
     "Frequency": 226,
     "Percentage": "44,8"
   },
   {
-    "Variable": "socmed_fb",
-    "Question_Label": "Silakan urutkan platform media sosial yang kamu gunakan.",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "Kamu bisa geser opsi di bawah dan urutkan dari nomor 1 sebagai yang paling sering, dan no 6 paling jarang - Facebook",
-    "Question_Label": "NA",
-    "Category": "",
-    "Frequency": 0,
-    "Percentage": 0
-  },
-  {
-    "Variable": "socmed_yt",
-    "Question_Label": "Silakan urutkan platform media sosial yang kamu gunakan.",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "Kamu bisa geser opsi di bawah dan urutkan dari nomor 1 sebagai yang paling sering, dan no 6 paling jarang - YouTube",
-    "Question_Label": 1,
-    "Category": "",
+    "Variable": "socmed_ranking_youtube",
+    "Question_Label": "Ranking penggunaan media sosial - YouTube",
+    "Category": null,
     "Frequency": 17,
     "Percentage": "3,4"
   },
   {
-    "Variable": "socmed_yt",
-    "Question_Label": "Silakan urutkan platform media sosial yang kamu gunakan.",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "Kamu bisa geser opsi di bawah dan urutkan dari nomor 1 sebagai yang paling sering, dan no 6 paling jarang - YouTube",
-    "Question_Label": 2,
-    "Category": "",
+    "Variable": "socmed_ranking_youtube",
+    "Question_Label": "Ranking penggunaan media sosial - YouTube",
+    "Category": null,
     "Frequency": 37,
     "Percentage": "7,3"
   },
   {
-    "Variable": "socmed_yt",
-    "Question_Label": "Silakan urutkan platform media sosial yang kamu gunakan.",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "Kamu bisa geser opsi di bawah dan urutkan dari nomor 1 sebagai yang paling sering, dan no 6 paling jarang - YouTube",
-    "Question_Label": 3,
-    "Category": "",
+    "Variable": "socmed_ranking_youtube",
+    "Question_Label": "Ranking penggunaan media sosial - YouTube",
+    "Category": null,
     "Frequency": 95,
     "Percentage": "18,8"
   },
   {
-    "Variable": "socmed_yt",
-    "Question_Label": "Silakan urutkan platform media sosial yang kamu gunakan.",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "Kamu bisa geser opsi di bawah dan urutkan dari nomor 1 sebagai yang paling sering, dan no 6 paling jarang - YouTube",
-    "Question_Label": 4,
-    "Category": "",
+    "Variable": "socmed_ranking_youtube",
+    "Question_Label": "Ranking penggunaan media sosial - YouTube",
+    "Category": null,
     "Frequency": 140,
     "Percentage": "27,7"
   },
   {
-    "Variable": "socmed_yt",
-    "Question_Label": "Silakan urutkan platform media sosial yang kamu gunakan.",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "Kamu bisa geser opsi di bawah dan urutkan dari nomor 1 sebagai yang paling sering, dan no 6 paling jarang - YouTube",
-    "Question_Label": 5,
-    "Category": "",
+    "Variable": "socmed_ranking_youtube",
+    "Question_Label": "Ranking penggunaan media sosial - YouTube",
+    "Category": null,
     "Frequency": 122,
     "Percentage": "24,2"
   },
   {
-    "Variable": "socmed_yt",
-    "Question_Label": "Silakan urutkan platform media sosial yang kamu gunakan.",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "Kamu bisa geser opsi di bawah dan urutkan dari nomor 1 sebagai yang paling sering, dan no 6 paling jarang - YouTube",
-    "Question_Label": 6,
-    "Category": "",
+    "Variable": "socmed_ranking_youtube",
+    "Question_Label": "Ranking penggunaan media sosial - YouTube",
+    "Category": null,
     "Frequency": 94,
     "Percentage": "18,6"
-  },
-  {
-    "Variable": "socmed_yt",
-    "Question_Label": "Silakan urutkan platform media sosial yang kamu gunakan.",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "Kamu bisa geser opsi di bawah dan urutkan dari nomor 1 sebagai yang paling sering, dan no 6 paling jarang - YouTube",
-    "Question_Label": "NA",
-    "Category": "",
-    "Frequency": 0,
-    "Percentage": 0
   },
   {
     "Variable": "political_exsposure",
@@ -1412,202 +838,6 @@
     "Category": "NA",
     "Frequency": 0,
     "Percentage": 0
-  },
-  {
-    "Variable": "polexsp_tiktok",
-    "Question_Label": "Di mana kamu biasanya mendapatkan berita tentang isu sosial, politik, atau terkini?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih semua yang relevan) - Tiktok",
-    "Question_Label": "Tiktok",
-    "Category": "",
-    "Frequency": 219,
-    "Percentage": "43,4"
-  },
-  {
-    "Variable": "polexsp_tiktok",
-    "Question_Label": "Di mana kamu biasanya mendapatkan berita tentang isu sosial, politik, atau terkini?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih semua yang relevan) - Tiktok",
-    "Question_Label": "NA",
-    "Category": "",
-    "Frequency": 286,
-    "Percentage": "56,6"
-  },
-  {
-    "Variable": "polexsp_x",
-    "Question_Label": "Di mana kamu biasanya mendapatkan berita tentang isu sosial, politik, atau terkini?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih semua yang relevan) - Twitter",
-    "Question_Label": "Twitter",
-    "Category": "",
-    "Frequency": 187,
-    "Percentage": 37
-  },
-  {
-    "Variable": "polexsp_x",
-    "Question_Label": "Di mana kamu biasanya mendapatkan berita tentang isu sosial, politik, atau terkini?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih semua yang relevan) - Twitter",
-    "Question_Label": "NA",
-    "Category": "",
-    "Frequency": 318,
-    "Percentage": 63
-  },
-  {
-    "Variable": "polexsp_ig",
-    "Question_Label": "Di mana kamu biasanya mendapatkan berita tentang isu sosial, politik, atau terkini?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih semua yang relevan) - Instagram",
-    "Question_Label": "Instagram",
-    "Category": "",
-    "Frequency": 354,
-    "Percentage": "70,1"
-  },
-  {
-    "Variable": "polexsp_ig",
-    "Question_Label": "Di mana kamu biasanya mendapatkan berita tentang isu sosial, politik, atau terkini?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih semua yang relevan) - Instagram",
-    "Question_Label": "NA",
-    "Category": "",
-    "Frequency": 151,
-    "Percentage": "29,9"
-  },
-  {
-    "Variable": "polexsp_yt",
-    "Question_Label": "Di mana kamu biasanya mendapatkan berita tentang isu sosial, politik, atau terkini?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih semua yang relevan) - Youtube",
-    "Question_Label": "Youtube",
-    "Category": "",
-    "Frequency": 170,
-    "Percentage": "33,7"
-  },
-  {
-    "Variable": "polexsp_yt",
-    "Question_Label": "Di mana kamu biasanya mendapatkan berita tentang isu sosial, politik, atau terkini?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih semua yang relevan) - Youtube",
-    "Question_Label": "NA",
-    "Category": "",
-    "Frequency": 335,
-    "Percentage": "66,3"
-  },
-  {
-    "Variable": "polexsp_newsapp",
-    "Question_Label": "Di mana kamu biasanya mendapatkan berita tentang isu sosial, politik, atau terkini?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih semua yang relevan) - Platform berita online (misalnya, situs web berita, aplikasi berita)",
-    "Question_Label": "Platform berita online (misalnya, situs web berita, aplikasi berita)",
-    "Category": "",
-    "Frequency": 242,
-    "Percentage": "47,9"
-  },
-  {
-    "Variable": "polexsp_newsapp",
-    "Question_Label": "Di mana kamu biasanya mendapatkan berita tentang isu sosial, politik, atau terkini?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih semua yang relevan) - Platform berita online (misalnya, situs web berita, aplikasi berita)",
-    "Question_Label": "NA",
-    "Category": "",
-    "Frequency": 263,
-    "Percentage": "52,1"
-  },
-  {
-    "Variable": "polexsp_newsconv",
-    "Question_Label": "Di mana kamu biasanya mendapatkan berita tentang isu sosial, politik, atau terkini?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih semua yang relevan) - Platform berita offline (misalnya, TV, radio, surat kabar)",
-    "Question_Label": "Platform berita offline (misalnya, TV, radio, surat kabar)",
-    "Category": "",
-    "Frequency": 108,
-    "Percentage": "21,4"
-  },
-  {
-    "Variable": "polexsp_newsconv",
-    "Question_Label": "Di mana kamu biasanya mendapatkan berita tentang isu sosial, politik, atau terkini?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih semua yang relevan) - Platform berita offline (misalnya, TV, radio, surat kabar)",
-    "Question_Label": "NA",
-    "Category": "",
-    "Frequency": 397,
-    "Percentage": "78,6"
-  },
-  {
-    "Variable": "polexsp_peers",
-    "Question_Label": "Di mana kamu biasanya mendapatkan berita tentang isu sosial, politik, atau terkini?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih semua yang relevan) - Dari teman, rekan kerja, keluarga, atau kelompok komunitas",
-    "Question_Label": "Dari teman, rekan kerja, keluarga, atau kelompok komunitas",
-    "Category": "",
-    "Frequency": 194,
-    "Percentage": "38,4"
-  },
-  {
-    "Variable": "polexsp_peers",
-    "Question_Label": "Di mana kamu biasanya mendapatkan berita tentang isu sosial, politik, atau terkini?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih semua yang relevan) - Dari teman, rekan kerja, keluarga, atau kelompok komunitas",
-    "Question_Label": "NA",
-    "Category": "",
-    "Frequency": 311,
-    "Percentage": "61,6"
   },
   {
     "Variable": "polexsp_peers_intensity",
@@ -1722,174 +952,6 @@
     "Percentage": 0
   },
   {
-    "Variable": "civspace_expression",
-    "Question_Label": "Mana dari pernyataan berikut yang paling menggambarkan 'ruang sipil'?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih semua yang relevan) - Penghormatan terhadap kebebasan berserikat, berkumpul secara damai, dan berekspresi dalam kebijakan, hukum, dan praktik",
-    "Question_Label": "Penghormatan terhadap kebebasan berserikat, berkumpul secara damai, dan berekspresi dalam kebijakan, hukum, dan praktik",
-    "Category": "",
-    "Frequency": 118,
-    "Percentage": "23,4"
-  },
-  {
-    "Variable": "civspace_expression",
-    "Question_Label": "Mana dari pernyataan berikut yang paling menggambarkan 'ruang sipil'?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih semua yang relevan) - Penghormatan terhadap kebebasan berserikat, berkumpul secara damai, dan berekspresi dalam kebijakan, hukum, dan praktik",
-    "Question_Label": "NA",
-    "Category": "",
-    "Frequency": 387,
-    "Percentage": "76,6"
-  },
-  {
-    "Variable": "civspace_rights",
-    "Question_Label": "Mana dari pernyataan berikut yang paling menggambarkan 'ruang sipil'?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih semua yang relevan) - Ruang di mana negara melindungi hak-hak dasar seperti berserikat, berkumpul, dan berekspresi",
-    "Question_Label": "Ruang di mana negara melindungi hak-hak dasar seperti berserikat, berkumpul, dan berekspresi",
-    "Category": "",
-    "Frequency": 102,
-    "Percentage": "20,2"
-  },
-  {
-    "Variable": "civspace_rights",
-    "Question_Label": "Mana dari pernyataan berikut yang paling menggambarkan 'ruang sipil'?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih semua yang relevan) - Ruang di mana negara melindungi hak-hak dasar seperti berserikat, berkumpul, dan berekspresi",
-    "Question_Label": "NA",
-    "Category": "",
-    "Frequency": 403,
-    "Percentage": "79,8"
-  },
-  {
-    "Variable": "civspace_gather",
-    "Question_Label": "Mana dari pernyataan berikut yang paling menggambarkan 'ruang sipil'?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih semua yang relevan) - Area publik di mana individu dapat berkumpul untuk kegiatan sosial, politik, atau budaya",
-    "Question_Label": "Area publik di mana individu dapat berkumpul untuk kegiatan sosial, politik, atau budaya",
-    "Category": "",
-    "Frequency": 72,
-    "Percentage": "14,3"
-  },
-  {
-    "Variable": "civspace_gather",
-    "Question_Label": "Mana dari pernyataan berikut yang paling menggambarkan 'ruang sipil'?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih semua yang relevan) - Area publik di mana individu dapat berkumpul untuk kegiatan sosial, politik, atau budaya",
-    "Question_Label": "NA",
-    "Category": "",
-    "Frequency": 433,
-    "Percentage": "85,7"
-  },
-  {
-    "Variable": "civspace_discuss",
-    "Question_Label": "Mana dari pernyataan berikut yang paling menggambarkan 'ruang sipil'?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih semua yang relevan) - Lingkungan di mana warga negara dapat terlibat secara bebas dalam diskusi dan mengekspresikan pendapat yang beragam",
-    "Question_Label": "Lingkungan di mana warga negara dapat terlibat secara bebas dalam diskusi dan mengekspresikan pendapat yang beragam",
-    "Category": "",
-    "Frequency": 106,
-    "Percentage": 21
-  },
-  {
-    "Variable": "civspace_discuss",
-    "Question_Label": "Mana dari pernyataan berikut yang paling menggambarkan 'ruang sipil'?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih semua yang relevan) - Lingkungan di mana warga negara dapat terlibat secara bebas dalam diskusi dan mengekspresikan pendapat yang beragam",
-    "Question_Label": "NA",
-    "Category": "",
-    "Frequency": 399,
-    "Percentage": 79
-  },
-  {
-    "Variable": "civspace_critics",
-    "Question_Label": "Mana dari pernyataan berikut yang paling menggambarkan 'ruang sipil'?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih semua yang relevan) - Kebebasan untuk bersuara, mengkritik pemerintah, menyampaikan aspirasi melalui media sosial dan media lainnya",
-    "Question_Label": "Kebebasan untuk bersuara, mengkritik pemerintah, menyampaikan aspirasi melalui media sosial dan media lainnya",
-    "Category": "",
-    "Frequency": 105,
-    "Percentage": "20,8"
-  },
-  {
-    "Variable": "civspace_critics",
-    "Question_Label": "Mana dari pernyataan berikut yang paling menggambarkan 'ruang sipil'?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih semua yang relevan) - Kebebasan untuk bersuara, mengkritik pemerintah, menyampaikan aspirasi melalui media sosial dan media lainnya",
-    "Question_Label": "NA",
-    "Category": "",
-    "Frequency": 400,
-    "Percentage": "79,2"
-  },
-  {
-    "Variable": "civspace_allabove",
-    "Question_Label": "Mana dari pernyataan berikut yang paling menggambarkan 'ruang sipil'?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih semua yang relevan) - Semua hal di atas",
-    "Question_Label": "Semua hal di atas",
-    "Category": "",
-    "Frequency": 239,
-    "Percentage": "47,3"
-  },
-  {
-    "Variable": "civspace_allabove",
-    "Question_Label": "Mana dari pernyataan berikut yang paling menggambarkan 'ruang sipil'?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih semua yang relevan) - Semua hal di atas",
-    "Question_Label": "NA",
-    "Category": "",
-    "Frequency": 266,
-    "Percentage": "52,7"
-  },
-  {
     "Variable": "civicspace_change",
     "Question_Label": "Menurut kamu, bagaimana ruang sipil di Indonesia berubah selama pemerintahan saat ini?",
     "Category": "Jauh lebih terbuka",
@@ -1932,2704 +994,44 @@
     "Percentage": 0
   },
   {
-    "Variable": "civicspace_lead_censoring",
-    "Question_Label": "Menurut kamu, ciri-ciri apa yang paling menggambarkan gaya kepemimpinan pemerintahan saat ini terkait dengan isu ruang sipil?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "",
-    "Question_Label": "",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih semua yang relevan) - Pembatasan terhadap kebebasan berpendapat atau kritik terhadap pemerintah",
-    "Question_Label": "Pembatasan terhadap kebebasan berpendapat atau kritik terhadap pemerintah",
-    "Category": "",
-    "Frequency": 274,
-    "Percentage": "54,3"
-  },
-  {
-    "Variable": "civicspace_lead_censoring",
-    "Question_Label": "Menurut kamu, ciri-ciri apa yang paling menggambarkan gaya kepemimpinan pemerintahan saat ini terkait dengan isu ruang sipil?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "",
-    "Question_Label": "",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih semua yang relevan) - Pembatasan terhadap kebebasan berpendapat atau kritik terhadap pemerintah",
-    "Question_Label": "NA",
-    "Category": "",
-    "Frequency": 231,
-    "Percentage": "45,7"
-  },
-  {
-    "Variable": "civicspace_lead_violence",
-    "Question_Label": "Menurut kamu, ciri-ciri apa yang paling menggambarkan gaya kepemimpinan pemerintahan saat ini terkait dengan isu ruang sipil?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "",
-    "Question_Label": "",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih semua yang relevan) - Penggunaan aparat keamanan untuk mengintimidasi atau membubarkan aksi damai",
-    "Question_Label": "Penggunaan aparat keamanan untuk mengintimidasi atau membubarkan aksi damai",
-    "Category": "",
-    "Frequency": 231,
-    "Percentage": "45,7"
-  },
-  {
-    "Variable": "civicspace_lead_violence",
-    "Question_Label": "Menurut kamu, ciri-ciri apa yang paling menggambarkan gaya kepemimpinan pemerintahan saat ini terkait dengan isu ruang sipil?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "",
-    "Question_Label": "",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih semua yang relevan) - Penggunaan aparat keamanan untuk mengintimidasi atau membubarkan aksi damai",
-    "Question_Label": "NA",
-    "Category": "",
-    "Frequency": 274,
-    "Percentage": "54,3"
-  },
-  {
-    "Variable": "civicspace_lead_presslimit",
-    "Question_Label": "Menurut kamu, ciri-ciri apa yang paling menggambarkan gaya kepemimpinan pemerintahan saat ini terkait dengan isu ruang sipil?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "",
-    "Question_Label": "",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih semua yang relevan) - Pembatasan kebebasan pers dan akses terhadap informasi independen",
-    "Question_Label": "Pembatasan kebebasan pers dan akses terhadap informasi independen",
-    "Category": "",
-    "Frequency": 173,
-    "Percentage": "34,3"
-  },
-  {
-    "Variable": "civicspace_lead_presslimit",
-    "Question_Label": "Menurut kamu, ciri-ciri apa yang paling menggambarkan gaya kepemimpinan pemerintahan saat ini terkait dengan isu ruang sipil?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "",
-    "Question_Label": "",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih semua yang relevan) - Pembatasan kebebasan pers dan akses terhadap informasi independen",
-    "Question_Label": "NA",
-    "Category": "",
-    "Frequency": 332,
-    "Percentage": "65,7"
-  },
-  {
-    "Variable": "civicspace_lead_banning",
-    "Question_Label": "Menurut kamu, ciri-ciri apa yang paling menggambarkan gaya kepemimpinan pemerintahan saat ini terkait dengan isu ruang sipil?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "",
-    "Question_Label": "",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih semua yang relevan) - Pembatasan kebebasan untuk berserikat dan membentuk organisasi",
-    "Question_Label": "Pembatasan kebebasan untuk berserikat dan membentuk organisasi",
-    "Category": "",
-    "Frequency": 96,
-    "Percentage": 19
-  },
-  {
-    "Variable": "civicspace_lead_banning",
-    "Question_Label": "Menurut kamu, ciri-ciri apa yang paling menggambarkan gaya kepemimpinan pemerintahan saat ini terkait dengan isu ruang sipil?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "",
-    "Question_Label": "",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih semua yang relevan) - Pembatasan kebebasan untuk berserikat dan membentuk organisasi",
-    "Question_Label": "NA",
-    "Category": "",
-    "Frequency": 409,
-    "Percentage": 81
-  },
-  {
-    "Variable": "civicspace_lead_repression",
-    "Question_Label": "Menurut kamu, ciri-ciri apa yang paling menggambarkan gaya kepemimpinan pemerintahan saat ini terkait dengan isu ruang sipil?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "",
-    "Question_Label": "",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih semua yang relevan) - Penggunaan hukum untuk menekan aktivis atau kelompok oposisi",
-    "Question_Label": "Penggunaan hukum untuk menekan aktivis atau kelompok oposisi",
-    "Category": "",
-    "Frequency": 217,
-    "Percentage": 43
-  },
-  {
-    "Variable": "civicspace_lead_repression",
-    "Question_Label": "Menurut kamu, ciri-ciri apa yang paling menggambarkan gaya kepemimpinan pemerintahan saat ini terkait dengan isu ruang sipil?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "",
-    "Question_Label": "",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih semua yang relevan) - Penggunaan hukum untuk menekan aktivis atau kelompok oposisi",
-    "Question_Label": "NA",
-    "Category": "",
-    "Frequency": 288,
-    "Percentage": 57
-  },
-  {
-    "Variable": "civicspace_lead_monopoly",
-    "Question_Label": "Menurut kamu, ciri-ciri apa yang paling menggambarkan gaya kepemimpinan pemerintahan saat ini terkait dengan isu ruang sipil?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "",
-    "Question_Label": "",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih semua yang relevan) - Konsentrasi pengambilan keputusan di tangan segelintir pemimpin",
-    "Question_Label": "Konsentrasi pengambilan keputusan di tangan segelintir pemimpin",
-    "Category": "",
-    "Frequency": 204,
-    "Percentage": "40,4"
-  },
-  {
-    "Variable": "civicspace_lead_monopoly",
-    "Question_Label": "Menurut kamu, ciri-ciri apa yang paling menggambarkan gaya kepemimpinan pemerintahan saat ini terkait dengan isu ruang sipil?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "",
-    "Question_Label": "",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih semua yang relevan) - Konsentrasi pengambilan keputusan di tangan segelintir pemimpin",
-    "Question_Label": "NA",
-    "Category": "",
-    "Frequency": 301,
-    "Percentage": "59,6"
-  },
-  {
-    "Variable": "civicspace_lead_accountability",
-    "Question_Label": "Menurut kamu, ciri-ciri apa yang paling menggambarkan gaya kepemimpinan pemerintahan saat ini terkait dengan isu ruang sipil?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "",
-    "Question_Label": "",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih semua yang relevan) - Kurangnya transparansi atau akuntabilitas dalam pengambilan keputusan",
-    "Question_Label": "Kurangnya transparansi atau akuntabilitas dalam pengambilan keputusan",
-    "Category": "",
-    "Frequency": 275,
-    "Percentage": "54,5"
-  },
-  {
-    "Variable": "civicspace_lead_accountability",
-    "Question_Label": "Menurut kamu, ciri-ciri apa yang paling menggambarkan gaya kepemimpinan pemerintahan saat ini terkait dengan isu ruang sipil?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "",
-    "Question_Label": "",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih semua yang relevan) - Kurangnya transparansi atau akuntabilitas dalam pengambilan keputusan",
-    "Question_Label": "NA",
-    "Category": "",
-    "Frequency": 230,
-    "Percentage": "45,5"
-  },
-  {
-    "Variable": "civicspace_lead_allgood",
-    "Question_Label": "Menurut kamu, ciri-ciri apa yang paling menggambarkan gaya kepemimpinan pemerintahan saat ini terkait dengan isu ruang sipil?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "",
-    "Question_Label": "",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih semua yang relevan) - Saya tidak merasa ciri-ciri tersebut di atas menggambarkan gaya kepemimpinan pemerintahan saat ini",
-    "Question_Label": "Saya tidak merasa ciri-ciri tersebut di atas menggambarkan gaya kepemimpinan pemerintahan saat ini",
-    "Category": "",
-    "Frequency": 61,
-    "Percentage": "12,1"
-  },
-  {
-    "Variable": "civicspace_lead_allgood",
-    "Question_Label": "Menurut kamu, ciri-ciri apa yang paling menggambarkan gaya kepemimpinan pemerintahan saat ini terkait dengan isu ruang sipil?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "",
-    "Question_Label": "",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih semua yang relevan) - Saya tidak merasa ciri-ciri tersebut di atas menggambarkan gaya kepemimpinan pemerintahan saat ini",
-    "Question_Label": "NA",
-    "Category": "",
-    "Frequency": 444,
-    "Percentage": "87,9"
-  },
-  {
-    "Variable": "civicspace_youth_union",
-    "Question_Label": "Menurut kamu, apa yang membuat ruang sipil aman dan ramah bagi anak muda?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih semua yang relevan) - Kebebasan untuk berserikat atau membentuk kelompok",
-    "Question_Label": "Kebebasan untuk berserikat atau membentuk kelompok",
-    "Category": "",
-    "Frequency": 259,
-    "Percentage": "51,3"
-  },
-  {
-    "Variable": "civicspace_youth_union",
-    "Question_Label": "Menurut kamu, apa yang membuat ruang sipil aman dan ramah bagi anak muda?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih semua yang relevan) - Kebebasan untuk berserikat atau membentuk kelompok",
-    "Question_Label": "NA",
-    "Category": "",
-    "Frequency": 246,
-    "Percentage": "48,7"
-  },
-  {
-    "Variable": "civicspace_youth_gather",
-    "Question_Label": "Menurut kamu, apa yang membuat ruang sipil aman dan ramah bagi anak muda?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih semua yang relevan) - Kebebasan untuk berkumpul secara damai tanpa pelecehan atau intimidasi",
-    "Question_Label": "Kebebasan untuk berkumpul secara damai tanpa pelecehan atau intimidasi",
-    "Category": "",
-    "Frequency": 298,
-    "Percentage": 59
-  },
-  {
-    "Variable": "civicspace_youth_gather",
-    "Question_Label": "Menurut kamu, apa yang membuat ruang sipil aman dan ramah bagi anak muda?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih semua yang relevan) - Kebebasan untuk berkumpul secara damai tanpa pelecehan atau intimidasi",
-    "Question_Label": "NA",
-    "Category": "",
-    "Frequency": 207,
-    "Percentage": 41
-  },
-  {
-    "Variable": "civicspace_youth_express",
-    "Question_Label": "Menurut kamu, apa yang membuat ruang sipil aman dan ramah bagi anak muda?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih semua yang relevan) - Kebebasan untuk mengekspresikan pendapat secara terbuka",
-    "Question_Label": "Kebebasan untuk mengekspresikan pendapat secara terbuka",
-    "Category": "",
-    "Frequency": 382,
-    "Percentage": "75,6"
-  },
-  {
-    "Variable": "civicspace_youth_express",
-    "Question_Label": "Menurut kamu, apa yang membuat ruang sipil aman dan ramah bagi anak muda?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih semua yang relevan) - Kebebasan untuk mengekspresikan pendapat secara terbuka",
-    "Question_Label": "NA",
-    "Category": "",
-    "Frequency": 123,
-    "Percentage": "24,4"
-  },
-  {
-    "Variable": "civicspace_youth_protect",
-    "Question_Label": "Menurut kamu, apa yang membuat ruang sipil aman dan ramah bagi anak muda?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih semua yang relevan) - Perlindungan negara terhadap ancaman atau diskriminasi saat menggunakan kebebasan tersebut",
-    "Question_Label": "Perlindungan negara terhadap ancaman atau diskriminasi saat menggunakan kebebasan tersebut",
-    "Category": "",
-    "Frequency": 306,
-    "Percentage": "60,6"
-  },
-  {
-    "Variable": "civicspace_youth_protect",
-    "Question_Label": "Menurut kamu, apa yang membuat ruang sipil aman dan ramah bagi anak muda?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih semua yang relevan) - Perlindungan negara terhadap ancaman atau diskriminasi saat menggunakan kebebasan tersebut",
-    "Question_Label": "NA",
-    "Category": "",
-    "Frequency": 199,
-    "Percentage": "39,4"
-  },
-  {
-    "Variable": "civicspace_youth_resource",
-    "Question_Label": "Menurut kamu, apa yang membuat ruang sipil aman dan ramah bagi anak muda?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih semua yang relevan) - Akses terhadap informasi dan sumber daya",
-    "Question_Label": "Akses terhadap informasi dan sumber daya",
-    "Category": "",
-    "Frequency": 259,
-    "Percentage": "51,3"
-  },
-  {
-    "Variable": "civicspace_youth_resource",
-    "Question_Label": "Menurut kamu, apa yang membuat ruang sipil aman dan ramah bagi anak muda?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih semua yang relevan) - Akses terhadap informasi dan sumber daya",
-    "Question_Label": "NA",
-    "Category": "",
-    "Frequency": 246,
-    "Percentage": "48,7"
-  },
-  {
-    "Variable": "civicspace_youth_representation",
-    "Question_Label": "Menurut kamu, apa yang membuat ruang sipil aman dan ramah bagi anak muda?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih semua yang relevan) - Representasi atau perwakilan dari pendapat yang beragam",
-    "Question_Label": "Representasi atau perwakilan dari pendapat yang beragam",
-    "Category": "",
-    "Frequency": 218,
-    "Percentage": "43,2"
-  },
-  {
-    "Variable": "civicspace_youth_representation",
-    "Question_Label": "Menurut kamu, apa yang membuat ruang sipil aman dan ramah bagi anak muda?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih semua yang relevan) - Representasi atau perwakilan dari pendapat yang beragam",
-    "Question_Label": "NA",
-    "Category": "",
-    "Frequency": 287,
-    "Percentage": "56,8"
-  },
-  {
-    "Variable": "civicspace_youth_chal_intimidation",
-    "Question_Label": "Apa tantangan terbesar bagi anak muda dalam mengakses ruang sipil di wilayah kamu?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih maksimal 3) - Ketakutan akan pelecehan atau intimidasi saat berkumpul secara damai",
-    "Question_Label": "Ketakutan akan pelecehan atau intimidasi saat berkumpul secara damai",
-    "Category": "",
-    "Frequency": 184,
-    "Percentage": "36,4"
-  },
-  {
-    "Variable": "civicspace_youth_chal_intimidation",
-    "Question_Label": "Apa tantangan terbesar bagi anak muda dalam mengakses ruang sipil di wilayah kamu?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih maksimal 3) - Ketakutan akan pelecehan atau intimidasi saat berkumpul secara damai",
-    "Question_Label": "NA",
-    "Category": "",
-    "Frequency": 321,
-    "Percentage": "63,6"
-  },
-  {
-    "Variable": "civicspace_youth_chal_ban",
-    "Question_Label": "Apa tantangan terbesar bagi anak muda dalam mengakses ruang sipil di wilayah kamu?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih maksimal 3) - Pembatasan dalam membentuk atau bergabung dengan kelompok tertentu",
-    "Question_Label": "Pembatasan dalam membentuk atau bergabung dengan kelompok tertentu",
-    "Category": "",
-    "Frequency": 98,
-    "Percentage": "19,4"
-  },
-  {
-    "Variable": "civicspace_youth_chal_ban",
-    "Question_Label": "Apa tantangan terbesar bagi anak muda dalam mengakses ruang sipil di wilayah kamu?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih maksimal 3) - Pembatasan dalam membentuk atau bergabung dengan kelompok tertentu",
-    "Question_Label": "NA",
-    "Category": "",
-    "Frequency": 407,
-    "Percentage": "80,6"
-  },
-  {
-    "Variable": "civicspace_youth_chal_censoring",
-    "Question_Label": "Apa tantangan terbesar bagi anak muda dalam mengakses ruang sipil di wilayah kamu?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih maksimal 3) - Adanya perasaan tidak bebas dan takut dalam menyampaikan opini dan kritik di ruang terbuka seperti media sosial dan media lainnya",
-    "Question_Label": "Adanya perasaan tidak bebas dan takut dalam menyampaikan opini dan kritik di ruang terbuka seperti media sosial dan media lainnya",
-    "Category": "",
-    "Frequency": 373,
-    "Percentage": "73,9"
-  },
-  {
-    "Variable": "civicspace_youth_chal_censoring",
-    "Question_Label": "Apa tantangan terbesar bagi anak muda dalam mengakses ruang sipil di wilayah kamu?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih maksimal 3) - Adanya perasaan tidak bebas dan takut dalam menyampaikan opini dan kritik di ruang terbuka seperti media sosial dan media lainnya",
-    "Question_Label": "NA",
-    "Category": "",
-    "Frequency": 132,
-    "Percentage": "26,1"
-  },
-  {
-    "Variable": "civicspace_youth_chal_unprotection",
-    "Question_Label": "Apa tantangan terbesar bagi anak muda dalam mengakses ruang sipil di wilayah kamu?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih maksimal 3) - Kurangnya perlindungan dari pemerintah saat menggunakan hak-hak anak muda",
-    "Question_Label": "Kurangnya perlindungan dari pemerintah saat menggunakan hak-hak anak muda",
-    "Category": "",
-    "Frequency": 212,
-    "Percentage": 42
-  },
-  {
-    "Variable": "civicspace_youth_chal_unprotection",
-    "Question_Label": "Apa tantangan terbesar bagi anak muda dalam mengakses ruang sipil di wilayah kamu?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih maksimal 3) - Kurangnya perlindungan dari pemerintah saat menggunakan hak-hak anak muda",
-    "Question_Label": "NA",
-    "Category": "",
-    "Frequency": 293,
-    "Percentage": 58
-  },
-  {
-    "Variable": "civicspace_youth_chal_safespace",
-    "Question_Label": "Apa tantangan terbesar bagi anak muda dalam mengakses ruang sipil di wilayah kamu?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih maksimal 3) - Tidak adanya ruang aman untuk berkumpul atau berorganisasi",
-    "Question_Label": "Tidak adanya ruang aman untuk berkumpul atau berorganisasi",
-    "Category": "",
-    "Frequency": 80,
-    "Percentage": "15,8"
-  },
-  {
-    "Variable": "civicspace_youth_chal_safespace",
-    "Question_Label": "Apa tantangan terbesar bagi anak muda dalam mengakses ruang sipil di wilayah kamu?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih maksimal 3) - Tidak adanya ruang aman untuk berkumpul atau berorganisasi",
-    "Question_Label": "NA",
-    "Category": "",
-    "Frequency": 425,
-    "Percentage": "84,2"
-  },
-  {
-    "Variable": "civicspace_youth_chal_discrimination",
-    "Question_Label": "Apa tantangan terbesar bagi anak muda dalam mengakses ruang sipil di wilayah kamu?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih maksimal 3) - Diskriminasi berdasarkan gender, etnis, atau agama",
-    "Question_Label": "Diskriminasi berdasarkan gender, etnis, atau agama",
-    "Category": "",
-    "Frequency": 124,
-    "Percentage": "24,6"
-  },
-  {
-    "Variable": "civicspace_youth_chal_discrimination",
-    "Question_Label": "Apa tantangan terbesar bagi anak muda dalam mengakses ruang sipil di wilayah kamu?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih maksimal 3) - Diskriminasi berdasarkan gender, etnis, atau agama",
-    "Question_Label": "NA",
-    "Category": "",
-    "Frequency": 381,
-    "Percentage": "75,4"
-  },
-  {
-    "Variable": "civicspace_youth_chal_resource",
-    "Question_Label": "Apa tantangan terbesar bagi anak muda dalam mengakses ruang sipil di wilayah kamu?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih maksimal 3) - Akses terbatas ke sumber daya atau dukungan untuk kegiatan yang dipimpin oleh anak muda",
-    "Question_Label": "Akses terbatas ke sumber daya atau dukungan untuk kegiatan yang dipimpin oleh anak muda",
-    "Category": "",
-    "Frequency": 164,
-    "Percentage": "32,5"
-  },
-  {
-    "Variable": "civicspace_youth_chal_resource",
-    "Question_Label": "Apa tantangan terbesar bagi anak muda dalam mengakses ruang sipil di wilayah kamu?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih maksimal 3) - Akses terbatas ke sumber daya atau dukungan untuk kegiatan yang dipimpin oleh anak muda",
-    "Question_Label": "NA",
-    "Category": "",
-    "Frequency": 341,
-    "Percentage": "67,5"
-  },
-  {
-    "Variable": "gov_response_humanrights",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Isu kemanusiaan dan Hak Asasi Manusia",
-    "Question_Label": 0,
-    "Category": "",
-    "Frequency": 27,
-    "Percentage": "5,3"
-  },
-  {
-    "Variable": "gov_response_humanrights",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Isu kemanusiaan dan Hak Asasi Manusia",
-    "Question_Label": 1,
-    "Category": "",
-    "Frequency": 87,
-    "Percentage": "17,2"
-  },
-  {
-    "Variable": "gov_response_humanrights",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Isu kemanusiaan dan Hak Asasi Manusia",
-    "Question_Label": 2,
-    "Category": "",
-    "Frequency": 46,
-    "Percentage": "9,1"
-  },
-  {
-    "Variable": "gov_response_humanrights",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Isu kemanusiaan dan Hak Asasi Manusia",
-    "Question_Label": 3,
-    "Category": "",
-    "Frequency": 58,
-    "Percentage": "11,5"
-  },
-  {
-    "Variable": "gov_response_humanrights",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Isu kemanusiaan dan Hak Asasi Manusia",
-    "Question_Label": 4,
-    "Category": "",
-    "Frequency": 58,
-    "Percentage": "11,5"
-  },
-  {
-    "Variable": "gov_response_humanrights",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Isu kemanusiaan dan Hak Asasi Manusia",
-    "Question_Label": 5,
-    "Category": "",
-    "Frequency": 68,
-    "Percentage": "13,5"
-  },
-  {
-    "Variable": "gov_response_humanrights",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Isu kemanusiaan dan Hak Asasi Manusia",
-    "Question_Label": 6,
-    "Category": "",
-    "Frequency": 41,
-    "Percentage": "8,1"
-  },
-  {
-    "Variable": "gov_response_humanrights",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Isu kemanusiaan dan Hak Asasi Manusia",
-    "Question_Label": 7,
-    "Category": "",
-    "Frequency": 51,
-    "Percentage": "10,1"
-  },
-  {
-    "Variable": "gov_response_humanrights",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Isu kemanusiaan dan Hak Asasi Manusia",
-    "Question_Label": 8,
-    "Category": "",
-    "Frequency": 35,
-    "Percentage": "6,9"
-  },
-  {
-    "Variable": "gov_response_humanrights",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Isu kemanusiaan dan Hak Asasi Manusia",
-    "Question_Label": 9,
-    "Category": "",
-    "Frequency": 9,
-    "Percentage": "1,8"
-  },
-  {
-    "Variable": "gov_response_humanrights",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Isu kemanusiaan dan Hak Asasi Manusia",
-    "Question_Label": 10,
-    "Category": "",
-    "Frequency": 25,
-    "Percentage": 5
-  },
-  {
-    "Variable": "gov_response_humanrights",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Isu kemanusiaan dan Hak Asasi Manusia",
-    "Question_Label": "NA",
-    "Category": "",
-    "Frequency": 0,
-    "Percentage": 0
-  },
-  {
-    "Variable": "gov_response_environment",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Perlindungan lingkungan hidup",
-    "Question_Label": 0,
-    "Category": "",
-    "Frequency": 22,
-    "Percentage": "4,4"
-  },
-  {
-    "Variable": "gov_response_environment",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Perlindungan lingkungan hidup",
-    "Question_Label": 1,
-    "Category": "",
-    "Frequency": 87,
-    "Percentage": "17,2"
-  },
-  {
-    "Variable": "gov_response_environment",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Perlindungan lingkungan hidup",
-    "Question_Label": 2,
-    "Category": "",
-    "Frequency": 54,
-    "Percentage": "10,7"
-  },
-  {
-    "Variable": "gov_response_environment",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Perlindungan lingkungan hidup",
-    "Question_Label": 3,
-    "Category": "",
-    "Frequency": 55,
-    "Percentage": "10,9"
-  },
-  {
-    "Variable": "gov_response_environment",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Perlindungan lingkungan hidup",
-    "Question_Label": 4,
-    "Category": "",
-    "Frequency": 59,
-    "Percentage": "11,7"
-  },
-  {
-    "Variable": "gov_response_environment",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Perlindungan lingkungan hidup",
-    "Question_Label": 5,
-    "Category": "",
-    "Frequency": 85,
-    "Percentage": "16,8"
-  },
-  {
-    "Variable": "gov_response_environment",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Perlindungan lingkungan hidup",
-    "Question_Label": 6,
-    "Category": "",
-    "Frequency": 38,
-    "Percentage": "7,5"
-  },
-  {
-    "Variable": "gov_response_environment",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Perlindungan lingkungan hidup",
-    "Question_Label": 7,
-    "Category": "",
-    "Frequency": 49,
-    "Percentage": "9,7"
-  },
-  {
-    "Variable": "gov_response_environment",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Perlindungan lingkungan hidup",
-    "Question_Label": 8,
-    "Category": "",
-    "Frequency": 23,
-    "Percentage": "4,6"
-  },
-  {
-    "Variable": "gov_response_environment",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Perlindungan lingkungan hidup",
-    "Question_Label": 9,
-    "Category": "",
-    "Frequency": 7,
-    "Percentage": "1,4"
-  },
-  {
-    "Variable": "gov_response_environment",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Perlindungan lingkungan hidup",
-    "Question_Label": 10,
-    "Category": "",
-    "Frequency": 26,
-    "Percentage": "5,1"
-  },
-  {
-    "Variable": "gov_response_environment",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Perlindungan lingkungan hidup",
-    "Question_Label": "NA",
-    "Category": "",
-    "Frequency": 0,
-    "Percentage": 0
-  },
-  {
-    "Variable": "gov_response_foodresource",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Ketahanan pangan dan pengelolaan sumber daya alam",
-    "Question_Label": 0,
-    "Category": "",
-    "Frequency": 15,
-    "Percentage": 3
-  },
-  {
-    "Variable": "gov_response_foodresource",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Ketahanan pangan dan pengelolaan sumber daya alam",
-    "Question_Label": 1,
-    "Category": "",
-    "Frequency": 50,
-    "Percentage": "9,9"
-  },
-  {
-    "Variable": "gov_response_foodresource",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Ketahanan pangan dan pengelolaan sumber daya alam",
-    "Question_Label": 2,
-    "Category": "",
-    "Frequency": 45,
-    "Percentage": "8,9"
-  },
-  {
-    "Variable": "gov_response_foodresource",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Ketahanan pangan dan pengelolaan sumber daya alam",
-    "Question_Label": 3,
-    "Category": "",
-    "Frequency": 48,
-    "Percentage": "9,5"
-  },
-  {
-    "Variable": "gov_response_foodresource",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Ketahanan pangan dan pengelolaan sumber daya alam",
-    "Question_Label": 4,
-    "Category": "",
-    "Frequency": 51,
-    "Percentage": "10,1"
-  },
-  {
-    "Variable": "gov_response_foodresource",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Ketahanan pangan dan pengelolaan sumber daya alam",
-    "Question_Label": 5,
-    "Category": "",
-    "Frequency": 78,
-    "Percentage": "15,4"
-  },
-  {
-    "Variable": "gov_response_foodresource",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Ketahanan pangan dan pengelolaan sumber daya alam",
-    "Question_Label": 6,
-    "Category": "",
-    "Frequency": 76,
-    "Percentage": 15
-  },
-  {
-    "Variable": "gov_response_foodresource",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Ketahanan pangan dan pengelolaan sumber daya alam",
-    "Question_Label": 7,
-    "Category": "",
-    "Frequency": 51,
-    "Percentage": "10,1"
-  },
-  {
-    "Variable": "gov_response_foodresource",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Ketahanan pangan dan pengelolaan sumber daya alam",
-    "Question_Label": 8,
-    "Category": "",
-    "Frequency": 42,
-    "Percentage": "8,3"
-  },
-  {
-    "Variable": "gov_response_foodresource",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Ketahanan pangan dan pengelolaan sumber daya alam",
-    "Question_Label": 9,
-    "Category": "",
-    "Frequency": 15,
-    "Percentage": 3
-  },
-  {
-    "Variable": "gov_response_foodresource",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Ketahanan pangan dan pengelolaan sumber daya alam",
-    "Question_Label": 10,
-    "Category": "",
-    "Frequency": 34,
-    "Percentage": "6,7"
-  },
-  {
-    "Variable": "gov_response_foodresource",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Ketahanan pangan dan pengelolaan sumber daya alam",
-    "Question_Label": "NA",
-    "Category": "",
-    "Frequency": 0,
-    "Percentage": 0
-  },
-  {
-    "Variable": "gov_response_vulnerabelpop",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Perlindungan terhadap kelompok rentan",
-    "Question_Label": 0,
-    "Category": "",
-    "Frequency": 25,
-    "Percentage": 5
-  },
-  {
-    "Variable": "gov_response_vulnerabelpop",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Perlindungan terhadap kelompok rentan",
-    "Question_Label": 1,
-    "Category": "",
-    "Frequency": 74,
-    "Percentage": "14,7"
-  },
-  {
-    "Variable": "gov_response_vulnerabelpop",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Perlindungan terhadap kelompok rentan",
-    "Question_Label": 2,
-    "Category": "",
-    "Frequency": 49,
-    "Percentage": "9,7"
-  },
-  {
-    "Variable": "gov_response_vulnerabelpop",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Perlindungan terhadap kelompok rentan",
-    "Question_Label": 3,
-    "Category": "",
-    "Frequency": 70,
-    "Percentage": "13,9"
-  },
-  {
-    "Variable": "gov_response_vulnerabelpop",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Perlindungan terhadap kelompok rentan",
-    "Question_Label": 4,
-    "Category": "",
-    "Frequency": 52,
-    "Percentage": "10,3"
-  },
-  {
-    "Variable": "gov_response_vulnerabelpop",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Perlindungan terhadap kelompok rentan",
-    "Question_Label": 5,
-    "Category": "",
-    "Frequency": 77,
-    "Percentage": "15,2"
-  },
-  {
-    "Variable": "gov_response_vulnerabelpop",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Perlindungan terhadap kelompok rentan",
-    "Question_Label": 6,
-    "Category": "",
-    "Frequency": 46,
-    "Percentage": "9,1"
-  },
-  {
-    "Variable": "gov_response_vulnerabelpop",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Perlindungan terhadap kelompok rentan",
-    "Question_Label": 7,
-    "Category": "",
-    "Frequency": 42,
-    "Percentage": "8,3"
-  },
-  {
-    "Variable": "gov_response_vulnerabelpop",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Perlindungan terhadap kelompok rentan",
-    "Question_Label": 8,
-    "Category": "",
-    "Frequency": 37,
-    "Percentage": "7,3"
-  },
-  {
-    "Variable": "gov_response_vulnerabelpop",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Perlindungan terhadap kelompok rentan",
-    "Question_Label": 9,
-    "Category": "",
-    "Frequency": 13,
-    "Percentage": "2,6"
-  },
-  {
-    "Variable": "gov_response_vulnerabelpop",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Perlindungan terhadap kelompok rentan",
-    "Question_Label": 10,
-    "Category": "",
-    "Frequency": 20,
-    "Percentage": 4
-  },
-  {
-    "Variable": "gov_response_vulnerabelpop",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Perlindungan terhadap kelompok rentan",
-    "Question_Label": "NA",
-    "Category": "",
-    "Frequency": 0,
-    "Percentage": 0
-  },
-  {
-    "Variable": "gov_response_healthaccess",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Akses dan layanan kesehatan",
-    "Question_Label": 0,
-    "Category": "",
-    "Frequency": 15,
-    "Percentage": 3
-  },
-  {
-    "Variable": "gov_response_healthaccess",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Akses dan layanan kesehatan",
-    "Question_Label": 1,
-    "Category": "",
-    "Frequency": 47,
-    "Percentage": "9,3"
-  },
-  {
-    "Variable": "gov_response_healthaccess",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Akses dan layanan kesehatan",
-    "Question_Label": 2,
-    "Category": "",
-    "Frequency": 42,
-    "Percentage": "8,3"
-  },
-  {
-    "Variable": "gov_response_healthaccess",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Akses dan layanan kesehatan",
-    "Question_Label": 3,
-    "Category": "",
-    "Frequency": 51,
-    "Percentage": "10,1"
-  },
-  {
-    "Variable": "gov_response_healthaccess",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Akses dan layanan kesehatan",
-    "Question_Label": 4,
-    "Category": "",
-    "Frequency": 55,
-    "Percentage": "10,9"
-  },
-  {
-    "Variable": "gov_response_healthaccess",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Akses dan layanan kesehatan",
-    "Question_Label": 5,
-    "Category": "",
-    "Frequency": 69,
-    "Percentage": "13,7"
-  },
-  {
-    "Variable": "gov_response_healthaccess",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Akses dan layanan kesehatan",
-    "Question_Label": 6,
-    "Category": "",
-    "Frequency": 56,
-    "Percentage": "11,1"
-  },
-  {
-    "Variable": "gov_response_healthaccess",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Akses dan layanan kesehatan",
-    "Question_Label": 7,
-    "Category": "",
-    "Frequency": 71,
-    "Percentage": "14,1"
-  },
-  {
-    "Variable": "gov_response_healthaccess",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Akses dan layanan kesehatan",
-    "Question_Label": 8,
-    "Category": "",
-    "Frequency": 48,
-    "Percentage": "9,5"
-  },
-  {
-    "Variable": "gov_response_healthaccess",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Akses dan layanan kesehatan",
-    "Question_Label": 9,
-    "Category": "",
-    "Frequency": 25,
-    "Percentage": 5
-  },
-  {
-    "Variable": "gov_response_healthaccess",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Akses dan layanan kesehatan",
-    "Question_Label": 10,
-    "Category": "",
-    "Frequency": 26,
-    "Percentage": "5,1"
-  },
-  {
-    "Variable": "gov_response_healthaccess",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Akses dan layanan kesehatan",
-    "Question_Label": "NA",
-    "Category": "",
-    "Frequency": 0,
-    "Percentage": 0
-  },
-  {
-    "Variable": "gov_response_eduaccess",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Peningkatan akses dan kualitas pendidikan",
-    "Question_Label": 0,
-    "Category": "",
-    "Frequency": 22,
-    "Percentage": "4,4"
-  },
-  {
-    "Variable": "gov_response_eduaccess",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Peningkatan akses dan kualitas pendidikan",
-    "Question_Label": 1,
-    "Category": "",
-    "Frequency": 76,
-    "Percentage": 15
-  },
-  {
-    "Variable": "gov_response_eduaccess",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Peningkatan akses dan kualitas pendidikan",
-    "Question_Label": 2,
-    "Category": "",
-    "Frequency": 40,
-    "Percentage": "7,9"
-  },
-  {
-    "Variable": "gov_response_eduaccess",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Peningkatan akses dan kualitas pendidikan",
-    "Question_Label": 3,
-    "Category": "",
-    "Frequency": 48,
-    "Percentage": "9,5"
-  },
-  {
-    "Variable": "gov_response_eduaccess",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Peningkatan akses dan kualitas pendidikan",
-    "Question_Label": 4,
-    "Category": "",
-    "Frequency": 52,
-    "Percentage": "10,3"
-  },
-  {
-    "Variable": "gov_response_eduaccess",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Peningkatan akses dan kualitas pendidikan",
-    "Question_Label": 5,
-    "Category": "",
-    "Frequency": 60,
-    "Percentage": "11,9"
-  },
-  {
-    "Variable": "gov_response_eduaccess",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Peningkatan akses dan kualitas pendidikan",
-    "Question_Label": 6,
-    "Category": "",
-    "Frequency": 61,
-    "Percentage": "12,1"
-  },
-  {
-    "Variable": "gov_response_eduaccess",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Peningkatan akses dan kualitas pendidikan",
-    "Question_Label": 7,
-    "Category": "",
-    "Frequency": 58,
-    "Percentage": "11,5"
-  },
-  {
-    "Variable": "gov_response_eduaccess",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Peningkatan akses dan kualitas pendidikan",
-    "Question_Label": 8,
-    "Category": "",
-    "Frequency": 38,
-    "Percentage": "7,5"
-  },
-  {
-    "Variable": "gov_response_eduaccess",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Peningkatan akses dan kualitas pendidikan",
-    "Question_Label": 9,
-    "Category": "",
-    "Frequency": 17,
-    "Percentage": "3,4"
-  },
-  {
-    "Variable": "gov_response_eduaccess",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Peningkatan akses dan kualitas pendidikan",
-    "Question_Label": 10,
-    "Category": "",
-    "Frequency": 33,
-    "Percentage": "6,5"
-  },
-  {
-    "Variable": "gov_response_eduaccess",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Peningkatan akses dan kualitas pendidikan",
-    "Question_Label": "NA",
-    "Category": "",
-    "Frequency": 0,
-    "Percentage": 0
-  },
-  {
-    "Variable": "gov_response_poverty",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Penanganan kemiskinan",
-    "Question_Label": 0,
-    "Category": "",
-    "Frequency": 26,
-    "Percentage": "5,1"
-  },
-  {
-    "Variable": "gov_response_poverty",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Penanganan kemiskinan",
-    "Question_Label": 1,
-    "Category": "",
-    "Frequency": 95,
-    "Percentage": "18,8"
-  },
-  {
-    "Variable": "gov_response_poverty",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Penanganan kemiskinan",
-    "Question_Label": 2,
-    "Category": "",
-    "Frequency": 56,
-    "Percentage": "11,1"
-  },
-  {
-    "Variable": "gov_response_poverty",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Penanganan kemiskinan",
-    "Question_Label": 3,
-    "Category": "",
-    "Frequency": 64,
-    "Percentage": "12,7"
-  },
-  {
-    "Variable": "gov_response_poverty",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Penanganan kemiskinan",
-    "Question_Label": 4,
-    "Category": "",
-    "Frequency": 52,
-    "Percentage": "10,3"
-  },
-  {
-    "Variable": "gov_response_poverty",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Penanganan kemiskinan",
-    "Question_Label": 5,
-    "Category": "",
-    "Frequency": 74,
-    "Percentage": "14,7"
-  },
-  {
-    "Variable": "gov_response_poverty",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Penanganan kemiskinan",
-    "Question_Label": 6,
-    "Category": "",
-    "Frequency": 51,
-    "Percentage": "10,1"
-  },
-  {
-    "Variable": "gov_response_poverty",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Penanganan kemiskinan",
-    "Question_Label": 7,
-    "Category": "",
-    "Frequency": 33,
-    "Percentage": "6,5"
-  },
-  {
-    "Variable": "gov_response_poverty",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Penanganan kemiskinan",
-    "Question_Label": 8,
-    "Category": "",
-    "Frequency": 21,
-    "Percentage": "4,2"
-  },
-  {
-    "Variable": "gov_response_poverty",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Penanganan kemiskinan",
-    "Question_Label": 9,
-    "Category": "",
-    "Frequency": 11,
-    "Percentage": "2,2"
-  },
-  {
-    "Variable": "gov_response_poverty",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Penanganan kemiskinan",
-    "Question_Label": 10,
-    "Category": "",
-    "Frequency": 22,
-    "Percentage": "4,4"
-  },
-  {
-    "Variable": "gov_response_poverty",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Penanganan kemiskinan",
-    "Question_Label": "NA",
-    "Category": "",
-    "Frequency": 0,
-    "Percentage": 0
-  },
-  {
-    "Variable": "gov_response_inequality",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Pengurangan ketimpangan sosial dan ekonomi",
-    "Question_Label": 0,
-    "Category": "",
-    "Frequency": 22,
-    "Percentage": "4,4"
-  },
-  {
-    "Variable": "gov_response_inequality",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Pengurangan ketimpangan sosial dan ekonomi",
-    "Question_Label": 1,
-    "Category": "",
-    "Frequency": 96,
-    "Percentage": 19
-  },
-  {
-    "Variable": "gov_response_inequality",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Pengurangan ketimpangan sosial dan ekonomi",
-    "Question_Label": 2,
-    "Category": "",
-    "Frequency": 59,
-    "Percentage": "11,7"
-  },
-  {
-    "Variable": "gov_response_inequality",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Pengurangan ketimpangan sosial dan ekonomi",
-    "Question_Label": 3,
-    "Category": "",
-    "Frequency": 72,
-    "Percentage": "14,3"
-  },
-  {
-    "Variable": "gov_response_inequality",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Pengurangan ketimpangan sosial dan ekonomi",
-    "Question_Label": 4,
-    "Category": "",
-    "Frequency": 61,
-    "Percentage": "12,1"
-  },
-  {
-    "Variable": "gov_response_inequality",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Pengurangan ketimpangan sosial dan ekonomi",
-    "Question_Label": 5,
-    "Category": "",
-    "Frequency": 64,
-    "Percentage": "12,7"
-  },
-  {
-    "Variable": "gov_response_inequality",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Pengurangan ketimpangan sosial dan ekonomi",
-    "Question_Label": 6,
-    "Category": "",
-    "Frequency": 46,
-    "Percentage": "9,1"
-  },
-  {
-    "Variable": "gov_response_inequality",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Pengurangan ketimpangan sosial dan ekonomi",
-    "Question_Label": 7,
-    "Category": "",
-    "Frequency": 33,
-    "Percentage": "6,5"
-  },
-  {
-    "Variable": "gov_response_inequality",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Pengurangan ketimpangan sosial dan ekonomi",
-    "Question_Label": 8,
-    "Category": "",
-    "Frequency": 23,
-    "Percentage": "4,6"
-  },
-  {
-    "Variable": "gov_response_inequality",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Pengurangan ketimpangan sosial dan ekonomi",
-    "Question_Label": 9,
-    "Category": "",
-    "Frequency": 10,
-    "Percentage": 2
-  },
-  {
-    "Variable": "gov_response_inequality",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Pengurangan ketimpangan sosial dan ekonomi",
-    "Question_Label": 10,
-    "Category": "",
-    "Frequency": 19,
-    "Percentage": "3,8"
-  },
-  {
-    "Variable": "gov_response_inequality",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Pengurangan ketimpangan sosial dan ekonomi",
-    "Question_Label": "NA",
-    "Category": "",
-    "Frequency": 0,
-    "Percentage": 0
-  },
-  {
-    "Variable": "gov_response_economicopp",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Kesempatan kerja dan pemberdayaan ekonomi",
-    "Question_Label": 0,
-    "Category": "",
-    "Frequency": 23,
-    "Percentage": "4,6"
-  },
-  {
-    "Variable": "gov_response_economicopp",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Kesempatan kerja dan pemberdayaan ekonomi",
-    "Question_Label": 1,
-    "Category": "",
-    "Frequency": 96,
-    "Percentage": 19
-  },
-  {
-    "Variable": "gov_response_economicopp",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Kesempatan kerja dan pemberdayaan ekonomi",
-    "Question_Label": 2,
-    "Category": "",
-    "Frequency": 52,
-    "Percentage": "10,3"
-  },
-  {
-    "Variable": "gov_response_economicopp",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Kesempatan kerja dan pemberdayaan ekonomi",
-    "Question_Label": 3,
-    "Category": "",
-    "Frequency": 67,
-    "Percentage": "13,3"
-  },
-  {
-    "Variable": "gov_response_economicopp",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Kesempatan kerja dan pemberdayaan ekonomi",
-    "Question_Label": 4,
-    "Category": "",
-    "Frequency": 58,
-    "Percentage": "11,5"
-  },
-  {
-    "Variable": "gov_response_economicopp",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Kesempatan kerja dan pemberdayaan ekonomi",
-    "Question_Label": 5,
-    "Category": "",
-    "Frequency": 55,
-    "Percentage": "10,9"
-  },
-  {
-    "Variable": "gov_response_economicopp",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Kesempatan kerja dan pemberdayaan ekonomi",
-    "Question_Label": 6,
-    "Category": "",
-    "Frequency": 56,
-    "Percentage": "11,1"
-  },
-  {
-    "Variable": "gov_response_economicopp",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Kesempatan kerja dan pemberdayaan ekonomi",
-    "Question_Label": 7,
-    "Category": "",
-    "Frequency": 42,
-    "Percentage": "8,3"
-  },
-  {
-    "Variable": "gov_response_economicopp",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Kesempatan kerja dan pemberdayaan ekonomi",
-    "Question_Label": 8,
-    "Category": "",
-    "Frequency": 23,
-    "Percentage": "4,6"
-  },
-  {
-    "Variable": "gov_response_economicopp",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Kesempatan kerja dan pemberdayaan ekonomi",
-    "Question_Label": 9,
-    "Category": "",
-    "Frequency": 8,
-    "Percentage": "1,6"
-  },
-  {
-    "Variable": "gov_response_economicopp",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Kesempatan kerja dan pemberdayaan ekonomi",
-    "Question_Label": 10,
-    "Category": "",
-    "Frequency": 25,
-    "Percentage": 5
-  },
-  {
-    "Variable": "gov_response_economicopp",
-    "Question_Label": "Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Kesempatan kerja dan pemberdayaan ekonomi",
-    "Question_Label": "NA",
-    "Category": "",
-    "Frequency": 0,
-    "Percentage": 0
-  },
-  {
-    "Variable": "elit_percep_national",
-    "Question_Label": "Apa persepsi kamu tentang elit politik nasional di Indonesia?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Elit politik nasional melingkupi presiden, wakil presiden, menteri, anggota legisatif pusat, dan pimpinan partai politik)",
-    "Question_Label": "Baik",
-    "Category": "",
-    "Frequency": 53,
-    "Percentage": "10,5"
-  },
-  {
-    "Variable": "elit_percep_national",
-    "Question_Label": "Apa persepsi kamu tentang elit politik nasional di Indonesia?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Elit politik nasional melingkupi presiden, wakil presiden, menteri, anggota legisatif pusat, dan pimpinan partai politik)",
-    "Question_Label": "Netral",
-    "Category": "",
-    "Frequency": 169,
-    "Percentage": "33,5"
-  },
-  {
-    "Variable": "elit_percep_national",
-    "Question_Label": "Apa persepsi kamu tentang elit politik nasional di Indonesia?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Elit politik nasional melingkupi presiden, wakil presiden, menteri, anggota legisatif pusat, dan pimpinan partai politik)",
-    "Question_Label": "Sangat baik",
-    "Category": "",
-    "Frequency": 10,
-    "Percentage": 2
-  },
-  {
-    "Variable": "elit_percep_national",
-    "Question_Label": "Apa persepsi kamu tentang elit politik nasional di Indonesia?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Elit politik nasional melingkupi presiden, wakil presiden, menteri, anggota legisatif pusat, dan pimpinan partai politik)",
-    "Question_Label": "Sangat tidak baik",
-    "Category": "",
-    "Frequency": 107,
-    "Percentage": "21,2"
-  },
-  {
-    "Variable": "elit_percep_national",
-    "Question_Label": "Apa persepsi kamu tentang elit politik nasional di Indonesia?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Elit politik nasional melingkupi presiden, wakil presiden, menteri, anggota legisatif pusat, dan pimpinan partai politik)",
-    "Question_Label": "Tidak baik",
-    "Category": "",
-    "Frequency": 166,
-    "Percentage": "32,9"
-  },
-  {
-    "Variable": "elit_percep_national",
-    "Question_Label": "Apa persepsi kamu tentang elit politik nasional di Indonesia?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Elit politik nasional melingkupi presiden, wakil presiden, menteri, anggota legisatif pusat, dan pimpinan partai politik)",
-    "Question_Label": "NA",
-    "Category": "",
-    "Frequency": 0,
-    "Percentage": 0
-  },
-  {
-    "Variable": "elit_percep_local",
-    "Question_Label": "Apa persepsi kamu tentang elit politik lokal di wilayah kamu?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Elit politik lokal melingkupi gubernur, bupati, anggota legisatif provinsi dan kabupaten/kota, kepala dinas, dan pimpinan partai politik provinsi dan kabupaten/kota)",
-    "Question_Label": "Baik",
-    "Category": "",
-    "Frequency": 57,
-    "Percentage": "11,3"
-  },
-  {
-    "Variable": "elit_percep_local",
-    "Question_Label": "Apa persepsi kamu tentang elit politik lokal di wilayah kamu?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Elit politik lokal melingkupi gubernur, bupati, anggota legisatif provinsi dan kabupaten/kota, kepala dinas, dan pimpinan partai politik provinsi dan kabupaten/kota)",
-    "Question_Label": "Netral",
-    "Category": "",
-    "Frequency": 222,
-    "Percentage": 44
-  },
-  {
-    "Variable": "elit_percep_local",
-    "Question_Label": "Apa persepsi kamu tentang elit politik lokal di wilayah kamu?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Elit politik lokal melingkupi gubernur, bupati, anggota legisatif provinsi dan kabupaten/kota, kepala dinas, dan pimpinan partai politik provinsi dan kabupaten/kota)",
-    "Question_Label": "Sangat baik",
-    "Category": "",
-    "Frequency": 11,
-    "Percentage": "2,2"
-  },
-  {
-    "Variable": "elit_percep_local",
-    "Question_Label": "Apa persepsi kamu tentang elit politik lokal di wilayah kamu?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Elit politik lokal melingkupi gubernur, bupati, anggota legisatif provinsi dan kabupaten/kota, kepala dinas, dan pimpinan partai politik provinsi dan kabupaten/kota)",
-    "Question_Label": "Sangat tidak baik",
-    "Category": "",
-    "Frequency": 68,
-    "Percentage": "13,5"
-  },
-  {
-    "Variable": "elit_percep_local",
-    "Question_Label": "Apa persepsi kamu tentang elit politik lokal di wilayah kamu?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Elit politik lokal melingkupi gubernur, bupati, anggota legisatif provinsi dan kabupaten/kota, kepala dinas, dan pimpinan partai politik provinsi dan kabupaten/kota)",
-    "Question_Label": "Tidak baik",
-    "Category": "",
-    "Frequency": 147,
-    "Percentage": "29,1"
-  },
-  {
-    "Variable": "elit_percep_local",
-    "Question_Label": "Apa persepsi kamu tentang elit politik lokal di wilayah kamu?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Elit politik lokal melingkupi gubernur, bupati, anggota legisatif provinsi dan kabupaten/kota, kepala dinas, dan pimpinan partai politik provinsi dan kabupaten/kota)",
-    "Question_Label": "NA",
-    "Category": "",
-    "Frequency": 0,
-    "Percentage": 0
-  },
-  {
-    "Variable": "issue_motiv_environment",
-    "Question_Label": "Isu apa yang membuat kamu rela mengorbankan uang dan waktu untuk mendukung atau memperjuangkannya?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih semua yang relevan) - Selected Choice - Perlindungan lingkungan hidup",
-    "Question_Label": "Perlindungan lingkungan hidup",
-    "Category": "",
-    "Frequency": 257,
-    "Percentage": "50,9"
-  },
-  {
-    "Variable": "issue_motiv_environment",
-    "Question_Label": "Isu apa yang membuat kamu rela mengorbankan uang dan waktu untuk mendukung atau memperjuangkannya?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih semua yang relevan) - Selected Choice - Perlindungan lingkungan hidup",
-    "Question_Label": "NA",
-    "Category": "",
-    "Frequency": 248,
-    "Percentage": "49,1"
-  },
-  {
-    "Variable": "issue_motiv_foodresources",
-    "Question_Label": "Isu apa yang membuat kamu rela mengorbankan uang dan waktu untuk mendukung atau memperjuangkannya?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih semua yang relevan) - Selected Choice - Ketahanan pangan dan pengelolaan sumber daya alam",
-    "Question_Label": "Ketahanan pangan dan pengelolaan sumber daya alam",
-    "Category": "",
-    "Frequency": 181,
-    "Percentage": "35,8"
-  },
-  {
-    "Variable": "issue_motiv_foodresources",
-    "Question_Label": "Isu apa yang membuat kamu rela mengorbankan uang dan waktu untuk mendukung atau memperjuangkannya?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih semua yang relevan) - Selected Choice - Ketahanan pangan dan pengelolaan sumber daya alam",
-    "Question_Label": "NA",
-    "Category": "",
-    "Frequency": 324,
-    "Percentage": "64,2"
-  },
-  {
-    "Variable": "issue_motiv_vulnerablepop",
-    "Question_Label": "Isu apa yang membuat kamu rela mengorbankan uang dan waktu untuk mendukung atau memperjuangkannya?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih semua yang relevan) - Selected Choice - Perlindungan terhadap kelompok rentan",
-    "Question_Label": "Perlindungan terhadap kelompok rentan",
-    "Category": "",
-    "Frequency": 164,
-    "Percentage": "32,5"
-  },
-  {
-    "Variable": "issue_motiv_vulnerablepop",
-    "Question_Label": "Isu apa yang membuat kamu rela mengorbankan uang dan waktu untuk mendukung atau memperjuangkannya?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih semua yang relevan) - Selected Choice - Perlindungan terhadap kelompok rentan",
-    "Question_Label": "NA",
-    "Category": "",
-    "Frequency": 341,
-    "Percentage": "67,5"
-  },
-  {
-    "Variable": "issue_motiv_humanrights",
-    "Question_Label": "Isu apa yang membuat kamu rela mengorbankan uang dan waktu untuk mendukung atau memperjuangkannya?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih semua yang relevan) - Selected Choice - Isu kemanusiaan dan Hak Asasi Manusia",
-    "Question_Label": "Isu kemanusiaan dan Hak Asasi Manusia",
-    "Category": "",
-    "Frequency": 351,
-    "Percentage": "69,5"
-  },
-  {
-    "Variable": "issue_motiv_humanrights",
-    "Question_Label": "Isu apa yang membuat kamu rela mengorbankan uang dan waktu untuk mendukung atau memperjuangkannya?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih semua yang relevan) - Selected Choice - Isu kemanusiaan dan Hak Asasi Manusia",
-    "Question_Label": "NA",
-    "Category": "",
-    "Frequency": 154,
-    "Percentage": "30,5"
-  },
-  {
-    "Variable": "issue_motiv_healthaccess",
-    "Question_Label": "Isu apa yang membuat kamu rela mengorbankan uang dan waktu untuk mendukung atau memperjuangkannya?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih semua yang relevan) - Selected Choice - Akses dan layanan kesehatan",
-    "Question_Label": "Akses dan layanan kesehatan",
-    "Category": "",
-    "Frequency": 251,
-    "Percentage": "49,7"
-  },
-  {
-    "Variable": "issue_motiv_healthaccess",
-    "Question_Label": "Isu apa yang membuat kamu rela mengorbankan uang dan waktu untuk mendukung atau memperjuangkannya?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih semua yang relevan) - Selected Choice - Akses dan layanan kesehatan",
-    "Question_Label": "NA",
-    "Category": "",
-    "Frequency": 254,
-    "Percentage": "50,3"
-  },
-  {
-    "Variable": "issue_motiv_educaccess",
-    "Question_Label": "Isu apa yang membuat kamu rela mengorbankan uang dan waktu untuk mendukung atau memperjuangkannya?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih semua yang relevan) - Selected Choice - Peningkatan akses dan kualitas pendidikan",
-    "Question_Label": "Peningkatan akses dan kualitas pendidikan",
-    "Category": "",
-    "Frequency": 339,
-    "Percentage": "67,1"
-  },
-  {
-    "Variable": "issue_motiv_educaccess",
-    "Question_Label": "Isu apa yang membuat kamu rela mengorbankan uang dan waktu untuk mendukung atau memperjuangkannya?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih semua yang relevan) - Selected Choice - Peningkatan akses dan kualitas pendidikan",
-    "Question_Label": "NA",
-    "Category": "",
-    "Frequency": 166,
-    "Percentage": "32,9"
-  },
-  {
-    "Variable": "issue_motiv_poverty",
-    "Question_Label": "Isu apa yang membuat kamu rela mengorbankan uang dan waktu untuk mendukung atau memperjuangkannya?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih semua yang relevan) - Selected Choice - Penanganan kemiskinan",
-    "Question_Label": "Penanganan kemiskinan",
-    "Category": "",
-    "Frequency": 202,
-    "Percentage": 40
-  },
-  {
-    "Variable": "issue_motiv_poverty",
-    "Question_Label": "Isu apa yang membuat kamu rela mengorbankan uang dan waktu untuk mendukung atau memperjuangkannya?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih semua yang relevan) - Selected Choice - Penanganan kemiskinan",
-    "Question_Label": "NA",
-    "Category": "",
-    "Frequency": 303,
-    "Percentage": 60
-  },
-  {
-    "Variable": "issue_motiv_inequality",
-    "Question_Label": "Isu apa yang membuat kamu rela mengorbankan uang dan waktu untuk mendukung atau memperjuangkannya?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih semua yang relevan) - Selected Choice - Pengurangan ketimpangan sosial dan ekonomi",
-    "Question_Label": "Pengurangan ketimpangan sosial dan ekonomi",
-    "Category": "",
-    "Frequency": 205,
-    "Percentage": "40,6"
-  },
-  {
-    "Variable": "issue_motiv_inequality",
-    "Question_Label": "Isu apa yang membuat kamu rela mengorbankan uang dan waktu untuk mendukung atau memperjuangkannya?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih semua yang relevan) - Selected Choice - Pengurangan ketimpangan sosial dan ekonomi",
-    "Question_Label": "NA",
-    "Category": "",
-    "Frequency": 300,
-    "Percentage": "59,4"
-  },
-  {
-    "Variable": "issue_motiv_economicopp",
-    "Question_Label": "Isu apa yang membuat kamu rela mengorbankan uang dan waktu untuk mendukung atau memperjuangkannya?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih semua yang relevan) - Selected Choice - Kesempatan kerja dan pemberdayaan ekonomi",
-    "Question_Label": "Kesempatan kerja dan pemberdayaan ekonomi",
-    "Category": "",
-    "Frequency": 243,
-    "Percentage": "48,1"
-  },
-  {
-    "Variable": "issue_motiv_economicopp",
-    "Question_Label": "Isu apa yang membuat kamu rela mengorbankan uang dan waktu untuk mendukung atau memperjuangkannya?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih semua yang relevan) - Selected Choice - Kesempatan kerja dan pemberdayaan ekonomi",
-    "Question_Label": "NA",
-    "Category": "",
-    "Frequency": 262,
-    "Percentage": "51,9"
-  },
-  {
-    "Variable": "issue_motiv_other",
-    "Question_Label": "Isu apa yang membuat kamu rela mengorbankan uang dan waktu untuk mendukung atau memperjuangkannya?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih semua yang relevan) - Selected Choice - Lainnya (sebutkan)",
-    "Question_Label": "Lainnya (sebutkan)",
-    "Category": "",
-    "Frequency": 31,
-    "Percentage": "6,1"
-  },
-  {
-    "Variable": "issue_motiv_other",
-    "Question_Label": "Isu apa yang membuat kamu rela mengorbankan uang dan waktu untuk mendukung atau memperjuangkannya?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Pilih semua yang relevan) - Selected Choice - Lainnya (sebutkan)",
-    "Question_Label": "NA",
-    "Category": "",
-    "Frequency": 474,
-    "Percentage": "93,9"
-  },
-  {
     "Variable": "issue_commited_resources",
     "Question_Label": "Seberapa banyak uang, waktu, dan tenaga yang rela kamu korbankan untuk mendukung atau memperjuangkan isu yang kamu pedulikan tersebut?",
-    "Category": 0,
+    "Category": "0",
     "Frequency": 2,
     "Percentage": "0,4"
   },
   {
     "Variable": "issue_commited_resources",
     "Question_Label": "Seberapa banyak uang, waktu, dan tenaga yang rela kamu korbankan untuk mendukung atau memperjuangkan isu yang kamu pedulikan tersebut?",
-    "Category": 20,
+    "Category": "20",
     "Frequency": 41,
     "Percentage": "8,1"
   },
   {
     "Variable": "issue_commited_resources",
     "Question_Label": "Seberapa banyak uang, waktu, dan tenaga yang rela kamu korbankan untuk mendukung atau memperjuangkan isu yang kamu pedulikan tersebut?",
-    "Category": 40,
+    "Category": "40",
     "Frequency": 95,
     "Percentage": "18,8"
   },
   {
     "Variable": "issue_commited_resources",
     "Question_Label": "Seberapa banyak uang, waktu, dan tenaga yang rela kamu korbankan untuk mendukung atau memperjuangkan isu yang kamu pedulikan tersebut?",
-    "Category": 60,
+    "Category": "60",
     "Frequency": 184,
     "Percentage": "36,4"
   },
   {
     "Variable": "issue_commited_resources",
     "Question_Label": "Seberapa banyak uang, waktu, dan tenaga yang rela kamu korbankan untuk mendukung atau memperjuangkan isu yang kamu pedulikan tersebut?",
-    "Category": 80,
+    "Category": "80",
     "Frequency": 116,
     "Percentage": 23
   },
   {
     "Variable": "issue_commited_resources",
     "Question_Label": "Seberapa banyak uang, waktu, dan tenaga yang rela kamu korbankan untuk mendukung atau memperjuangkan isu yang kamu pedulikan tersebut?",
-    "Category": 100,
+    "Category": "100",
     "Frequency": 56,
     "Percentage": "11,1"
   },
@@ -4679,90 +1081,6 @@
     "Variable": "issue_commited_voicing",
     "Question_Label": "Seberapa sering kamu menyuarakan pandangan kamu tentang isu sosial atau politik lewat media sosial?",
     "Category": "NA",
-    "Frequency": 0,
-    "Percentage": 0
-  },
-  {
-    "Variable": "issue_commited_engagement",
-    "Question_Label": "Setelah menyelesaikan survei ini, seberapa besar kemungkinan kamu akan berpartisipasi dalam kegiatan terkait ruang sipil?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Seperti bergabung dengan kelompok gerakan/organisasi sosial masyarakat, menghadiri pertemuan, atau menyuarakan pendapat tentang isu sosial)",
-    "Question_Label": "Mungkin",
-    "Category": "",
-    "Frequency": 217,
-    "Percentage": 43
-  },
-  {
-    "Variable": "issue_commited_engagement",
-    "Question_Label": "Setelah menyelesaikan survei ini, seberapa besar kemungkinan kamu akan berpartisipasi dalam kegiatan terkait ruang sipil?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Seperti bergabung dengan kelompok gerakan/organisasi sosial masyarakat, menghadiri pertemuan, atau menyuarakan pendapat tentang isu sosial)",
-    "Question_Label": "Netral",
-    "Category": "",
-    "Frequency": 138,
-    "Percentage": "27,3"
-  },
-  {
-    "Variable": "issue_commited_engagement",
-    "Question_Label": "Setelah menyelesaikan survei ini, seberapa besar kemungkinan kamu akan berpartisipasi dalam kegiatan terkait ruang sipil?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Seperti bergabung dengan kelompok gerakan/organisasi sosial masyarakat, menghadiri pertemuan, atau menyuarakan pendapat tentang isu sosial)",
-    "Question_Label": "Sangat mungkin",
-    "Category": "",
-    "Frequency": 125,
-    "Percentage": "24,8"
-  },
-  {
-    "Variable": "issue_commited_engagement",
-    "Question_Label": "Setelah menyelesaikan survei ini, seberapa besar kemungkinan kamu akan berpartisipasi dalam kegiatan terkait ruang sipil?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Seperti bergabung dengan kelompok gerakan/organisasi sosial masyarakat, menghadiri pertemuan, atau menyuarakan pendapat tentang isu sosial)",
-    "Question_Label": "Sangat tidak mungkin",
-    "Category": "",
-    "Frequency": 10,
-    "Percentage": 2
-  },
-  {
-    "Variable": "issue_commited_engagement",
-    "Question_Label": "Setelah menyelesaikan survei ini, seberapa besar kemungkinan kamu akan berpartisipasi dalam kegiatan terkait ruang sipil?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Seperti bergabung dengan kelompok gerakan/organisasi sosial masyarakat, menghadiri pertemuan, atau menyuarakan pendapat tentang isu sosial)",
-    "Question_Label": "Tidak mungkin",
-    "Category": "",
-    "Frequency": 15,
-    "Percentage": 3
-  },
-  {
-    "Variable": "issue_commited_engagement",
-    "Question_Label": "Setelah menyelesaikan survei ini, seberapa besar kemungkinan kamu akan berpartisipasi dalam kegiatan terkait ruang sipil?",
-    "Category": "",
-    "Frequency": "",
-    "Percentage": ""
-  },
-  {
-    "Variable": "(Seperti bergabung dengan kelompok gerakan/organisasi sosial masyarakat, menghadiri pertemuan, atau menyuarakan pendapat tentang isu sosial)",
-    "Question_Label": "NA",
-    "Category": "",
     "Frequency": 0,
     "Percentage": 0
   },

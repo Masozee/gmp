@@ -1,17 +1,47 @@
-import React from 'react';
+'use client';
+
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
-import boardData from '@/data/board.json'; 
-import pengurusData from '@/data/pengurus-gmp.json';
 
 // Define interfaces for type safety
 interface Member {
+  id: number;
   name: string;
   photo: string;
   title?: string;
   position?: string;
+  bio?: string;
+  email?: string;
+  socialMedia?: any;
+  order?: number;
+}
+
+interface BoardPengurusData {
+  boardMembers: Member[];
+  staff: Member[];
 }
 
 const BoardPengurusPage = () => {
+  const [data, setData] = useState<BoardPengurusData>({ boardMembers: [], staff: [] });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch('/api/board-pengurus');
+        if (response.ok) {
+          const result = await response.json();
+          setData(result);
+        }
+      } catch (error) {
+        console.error('Error fetching board pengurus data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
   return (
     <>
       {/* Hero Section */}
@@ -35,16 +65,24 @@ const BoardPengurusPage = () => {
         {/* Board Section */}
         <section className="mb-16">
           <h2 className="text-3xl font-bold mb-8 text-center text-pink-500" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>Dewan Pembina & Pengawas</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-            {boardData.map((member: Member, index: number) => (
+          {loading ? (
+            <div className="flex justify-center py-8">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-pink-500"></div>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+              {data.boardMembers.map((member: Member, index: number) => (
               <div key={`board-${index}`} className="bg-white rounded-lg shadow-lg text-center overflow-hidden flex flex-col border border-gray-100">
                 <div className="relative w-full h-80">
                     <Image 
                         src={member.photo}
                         alt={member.name}
-                        layout="fill"
-                        objectFit="cover"
-                        className="transition-all duration-300"
+                        fill
+                        className="object-cover transition-all duration-300"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(member.name)}&background=f06d98&color=fff`;
+                        }}
                     />
                 </div>
                 <div className="p-4 mt-auto">
@@ -56,32 +94,42 @@ const BoardPengurusPage = () => {
               </div>
             ))}
           </div>
+          )}
         </section>
 
         {/* Pengurus Section */}
         <section>
           <h2 className="text-3xl font-bold mb-8 text-center text-pink-500" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>Pengurus Harian</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-            {pengurusData.map((member: Member, index: number) => (
-                 <div key={`pengurus-${index}`} className="bg-white rounded-lg shadow-lg text-center overflow-hidden flex flex-col border border-gray-100">
-                     <div className="relative w-full h-80">
-                        <Image 
-                            src={member.photo}
-                            alt={member.name}
-                            layout="fill"
-                            objectFit="cover"
-                             className="transition-all duration-300"
-                        />
-                    </div>
-                    <div className="p-4 mt-auto">
+          {loading ? (
+            <div className="flex justify-center py-8">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-pink-500"></div>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+              {data.staff.map((member: Member, index: number) => (
+                <div key={`pengurus-${index}`} className="bg-white rounded-lg shadow-lg text-center overflow-hidden flex flex-col border border-gray-100">
+                  <div className="relative w-full h-80">
+                    <Image 
+                      src={member.photo}
+                      alt={member.name}
+                      fill
+                      className="object-cover transition-all duration-300"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(member.name)}&background=f06d98&color=fff`;
+                      }}
+                    />
+                  </div>
+                  <div className="p-4 mt-auto">
                     <div className="flex flex-col items-center gap-1">
                       <span className="font-semibold text-base text-black">{member.name}</span>
                       <span className="font-semibold text-base text-black">{member.position || member.title}</span>
                     </div>
-                    </div>
-              </div>
-            ))}
-          </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </section>
 
       </div>

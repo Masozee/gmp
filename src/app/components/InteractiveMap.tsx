@@ -6,143 +6,73 @@ import 'leaflet/dist/leaflet.css';
 import type { Feature, Geometry } from 'geojson';
 import type { Layer, PathOptions } from 'leaflet';
 import { motion } from 'framer-motion';
-import overallData from '../../data/overall.json';
-
-// Process the survey data to extract key statistics
-const processOverallData = () => {
-  const totalRespondents = 505; // Based on the data structure
-  
-  // Extract regional distribution
-  const regionData = overallData.filter(item => item.Variable === 'region_live');
-  const westRegion = regionData.find(item => item.Category === 'West');
-  const centralRegion = regionData.find(item => item.Category === 'Central');
-  const eastRegion = regionData.find(item => item.Category === 'East');
-  
-  // Extract age data
-  const ageData = overallData.filter(item => item.Variable === 'age');
-  const age23 = ageData.find(item => item.Category === 23)?.Percentage || '0';
-  const age25 = ageData.find(item => item.Category === 25)?.Percentage || '0';
-  
-  // Extract activism data
-  const activismData = overallData.filter(item => item.Variable === 'activism');
-  const hasActivism = activismData.find(item => item.Category === 'Pernah')?.Percentage || '0';
-  
-  // Extract political exposure intensity
-  const polexspData = overallData.filter(item => item.Variable === 'polexsp_peers_intensity');
-  const veryOften = polexspData.find(item => item.Category === 'Sangat sering (hampir setiap hari)')?.Percentage || '0';
-  const often = polexspData.find(item => item.Category === 'Sering (setidaknya sekali seminggu)')?.Percentage || '0';
-  
-  // Extract civic space understanding
-  const civspaceData = overallData.filter(item => item.Variable === 'civspace_understanding');
-  const quiteUnderstand = civspaceData.find(item => item.Category === 'Cukup paham')?.Percentage || '0';
-  const veryUnderstand = civspaceData.find(item => item.Category === 'Sangat paham')?.Percentage || '0';
-  
-  // Extract civic engagement data for bottom overlay
-  const voicingData = overallData.filter(item => item.Variable === 'issue_commited_voicing');
-  const activeVoicing = voicingData.find(item => item.Category === 'Sering terlibat')?.Percentage || '0';
-  const occasionalVoicing = voicingData.find(item => item.Category === 'Kadang-kadang terlibat')?.Percentage || '0';
-  
-  // Extract future engagement willingness
-  const engagementData = overallData.filter(item => item.Question_Label === 'Sangat mungkin');
-  const willingToEngage = engagementData.find(item => item.Frequency === 125)?.Percentage || '24,8';
-  const mightEngage = overallData.filter(item => item.Question_Label === 'Mungkin').find(item => item.Frequency === 217)?.Percentage || '43';
-  
-  // Extract safety concerns
-  const concernData = overallData.filter(item => item.Variable === 'concern_engagement');
-  const veryWorried = concernData.find(item => item.Category === 'Sangat khawatir')?.Percentage || '0';
-  const quiteWorried = concernData.find(item => item.Category === 'Cukup khawatir')?.Percentage || '0';
-  
-  return {
-    totalRespondents,
-    regions: {
-      west: { count: westRegion?.Frequency || 0, percentage: westRegion?.Percentage || '0' },
-      central: { count: centralRegion?.Frequency || 0, percentage: centralRegion?.Percentage || '0' },
-      east: { count: eastRegion?.Frequency || 0, percentage: eastRegion?.Percentage || '0' }
-    },
-    hoverData: {
-      age23: { percentage: age23 },
-      age25: { percentage: age25 },
-      hasActivism: { percentage: hasActivism },
-      veryOftenDiscuss: { percentage: veryOften },
-      oftenDiscuss: { percentage: often },
-      quiteUnderstandCivspace: { percentage: quiteUnderstand },
-      veryUnderstandCivspace: { percentage: veryUnderstand }
-    },
-    civicEngagement: {
-      activeVoicing: { percentage: activeVoicing },
-      occasionalVoicing: { percentage: occasionalVoicing },
-      willingToEngage: { percentage: willingToEngage },
-      mightEngage: { percentage: mightEngage },
-      veryWorried: { percentage: veryWorried },
-      quiteWorried: { percentage: quiteWorried }
-    }
+interface MapData {
+  provinces: ProvinceData[];
+  timezones: {
+    [key: string]: {
+      totalActivities: number;
+      count: number;
+      color: string;
+      participants: number;
+      surveyData: {
+        respondents: number;
+        demographics: {
+          age23: string;
+          age25: string;
+          avgAge: string;
+        };
+        activism: {
+          hasActivism: string;
+          politicalDiscussion: {
+            veryOften: string;
+            often: string;
+          };
+        };
+        civicSpace: {
+          understanding: {
+            quite: string;
+            very: string;
+          };
+          engagement: {
+            active: string;
+            occasional: string;
+          };
+        };
+        concerns: {
+          veryWorried: string;
+          quiteWorried: string;
+        };
+      };
+      provinces: ProvinceData[];
+    };
   };
-};
-
-// Data for provinces with activity information
-const provinceData = [
-  // WIB (UTC+7) Timezone
-  { id: 'ID-AC', name: 'Aceh', value: 75, activities: 12, timezone: 'WIB' },
-  { id: 'ID-SU', name: 'Sumatera Utara', value: 65, activities: 10, timezone: 'WIB' },
-  { id: 'ID-SB', name: 'Sumatera Barat', value: 80, activities: 15, timezone: 'WIB' },
-  { id: 'ID-RI', name: 'Riau', value: 60, activities: 8, timezone: 'WIB' },
-  { id: 'ID-JA', name: 'Jambi', value: 45, activities: 5, timezone: 'WIB' },
-  { id: 'ID-SS', name: 'Sumatera Selatan', value: 70, activities: 11, timezone: 'WIB' },
-  { id: 'ID-BE', name: 'Bengkulu', value: 40, activities: 4, timezone: 'WIB' },
-  { id: 'ID-LA', name: 'Lampung', value: 55, activities: 7, timezone: 'WIB' },
-  { id: 'ID-BB', name: 'Kepulauan Bangka Belitung', value: 30, activities: 3, timezone: 'WIB' },
-  { id: 'ID-KR', name: 'Kepulauan Riau', value: 35, activities: 4, timezone: 'WIB' },
-  { id: 'ID-JK', name: 'DKI Jakarta', value: 95, activities: 25, timezone: 'WIB' },
-  { id: 'ID-JB', name: 'Jawa Barat', value: 90, activities: 20, timezone: 'WIB' },
-  { id: 'ID-JT', name: 'Jawa Tengah', value: 85, activities: 18, timezone: 'WIB' },
-  { id: 'ID-YO', name: 'DI Yogyakarta', value: 88, activities: 19, timezone: 'WIB' },
-  { id: 'ID-JI', name: 'Jawa Timur', value: 82, activities: 17, timezone: 'WIB' },
-  { id: 'ID-BT', name: 'Banten', value: 75, activities: 12, timezone: 'WIB' },
-  { id: 'ID-KB', name: 'Kalimantan Barat', value: 45, activities: 5, timezone: 'WIB' },
-  { id: 'ID-KT', name: 'Kalimantan Tengah', value: 40, activities: 4, timezone: 'WIB' },
-  
-  // WITA (UTC+8) Timezone
-  { id: 'ID-BA', name: 'Bali', value: 78, activities: 14, timezone: 'WITA' },
-  { id: 'ID-NB', name: 'Nusa Tenggara Barat', value: 60, activities: 8, timezone: 'WITA' },
-  { id: 'ID-NT', name: 'Nusa Tenggara Timur', value: 50, activities: 6, timezone: 'WITA' },
-  { id: 'ID-KS', name: 'Kalimantan Selatan', value: 55, activities: 7, timezone: 'WITA' },
-  { id: 'ID-KI', name: 'Kalimantan Timur', value: 60, activities: 8, timezone: 'WITA' },
-  { id: 'ID-KU', name: 'Kalimantan Utara', value: 35, activities: 4, timezone: 'WITA' },
-  { id: 'ID-SA', name: 'Sulawesi Utara', value: 50, activities: 6, timezone: 'WITA' },
-  { id: 'ID-ST', name: 'Sulawesi Tengah', value: 45, activities: 5, timezone: 'WITA' },
-  { id: 'ID-SN', name: 'Sulawesi Selatan', value: 65, activities: 10, timezone: 'WITA' },
-  { id: 'ID-SG', name: 'Sulawesi Tenggara', value: 40, activities: 4, timezone: 'WITA' },
-  { id: 'ID-GO', name: 'Gorontalo', value: 30, activities: 3, timezone: 'WITA' },
-  { id: 'ID-SR', name: 'Sulawesi Barat', value: 25, activities: 2, timezone: 'WITA' },
-  
-  // WIT (UTC+9) Timezone
-  { id: 'ID-MA', name: 'Maluku', value: 35, activities: 4, timezone: 'WIT' },
-  { id: 'ID-MU', name: 'Maluku Utara', value: 30, activities: 3, timezone: 'WIT' },
-  { id: 'ID-PA', name: 'Papua', value: 40, activities: 4, timezone: 'WIT' },
-  { id: 'ID-PB', name: 'Papua Barat', value: 35, activities: 4, timezone: 'WIT' },
-];
-
-// Calculate aggregated data by timezone
-const timezoneData = {
-  'WIB': {
-    totalActivities: provinceData.filter(p => p.timezone === 'WIB').reduce((sum, province) => sum + province.activities, 0),
-    count: provinceData.filter(p => p.timezone === 'WIB').length,
-    color: '#ffcb57', // Primary - Yellow
-    participants: provinceData.filter(p => p.timezone === 'WIB').reduce((sum, province) => sum + province.activities * 120, 0),
-  },
-  'WITA': {
-    totalActivities: provinceData.filter(p => p.timezone === 'WITA').reduce((sum, province) => sum + province.activities, 0),
-    count: provinceData.filter(p => p.timezone === 'WITA').length,
-    color: '#59caf5', // Secondary - Blue
-    participants: provinceData.filter(p => p.timezone === 'WITA').reduce((sum, province) => sum + province.activities * 100, 0),
-  },
-  'WIT': {
-    totalActivities: provinceData.filter(p => p.timezone === 'WIT').reduce((sum, province) => sum + province.activities, 0),
-    count: provinceData.filter(p => p.timezone === 'WIT').length,
-    color: '#f06d98', // Accent - Pink
-    participants: provinceData.filter(p => p.timezone === 'WIT').reduce((sum, province) => sum + province.activities * 80, 0),
-  }
-};
+  surveyStats: {
+    totalRespondents: number;
+    regions: {
+      west: { count: number; percentage: string };
+      central: { count: number; percentage: string };
+      east: { count: number; percentage: string };
+    };
+    hoverData: {
+      age23: { percentage: string };
+      age25: { percentage: string };
+      hasActivism: { percentage: string };
+      veryOftenDiscuss: { percentage: string };
+      oftenDiscuss: { percentage: string };
+      quiteUnderstandCivspace: { percentage: string };
+      veryUnderstandCivspace: { percentage: string };
+    };
+    civicEngagement: {
+      activeVoicing: { percentage: string };
+      occasionalVoicing: { percentage: string };
+      willingToEngage: { percentage: string };
+      mightEngage: { percentage: string };
+      veryWorried: { percentage: string };
+      quiteWorried: { percentage: string };
+    };
+  };
+  lastUpdated: string;
+}
 
 interface ProvinceData {
   id: string;
@@ -150,94 +80,162 @@ interface ProvinceData {
   value: number;
   activities: number;
   timezone: string;
+  region: string;
+  participants: number;
 }
 
-const InteractiveMap = () => {
+interface InteractiveMapProps {
+  cardContent?: {
+    image?: string;
+    title?: string;
+    subtitle?: string;
+    description?: string;
+    buttonText?: string;
+    buttonLink?: string;
+  };
+}
+
+const InteractiveMap = ({ cardContent }: InteractiveMapProps = {}) => {
   const [geoData, setGeoData] = useState<any>(null);
+  const [mapData, setMapData] = useState<MapData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedTimezone, setSelectedTimezone] = useState<string | null>(null);
-
-  // Process survey data
-  const surveyStats = processOverallData();
+  const [activePopup, setActivePopup] = useState<{
+    timezone: string;
+    position: { x: number; y: number };
+    data: any;
+  } | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
 
   // Survey achievements data based on real civic engagement data
-  const achievements = [
+  const achievements = mapData ? [
     {
       id: 1,
-      title: `${surveyStats.civicEngagement.activeVoicing.percentage}%`,
+      title: `${mapData.surveyStats.civicEngagement.activeVoicing.percentage}%`,
       description: 'Sering Bersuara',
       icon: '/icons/communication.png',
     },
     {
       id: 2,
-      title: `${surveyStats.civicEngagement.willingToEngage.percentage}%`,
+      title: `${mapData.surveyStats.civicEngagement.willingToEngage.percentage}%`,
       description: 'Siap Berpartisipasi',
       icon: '/icons/team-work.png',
     },
     {
       id: 3,
-      title: `${surveyStats.civicEngagement.quiteWorried.percentage}%`,
+      title: `${mapData.surveyStats.civicEngagement.quiteWorried.percentage}%`,
       description: 'Khawatir Keamanan',
       icon: '/icons/pin.png',
     },
     {
       id: 4,
-      title: surveyStats.totalRespondents.toString(),
+      title: mapData.surveyStats.totalRespondents.toString(),
       description: 'Total Responden',
       icon: '/icons/global-network.png',
     },
-  ];
+  ] : [];
 
-  // Fix Leaflet icon issue in Next.js
+  // Fix Leaflet icon issue in Next.js and detect mobile
   useEffect(() => {
     if (typeof window !== 'undefined') {
       import('leaflet').then((L) => {
         L.Icon.Default.imagePath = 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/';
       });
+      
+      // Detect mobile devices
+      const checkMobile = () => {
+        setIsMobile(window.innerWidth < 768);
+      };
+      
+      checkMobile();
+      window.addEventListener('resize', checkMobile);
+      
+      return () => window.removeEventListener('resize', checkMobile);
     }
   }, []);
 
   useEffect(() => {
-    const fetchGeoData = async () => {
+    const fetchData = async () => {
       setLoading(true);
       setError(null);
       
       try {
-        const response = await fetch('/data/Provinsi.json');
+        // Fetch both map data and GeoJSON in parallel
+        const [mapDataResponse, geoResponse] = await Promise.all([
+          fetch(`/api/map-data?t=${Date.now()}`), // Add timestamp to prevent caching
+          fetch('/data/Provinsi.json')
+        ]);
         
-        if (!response.ok) {
-          throw new Error(`Failed to load GeoJSON: ${response.status} ${response.statusText}`);
+        if (!mapDataResponse.ok) {
+          throw new Error(`Failed to load map data: ${mapDataResponse.status} ${mapDataResponse.statusText}`);
         }
         
-        const data = await response.json() as any;
+        if (!geoResponse.ok) {
+          throw new Error(`Failed to load GeoJSON: ${geoResponse.status} ${geoResponse.statusText}`);
+        }
         
-        if (!data || !data.features || !Array.isArray(data.features)) {
+        const mapResult = await mapDataResponse.json();
+        const geoData = await geoResponse.json();
+        
+        if (!mapResult.success) {
+          throw new Error(mapResult.error || 'Failed to load map data');
+        }
+        
+        if (!geoData || !geoData.features || !Array.isArray(geoData.features)) {
           throw new Error('Invalid GeoJSON data format');
         }
         
-        setGeoData(data);
+        console.log('Map data loaded from API:', mapResult.data.lastUpdated, 'Total respondents:', mapResult.data.surveyStats.totalRespondents);
+        setMapData(mapResult.data);
+        setGeoData(geoData);
       } catch (error) {
-        console.error('Error loading GeoJSON:', error);
+        console.error('Error loading data:', error);
         setError(error instanceof Error ? error.message : 'Failed to load map data');
       } finally {
         setLoading(false);
       }
     };
 
-    fetchGeoData();
+    fetchData();
   }, []);
+
+  // Handle escape key to close popup
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && activePopup) {
+        setActivePopup(null);
+      }
+    };
+
+    if (activePopup) {
+      document.addEventListener('keydown', handleKeyDown);
+      return () => document.removeEventListener('keydown', handleKeyDown);
+    }
+  }, [activePopup]);
 
   // Find province data by name
   const getProvinceData = (name: string): ProvinceData => {
+    if (!mapData) {
+      return {
+        name: name,
+        value: 30,
+        activities: 2,
+        timezone: 'WIB',
+        id: 'unknown',
+        region: 'west',
+        participants: 100
+      };
+    }
+
     const cleanName = name.replace(/PROVINSI /i, '').trim();
     
-    let province = provinceData.find(p => 
+    let province = mapData.provinces.find(p => 
       p.name.toLowerCase() === cleanName.toLowerCase()
     );
     
     if (!province) {
-      province = provinceData.find(p => 
+      province = mapData.provinces.find(p => 
         cleanName.toLowerCase().includes(p.name.toLowerCase()) || 
         p.name.toLowerCase().includes(cleanName.toLowerCase())
       );
@@ -249,7 +247,9 @@ const InteractiveMap = () => {
         value: 30,
         activities: 2,
         timezone: 'WIB',
-        id: 'unknown'
+        id: 'unknown',
+        region: 'west',
+        participants: 100
       };
     }
     
@@ -269,46 +269,68 @@ const InteractiveMap = () => {
                          feature.properties?.NAME_1 || 'Unknown';
     const province = getProvinceData(provinceName);
     
-    // Get regional survey data for tooltip
+    // Get regional survey data for popup
     const getRegionalSurveyData = (timezone: string) => {
-      if (timezone === 'WIB') return surveyStats.regions.west;
-      if (timezone === 'WITA') return surveyStats.regions.central;
-      if (timezone === 'WIT') return surveyStats.regions.east;
+      if (!mapData) return { count: 0, percentage: '0' };
+      if (timezone === 'WIB') return mapData.surveyStats.regions.west;
+      if (timezone === 'WITA') return mapData.surveyStats.regions.central;
+      if (timezone === 'WIT') return mapData.surveyStats.regions.east;
       return { count: 0, percentage: '0' };
     };
     
     const regionalData = getRegionalSurveyData(province.timezone);
     
     layer.on({
-      click: () => {
+      click: (e) => {
         setSelectedTimezone(prevTimezone => prevTimezone === province.timezone ? null : province.timezone);
+        
+        // Set active popup with position and data
+        const mapContainer = e.target._map.getContainer();
+        const rect = mapContainer.getBoundingClientRect();
+        
+        const timezoneData = mapData?.timezones[province.timezone];
+        
+        setActivePopup({
+          timezone: province.timezone,
+          position: {
+            x: e.containerPoint.x,
+            y: e.containerPoint.y
+          },
+          data: {
+            provinceName,
+            province,
+            regionalData,
+            surveyStats: mapData?.surveyStats,
+            timezoneData: timezoneData
+          }
+        });
       }
     });
     
+    // Enhanced tooltip with timezone info
+    const timezoneInfo = mapData?.timezones[province.timezone];
     layer.bindTooltip(`
-      <div style="font-family: system-ui; padding: 8px; max-width: 280px;">
-        <strong style="color: #1f2937; font-size: 14px;">Zona ${province.timezone}</strong><br/>
-        <span style="color: #6b7280; font-size: 12px;">(${province.timezone === 'WIB' ? 'UTC+7' : province.timezone === 'WITA' ? 'UTC+8' : 'UTC+9'})</span><br/><br/>
-        <div style="color: #374151; font-size: 12px;">
-          <strong>Data Responden:</strong><br/>
-          • Regional: ${regionalData.count} (${regionalData.percentage}%)<br/>
-          • Usia 23: ${surveyStats.hoverData.age23.percentage}%<br/>
-          • Usia 25: ${surveyStats.hoverData.age25.percentage}%<br/><br/>
-          <strong>Aktivisme & Politik:</strong><br/>
-          • Pernah aktivisme: ${surveyStats.hoverData.hasActivism.percentage}%<br/>
-          • Diskusi politik harian: ${surveyStats.hoverData.veryOftenDiscuss.percentage}%<br/>
-          • Diskusi politik mingguan: ${surveyStats.hoverData.oftenDiscuss.percentage}%<br/><br/>
-          <strong>Pemahaman Ruang Sipil:</strong><br/>
-          • Cukup paham: ${surveyStats.hoverData.quiteUnderstandCivspace.percentage}%<br/>
-          • Sangat paham: ${surveyStats.hoverData.veryUnderstandCivspace.percentage}%
+      <div style="font-family: system-ui; padding: 6px; max-width: 250px; border-radius: 8px;">
+        <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
+          <div style="width: 10px; height: 10px; border-radius: 50%; background-color: ${timezoneInfo?.color || '#ccc'};"></div>
+          <strong style="color: #1f2937; font-size: 13px;">Zona ${province.timezone}</strong>
+        </div>
+        <div style="color: #6b7280; font-size: 10px; margin-bottom: 6px;">
+          ${province.timezone === 'WIB' ? 'UTC+7' : province.timezone === 'WITA' ? 'UTC+8' : 'UTC+9'} • ${provinceName}
+        </div>
+        <div style="color: #6b7280; font-size: 10px; border-top: 1px solid #e5e7eb; padding-top: 4px;">
+          ${timezoneInfo?.totalActivities || 0} kegiatan • ${timezoneInfo?.surveyData?.respondents || 0} responden
+        </div>
+        <div style="color: #059669; font-size: 9px; font-weight: 600; margin-top: 4px;">
+          📍 Klik untuk detail lengkap
         </div>
       </div>
-    `, { sticky: true });
+    `, { sticky: false });
   };
 
   // Get color based on timezone
   const getTimezoneColor = (timezone: string) => {
-    return timezoneData[timezone as keyof typeof timezoneData]?.color || '#cccccc';
+    return mapData?.timezones[timezone]?.color || '#cccccc';
   };
 
   const geoJSONStyle = (feature: Feature<Geometry, FeatureProperties> | undefined): PathOptions => {
@@ -336,7 +358,7 @@ const InteractiveMap = () => {
     };
   };
 
-  if (loading) {
+  if (loading || !mapData) {
     return (
       <section className="w-full bg-gradient-to-br from-blue-50 via-white to-pink-50 py-20">
         <div className="container mx-auto px-6 max-w-7xl">
@@ -381,45 +403,50 @@ const InteractiveMap = () => {
     >
       {/* Map Section - Full Width and Full Height */}
       <div className="relative w-full h-full">
-        {/* Title and Description - Left Bottom */}
+        {/* Title and Description - Responsive positioning */}
         <div className="absolute bottom-6 left-0 w-full z-[500]">
-          <div className="container mx-auto px-6 max-w-7xl">
-            <div className="bg-white/90 backdrop-blur-sm p-6 rounded-xl shadow-xl max-w-2xl">
+          <div className="container mx-auto px-4 md:px-6 max-w-7xl">
+            <div className="bg-white/90 backdrop-blur-sm p-4 md:p-6 rounded-xl shadow-xl max-w-2xl">
               <motion.div
-                className="flex gap-4"
+                className="flex flex-col md:flex-row gap-3 md:gap-4 md:items-stretch"
                 initial={{ opacity: 0, x: -20 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.8, delay: 0.4 }}
               >
-                {/* Publication Image - Left */}
-                <div className="flex-shrink-0">
-                  <img 
-                    src="/images/cover/LaporanGorontalo.png"
-                    alt="Laporan Riset Ruang Sipil Gorontalo"
-                    className="w-32 h-48 object-cover rounded-lg shadow-md"
-                  />
-                </div>
+                {/* Publication Image - Top on mobile, Left on desktop */}
+                {cardContent?.image && (
+                  <div className="flex-shrink-0 flex md:self-stretch">
+                    <img 
+                      src={cardContent.image}
+                      alt={cardContent.title || "Card image"}
+                      className="w-24 h-24 md:w-36 md:h-auto lg:w-40 object-contain rounded-lg shadow-md mx-auto md:mx-0"
+                    />
+                  </div>
+                )}
                 
-                {/* Content - Right */}
-                <div className="flex-1">
-                  <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-3">
-                    Understanding Youth Engagement and Civic Space in Indonesia
+                {/* Content - Bottom on mobile, Right on desktop */}
+                <div className="flex-1 text-center md:text-left flex flex-col justify-center">
+                  {cardContent?.subtitle && (
+                    <p className="text-xs md:text-xs lg:text-sm mb-1 md:mb-1 text-primary font-semibold">
+                      {cardContent.subtitle}
+                    </p>
+                  )}
+                  <h2 className="text-sm md:text-lg lg:text-xl font-bold text-gray-800 mb-1 md:mb-2 leading-tight">
+                    {cardContent?.title || "Understanding Youth Engagement and Civic Space in Indonesia"}
                   </h2>
-                  <p className="text-sm md:text-base text-gray-600 mb-4 leading-relaxed">
-                    Eksplorasi mendalam terhadap dinamika partisipasi pemuda dalam ruang sipil Indonesia. 
-                    Pemetaan ini menunjukkan sebaran geografis kegiatan dan tingkat keterlibatan masyarakat 
-                    sipil di berbagai zona waktu.
+                  <p className="text-xs md:text-xs lg:text-sm text-gray-600 mb-2 md:mb-3 leading-relaxed">
+                    {cardContent?.description || "Eksplorasi mendalam terhadap dinamika partisipasi pemuda dalam ruang sipil Indonesia. Pemetaan ini menunjukkan sebaran geografis kegiatan dan tingkat keterlibatan masyarakat sipil di berbagai zona waktu."}
                   </p>
                   
-                  {/* Yellow Button to Publications */}
+                  {/* Action Button */}
                   <motion.a
-                    href="/publikasi"
-                    className="inline-block bg-yellow-400 hover:bg-yellow-500 text-gray-800 font-semibold px-4 py-2 rounded-full text-sm transition-colors duration-300"
+                    href={cardContent?.buttonLink || "/publikasi"}
+                    className="inline-block bg-primary-dark hover:bg-[#e5b64e] text-[#4c3c1a] hover:text-[#4c3c1a] font-semibold px-3 py-1 rounded-full text-xs transition-colors duration-300 touch-manipulation w-fit"
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                   >
-                    Lihat Semua Publikasi
+                    {cardContent?.buttonText || "Lihat Semua Publikasi"}
                   </motion.a>
                 </div>
               </motion.div>
@@ -434,11 +461,17 @@ const InteractiveMap = () => {
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 1.2, delay: 0.2 }}
+          onClick={(e) => {
+            // Close popup when clicking on the background
+            if (e.target === e.currentTarget) {
+              setActivePopup(null);
+            }
+          }}
         >
           {geoData && (
             <MapContainer
-              center={[-2.5, 118]}
-              zoom={5}
+              center={isMobile ? [-2.0, 118] : [-2.5, 118]}
+              zoom={isMobile ? 3.5 : 5}
               style={{ height: "100%", width: "100%", background: '#f5f5f5', zIndex: 10 }}
               zoomControl={false}
               scrollWheelZoom={false}
@@ -468,6 +501,184 @@ const InteractiveMap = () => {
               background: "linear-gradient(180deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.3) 15%, rgba(0,0,0,0.1) 30%, rgba(0,0,0,0) 50%)"
             }}
           ></div>
+          
+          {/* Custom Popup */}
+          {activePopup && (
+            <div 
+              className="absolute z-30 pointer-events-auto"
+              style={{
+                left: `${Math.min(activePopup.position.x, window.innerWidth - 320)}px`,
+                top: `${Math.min(activePopup.position.y, window.innerHeight - 350)}px`,
+                transform: 'translate(-50%, -100%)',
+                maxWidth: '320px'
+              }}
+              onWheel={(e) => e.stopPropagation()}
+            >
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8, y: 10 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.8, y: 10 }}
+                transition={{ duration: 0.2 }}
+                className="bg-white rounded-lg shadow-xl overflow-hidden w-80"
+                style={{ 
+                  fontFamily: 'system-ui',
+                  border: `2px solid ${activePopup.data.timezoneData?.color || '#e5e7eb'}`,
+                  boxShadow: `0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04), 0 0 0 1px ${activePopup.data.timezoneData?.color}40`
+                }}
+              >
+                {/* Header with close button */}
+                <div 
+                  className="px-4 py-4 flex justify-between items-center border-b-2"
+                  style={{ 
+                    borderBottomColor: activePopup.data.timezoneData?.color || '#ccc',
+                    backgroundColor: activePopup.data.timezoneData?.color + '20',
+                    background: `linear-gradient(135deg, ${activePopup.data.timezoneData?.color}20, ${activePopup.data.timezoneData?.color}10)`
+                  }}
+                >
+                  <div>
+                    <div className="flex items-center gap-3 mb-1">
+                      <div 
+                        className="w-4 h-4 rounded-full shadow-lg border-2 border-white"
+                        style={{ backgroundColor: activePopup.data.timezoneData?.color || '#ccc' }}
+                      ></div>
+                      <strong 
+                        className="text-lg font-bold"
+                        style={{ color: activePopup.data.timezoneData?.color ? '#1f2937' : '#1f2937' }}
+                      >
+                        Zona {activePopup.timezone}
+                      </strong>
+                    </div>
+                    <span className="text-gray-600 text-sm font-medium">
+                      {activePopup.timezone === 'WIB' ? 'UTC+7 - Waktu Indonesia Barat' : 
+                       activePopup.timezone === 'WITA' ? 'UTC+8 - Waktu Indonesia Tengah' : 
+                       'UTC+9 - Waktu Indonesia Timur'}
+                    </span>
+                  </div>
+                  <button
+                    onClick={() => setActivePopup(null)}
+                    className="text-gray-500 hover:text-gray-700 transition-colors p-2 rounded-full hover:bg-white/80 shadow-sm"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+                
+                
+                {/* Detailed Content */}
+                <div className="p-4 text-gray-700 text-xs max-h-72">
+                  {activePopup.data.timezoneData?.surveyData && (
+                    <>
+                      {/* Demographics */}
+                      <div className="mb-3">
+                        <h4 className="font-semibold text-gray-800 mb-2 flex items-center text-sm">
+                          <span className="w-2 h-2 bg-blue-500 rounded-full mr-2"></span>
+                          Demografi
+                        </h4>
+                        <div className="grid grid-cols-1 gap-1 pl-4">
+                          <div className="flex justify-between">
+                            <span>Rata-rata usia:</span>
+                            <strong>{activePopup.data.timezoneData.surveyData.demographics.avgAge} tahun</strong>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>Usia 23 tahun:</span>
+                            <strong>{activePopup.data.timezoneData.surveyData.demographics.age23}%</strong>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>Usia 25 tahun:</span>
+                            <strong>{activePopup.data.timezoneData.surveyData.demographics.age25}%</strong>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Activism */}
+                      <div className="mb-3">
+                        <h4 className="font-semibold text-gray-800 mb-2 flex items-center text-sm">
+                          <span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
+                          Aktivisme & Politik
+                        </h4>
+                        <div className="grid grid-cols-1 gap-1 pl-4">
+                          <div className="flex justify-between">
+                            <span>Pernah aktivisme:</span>
+                            <strong>{activePopup.data.timezoneData.surveyData.activism.hasActivism}%</strong>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>Diskusi harian:</span>
+                            <strong>{activePopup.data.timezoneData.surveyData.activism.politicalDiscussion.veryOften}%</strong>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>Diskusi mingguan:</span>
+                            <strong>{activePopup.data.timezoneData.surveyData.activism.politicalDiscussion.often}%</strong>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Civic Space Understanding */}
+                      <div className="mb-3">
+                        <h4 className="font-semibold text-gray-800 mb-2 flex items-center text-sm">
+                          <span className="w-2 h-2 bg-purple-500 rounded-full mr-2"></span>
+                          Pemahaman Ruang Sipil
+                        </h4>
+                        <div className="grid grid-cols-1 gap-1 pl-4">
+                          <div className="flex justify-between">
+                            <span>Sangat paham:</span>
+                            <strong>{activePopup.data.timezoneData.surveyData.civicSpace.understanding.very}%</strong>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>Cukup paham:</span>
+                            <strong>{activePopup.data.timezoneData.surveyData.civicSpace.understanding.quite}%</strong>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Civic Engagement */}
+                      <div className="mb-3">
+                        <h4 className="font-semibold text-gray-800 mb-2 flex items-center text-sm">
+                          <span className="w-2 h-2 bg-orange-500 rounded-full mr-2"></span>
+                          Keterlibatan Sipil
+                        </h4>
+                        <div className="grid grid-cols-1 gap-1 pl-4">
+                          <div className="flex justify-between">
+                            <span>Aktif bersuara:</span>
+                            <strong>{activePopup.data.timezoneData.surveyData.civicSpace.engagement.active}%</strong>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>Kadang terlibat:</span>
+                            <strong>{activePopup.data.timezoneData.surveyData.civicSpace.engagement.occasional}%</strong>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Concerns */}
+                      <div className="mb-3">
+                        <h4 className="font-semibold text-gray-800 mb-2 flex items-center text-sm">
+                          <span className="w-2 h-2 bg-red-500 rounded-full mr-2"></span>
+                          Kekhawatiran Keamanan
+                        </h4>
+                        <div className="grid grid-cols-1 gap-1 pl-4">
+                          <div className="flex justify-between">
+                            <span>Sangat khawatir:</span>
+                            <strong>{activePopup.data.timezoneData.surveyData.concerns.veryWorried}%</strong>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>Cukup khawatir:</span>
+                            <strong>{activePopup.data.timezoneData.surveyData.concerns.quiteWorried}%</strong>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      {/* Additional Info */}
+                      <div className="pt-2 border-t border-gray-200">
+                        <div className="text-center text-gray-500 text-xs">
+                          Data dari {activePopup.data.timezoneData.surveyData.respondents} responden zona {activePopup.timezone}
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </div>
+              </motion.div>
+            </div>
+          )}
         </motion.div>
       </div>
     </motion.section>
@@ -475,8 +686,21 @@ const InteractiveMap = () => {
 };
 
 // Statistics Component - Separate section after the map
-const MapStatistics = () => {
+const MapStatistics = ({ mapData }: { mapData: MapData | null }) => {
   const [selectedTimezone, setSelectedTimezone] = useState<string | null>(null);
+
+  if (!mapData) {
+    return (
+      <section className="w-full bg-gradient-to-br from-blue-50 via-white to-pink-50 py-20">
+        <div className="container mx-auto px-6 max-w-7xl">
+          <div className="text-center">
+            <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-pink-600 mb-2"></div>
+            <p className="text-gray-500">Loading statistics...</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="w-full bg-gradient-to-br from-blue-50 via-white to-pink-50 py-20">
@@ -489,7 +713,7 @@ const MapStatistics = () => {
           viewport={{ once: true }}
           transition={{ duration: 0.8, delay: 0.4 }}
         >
-          {Object.entries(timezoneData).map(([timezone, data]) => (
+          {Object.entries(mapData.timezones).map(([timezone, data]) => (
             <motion.div
               key={timezone}
               className={`bg-white p-6 rounded-xl shadow-lg border-l-4 cursor-pointer transition-all duration-300 ${
@@ -526,7 +750,7 @@ const MapStatistics = () => {
                   className="h-2 rounded-full transition-all duration-500"
                   style={{ 
                     backgroundColor: data.color,
-                    width: `${(data.totalActivities / Math.max(...Object.values(timezoneData).map(tz => tz.totalActivities))) * 100}%`
+                    width: `${(data.totalActivities / Math.max(...Object.values(mapData.timezones).map(tz => tz.totalActivities))) * 100}%`
                   }}
                 ></div>
               </div>
@@ -558,5 +782,33 @@ const MapStatistics = () => {
   );
 };
 
+// Export component with map data
+const InteractiveMapWithStats = ({ cardContent }: InteractiveMapProps = {}) => {
+  const [mapData, setMapData] = useState<MapData | null>(null);
+  
+  useEffect(() => {
+    const fetchMapData = async () => {
+      try {
+        const response = await fetch('/api/map-data');
+        const result = await response.json();
+        if (result.success) {
+          setMapData(result.data);
+        }
+      } catch (error) {
+        console.error('Error fetching map data for stats:', error);
+      }
+    };
+    
+    fetchMapData();
+  }, []);
+  
+  return (
+    <>
+      <InteractiveMap cardContent={cardContent} />
+      <MapStatistics mapData={mapData} />
+    </>
+  );
+};
+
 export default InteractiveMap;
-export { MapStatistics }; 
+export { MapStatistics, InteractiveMapWithStats }; 

@@ -10,12 +10,12 @@ const DonasiPage = () => {
   return (
     <>
       {/* Hero Section */}
-      <section className="bg-green-600 py-32 text-white">
+      <section className="bg-success py-32 !text-white">
         <div className="container mx-auto max-w-7xl px-4 text-center">
-          <h1 className="mb-4 text-4xl font-bold md:text-5xl">
+          <h1 className="mb-4 text-4xl font-bold md:text-5xl !text-white">
             Donasi & Kolaborasi
           </h1>
-          <p className="text-lg text-green-100">
+          <p className="text-lg !text-white">
           Mari bersama membangun masa depan yang lebih baik dan partisipasi yang lebih bermakna pada demokrasi & kebijakan publik.
           </p>
         </div>
@@ -81,7 +81,7 @@ const DonasiPage = () => {
           <div className="w-full md:w-1/2 flex justify-center">
             <div className="relative w-full h-80 rounded-lg overflow-hidden shadow-xl">
               <Image 
-                src="/images/bg/about.jpg" 
+                src="/images/bg/138A3974.png" 
                 alt="Kolaborasi Bersama" 
                 fill
                 className="object-cover"
@@ -132,7 +132,7 @@ const DonasiPage = () => {
           <div className="w-full md:w-1/2 flex justify-center">
             <div className="relative w-full h-80 rounded-lg overflow-hidden shadow-xl">
               <Image 
-                src="/images/bg/about.jpg" 
+                src="/images/bg/138A3287.png" 
                 alt="Hubungi Kami" 
                 fill
                 className="object-cover"

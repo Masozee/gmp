@@ -18,6 +18,14 @@ import {
   FolderIcon,
   MessageSquareIcon,
   BriefcaseIcon,
+  SlidersHorizontalIcon,
+  FileSliders,
+  Settings,
+  Unplug,
+  QrCode,
+  ScanFace,
+  TrendingUpIcon,
+  Users,
 } from "lucide-react"
 
 import { NavDocuments } from "@/components/nav-documents"
@@ -46,6 +54,7 @@ const data = {
       url: "/admin",
       icon: LayoutDashboardIcon,
     },
+    
     {
       title: "Publikasi",
       url: "/admin/publikasi",
@@ -62,10 +71,25 @@ const data = {
       icon: BriefcaseIcon,
     },
     {
-      title: "Program",
+      title: "Research",
+      url: "/admin/research",
+      icon: TrendingUpIcon,
+    },
+    {
+      title: "Pengurus",
+      url: "/admin/pengurus",
+      icon: Users,
+    },
+    {
+      title: "Pages",
       url: "/admin/program",
       icon: FolderIcon,
       items: [
+        {
+          title: "Semua Program",
+          url: "/admin/program",
+          icon: FolderIcon,
+        },
         {
           title: "Diskusi",
           url: "/admin/program/diskusi",
@@ -74,14 +98,48 @@ const data = {
       ],
     },
     {
-      title: "Pengguna",
-      url: "/admin/users",
-      icon: UsersIcon,
+      title: "Analytics",
+      url: "/admin/analytics",
+      icon: BarChartIcon,
+      items: [
+        {
+          title: "Visitor Tracking",
+          url: "/admin/analytics/visitor-tracking",
+          icon: UsersIcon,
+        },
+      ],
     },
     {
-      title: "Laporan",
-      url: "/admin/reports", 
-      icon: BarChartIcon,
+      title: "Konfigurasi",
+      url: "/admin/config",
+      icon: Settings,
+      items: [
+        {
+          title: "Halaman",
+          url: "/admin/config/pages",
+          icon: FileIcon,
+        },
+        {
+          title: "Slider Homepage",
+          url: "/admin/config/homepage-slides",
+          icon: FileSliders,
+        },
+        {
+          title: "Pengurus",
+          url: "/admin/config/homepage-slides",
+          icon: UsersIcon,
+        },
+        {
+          title: "Mitra Strategis",
+          url: "/admin/config/partners",
+          icon: Unplug,
+        },
+        {
+          title: "Media Sosial",
+          url: "/admin/config/social-media",
+          icon: ScanFace,
+        },
+      ],
     },
   ],
   navSecondary: [
@@ -103,14 +161,14 @@ const data = {
   ],
   documents: [
     {
-      name: "Data Library",
+      name: "Asset Management",
       url: "/admin/data",
       icon: DatabaseIcon,
     },
     {
-      name: "Reports",
+      name: "Shorten URL",
       url: "/admin/reports",
-      icon: ClipboardListIcon,
+      icon: QrCode,
     },
     {
       name: "Word Assistant",
@@ -121,56 +179,81 @@ const data = {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const [user, setUser] = React.useState(data.user);
+  const [user, setUser] = React.useState({
+    name: "Loading...",
+    email: "loading@example.com",
+    avatar: "",
+    initials: "L",
+  });
+  const [isLoading, setIsLoading] = React.useState(true);
   const router = useRouter();
 
-  // Fetch user data from our new authentication system
+  // Helper function to generate initials from name
+  const generateInitials = (name: string) => {
+    return name
+      .split(' ')
+      .map(word => word.charAt(0))
+      .join('')
+      .toUpperCase()
+      .slice(0, 2);
+  };
+
+  // Fetch user data from Hono API
   React.useEffect(() => {
     async function fetchUserData() {
       try {
-        const response = await fetch('/api/auth/login', {
+        const response = await fetch('/api/hono/protected/profile', {
           method: 'GET',
           credentials: 'include',
         });
         
         if (response.ok) {
           const userData = await response.json();
-          if (userData.user) {
+          if (userData.success && userData.user) {
+            const initials = generateInitials(userData.user.name);
             setUser({
               name: userData.user.name,
               email: userData.user.email,
-              avatar: "/images/logo/logo.png", // Use logo as avatar for now
+              avatar: "",
+              initials: initials,
             });
+          }
+        } else {
+          // If unauthorized, redirect to login
+          if (response.status === 401) {
+            router.push('/login');
           }
         }
       } catch (error) {
         console.error("Error fetching user:", error);
+      } finally {
+        setIsLoading(false);
       }
     }
     fetchUserData();
-  }, []);
+  }, [router]);
 
   return (
-    <div className="font-inter">
-      <Sidebar collapsible="offcanvas" {...props}>
-        <SidebarHeader>
+    <div className="font-geist">
+      <Sidebar collapsible="offcanvas" className="bg-slate-900 border-slate-800" {...props}>
+        <SidebarHeader className="bg-slate-900">
           <SidebarMenu>
             <SidebarMenuItem>
-              <SidebarMenuButton asChild className="data-[slot=sidebar-menu-button]:!p-1.5">
+              <SidebarMenuButton asChild className="data-[slot=sidebar-menu-button]:!p-1.5 hover:bg-slate-800">
                 <a href="/admin" className="flex items-center">
-                  <Image src="/images/logo/logo.png" alt="Logo" width={28} height={28} />
-                  <span className="text-base font-semibold ml-2">Admin Panel</span>
+                  <Image src="/images/logo/logo.png" alt="Logo" width={32} height={32} />
+                  <span className="text-lg font-bold ml-3 text-white">Admin Panel</span>
                 </a>
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
         </SidebarHeader>
-        <SidebarContent>
+        <SidebarContent className="bg-slate-900">
           <NavMain items={data.navMain} />
           <NavDocuments items={data.documents} />
           <NavSecondary items={data.navSecondary} className="mt-auto" />
         </SidebarContent>
-        <SidebarFooter>
+        <SidebarFooter className="bg-slate-900">
           <NavUser user={user} />
         </SidebarFooter>
       </Sidebar>

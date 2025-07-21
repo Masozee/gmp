@@ -18,35 +18,44 @@ interface Event {
   registrationLink: string;
 }
 
-const UpcomingEventsEn = () => {
+interface UpcomingEventsProps {
+  events?: Event[];
+}
+
+const UpcomingEventsEn = ({ events: propEvents }: UpcomingEventsProps) => {
   const [events, setEvents] = useState<Event[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   
   useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        const response = await fetch('/api/events');
-        if (!response.ok) throw new Error('Failed to fetch events');
-        const data = await response.json();
-        
-        // Sort events by date (assuming the date format is "DD Month YYYY")
-        const sortedEvents = [...data].sort((a, b) => {
-          const dateA = parseIndonesianDate(a.date);
-          const dateB = parseIndonesianDate(b.date);
-          return dateA && dateB ? dateA.getTime() - dateB.getTime() : 0;
-        });
-        
-        setEvents(sortedEvents.slice(0, 3)); // Get only 3 nearest events
-      } catch (error) {
-        console.error('Error fetching events:', error);
-        setEvents([]);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    
-    fetchEvents();
-  }, []);
+    if (propEvents && propEvents.length > 0) {
+      setEvents(propEvents);
+      setIsLoading(false);
+    } else {
+      const fetchEvents = async () => {
+        try {
+          const response = await fetch('/api/events');
+          if (!response.ok) throw new Error('Failed to fetch events');
+          const data = await response.json();
+          
+          // Sort events by date (assuming the date format is "DD Month YYYY")
+          const sortedEvents = [...data].sort((a, b) => {
+            const dateA = parseIndonesianDate(a.date);
+            const dateB = parseIndonesianDate(b.date);
+            return dateA && dateB ? dateA.getTime() - dateB.getTime() : 0;
+          });
+          
+          setEvents(sortedEvents.slice(0, 3)); // Get only 3 nearest events
+        } catch (error) {
+          console.error('Error fetching events:', error);
+          setEvents([]);
+        } finally {
+          setIsLoading(false);
+        }
+      };
+      
+      fetchEvents();
+    }
+  }, [propEvents]);
   
   // Helper function to parse Indonesian dates
   const parseIndonesianDate = (dateString: string): Date | null => {
@@ -74,6 +83,17 @@ const UpcomingEventsEn = () => {
     
     return new Date(year, month, day);
   };
+
+  // Helper function to check if event has passed
+  const isEventPassed = (dateString: string): boolean => {
+    const eventDate = parseIndonesianDate(dateString);
+    if (!eventDate) return false;
+    
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Reset time to beginning of day for fair comparison
+    
+    return eventDate < today;
+  };
   
   if (isLoading) {
     return (
@@ -96,30 +116,48 @@ const UpcomingEventsEn = () => {
   
   return (
     <section className="py-16 bg-gray-50">
-      <div className="container mx-auto px-4 max-w-7xl">
+      <div className="container mx-auto px-2 max-w-7xl">
         <h2 className="text-3xl md:text-4xl font-heading font-bold mb-4 text-center">Upcoming Events</h2>
-        <p className="text-lg text-gray-600 mb-8 text-center max-w-3xl mx-auto">
+        <p className="text-lg text-gray-600 mb-8 text-center max-w-2xl mx-auto">
           Explore our exciting and beneficial events. Join us to enhance your capacity and political engagement.
         </p>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {events.map((event) => (
-            <div key={event.id} className="group">
-              {/* Poster Image */}
-              <div className="relative overflow-hidden transition-all duration-300 hover:-translate-y-1">
-                <img 
-                  src={event.image} 
-                  alt={event.title}
-                  className="w-full h-auto object-cover transition-transform duration-700 ease-in-out group-hover:scale-105"
-                />
-                <div className="absolute top-3 right-3 bg-primary text-white text-sm font-medium px-3 py-1 rounded-full">
-                  {event.category}
+          {events.map((event) => {
+            const isPassed = isEventPassed(event.date);
+            
+            return (
+              <div key={event.id} className="group">
+                {/* Poster Image */}
+                <div className="relative overflow-hidden transition-all duration-300 hover:-translate-y-1">
+                  <img 
+                    src={event.image} 
+                    alt={event.title}
+                    className={`w-full h-auto object-cover transition-all duration-300 ${
+                      isPassed ? 'grayscale opacity-75' : ''
+                    }`}
+                  />
+                  <div className="absolute top-3 right-3 bg-primary text-white text-sm font-medium px-3 py-1 rounded-full">
+                    {event.category}
+                  </div>
+                  {isPassed && (
+                    <div className="absolute top-3 left-3 bg-red-600 text-white text-sm font-medium px-3 py-1 rounded-full">
+                      FINISHED
+                    </div>
+                  )}
                 </div>
-              </div>
-              
-              {/* Content Section */}
-              <div className="mt-4">
-                <h3 className="text-xl font-bold mb-3 text-gray-900">{event.title}</h3>
+                
+                {/* Content Section */}
+                <div className="mt-4">
+                  <Link href={`/en/events/${event.slug}`}>
+                    <h3 className={`text-xl font-bold mb-3 hover:underline hover:decoration-2 hover:underline-offset-2 transition-all duration-500 ease-in-out cursor-pointer ${
+                      isPassed 
+                        ? 'text-gray-500 hover:text-gray-600' 
+                        : 'text-gray-900 hover:text-primary'
+                    }`}>
+                      {isPassed ? '[CLOSED] ' : ''}{event.title}
+                    </h3>
+                  </Link>
                 
                 <div className="flex items-center mb-2 text-gray-600 text-sm">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -137,21 +175,15 @@ const UpcomingEventsEn = () => {
                   </svg>
                   <span className="line-clamp-1">{event.location}</span>
                 </div>
-                
-                <div className="mt-4">
-                  <Link href={`/en/events/${event.slug}`}
-                    className="inline-block w-full text-center py-2 px-4 rounded-full font-medium transition-all hover:bg-[#f06d98] hover:text-white bg-[#ffcb57] text-black">
-                    Learn More
-                  </Link>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
         
         <div className="text-center mt-10">
           <Link href="/en/events" 
-            className="inline-block bg-[#ffcb57] hover:bg-[#f06d98] text-black hover:text-white rounded-full px-6 py-3 font-medium transition-colors">
+            className="inline-block bg-primary-dark hover:bg-[#e5b64e] text-[#4c3c1a] hover:text-[#4c3c1a] rounded-full px-6 py-3 font-medium transition">
             View All Events
           </Link>
         </div>

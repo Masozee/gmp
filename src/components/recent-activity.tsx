@@ -157,11 +157,14 @@ export function RecentActivity() {
   }
 
   return (
-    <Card className="border-0 shadow-sm">
-      <CardHeader className="pb-4">
-        <CardTitle className="text-lg">Aktivitas Terbaru</CardTitle>
+    <Card className="border shadow-sm bg-white">
+      <CardHeader className="pb-4 bg-slate-50 rounded-t-lg border-b">
+        <CardTitle className="text-xl font-bold text-gray-800">Aktivitas Terbaru</CardTitle>
+        <CardDescription className="text-gray-600">
+          Konten dan aktivitas terbaru di website
+        </CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-6">
         <div className="space-y-3">
           {activities.slice(0, 6).map((activity, index) => {
             const IconComponent = getIcon(activity.type);
@@ -173,13 +176,13 @@ export function RecentActivity() {
                 </div>
                 
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs leading-relaxed truncate">
+                  <p className="text-xs leading-relaxed truncate text-gray-800">
                     {activity.title}
                     {activity.eventTitle && (
-                      <span className="text-muted-foreground"> - {activity.eventTitle}</span>
+                      <span className="text-gray-600"> - {activity.eventTitle}</span>
                     )}
                   </p>
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-xs text-gray-600">
                     {formatDate(activity.date)} • {getTypeLabel(activity.type)}
                   </p>
                 </div>
@@ -188,8 +191,8 @@ export function RecentActivity() {
           })}
           
           {activities.length > 6 && (
-            <div className="pt-2 border-t">
-              <p className="text-xs text-muted-foreground text-center">
+            <div className="pt-2 border-t border-gray-200">
+              <p className="text-xs text-gray-600 text-center">
                 +{activities.length - 6} aktivitas lainnya
               </p>
             </div>

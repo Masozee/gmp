@@ -2,32 +2,33 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import dynamic from 'next/dynamic';
 
 // Import component and type
 import PublikasiTerbaruEn, { Publikasi } from './components/PublikasiTerbaruEn';
 
 // Import other components 
 import ParticipationInfoEn from './components/ParticipationInfoEn';
-import EngagementBannerEn from './components/EngagementBannerEn';
-import TestimonialsCarouselEn from './components/TestimonialsCarouselEn';
-import PartnersEn from './components/PartnersEn';
-import UpcomingEventsEn from './components/UpcomingEventsEn';
+import dynamic from 'next/dynamic';
 
 // Dynamic import for client-side only components
-const InteractiveMap = dynamic(() => import('../components/InteractiveMap'), {
+const VerticalSlideshowEn = dynamic(() => import('./components/VerticalSlideshowEn'), {
   ssr: false,
   loading: () => (
     <section className="relative w-full h-screen overflow-hidden bg-gray-100">
       <div className="flex items-center justify-center h-full">
         <div className="text-center">
           <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-pink-600 mb-2"></div>
-          <p className="text-gray-500">Loading interactive map...</p>
+          <p className="text-gray-500">Loading slideshow...</p>
         </div>
       </div>
     </section>
   )
 });
+
+import EngagementBannerEn from './components/EngagementBannerEn';
+import TestimonialsCarouselEn from './components/TestimonialsCarouselEn';
+import PartnersEn from './components/PartnersEn';
+import UpcomingEventsEn from './components/UpcomingEventsEn';
 
 // Animation variants for section transitions
 const sectionVariants = {
@@ -41,31 +42,62 @@ const sectionVariants = {
   }
 };
 
+interface HomeData {
+  slides: any[];
+  partners: any[];
+  latestPublikasi: Publikasi[];
+  upcomingEvents: any[];
+}
+
 export default function HomeEn() {
-  const [latestPublikasi, setLatestPublikasi] = useState<Publikasi[]>([]);
+  const [homeData, setHomeData] = useState<HomeData>({
+    slides: [],
+    partners: [],
+    latestPublikasi: [],
+    upcomingEvents: []
+  });
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Fetch publikasi data from an API endpoint
-    async function fetchPublikasi() {
+    // Fetch all home data from the home API endpoint
+    async function fetchHomeData() {
       try {
-        const response = await fetch('/api/publikasi');
+        const response = await fetch('/api/home');
         if (!response.ok) {
-          throw new Error('Failed to fetch publikasi data');
+          throw new Error('Failed to fetch home data');
         }
-        const data = await response.json();
-        setLatestPublikasi(data);
+        const result = await response.json();
+        setHomeData(result.data);
       } catch (error) {
-        console.error('Error fetching publikasi:', error);
-        setLatestPublikasi([]);
+        console.error('Error fetching home data:', error);
+        setHomeData({
+          slides: [],
+          partners: [],
+          latestPublikasi: [],
+          upcomingEvents: []
+        });
+      } finally {
+        setLoading(false);
       }
     }
 
-    fetchPublikasi();
+    fetchHomeData();
   }, []);
+
+  if (loading) {
+    return (
+      <main className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-pink-600 mb-2"></div>
+          <p className="text-gray-500">Loading...</p>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className="min-h-screen">
-      <InteractiveMap />
+      <VerticalSlideshowEn slides={homeData.slides} />
       
       <motion.div
         initial="hidden"
@@ -73,7 +105,7 @@ export default function HomeEn() {
         viewport={{ once: true, amount: 0.1 }}
         variants={sectionVariants}
       >
-        <PartnersEn />
+        <PartnersEn partners={homeData.partners} />
       </motion.div>
       
       <motion.div
@@ -100,7 +132,7 @@ export default function HomeEn() {
         viewport={{ once: true, amount: 0.1 }}
         variants={sectionVariants}
       >
-        <PublikasiTerbaruEn publikasi={latestPublikasi} /> 
+        <PublikasiTerbaruEn publikasi={homeData.latestPublikasi} /> 
       </motion.div>
       
       <motion.div
@@ -118,7 +150,7 @@ export default function HomeEn() {
         viewport={{ once: true, amount: 0.1 }}
         variants={sectionVariants}
       >
-        <UpcomingEventsEn />
+        <UpcomingEventsEn events={homeData.upcomingEvents} />
       </motion.div>
     </main>
   );

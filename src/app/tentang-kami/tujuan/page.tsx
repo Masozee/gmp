@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import React from 'react';
 import ImageSlideshow from '@/app/components/ImageSlideshow';
+import DynamicPageRenderer from '@/app/components/DynamicPageRenderer';
 
 const TujuanPage = () => {
   const slides = [
@@ -26,7 +27,8 @@ const TujuanPage = () => {
     }
   ];
 
-  return (
+  // Fallback content in case dynamic content is not available
+  const fallbackContent = (
     <>
       {/* Hero Section */}
       <section 
@@ -77,6 +79,13 @@ const TujuanPage = () => {
         </div>
       </div>
     </>
+  );
+
+  return (
+    <DynamicPageRenderer 
+      pageKey="tentang-kami-tujuan" 
+      fallbackContent={fallbackContent}
+    />
   );
 };
 

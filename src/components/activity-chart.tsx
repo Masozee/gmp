@@ -75,14 +75,14 @@ export function ActivityChart() {
 
   if (loading) {
     return (
-      <Card className="border-0 shadow-sm">
-        <CardHeader>
-          <CardTitle>Aktivitas 6 Bulan Terakhir</CardTitle>
-          <CardDescription>
+      <Card className="border shadow-sm bg-white">
+        <CardHeader className="bg-slate-50 rounded-t-lg border-b">
+          <CardTitle className="text-xl font-bold text-gray-800">Aktivitas 6 Bulan Terakhir</CardTitle>
+          <CardDescription className="text-gray-600">
             Memuat data aktivitas dan pengunjung...
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-6">
           <div className="space-y-4">
             <Skeleton className="h-64 w-full" />
             <div className="flex space-x-4">
@@ -98,10 +98,10 @@ export function ActivityChart() {
 
   if (error || !data) {
     return (
-      <Card className="border-0 shadow-sm">
-        <CardHeader>
-          <CardTitle>Aktivitas 6 Bulan Terakhir</CardTitle>
-          <CardDescription>
+      <Card className="border shadow-sm bg-white">
+        <CardHeader className="bg-slate-50 rounded-t-lg border-b">
+          <CardTitle className="text-xl font-bold text-gray-800">Aktivitas 6 Bulan Terakhir</CardTitle>
+          <CardDescription className="text-gray-600">
             {error || 'Tidak ada data untuk ditampilkan'}
           </CardDescription>
         </CardHeader>
@@ -137,11 +137,11 @@ export function ActivityChart() {
   const activityTrend = previousActivities > 0 ? ((recentActivities - previousActivities) / previousActivities) * 100 : 0;
 
   return (
-    <Card className="border-0 shadow-sm">
-      <CardHeader className="flex flex-col items-stretch space-y-0 border-b p-0 sm:flex-row">
+    <Card className="border shadow-sm bg-white">
+      <CardHeader className="flex flex-col items-stretch space-y-0 bg-slate-50 rounded-t-lg border-b p-0 sm:flex-row">
         <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
-          <CardTitle>Aktivitas 6 Bulan Terakhir</CardTitle>
-          <CardDescription>
+          <CardTitle className="text-xl font-bold text-gray-800">Aktivitas 6 Bulan Terakhir</CardTitle>
+          <CardDescription className="text-gray-600">
             Menampilkan tren pengunjung dan aktivitas konten
           </CardDescription>
         </div>
@@ -218,7 +218,7 @@ export function ActivityChart() {
                     return (
                       <div 
                         key={index}
-                        className="flex-1 bg-gradient-to-t from-blue-500 to-blue-300 rounded-sm opacity-80 hover:opacity-100 transition-opacity"
+                        className="flex-1 bg-blue-500 rounded-sm opacity-80 hover:opacity-100 transition-opacity"
                         style={{ height: `${height}%` }}
                         title={`${day.date}: ${day.total} pengunjung (Desktop: ${day.desktop}, Mobile: ${day.mobile})`}
                       />

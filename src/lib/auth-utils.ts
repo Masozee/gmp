@@ -2,10 +2,25 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { db, users, sessions, type User } from './db';
 import { eq, and, gt } from 'drizzle-orm';
-import { randomBytes } from 'crypto';
+import { NextRequest } from 'next/server';
+import { cookies } from 'next/headers';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
 const SESSION_DURATION = 7 * 24 * 60 * 60 * 1000; // 7 days in milliseconds
+
+// Generate random session ID using Web Crypto API (Edge Runtime compatible)
+function generateSessionId(): string {
+  const array = new Uint8Array(32);
+  if (typeof crypto !== 'undefined' && crypto.getRandomValues) {
+    crypto.getRandomValues(array);
+  } else {
+    // Fallback for environments without crypto
+    for (let i = 0; i < array.length; i++) {
+      array[i] = Math.floor(Math.random() * 256);
+    }
+  }
+  return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
+}
 
 export async function hashPassword(password: string): Promise<string> {
   return bcrypt.hash(password, 12);
@@ -50,7 +65,7 @@ export async function authenticateUser(email: string, password: string): Promise
 }
 
 export async function createSession(userId: number): Promise<string> {
-  const sessionId = randomBytes(32).toString('hex');
+  const sessionId = generateSessionId();
   const expiresAt = Date.now() + SESSION_DURATION;
   
   await db.insert(sessions).values({
@@ -90,4 +105,20 @@ export async function cleanupExpiredSessions(): Promise<void> {
       eq(sessions.expiresAt, Date.now())
     )
   );
+}
+
+export async function verifyAdmin(request: NextRequest): Promise<User | null> {
+  const sessionId = request.cookies.get('session')?.value;
+  
+  if (!sessionId) {
+    return null;
+  }
+
+  const user = await getSessionUser(sessionId);
+  
+  if (!user || user.role !== 'admin') {
+    return null;
+  }
+
+  return user;
 } 

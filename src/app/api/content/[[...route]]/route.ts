@@ -4,10 +4,10 @@ import { initializeDatabase, db } from '@/lib/db';
 import { 
   events, publications, partners, careers, testimonials, 
   discussions, boardMembers, organizationStaff, eventRegistrations,
-  newsletterSubscriptions, contactMessages
+  newsletterSubscriptions, contactMessages, homepageSlides
 } from '@/lib/db/content-schema';
 import { getSessionUser } from '@/lib/auth-utils';
-import { eq, desc, asc } from 'drizzle-orm';
+import { eq, desc, asc, like, or, and, sql } from 'drizzle-orm';
 import { Context } from 'hono';
 
 // Initialize database on startup
@@ -141,6 +141,169 @@ app.get('/board', async (c) => {
 app.get('/staff', async (c) => {
   const staff = await db.select().from(organizationStaff).where(eq(organizationStaff.isActive, true)).orderBy(asc(organizationStaff.order));
   return c.json({ success: true, staff });
+});
+
+// Homepage Slides
+app.get('/homepage-slides', async (c) => {
+  const slides = await db.select().from(homepageSlides).where(eq(homepageSlides.isActive, true)).orderBy(asc(homepageSlides.order));
+  return c.json({ success: true, slides });
+});
+
+// Search endpoint
+app.get('/search', async (c) => {
+  const query = c.req.query('q');
+  const type = c.req.query('type'); // Optional: filter by content type
+  
+  if (!query || query.trim().length < 2) {
+    return c.json({ error: 'Search query must be at least 2 characters' }, 400);
+  }
+  
+  const searchTerm = `%${query.trim()}%`;
+  const results: any = {
+    events: [],
+    publications: [],
+    careers: [],
+    discussions: [],
+    partners: []
+  };
+  
+  try {
+    // Search events if no type specified or type is 'events'
+    if (!type || type === 'events') {
+      const eventResults = await db.select({
+        id: events.id,
+        title: events.title,
+        description: events.description,
+        slug: events.slug,
+        date: events.date,
+        location: events.location,
+        image: events.image,
+        type: sql`'event'`.as('type')
+      }).from(events)
+        .where(
+          or(
+            like(events.title, searchTerm),
+            like(events.description, searchTerm),
+            like(events.location, searchTerm)
+          )
+        )
+        .orderBy(desc(events.createdAt))
+        .limit(10);
+      
+      results.events = eventResults;
+    }
+    
+    // Search publications if no type specified or type is 'publications'
+    if (!type || type === 'publications') {
+      const publicationResults = await db.select({
+        id: publications.id,
+        title: publications.title,
+        description: publications.description,
+        slug: publications.slug,
+        date: publications.date,
+        author: publications.author,
+        image_url: publications.image_url,
+        type: sql`'publication'`.as('type')
+      }).from(publications)
+        .where(
+          or(
+            like(publications.title, searchTerm),
+            like(publications.description, searchTerm),
+            like(publications.content, searchTerm),
+            like(publications.author, searchTerm)
+          )
+        )
+        .orderBy(asc(publications.order))
+        .limit(10);
+      
+      results.publications = publicationResults;
+    }
+    
+    // Search careers if no type specified or type is 'careers'
+    if (!type || type === 'careers') {
+      const careerResults = await db.select({
+        id: careers.id,
+        title: careers.title,
+        description: careers.description,
+        slug: careers.slug,
+        location: careers.location,
+        type: careers.type,
+        deadline: careers.deadline,
+        contentType: sql`'career'`.as('contentType')
+      }).from(careers)
+        .where(
+          and(
+            eq(careers.isActive, true),
+            or(
+              like(careers.title, searchTerm),
+              like(careers.description, searchTerm),
+              like(careers.location, searchTerm)
+            )
+          )
+        )
+        .orderBy(desc(careers.postedDate))
+        .limit(10);
+      
+      results.careers = careerResults;
+    }
+    
+    // Search discussions if no type specified or type is 'discussions'
+    if (!type || type === 'discussions') {
+      const discussionResults = await db.select({
+        id: discussions.id,
+        title: discussions.title,
+        description: discussions.description,
+        slug: discussions.slug,
+        date: discussions.date,
+        image: discussions.image,
+        type: sql`'discussion'`.as('type')
+      }).from(discussions)
+        .where(
+          and(
+            eq(discussions.isActive, true),
+            or(
+              like(discussions.title, searchTerm),
+              like(discussions.description, searchTerm)
+            )
+          )
+        )
+        .orderBy(desc(discussions.createdAt))
+        .limit(10);
+      
+      results.discussions = discussionResults;
+    }
+    
+    // Search partners if no type specified or type is 'partners'
+    if (!type || type === 'partners') {
+      const partnerResults = await db.select({
+        id: partners.id,
+        name: partners.name,
+        logo: partners.logo,
+        url: partners.url,
+        order: partners.order,
+        type: sql`'partner'`.as('type')
+      }).from(partners)
+        .where(like(partners.name, searchTerm))
+        .orderBy(asc(partners.order))
+        .limit(10);
+      
+      results.partners = partnerResults;
+    }
+    
+    // Calculate total results
+    const totalResults = results.events.length + results.publications.length + results.careers.length + results.discussions.length + results.partners.length;
+    
+    return c.json({ 
+      success: true, 
+      query,
+      totalResults,
+      results 
+    });
+    
+  } catch (error) {
+    console.error('Search error:', error);
+    return c.json({ error: 'Search failed' }, 500);
+  }
 });
 
 // Newsletter subscription (public)

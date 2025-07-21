@@ -1,103 +1,60 @@
 import { NextResponse } from 'next/server';
-import fs from 'fs';
-import path from 'path';
-
-// Helper function to parse Indonesian dates
-const monthMap: { [key: string]: number } = {
-  Januari: 0, Februari: 1, Maret: 2, April: 3, Mei: 4, Juni: 5,
-  Juli: 6, Agustus: 7, September: 8, Oktober: 9, November: 10, Desember: 11
-};
+import { db } from '@/lib/db';
+import { publications } from '@/lib/db/content-schema';
+import { desc } from 'drizzle-orm';
 
 interface Publikasi {
-  id: string;
+  id: number;
   title: string;
+  title_en: string | null;
   url: string;
+  slug_en: string | null;
   date: string;
   count: string;
-  image: string;
+  image: string | null;
   type: string;
   pdf_url: string | null;
   author: string;
+  author_en: string | null;
   order: number;
   content: string;
-}
-
-// Parse date in multiple formats
-function parseDate(dateString: string): Date | null {
-  if (!dateString) return null;
-  
-  // Handle DD/MM/YYYY format
-  if (dateString.includes('/')) {
-    const [day, month, year] = dateString.split('/').map(part => parseInt(part, 10));
-    if (!isNaN(day) && !isNaN(month) && !isNaN(year)) {
-      return new Date(year, month - 1, day); // Month is 0-indexed in JS Date
-    }
-  }
-  
-  // Handle "DD Month YYYY" format with Indonesian month names
-  if (dateString.includes(' ')) {
-    const parts = dateString.split(' ');
-    if (parts.length === 3) {
-      const day = parseInt(parts[0], 10);
-      const monthName = parts[1];
-      const year = parseInt(parts[2], 10);
-      const month = monthMap[monthName];
-
-      if (!isNaN(day) && !isNaN(year) && month !== undefined) {
-        return new Date(year, month, day);
-      }
-    }
-  }
-  
-  // Fallback to default parsing
-  const date = new Date(dateString);
-  return isNaN(date.getTime()) ? null : date;
+  content_en: string | null;
+  description: string | null;
+  description_en: string | null;
 }
 
 export async function GET() {
   try {
-    const filePath = path.join(process.cwd(), 'src', 'data', 'publikasi.json');
-    const jsonData = fs.readFileSync(filePath, 'utf-8');
-    const publikasiData = JSON.parse(jsonData);
+    // Fetch all publications from database
+    const publikasiData = await db
+      .select()
+      .from(publications)
+      .orderBy(desc(publications.createdAt));
 
-    if (!Array.isArray(publikasiData)) {
-      return NextResponse.json({ error: 'Invalid data format' }, { status: 500 });
-    }
+    // Transform data to match the expected interface
+    const transformedData = publikasiData.map(pub => ({
+      id: pub.id,
+      title: pub.title,
+      title_en: pub.title_en,
+      url: pub.slug,
+      slug_en: pub.slug_en,
+      date: pub.date,
+      count: pub.count,
+      image: pub.image_url,
+      type: pub.type,
+      pdf_url: pub.pdf_url,
+      author: pub.author,
+      author_en: pub.author_en,
+      order: pub.order,
+      content: pub.content,
+      content_en: pub.content_en,
+      description: pub.description,
+      description_en: pub.description_en
+    }));
 
-    // Create objects with parsed dates for sorting
-    const publikasiWithDates = publikasiData
-      .map((item: Publikasi) => {
-        const parsedDate = parseDate(item.date);
-        if (!parsedDate) {
-          console.warn(`Could not parse date: ${item.date} for publication: ${item.title}`);
-          return null;
-        }
-        return {
-          data: item,
-          timestamp: parsedDate.getTime()
-        };
-      })
-      .filter((item): item is { data: Publikasi; timestamp: number } => item !== null);
-    
-    // First try to sort by order field if available
-    if (publikasiWithDates.length > 0 && publikasiWithDates[0].data.order !== undefined) {
-      const sortedByOrder = [...publikasiWithDates]
-        .sort((a, b) => (a.data.order || 999) - (b.data.order || 999))
-        .slice(0, 3)
-        .map(item => item.data);
-      
-      return NextResponse.json(sortedByOrder);
-    }
-    
-    // Fallback to date sorting if order is not available
-    const sortedByDate = publikasiWithDates
-      .sort((a, b) => b.timestamp - a.timestamp)
-      .slice(0, 3)
-      .map(item => item.data);
-
-    return NextResponse.json(sortedByDate);
+    return NextResponse.json(transformedData);
   } catch (error) {
-    console.error("Failed to read or process publications:", error);
+    console.error("Failed to fetch publications from database:", error);
     return NextResponse.json({ error: 'Failed to fetch publikasi data' }, { status: 500 });
   }
 } 

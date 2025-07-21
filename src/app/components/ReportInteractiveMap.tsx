@@ -20,8 +20,8 @@ const processOverallData = () => {
   
   // Extract age data
   const ageData = overallData.filter(item => item.Variable === 'age');
-  const age23 = ageData.find(item => item.Category === 23)?.Percentage || '0';
-  const age25 = ageData.find(item => item.Category === 25)?.Percentage || '0';
+  const age23 = ageData.find(item => item.Category === '23')?.Percentage || '0';
+  const age25 = ageData.find(item => item.Category === '25')?.Percentage || '0';
   
   // Extract activism data
   const activismData = overallData.filter(item => item.Variable === 'activism');
@@ -158,6 +158,7 @@ const ReportInteractiveMap = () => {
   const [error, setError] = useState<string | null>(null);
   const [selectedTimezone, setSelectedTimezone] = useState<string | null>(null);
   const [isClient, setIsClient] = useState(false);
+  const [selectedProvince, setSelectedProvince] = useState<any>(null);
 
   // Process survey data
   const surveyStats = processOverallData();
@@ -167,33 +168,23 @@ const ReportInteractiveMap = () => {
     setIsClient(true);
   }, []);
 
-  // Survey achievements data based on real civic engagement data
-  const achievements = [
-    {
-      id: 1,
-      title: `${surveyStats.civicEngagement.activeVoicing.percentage}%`,
-      description: 'Sering Bersuara',
-      icon: '/icons/communication.png',
-    },
-    {
-      id: 2,
-      title: `${surveyStats.civicEngagement.willingToEngage.percentage}%`,
-      description: 'Siap Berpartisipasi',
-      icon: '/icons/team-work.png',
-    },
-    {
-      id: 3,
-      title: `${surveyStats.civicEngagement.quiteWorried.percentage}%`,
-      description: 'Khawatir Keamanan',
-      icon: '/icons/pin.png',
-    },
-    {
-      id: 4,
-      title: surveyStats.totalRespondents.toString(),
-      description: 'Total Responden',
-      icon: '/icons/global-network.png',
-    },
-  ];
+  // Handle escape key to close popup
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && selectedProvince) {
+        setSelectedProvince(null);
+      }
+    };
+
+    if (selectedProvince) {
+      document.addEventListener('keydown', handleEscape);
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleEscape);
+    };
+  }, [selectedProvince]);
+
 
   // Fix Leaflet icon issue in Next.js
   useEffect(() => {
@@ -292,29 +283,16 @@ const ReportInteractiveMap = () => {
     
     layer.on({
       click: () => {
+        const popupData = {
+          provinceName,
+          province,
+          regionalData,
+          surveyStats
+        };
+        setSelectedProvince(selectedProvince?.provinceName === provinceName ? null : popupData);
         setSelectedTimezone(prevTimezone => prevTimezone === province.timezone ? null : province.timezone);
       }
     });
-    
-    layer.bindTooltip(`
-      <div style="font-family: system-ui; padding: 8px; max-width: 280px;">
-        <strong style="color: #1f2937; font-size: 14px;">Zona ${province.timezone}</strong><br/>
-        <span style="color: #6b7280; font-size: 12px;">(${province.timezone === 'WIB' ? 'UTC+7' : province.timezone === 'WITA' ? 'UTC+8' : 'UTC+9'})</span><br/><br/>
-        <div style="color: #374151; font-size: 12px;">
-          <strong>Data Responden:</strong><br/>
-          • Regional: ${regionalData.count} (${regionalData.percentage}%)<br/>
-          • Usia 23: ${surveyStats.hoverData.age23.percentage}%<br/>
-          • Usia 25: ${surveyStats.hoverData.age25.percentage}%<br/><br/>
-          <strong>Aktivisme & Politik:</strong><br/>
-          • Pernah aktivisme: ${surveyStats.hoverData.hasActivism.percentage}%<br/>
-          • Diskusi politik harian: ${surveyStats.hoverData.veryOftenDiscuss.percentage}%<br/>
-          • Diskusi politik mingguan: ${surveyStats.hoverData.oftenDiscuss.percentage}%<br/><br/>
-          <strong>Pemahaman Ruang Sipil:</strong><br/>
-          • Cukup paham: ${surveyStats.hoverData.quiteUnderstandCivspace.percentage}%<br/>
-          • Sangat paham: ${surveyStats.hoverData.veryUnderstandCivspace.percentage}%
-        </div>
-      </div>
-    `, { sticky: true });
   };
 
   // Get color based on timezone
@@ -388,41 +366,6 @@ const ReportInteractiveMap = () => {
     >
       {/* Map Section - Full Width and Full Height */}
       <div className="relative w-full h-full">
-        {/* Achievements Overlay - Bottom */}
-        <div className="absolute bottom-6 left-0 w-full z-[500]">
-          <div className="container mx-auto px-6 max-w-7xl">
-            <div className="bg-white/90 backdrop-blur-sm p-6 rounded-xl shadow-xl">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8, delay: 0.4 }}
-              >
-                
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  {achievements.map((item) => (
-                    <motion.div 
-                      key={item.id} 
-                      className="text-center"
-                      whileHover={{ scale: 1.05 }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      <div className="w-12 h-12 mx-auto mb-2 flex items-center justify-center bg-[#f06d98]/10 rounded-full">
-                        <img 
-                          src={item.icon} 
-                          alt={item.title} 
-                          className="w-6 h-6"
-                        />
-                      </div>
-                      <h3 className="text-2xl font-extrabold text-[#f06d98] mb-1">{item.title}</h3>
-                      <p className="text-xs text-gray-600">{item.description}</p>
-                    </motion.div>
-                  ))}
-                </div>
-              </motion.div>
-            </div>
-          </div>
-        </div>
 
         <motion.div 
           className="h-full w-full relative"
@@ -470,6 +413,66 @@ const ReportInteractiveMap = () => {
               background: "linear-gradient(180deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.3) 15%, rgba(0,0,0,0.1) 30%, rgba(0,0,0,0) 50%)"
             }}
           ></div>
+
+          {/* Persistent Popup */}
+          {selectedProvince && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.8, y: 20 }}
+              className="absolute top-4 left-4 bg-white rounded-xl shadow-2xl border border-gray-200 z-30 pointer-events-auto max-w-sm"
+            >
+              <div className="p-6">
+                <div className="flex justify-between items-start mb-4">
+                  <div>
+                    <h3 className="text-lg font-bold text-gray-900">
+                      Zona {selectedProvince.province.timezone}
+                    </h3>
+                    <p className="text-sm text-gray-600">
+                      ({selectedProvince.province.timezone === 'WIB' ? 'UTC+7' : selectedProvince.province.timezone === 'WITA' ? 'UTC+8' : 'UTC+9'})
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => setSelectedProvince(null)}
+                    className="p-1 rounded-full hover:bg-gray-100 transition-colors"
+                    aria-label="Close popup"
+                  >
+                    <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+
+                <div className="space-y-4 text-sm">
+                  <div>
+                    <h4 className="font-semibold text-gray-900 mb-2">Data Responden:</h4>
+                    <ul className="space-y-1 text-gray-700">
+                      <li>• Regional: {selectedProvince.regionalData.count} ({selectedProvince.regionalData.percentage}%)</li>
+                      <li>• Usia 23: {selectedProvince.surveyStats.hoverData.age23.percentage}%</li>
+                      <li>• Usia 25: {selectedProvince.surveyStats.hoverData.age25.percentage}%</li>
+                    </ul>
+                  </div>
+
+                  <div>
+                    <h4 className="font-semibold text-gray-900 mb-2">Aktivisme & Politik:</h4>
+                    <ul className="space-y-1 text-gray-700">
+                      <li>• Pernah aktivisme: {selectedProvince.surveyStats.hoverData.hasActivism.percentage}%</li>
+                      <li>• Diskusi politik harian: {selectedProvince.surveyStats.hoverData.veryOftenDiscuss.percentage}%</li>
+                      <li>• Diskusi politik mingguan: {selectedProvince.surveyStats.hoverData.oftenDiscuss.percentage}%</li>
+                    </ul>
+                  </div>
+
+                  <div>
+                    <h4 className="font-semibold text-gray-900 mb-2">Pemahaman Ruang Sipil:</h4>
+                    <ul className="space-y-1 text-gray-700">
+                      <li>• Cukup paham: {selectedProvince.surveyStats.hoverData.quiteUnderstandCivspace.percentage}%</li>
+                      <li>• Sangat paham: {selectedProvince.surveyStats.hoverData.veryUnderstandCivspace.percentage}%</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          )}
         </motion.div>
       </div>
     </motion.section>

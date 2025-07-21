@@ -7,14 +7,15 @@ import { notFound } from 'next/navigation';
 // Using karirData directly for type checking
 
 interface KarirDetailPageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 // Generate metadata for this page
 export async function generateMetadata({ params }: KarirDetailPageProps): Promise<Metadata> {
-  const { id } = params;
+  const resolvedParams = await params;
+  const { id } = resolvedParams;
   const karir = karirData.find((item) => item.id === id);
 
   if (!karir) {
@@ -29,8 +30,9 @@ export async function generateMetadata({ params }: KarirDetailPageProps): Promis
   };
 }
 
-export default function KarirDetailPage({ params }: KarirDetailPageProps) {
-  const { id } = params;
+export default async function KarirDetailPage({ params }: KarirDetailPageProps) {
+  const resolvedParams = await params;
+  const { id } = resolvedParams;
   const karir = karirData.find((item) => item.id === id);
 
   // If the karir with the specified ID doesn't exist, show a 404 page

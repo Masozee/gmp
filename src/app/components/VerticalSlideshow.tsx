@@ -32,44 +32,28 @@ interface Slide {
   };
 }
 
-const slides: Slide[] = [
-  {
-    id: 1,
-    type: 'map'
-  },
-  {
-    id: 2,
-    type: 'image',
-    content: {
-      image: '/images/bg/creative-christians-HN6uXG7GzTE-unsplash.jpg',
-      title: 'Membangun Generasi Pembawa Perubahan',
-      subtitle: 'Yayasan Partisipasi Muda',
-      description: 'Memberdayakan anak muda Indonesia untuk berpartisipasi aktif dalam demokrasi dan perumusan kebijakan publik melalui pendidikan politik yang menyenangkan dan relevan.',
-      buttonText: 'Pelajari Lebih Lanjut',
-      buttonLink: '/tentang-kami/tujuan'
-    }
-  },
-  {
-    id: 3,
-    type: 'image',
-    content: {
-      image: '/images/bg/duy-pham-Cecb0_8Hx-o-unsplash.jpg',
-      title: 'Academia Politica',
-      subtitle: 'Generasi Melek Politik',
-      description: 'Sebuah lokakarya berbasis role-playing yang membekali peserta dengan pemahaman mendalam tentang kepemimpinan, pembuatan kebijakan, dan advokasi iklim.',
-      buttonText: 'Lihat Program Kami',
-      buttonLink: '/program/academia-politica'
-    }
-  }
-];
+interface VerticalSlideshowProps {
+  slides?: Slide[];
+}
 
-const VerticalSlideshow = () => {
+const VerticalSlideshow = ({ slides: propSlides }: VerticalSlideshowProps) => {
+  const [slides, setSlides] = useState<Slide[]>([]);
+  const [loading, setLoading] = useState(true);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [hasCompletedAllSlides, setHasCompletedAllSlides] = useState(false);
   const [isMouseInSlideshow, setIsMouseInSlideshow] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const lastScrollTime = useRef(0);
   const isScrolling = useRef(false);
+  const touchStartY = useRef(0);
+  const touchEndY = useRef(0);
+  
+  // New scroll accumulation system
+  const scrollAccumulator = useRef(0);
+  const scrollThreshold = 80; // Minimum scroll distance to trigger slide change
+  const scrollTimeout = useRef<NodeJS.Timeout | null>(null);
+  const resetAccumulatorTimeout = useRef<NodeJS.Timeout | null>(null);
 
   const handleWheel = useCallback((e: WheelEvent) => {
     const container = containerRef.current;
@@ -81,55 +65,117 @@ const VerticalSlideshow = () => {
     if (isMouseInSlideshow && rect.top <= 0 && rect.bottom > 0) {
       const now = Date.now();
       
-      // Prevent multiple rapid scroll events (debounce)
-      if (isScrolling.current || now - lastScrollTime.current < 800) {
+      // Prevent multiple rapid slide changes
+      if (isScrolling.current) {
         e.preventDefault();
         return;
       }
       
-      lastScrollTime.current = now;
-      isScrolling.current = true;
+      // Accumulate scroll delta
+      scrollAccumulator.current += Math.abs(e.deltaY);
       
-      // Reset scrolling flag after a delay
-      setTimeout(() => {
-        isScrolling.current = false;
-      }, 800);
-      
-      if (e.deltaY > 0) {
-        // Scrolling down
-        if (currentSlide < slides.length - 1) {
-          // Not on last slide - change to next slide and prevent normal scroll
-          e.preventDefault();
-          setCurrentSlide(prev => {
-            const newSlide = prev + 1;
-            if (newSlide === slides.length - 1) {
-              setHasCompletedAllSlides(true);
-            }
-            return newSlide;
-          });
-        } else {
-          // On last slide - allow scroll to continue to next section
-          setHasCompletedAllSlides(true);
-          // Don't prevent default, let the page scroll naturally to next section
-        }
-      } else {
-        // Scrolling up
-        if (currentSlide > 0) {
-          // Not on first slide - change to previous slide and prevent normal scroll
-          e.preventDefault();
-          setCurrentSlide(prev => prev - 1);
-          setHasCompletedAllSlides(false);
-        } else {
-          // On first slide - only allow scroll up if slideshow is at the very top
-          if (rect.top < 0) {
-            // Slideshow is partially scrolled, prevent scroll up to keep user in slideshow
-            e.preventDefault();
-          }
-          // If rect.top >= 0, allow normal scroll up to go above slideshow
-        }
+      // Clear previous timeout
+      if (scrollTimeout.current) {
+        clearTimeout(scrollTimeout.current);
       }
+      
+      // Clear previous reset timeout
+      if (resetAccumulatorTimeout.current) {
+        clearTimeout(resetAccumulatorTimeout.current);
+      }
+      
+            // Set timeout to process accumulated scroll
+      scrollTimeout.current = setTimeout(() => {
+        // Check if accumulated scroll exceeds threshold
+        if (scrollAccumulator.current >= scrollThreshold) {
+          const direction = e.deltaY > 0 ? 'down' : 'up';
+          
+          // Prevent rapid slide changes
+          isScrolling.current = true;
+          lastScrollTime.current = now;
+          
+          // Reset scrolling flag after delay
+          setTimeout(() => {
+            isScrolling.current = false;
+          }, 600);
+          
+          if (direction === 'down') {
+            // Scrolling down
+            if (currentSlide < slides.length - 1) {
+              // Not on last slide - change to next slide and prevent normal scroll
+              e.preventDefault();
+              setCurrentSlide(prev => {
+                const newSlide = prev + 1;
+                if (newSlide === slides.length - 1) {
+                  setHasCompletedAllSlides(true);
+                }
+                return newSlide;
+              });
+            } else {
+              // On last slide - allow scroll to continue to next section
+              setHasCompletedAllSlides(true);
+              // Don't prevent default, let the page scroll naturally to next section
+              // Reset accumulator to allow natural scrolling
+              scrollAccumulator.current = 0;
+              return; // Exit early to allow natural scroll
+            }
+          } else {
+            // Scrolling up
+            if (currentSlide > 0) {
+              // Not on first slide - change to previous slide and prevent normal scroll
+              e.preventDefault();
+              setCurrentSlide(prev => prev - 1);
+              setHasCompletedAllSlides(false);
+            } else {
+              // On first slide - only allow scroll up if slideshow is at the very top
+              if (rect.top < 0) {
+                // Slideshow is partially scrolled, prevent scroll up to keep user in slideshow
+                e.preventDefault();
+              } else {
+                // If rect.top >= 0, allow normal scroll up to go above slideshow
+                scrollAccumulator.current = 0;
+                return; // Exit early to allow natural scroll
+              }
+            }
+          }
+          
+          // Reset accumulator after slide change
+          scrollAccumulator.current = 0;
+        } else {
+          // If threshold not met, check if we should allow natural scrolling
+          const direction = e.deltaY > 0 ? 'down' : 'up';
+          
+          // Allow natural scrolling on last slide (down) or first slide when at top (up)
+          if ((direction === 'down' && currentSlide === slides.length - 1) || 
+              (direction === 'up' && currentSlide === 0 && rect.top >= 0)) {
+            scrollAccumulator.current = 0;
+            return; // Exit early to allow natural scroll
+          }
+          
+          // Otherwise prevent default and continue accumulating
+          e.preventDefault();
+          
+          // Reset accumulator after a delay if no more scrolling
+          resetAccumulatorTimeout.current = setTimeout(() => {
+            scrollAccumulator.current = 0;
+          }, 100);
+        }
+      }, 30); // Small delay to accumulate scroll events
+      
+      // Check if we should prevent default during accumulation
+      const direction = e.deltaY > 0 ? 'down' : 'up';
+      
+      // Don't prevent default if we're on last slide scrolling down or first slide scrolling up at top
+      if ((direction === 'down' && currentSlide === slides.length - 1) || 
+          (direction === 'up' && currentSlide === 0 && rect.top >= 0)) {
+        // Allow natural scrolling
+        return;
+      }
+      
+      // Otherwise prevent default during accumulation
+      e.preventDefault();
     }
-  }, [currentSlide, isMouseInSlideshow]);
+  }, [currentSlide, isMouseInSlideshow, slides.length]);
 
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
     const container = containerRef.current;
@@ -168,16 +214,180 @@ const VerticalSlideshow = () => {
     setIsMouseInSlideshow(false);
   }, []);
 
+  // Touch handlers for mobile
+  const handleTouchStart = useCallback((e: TouchEvent) => {
+    touchStartY.current = e.touches[0].clientY;
+  }, []);
+
+  const handleTouchEnd = useCallback((e: TouchEvent) => {
+    const container = containerRef.current;
+    if (!container || !isMobile) return;
+
+    touchEndY.current = e.changedTouches[0].clientY;
+    const deltaY = touchStartY.current - touchEndY.current;
+    const minSwipeDistance = 30; // Reduced for more responsive swiping
+
+    // Prevent rapid swipes
+    const now = Date.now();
+    if (isScrolling.current || now - lastScrollTime.current < 600) { // Reduced timeout
+      return;
+    }
+
+    if (Math.abs(deltaY) > minSwipeDistance) {
+      lastScrollTime.current = now;
+      isScrolling.current = true;
+
+      setTimeout(() => {
+        isScrolling.current = false;
+      }, 600); // Reduced timeout
+
+      if (deltaY > 0) {
+        // Swiping up (next slide)
+        if (currentSlide < slides.length - 1) {
+          setCurrentSlide(prev => {
+            const newSlide = prev + 1;
+            if (newSlide === slides.length - 1) {
+              setHasCompletedAllSlides(true);
+            }
+            return newSlide;
+          });
+        } else {
+          setHasCompletedAllSlides(true);
+        }
+      } else {
+        // Swiping down (previous slide)
+        if (currentSlide > 0) {
+          setCurrentSlide(prev => prev - 1);
+          setHasCompletedAllSlides(false);
+        }
+      }
+    }
+  }, [currentSlide, isMobile, slides.length]);
+
+  // Detect mobile device
   useEffect(() => {
-    // Use wheel event for better control
-    window.addEventListener('wheel', handleWheel, { passive: false });
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768 || 'ontouchstart' in window);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // Use provided slides or fetch from API as fallback
+  useEffect(() => {
+    if (propSlides && propSlides.length > 0) {
+      setSlides(propSlides);
+      setLoading(false);
+    } else {
+      const fetchSlides = async () => {
+        try {
+          const response = await fetch('/api/admin/homepage-slides');
+          if (response.ok) {
+            const data = await response.json();
+            const activeSlides = data.slides
+              .filter((slide: any) => slide.isActive)
+              .sort((a: any, b: any) => a.order - b.order)
+              .map((slide: any) => ({
+                id: slide.id,
+                type: slide.type,
+                content: {
+                  image: slide.image,
+                  title: slide.title,
+                  subtitle: slide.subtitle,
+                  description: slide.description,
+                  buttonText: slide.buttonText,
+                  buttonLink: slide.buttonLink,
+                },
+              }));
+            setSlides(activeSlides);
+          }
+        } catch (error) {
+          console.error('Error fetching slides:', error);
+          // Fallback to default slides if API fails
+          setSlides([
+            { 
+              id: 1, 
+              type: 'map',
+              content: {
+                image: '/images/report/pub-1.jpg',
+                title: 'Understanding Youth Engagement and Civic Space in Indonesia',
+                subtitle: 'Laporan Survei Keterlibatan Sipil Anak Muda',
+                description: 'Jelajahi data survei tentang keterlibatan sipil anak muda Indonesia. Hover pada peta untuk melihat statistik per wilayah.',
+                buttonText: 'Lihat Laporan Lengkap',
+                buttonLink: '/ruang-sipil'
+              }
+            },
+            {
+              id: 2,
+              type: 'image',
+              content: {
+                image: '/images/bg/creative-christians-HN6uXG7GzTE-unsplash.jpg',
+                title: 'Membangun Generasi Pembawa Perubahan',
+                subtitle: 'Yayasan Partisipasi Muda',
+                description: 'Memberdayakan anak muda Indonesia untuk berpartisipasi aktif dalam demokrasi dan perumusan kebijakan publik melalui pendidikan politik yang menyenangkan dan relevan.',
+                buttonText: 'Pelajari Lebih Lanjut',
+                buttonLink: '/tentang-kami/tujuan'
+              }
+            }
+          ]);
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      fetchSlides();
+    }
+  }, [propSlides]);
+
+  useEffect(() => {
+    // Use wheel event for better control on desktop
+    if (!isMobile) {
+      window.addEventListener('wheel', handleWheel, { passive: false });
+    }
     window.addEventListener('keydown', handleKeyDown);
     
+    // Add touch events for mobile
+    if (isMobile && containerRef.current) {
+      const container = containerRef.current;
+      container.addEventListener('touchstart', handleTouchStart, { passive: true });
+      container.addEventListener('touchend', handleTouchEnd, { passive: true });
+      
+      return () => {
+        if (!isMobile) {
+          window.removeEventListener('wheel', handleWheel);
+        }
+        window.removeEventListener('keydown', handleKeyDown);
+        container.removeEventListener('touchstart', handleTouchStart);
+        container.removeEventListener('touchend', handleTouchEnd);
+        
+        // Clean up timeouts
+        if (scrollTimeout.current) {
+          clearTimeout(scrollTimeout.current);
+        }
+        if (resetAccumulatorTimeout.current) {
+          clearTimeout(resetAccumulatorTimeout.current);
+        }
+      };
+    }
+    
     return () => {
-      window.removeEventListener('wheel', handleWheel);
+      if (!isMobile) {
+        window.removeEventListener('wheel', handleWheel);
+      }
       window.removeEventListener('keydown', handleKeyDown);
+      
+      // Clean up timeouts
+      if (scrollTimeout.current) {
+        clearTimeout(scrollTimeout.current);
+      }
+      if (resetAccumulatorTimeout.current) {
+        clearTimeout(resetAccumulatorTimeout.current);
+      }
     };
-  }, [handleWheel, handleKeyDown]);
+  }, [handleWheel, handleKeyDown, handleTouchStart, handleTouchEnd, isMobile]);
 
   const slideVariants = {
     enter: {
@@ -198,7 +408,7 @@ const VerticalSlideshow = () => {
     if (slide.type === 'map') {
       return (
         <div className="w-full h-full">
-          <InteractiveMap />
+          <InteractiveMap cardContent={slide.content} />
         </div>
       );
     }
@@ -241,7 +451,7 @@ const VerticalSlideshow = () => {
                 {slide.content.buttonText && slide.content.buttonLink && (
                   <Link 
                     href={slide.content.buttonLink}
-                    className="bg-primary text-black hover:bg-pink-500 hover:text-white px-8 py-3 rounded-full font-bold text-lg inline-block transition duration-300 ease-in-out transform hover:scale-105"
+                    className="bg-primary-dark hover:bg-[#e5b64e] text-[#4c3c1a] hover:text-[#4c3c1a] px-8 py-3 rounded-full font-bold text-lg inline-block transition duration-300 ease-in-out transform hover:scale-105"
                   >
                     {slide.content.buttonText}
                   </Link>
@@ -255,6 +465,20 @@ const VerticalSlideshow = () => {
 
     return null;
   };
+
+  // Show loading state
+  if (loading || slides.length === 0) {
+    return (
+      <section className="relative w-full h-screen overflow-hidden bg-gray-100">
+        <div className="flex items-center justify-center h-full">
+          <div className="text-center">
+            <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-pink-600 mb-2"></div>
+            <p className="text-gray-500">Loading slideshow...</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section 
@@ -278,9 +502,13 @@ const VerticalSlideshow = () => {
           </motion.div>
         </AnimatePresence>
         
-        {/* Slide indicators */}
-        <div className="absolute right-6 top-1/2 transform -translate-y-1/2 z-50">
-          <div className="flex flex-col space-y-3">
+        {/* Slide indicators - responsive positioning */}
+        <div className={`absolute z-50 ${
+          isMobile 
+            ? 'bottom-20 left-1/2 transform -translate-x-1/2' 
+            : 'right-6 top-1/2 transform -translate-y-1/2'
+        }`}>
+          <div className={`flex space-y-3 ${isMobile ? 'flex-row space-x-3 space-y-0' : 'flex-col'}`}>
             {slides.map((_, index) => (
               <button
                 key={index}
@@ -290,39 +518,53 @@ const VerticalSlideshow = () => {
                     setHasCompletedAllSlides(true);
                   }
                 }}
-                className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                className={`${isMobile ? 'w-5 h-5' : 'w-3 h-3'} rounded-full transition-all duration-300 ${
                   index === currentSlide 
                     ? 'bg-primary scale-125' 
                     : 'bg-white/50 hover:bg-white/75'
-                }`}
+                } ${isMobile ? 'touch-manipulation min-w-[20px] min-h-[20px]' : ''}`}
                 aria-label={`Go to slide ${index + 1}`}
               />
             ))}
           </div>
         </div>
 
-        {/* Scroll indicator */}
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-50">
-          <motion.div
-            animate={{ y: [0, 10, 0] }}
-            transition={{ duration: 2, repeat: Infinity }}
-            className="text-white text-center"
-          >
-            <p className="text-sm mb-2 !text-white">
+        {/* Scroll indicator - hide on mobile when indicators are at bottom */}
+        {!isMobile && (
+          <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-50">
+            <motion.div
+              animate={{ y: [0, 10, 0] }}
+              transition={{ duration: 2, repeat: Infinity }}
+              className="text-white text-center"
+            >
+              <p className="text-sm mb-2 !text-white">
+                {currentSlide === slides.length - 1 
+                  ? "Scroll untuk ke bagian selanjutnya" 
+                  : "Scroll untuk slide berikutnya"
+                }
+              </p>
+              <div className="w-6 h-10 border-2 border-white rounded-full mx-auto relative">
+                <motion.div
+                  animate={{ y: [0, 12, 0] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                  className="w-1 h-3 bg-white rounded-full absolute left-1/2 top-2 transform -translate-x-1/2"
+                />
+              </div>
+            </motion.div>
+          </div>
+        )}
+
+        {/* Mobile swipe indicator */}
+        {isMobile && (
+          <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-50">
+            <p className="text-xs text-white/80 text-center">
               {currentSlide === slides.length - 1 
-                ? "Scroll untuk ke bagian selanjutnya" 
-                : "Scroll untuk slide berikutnya"
+                ? "Swipe up untuk ke bagian selanjutnya" 
+                : "Swipe untuk slide berikutnya"
               }
             </p>
-            <div className="w-6 h-10 border-2 border-white rounded-full mx-auto relative">
-              <motion.div
-                animate={{ y: [0, 12, 0] }}
-                transition={{ duration: 2, repeat: Infinity }}
-                className="w-1 h-3 bg-white rounded-full absolute left-1/2 top-2 transform -translate-x-1/2"
-              />
-            </div>
-          </motion.div>
-        </div>
+          </div>
+        )}
       </div>
     </section>
   );

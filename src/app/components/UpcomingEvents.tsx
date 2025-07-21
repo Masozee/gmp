@@ -83,6 +83,17 @@ const UpcomingEvents = ({ events: propEvents }: UpcomingEventsProps) => {
     
     return new Date(year, month, day);
   };
+
+  // Helper function to check if event has passed
+  const isEventPassed = (dateString: string): boolean => {
+    const eventDate = parseIndonesianDate(dateString);
+    if (!eventDate) return false;
+    
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Reset time to beginning of day for fair comparison
+    
+    return eventDate < today;
+  };
   
   if (isLoading) {
     return (
@@ -112,23 +123,41 @@ const UpcomingEvents = ({ events: propEvents }: UpcomingEventsProps) => {
         </p>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {events.map((event) => (
-            <div key={event.id} className="group">
-              {/* Poster Image */}
-              <div className="relative overflow-hidden transition-all duration-300 hover:-translate-y-1">
-                <img 
-                  src={event.image} 
-                  alt={event.title}
-                  className="w-full h-auto object-cover transition-transform duration-700 ease-in-out group-hover:scale-105"
-                />
-                <div className="absolute top-3 right-3 bg-primary text-white text-sm font-medium px-3 py-1 rounded-full">
-                  {event.category}
+          {events.map((event) => {
+            const isPassed = isEventPassed(event.date);
+            
+            return (
+              <div key={event.id} className="group">
+                {/* Poster Image */}
+                <div className="relative overflow-hidden transition-all duration-300 hover:-translate-y-1">
+                  <img 
+                    src={event.image} 
+                    alt={event.title}
+                    className={`w-full h-auto object-cover transition-all duration-300 ${
+                      isPassed ? 'grayscale opacity-75' : ''
+                    }`}
+                  />
+                  <div className="absolute top-3 right-3 bg-primary text-white text-sm font-medium px-3 py-1 rounded-full">
+                    {event.category}
+                  </div>
+                  {isPassed && (
+                    <div className="absolute top-3 left-3 bg-red-600 text-white text-sm font-medium px-3 py-1 rounded-full">
+                      SELESAI
+                    </div>
+                  )}
                 </div>
-              </div>
-              
-              {/* Content Section */}
-              <div className="mt-4">
-                <h3 className="text-xl font-bold mb-3 text-gray-900">{event.title}</h3>
+                
+                {/* Content Section */}
+                <div className="mt-4">
+                  <Link href={`/acara/${event.slug}`}>
+                    <h3 className={`text-xl font-bold mb-3 hover:underline hover:decoration-2 hover:underline-offset-2 transition-all duration-500 ease-in-out cursor-pointer ${
+                      isPassed 
+                        ? 'text-gray-500 hover:text-gray-600' 
+                        : 'text-gray-900 hover:text-primary'
+                    }`}>
+                      {isPassed ? '[CLOSED] ' : ''}{event.title}
+                    </h3>
+                  </Link>
                 
                 <div className="flex items-center mb-2 text-gray-600 text-sm">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -146,21 +175,15 @@ const UpcomingEvents = ({ events: propEvents }: UpcomingEventsProps) => {
                   </svg>
                   <span className="line-clamp-1">{event.location}</span>
                 </div>
-                
-                <div className="mt-4">
-                  <Link href={`/acara/${event.slug}`}
-                    className="inline-block w-full text-center py-2 px-4 rounded-full font-medium transition-all hover:bg-[#f06d98] hover:text-white bg-[#ffcb57] text-white">
-                    Lebih lanjut
-                  </Link>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
         
         <div className="text-center mt-10">
           <Link href="/acara" 
-            className="inline-block bg-[#ffcb57] hover:bg-[#f06d98] text-white hover:!text-white rounded-full px-6 py-3 font-medium transition-colors">
+            className="inline-block bg-primary-dark hover:bg-[#e5b64e] text-[#4c3c1a] hover:text-[#4c3c1a] rounded-full px-6 py-3 font-medium transition">
             Lihat Semua Acara
           </Link>
         </div>

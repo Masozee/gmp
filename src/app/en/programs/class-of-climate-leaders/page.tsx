@@ -306,7 +306,7 @@ const ClassOfClimateLeadersPage = () => {
               </p>
               <div className="space-y-4">
                 <div className="flex items-start gap-4">
-                  <div className="bg-primary text-black rounded-full w-8 h-8 flex items-center justify-center font-bold text-sm flex-shrink-0">
+                  <div className="bg-primary text-white rounded-full w-8 h-8 flex items-center justify-center font-bold text-sm flex-shrink-0">
                     1
                   </div>
                   <div>
@@ -336,7 +336,7 @@ const ClassOfClimateLeadersPage = () => {
               <div className="mt-8">
                 <Link 
                   href="/en/programs/academia-politica" 
-                  className="inline-flex items-center gap-2 bg-primary text-black px-6 py-3 rounded-lg font-semibold hover:bg-primary-dark transition-colors"
+                  className="inline-flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-lg font-semibold hover:bg-primary-dark transition-colors"
                 >
                   <span>Learn About Academia Politica</span>
                   <span>→</span>

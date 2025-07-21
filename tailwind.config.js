@@ -8,15 +8,12 @@ module.exports = {
   theme: {
   	extend: {
   		fontFamily: {
-  			sans: [
-  				'var(--font-figtree)', 'Figtree', 'sans-serif'
-  			],
+  			sans: ['var(--font-figtree)', 'Figtree', 'sans-serif'],
   			heading: [
   				'var(--font-inter)', 'Inter', 'sans-serif'
   			],
-  			body: [
-  				'var(--font-figtree)', 'Figtree', 'sans-serif'
-  			]
+  			body: ['var(--font-figtree)', 'Figtree', 'sans-serif'],
+        geist: ['var(--font-geist-sans)', 'GeistSans', 'sans-serif']
   		},
   		colors: {
   			primary: {

@@ -2,11 +2,26 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ArrowLeft, Edit, Eye, Trash2, ExternalLink } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
+import { 
+  ArrowLeft, 
+  Edit, 
+  Eye, 
+  Trash2, 
+  FileText, 
+  Calendar, 
+  User, 
+  Hash, 
+  Clock,
+  Download,
+  Copy,
+  Check
+} from "lucide-react";
 
 interface Publication {
   id: number;
@@ -14,38 +29,57 @@ interface Publication {
   title: string;
   date: string;
   count: string;
-  image: string | null;
+  image_url: string | null;
   type: 'riset' | 'artikel' | 'dampak';
-  pdfUrl: string | null;
+  pdf_url: string | null;
   author: string;
+  description: string | null;
   order: number;
   content: string;
   createdAt: string;
   updatedAt: string;
 }
 
-const typeColors = {
-  riset: 'bg-blue-100 text-blue-800',
-  artikel: 'bg-green-100 text-green-800',
-  dampak: 'bg-purple-100 text-purple-800'
+const typeConfig = {
+  riset: {
+    label: 'Riset',
+    color: 'bg-blue-50 text-blue-700 border-blue-200',
+    icon: '🔬'
+  },
+  artikel: {
+    label: 'Artikel',
+    color: 'bg-green-50 text-green-700 border-green-200',
+    icon: '📄'
+  },
+  dampak: {
+    label: 'Laporan Dampak',
+    color: 'bg-purple-50 text-purple-700 border-purple-200',
+    icon: '📊'
+  }
 };
 
-const typeLabels = {
-  riset: 'Riset',
-  artikel: 'Artikel',
-  dampak: 'Laporan Dampak'
-};
-
-export default function PublicationDetailPage({ params }: { params: { id: string } }) {
+export default function PublicationDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [publication, setPublication] = useState<Publication | null>(null);
   const [deleting, setDeleting] = useState(false);
+  const [resolvedParams, setResolvedParams] = useState<{ id: string } | null>(null);
+  const [copied, setCopied] = useState<string | null>(null);
 
   useEffect(() => {
+    const resolveParams = async () => {
+      const resolved = await params;
+      setResolvedParams(resolved);
+    };
+    resolveParams();
+  }, [params]);
+
+  useEffect(() => {
+    if (!resolvedParams) return;
+
     const fetchPublication = async () => {
       try {
-        const res = await fetch(`/api/admin/publikasi/${params.id}`);
+        const res = await fetch(`/api/admin/publikasi/${resolvedParams.id}`);
         const json = await res.json();
         
         if (res.ok && json.success) {
@@ -61,12 +95,12 @@ export default function PublicationDetailPage({ params }: { params: { id: string
     };
 
     fetchPublication();
-  }, [params.id]);
+  }, [resolvedParams]);
 
   const handleDelete = async () => {
     if (!publication) return;
     
-    if (!confirm(`Are you sure you want to delete "${publication.title}"?`)) return;
+    if (!confirm(`Apakah Anda yakin ingin menghapus "${publication.title}"? Tindakan ini tidak dapat dibatalkan.`)) return;
     
     setDeleting(true);
     try {
@@ -80,16 +114,25 @@ export default function PublicationDetailPage({ params }: { params: { id: string
         throw new Error(json.error || "Failed to delete publication");
       }
       
-      // Redirect to publications list after successful delete
       window.location.href = "/admin/publikasi";
     } catch (error) {
       if (error instanceof Error) {
         alert(error.message);
       } else {
-        alert("An unknown error occurred while deleting");
+        alert("Terjadi kesalahan saat menghapus publikasi");
       }
     } finally {
       setDeleting(false);
+    }
+  };
+
+  const copyToClipboard = async (text: string, type: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(type);
+      setTimeout(() => setCopied(null), 2000);
+    } catch (err) {
+      console.error('Failed to copy text: ', err);
     }
   };
 
@@ -105,71 +148,117 @@ export default function PublicationDetailPage({ params }: { params: { id: string
     }
   };
 
+  const formatDateTime = (dateString: string) => {
+    try {
+      return new Date(dateString).toLocaleString('id-ID', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    } catch {
+      return dateString;
+    }
+  };
+
   if (loading) {
     return (
-      <div>
-        <div className="flex items-center gap-4 mb-6">
-          <Skeleton className="h-10 w-24" />
-          <div className="space-y-2 flex-1">
-            <Skeleton className="h-8 w-64" />
-            <Skeleton className="h-4 w-48" />
-          </div>
-          <Skeleton className="h-10 w-32" />
+      <div className="space-y-6">
+        <Skeleton className="h-10 w-24" />
+        <div className="space-y-2">
+          <Skeleton className="h-8 w-64" />
+          <Skeleton className="h-4 w-48" />
         </div>
-        <div className="grid gap-6">
-          <Card>
-            <CardHeader>
-              <Skeleton className="h-6 w-48" />
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <Skeleton className="h-4 w-full" />
-                <Skeleton className="h-4 w-3/4" />
-                <Skeleton className="h-32 w-full" />
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
-    );
-  }
-
-  if (error || !publication) {
-    return (
-      <div>
-        <Card className="border-red-200 bg-red-50">
-          <CardContent className="pt-6">
-            <p className="text-red-600">{error || "Publication not found"}</p>
-            <Button asChild className="mt-4">
-              <Link href="/admin/publikasi">Kembali ke Daftar</Link>
-            </Button>
+        <Card>
+          <CardContent className="p-6">
+            <div className="space-y-4">
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-3/4" />
+              <Skeleton className="h-32 w-full" />
+            </div>
           </CardContent>
         </Card>
       </div>
     );
   }
 
-  return (
-    <div>
-      <div className="flex items-center gap-4 mb-6">
+  if (error || !publication) {
+    return (
+      <div className="space-y-6">
         <Button variant="outline" size="sm" asChild>
           <Link href="/admin/publikasi">
             <ArrowLeft className="mr-2 h-4 w-4" />
             Kembali
           </Link>
         </Button>
-        <div className="flex-1">
-          <h1 className="text-3xl font-bold">Detail Publikasi</h1>
-          <p className="text-muted-foreground">Lihat informasi lengkap publikasi</p>
+        <div className="flex items-center justify-center min-h-96">
+          <div className="text-center">
+            <div className="text-red-500 text-6xl mb-4">⚠️</div>
+            <h3 className="text-lg font-semibold text-red-800 mb-2">
+              {error || "Publikasi tidak ditemukan"}
+            </h3>
+            <p className="text-red-600 mb-4">
+              Publikasi yang Anda cari mungkin telah dihapus atau tidak tersedia.
+            </p>
+          </div>
         </div>
-        <div className="flex gap-2">
-          <Button variant="outline" asChild>
-            <Link href={`/publikasi/${publication.slug}`} target="_blank">
+      </div>
+    );
+  }
+
+  const typeInfo = typeConfig[publication.type];
+  const publicUrl = `/publikasi/${publication.slug}`;
+
+  return (
+    <div className="space-y-6">
+      {/* Back Button */}
+      <Button variant="outline" size="sm" asChild>
+        <Link href="/admin/publikasi">
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          Kembali
+        </Link>
+      </Button>
+
+      {/* Title Section */}
+      <div>
+        <div className="flex items-center gap-2 mb-2">
+          <span className="text-2xl">{typeInfo.icon}</span>
+          <Badge className={typeInfo.color}>
+            {typeInfo.label}
+          </Badge>
+        </div>
+        <h1 className="text-3xl font-bold text-gray-900 leading-tight mb-2">
+          {publication.title}
+        </h1>
+        <div className="flex items-center gap-4 text-gray-600 mb-4">
+          <div className="flex items-center gap-1">
+            <User className="h-4 w-4" />
+            <span>{publication.author}</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <Calendar className="h-4 w-4" />
+            <span>{formatDate(publication.date)}</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <Eye className="h-4 w-4" />
+            <span>{publication.count} views</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <Hash className="h-4 w-4" />
+            <span>#{publication.order}</span>
+          </div>
+        </div>
+        
+        {/* Action Buttons */}
+        <div className="flex flex-wrap gap-2">
+          <Button variant="outline" size="sm" asChild>
+            <Link href={publicUrl} target="_blank">
               <Eye className="mr-2 h-4 w-4" />
               Lihat Publik
             </Link>
           </Button>
-          <Button variant="outline" asChild>
+          <Button variant="outline" size="sm" asChild>
             <Link href={`/admin/publikasi/edit/${publication.id}`}>
               <Edit className="mr-2 h-4 w-4" />
               Edit
@@ -177,6 +266,7 @@ export default function PublicationDetailPage({ params }: { params: { id: string
           </Button>
           <Button 
             variant="outline" 
+            size="sm"
             onClick={handleDelete}
             disabled={deleting}
             className="text-red-600 hover:text-red-700 hover:bg-red-50"
@@ -187,134 +277,163 @@ export default function PublicationDetailPage({ params }: { params: { id: string
         </div>
       </div>
 
-      <div className="grid gap-6">
-        {/* Basic Information */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Informasi Dasar</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid md:grid-cols-2 gap-4">
-              <div>
-                <label className="text-sm font-medium text-muted-foreground">Judul</label>
-                <p className="text-lg font-semibold">{publication.title}</p>
-              </div>
-              <div>
-                <label className="text-sm font-medium text-muted-foreground">Slug URL</label>
-                <p className="font-mono text-sm bg-muted px-2 py-1 rounded">/{publication.slug}</p>
-              </div>
-              <div>
-                <label className="text-sm font-medium text-muted-foreground">Tipe</label>
-                <div className="mt-1">
-                  <Badge className={typeColors[publication.type]}>
-                    {typeLabels[publication.type]}
-                  </Badge>
-                </div>
-              </div>
-              <div>
-                <label className="text-sm font-medium text-muted-foreground">Penulis</label>
-                <p>{publication.author}</p>
-              </div>
-              <div>
-                <label className="text-sm font-medium text-muted-foreground">Tanggal Publikasi</label>
-                <p>{formatDate(publication.date)}</p>
-              </div>
-              <div>
-                <label className="text-sm font-medium text-muted-foreground">Urutan Tampilan</label>
-                <p>
-                  <Badge variant="outline">{publication.order}</Badge>
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+      <Separator />
 
-        {/* Media & Links */}
-        {(publication.image || publication.pdfUrl) && (
-          <Card>
-            <CardHeader>
-              <CardTitle>Media & Tautan</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {publication.image && (
+      {/* Main Content */}
+      <Card>
+        <CardContent className="p-6 space-y-8">
+          {/* Basic Information */}
+          <div>
+            <h3 className="text-lg font-semibold mb-4">Informasi Publikasi</h3>
+            <div className="grid md:grid-cols-2 gap-6">
+              <div className="space-y-4">
                 <div>
-                  <label className="text-sm font-medium text-muted-foreground">Gambar Cover</label>
-                  <div className="mt-2 space-y-2">
-                    <img 
-                      src={publication.image} 
-                      alt={publication.title}
-                      className="max-w-sm h-auto rounded-lg border"
-                      onError={(e) => {
-                        e.currentTarget.style.display = 'none';
-                      }}
-                    />
-                    <p className="text-sm text-muted-foreground font-mono break-all">
-                      {publication.image}
-                    </p>
-                  </div>
+                  <label className="text-sm font-medium text-gray-500 uppercase tracking-wide">Deskripsi</label>
+                  <p className="mt-1 text-gray-700">
+                    {publication.description || "Tidak ada deskripsi"}
+                  </p>
                 </div>
-              )}
-              {publication.pdfUrl && (
+
                 <div>
-                  <label className="text-sm font-medium text-muted-foreground">PDF Document</label>
-                  <div className="mt-2">
-                    <Button variant="outline" size="sm" asChild>
-                      <a href={publication.pdfUrl} target="_blank" rel="noopener noreferrer">
-                        <ExternalLink className="mr-2 h-4 w-4" />
-                        Buka PDF
-                      </a>
+                  <label className="text-sm font-medium text-gray-500 uppercase tracking-wide flex items-center gap-2">
+                    URL Slug
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => copyToClipboard(publication.slug, 'slug')}
+                      className="h-6 w-6 p-0"
+                    >
+                      {copied === 'slug' ? (
+                        <Check className="h-3 w-3 text-green-600" />
+                      ) : (
+                        <Copy className="h-3 w-3" />
+                      )}
                     </Button>
-                    <p className="text-sm text-muted-foreground font-mono break-all mt-1">
-                      {publication.pdfUrl}
-                    </p>
+                  </label>
+                  <p className="font-mono text-sm bg-gray-100 px-3 py-2 rounded mt-1 break-all">
+                    /{publication.slug}
+                  </p>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="text-sm font-medium text-gray-500 uppercase tracking-wide">Metadata</label>
+                  <div className="mt-1 space-y-1 text-sm">
+                    <p><span className="font-medium">ID:</span> #{publication.id}</p>
+                    <p><span className="font-medium">Dibuat:</span> {formatDateTime(publication.createdAt)}</p>
+                    <p><span className="font-medium">Diupdate:</span> {formatDateTime(publication.updatedAt)}</p>
                   </div>
                 </div>
-              )}
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Content */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Konten</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="prose max-w-none">
-              <div className="whitespace-pre-wrap bg-muted p-4 rounded-lg">
-                {publication.content}
               </div>
             </div>
-          </CardContent>
-        </Card>
+          </div>
 
-        {/* Metadata */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Metadata</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid md:grid-cols-2 gap-4 text-sm">
+          {/* Media Section */}
+          {(publication.image_url || publication.pdf_url) && (
+            <>
+              <Separator />
               <div>
-                <label className="font-medium text-muted-foreground">ID</label>
-                <p>{publication.id}</p>
+                <h3 className="text-lg font-semibold mb-4">Media & Dokumen</h3>
+                <div className="grid md:grid-cols-2 gap-6">
+                  {/* Cover Image */}
+                  {publication.image_url && (
+                    <div>
+                      <label className="text-sm font-medium text-gray-700 mb-3 block">Gambar Cover</label>
+                      <div className="space-y-3">
+                        <div className="relative w-full max-w-md">
+                          <Image
+                            src={publication.image_url}
+                            alt={publication.title}
+                            width={400}
+                            height={200}
+                            className="rounded-lg border shadow-sm object-cover w-full"
+                            onError={(e) => {
+                              e.currentTarget.style.display = 'none';
+                            }}
+                          />
+                        </div>
+                        <div className="flex items-center justify-between p-2 bg-gray-50 rounded text-xs">
+                          <span className="font-mono text-gray-600 break-all flex-1">
+                            {publication.image_url}
+                          </span>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => copyToClipboard(publication.image_url!, 'image')}
+                          >
+                            {copied === 'image' ? (
+                              <Check className="h-3 w-3 text-green-600" />
+                            ) : (
+                              <Copy className="h-3 w-3" />
+                            )}
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* PDF Document */}
+                  {publication.pdf_url && (
+                    <div>
+                      <label className="text-sm font-medium text-gray-700 mb-3 block">Dokumen PDF</label>
+                      <div className="space-y-3">
+                        <div className="flex items-center gap-3 p-3 border rounded-lg">
+                          <div className="h-10 w-10 bg-red-100 rounded-lg flex items-center justify-center">
+                            <FileText className="h-5 w-5 text-red-600" />
+                          </div>
+                          <div className="flex-1">
+                            <h4 className="font-medium text-sm">{publication.title}.pdf</h4>
+                            <p className="text-xs text-gray-600">Dokumen PDF publikasi</p>
+                          </div>
+                          <div className="flex gap-1">
+                            <Button variant="outline" size="sm" asChild>
+                              <a href={publication.pdf_url} target="_blank" rel="noopener noreferrer">
+                                <Eye className="h-3 w-3" />
+                              </a>
+                            </Button>
+                            <Button variant="outline" size="sm" asChild>
+                              <a href={publication.pdf_url} download>
+                                <Download className="h-3 w-3" />
+                              </a>
+                            </Button>
+                          </div>
+                        </div>
+                        <div className="flex items-center justify-between p-2 bg-gray-50 rounded text-xs">
+                          <span className="font-mono text-gray-600 break-all flex-1">
+                            {publication.pdf_url}
+                          </span>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => copyToClipboard(publication.pdf_url!, 'pdf')}
+                          >
+                            {copied === 'pdf' ? (
+                              <Check className="h-3 w-3 text-green-600" />
+                            ) : (
+                              <Copy className="h-3 w-3" />
+                            )}
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
-              <div>
-                <label className="font-medium text-muted-foreground">Jumlah View</label>
-                <p>{publication.count}</p>
-              </div>
-              <div>
-                <label className="font-medium text-muted-foreground">Dibuat</label>
-                <p>{formatDate(publication.createdAt)}</p>
-              </div>
-              <div>
-                <label className="font-medium text-muted-foreground">Terakhir Diupdate</label>
-                <p>{formatDate(publication.updatedAt)}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+            </>
+          )}
+
+          {/* Content */}
+          <Separator />
+          <div>
+            <h3 className="text-lg font-semibold mb-4">Konten Publikasi</h3>
+            <div 
+              className="prose prose-lg max-w-none prose-headings:text-gray-900 prose-p:text-gray-700 prose-a:text-blue-600"
+              dangerouslySetInnerHTML={{ __html: publication.content }}
+            />
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 } 

@@ -1,0 +1,132 @@
+﻿column_name;label;class;is_ordered;is_factor;n_unique;example_values
+region_live;Zona Waktu Tempat Tinggal;character;FALSE;FALSE;4;West, Central, East
+age;Umur;numeric;FALSE;FALSE;8;25, 22, 23
+gender;Manakah dari berikut ini yang paling menggambarkan identitas gender kamu? - Selected Choice;ordered, factor;TRUE;TRUE;5;Perempuan, Laki-laki, Lebih memilih untuk tidak menyebutkan
+activism;Apakah kamu pernah terlibat dalam aktivitas organisasi masyarakat sipil?;ordered, factor;TRUE;TRUE;2;Pernah, Tidak pernah
+political_exsposure;Seberapa sering kamu mengikuti berita tentang isu sosial dan politik di Indonesia?;ordered, factor;TRUE;TRUE;5;Kadang-kadang, Sering, Sangat sering
+polexsp_tiktok;"Di mana kamu biasanya mendapatkan berita tentang isu sosial, politik, atau terkini? 
+ (Pilih semua yang relevan) - Tiktok";character;FALSE;FALSE;2;NA, Tiktok
+polexsp_x;"Di mana kamu biasanya mendapatkan berita tentang isu sosial, politik, atau terkini? 
+ (Pilih semua yang relevan) - Twitter";character;FALSE;FALSE;2;NA, Twitter
+polexsp_ig;"Di mana kamu biasanya mendapatkan berita tentang isu sosial, politik, atau terkini? 
+ (Pilih semua yang relevan) - Instagram";character;FALSE;FALSE;2;NA, Instagram
+polexsp_yt;"Di mana kamu biasanya mendapatkan berita tentang isu sosial, politik, atau terkini? 
+ (Pilih semua yang relevan) - Youtube";character;FALSE;FALSE;2;Youtube, NA
+polexsp_newsapp;"Di mana kamu biasanya mendapatkan berita tentang isu sosial, politik, atau terkini? 
+ (Pilih semua yang relevan) - Platform berita online (misalnya, situs web berita, aplikasi berita)";character;FALSE;FALSE;2;Platform berita online (misalnya, situs web berita, aplikasi berita), NA
+polexsp_newsconv;"Di mana kamu biasanya mendapatkan berita tentang isu sosial, politik, atau terkini? 
+ (Pilih semua yang relevan) - Platform berita offline (misalnya, TV, radio, surat kabar)";character;FALSE;FALSE;2;NA, Platform berita offline (misalnya, TV, radio, surat kabar)
+polexsp_peers;"Di mana kamu biasanya mendapatkan berita tentang isu sosial, politik, atau terkini? 
+ (Pilih semua yang relevan) - Dari teman, rekan kerja, keluarga, atau kelompok komunitas";character;FALSE;FALSE;2;NA, Dari teman, rekan kerja, keluarga, atau kelompok komunitas
+polexsp_peers_intensity;Seberapa sering kamu mendiskusikan isu sosial dan politik dengan teman, keluarga, atau anggota komunitas?;ordered, factor;TRUE;TRUE;5;Kadang-kadang (beberapa kali dalam sebulan), Sering (setidaknya sekali seminggu), Tidak pernah
+civspace_expression;"Mana dari pernyataan berikut yang paling menggambarkan 'ruang sipil'?
+ (Pilih semua yang relevan) - Penghormatan terhadap kebebasan berserikat, berkumpul secara damai, dan berekspresi dalam kebijakan, hukum, dan praktik";character;FALSE;FALSE;2;Penghormatan terhadap kebebasan berserikat, berkumpul secara damai, dan berekspresi dalam kebijakan, hukum, dan praktik, NA
+civspace_rights;"Mana dari pernyataan berikut yang paling menggambarkan 'ruang sipil'?
+ (Pilih semua yang relevan) - Ruang di mana negara melindungi hak-hak dasar seperti berserikat, berkumpul, dan berekspresi";character;FALSE;FALSE;2;NA, Ruang di mana negara melindungi hak-hak dasar seperti berserikat, berkumpul, dan berekspresi
+civspace_gather;"Mana dari pernyataan berikut yang paling menggambarkan 'ruang sipil'?
+ (Pilih semua yang relevan) - Area publik di mana individu dapat berkumpul untuk kegiatan sosial, politik, atau budaya";character;FALSE;FALSE;2;Area publik di mana individu dapat berkumpul untuk kegiatan sosial, politik, atau budaya, NA
+civspace_discuss;"Mana dari pernyataan berikut yang paling menggambarkan 'ruang sipil'?
+ (Pilih semua yang relevan) - Lingkungan di mana warga negara dapat terlibat secara bebas dalam diskusi dan mengekspresikan pendapat yang beragam";character;FALSE;FALSE;2;NA, Lingkungan di mana warga negara dapat terlibat secara bebas dalam diskusi dan mengekspresikan pendapat yang beragam
+civspace_critics;"Mana dari pernyataan berikut yang paling menggambarkan 'ruang sipil'?
+ (Pilih semua yang relevan) - Kebebasan untuk bersuara, mengkritik pemerintah, menyampaikan aspirasi melalui media sosial dan media lainnya";character;FALSE;FALSE;2;NA, Kebebasan untuk bersuara, mengkritik pemerintah, menyampaikan aspirasi melalui media sosial dan media lainnya
+civspace_allabove;"Mana dari pernyataan berikut yang paling menggambarkan 'ruang sipil'?
+ (Pilih semua yang relevan) - Semua hal di atas";character;FALSE;FALSE;2;NA, Semua hal di atas
+civspace_heard;"Apakah kamu pernah mendengar istilah ""ruang sipil"" sebelumnya?";ordered, factor;TRUE;TRUE;3;Tidak, Ya, Tidak yakin
+civspace_understanding;"Bagaimana kamu menilai pemahaman kamu tentang apa itu ""ruang sipil""?";ordered, factor;TRUE;TRUE;5;Cukup paham, Pernah mendengar sekilas saja, Kurang paham
+civicspace_change;Menurut kamu, bagaimana ruang sipil di Indonesia berubah selama pemerintahan saat ini?;ordered, factor;TRUE;TRUE;5;Lebih terbuka, Tidak berubah, Jauh lebih tertutup
+civicspace_lead_censoring;"Menurut kamu, ciri-ciri apa yang paling menggambarkan gaya kepemimpinan pemerintahan saat ini terkait dengan isu ruang sipil?
+ 
+ (Pilih semua yang relevan) - Pembatasan terhadap kebebasan berpendapat atau kritik terhadap pemerintah";character;FALSE;FALSE;2;NA, Pembatasan terhadap kebebasan berpendapat atau kritik terhadap pemerintah
+civicspace_lead_violence;"Menurut kamu, ciri-ciri apa yang paling menggambarkan gaya kepemimpinan pemerintahan saat ini terkait dengan isu ruang sipil?
+ 
+ (Pilih semua yang relevan) - Penggunaan aparat keamanan untuk mengintimidasi atau membubarkan aksi damai";character;FALSE;FALSE;2;NA, Penggunaan aparat keamanan untuk mengintimidasi atau membubarkan aksi damai
+civicspace_lead_presslimit;"Menurut kamu, ciri-ciri apa yang paling menggambarkan gaya kepemimpinan pemerintahan saat ini terkait dengan isu ruang sipil?
+ 
+ (Pilih semua yang relevan) - Pembatasan kebebasan pers dan akses terhadap informasi independen";character;FALSE;FALSE;2;NA, Pembatasan kebebasan pers dan akses terhadap informasi independen
+civicspace_lead_banning;"Menurut kamu, ciri-ciri apa yang paling menggambarkan gaya kepemimpinan pemerintahan saat ini terkait dengan isu ruang sipil?
+ 
+ (Pilih semua yang relevan) - Pembatasan kebebasan untuk berserikat dan membentuk organisasi";character;FALSE;FALSE;2;NA, Pembatasan kebebasan untuk berserikat dan membentuk organisasi
+civicspace_lead_repression;"Menurut kamu, ciri-ciri apa yang paling menggambarkan gaya kepemimpinan pemerintahan saat ini terkait dengan isu ruang sipil?
+ 
+ (Pilih semua yang relevan) - Penggunaan hukum untuk menekan aktivis atau kelompok oposisi";character;FALSE;FALSE;2;NA, Penggunaan hukum untuk menekan aktivis atau kelompok oposisi
+civicspace_lead_monopoly;"Menurut kamu, ciri-ciri apa yang paling menggambarkan gaya kepemimpinan pemerintahan saat ini terkait dengan isu ruang sipil?
+ 
+ (Pilih semua yang relevan) - Konsentrasi pengambilan keputusan di tangan segelintir pemimpin";character;FALSE;FALSE;2;Konsentrasi pengambilan keputusan di tangan segelintir pemimpin, NA
+civicspace_lead_accountability;"Menurut kamu, ciri-ciri apa yang paling menggambarkan gaya kepemimpinan pemerintahan saat ini terkait dengan isu ruang sipil?
+ 
+ (Pilih semua yang relevan) - Kurangnya transparansi atau akuntabilitas dalam pengambilan keputusan";character;FALSE;FALSE;2;Kurangnya transparansi atau akuntabilitas dalam pengambilan keputusan, NA
+civicspace_lead_allgood;"Menurut kamu, ciri-ciri apa yang paling menggambarkan gaya kepemimpinan pemerintahan saat ini terkait dengan isu ruang sipil?
+ 
+ (Pilih semua yang relevan) - Saya tidak merasa ciri-ciri tersebut di atas menggambarkan gaya kepemimpinan pemerintahan saat ini";character;FALSE;FALSE;2;NA, Saya tidak merasa ciri-ciri tersebut di atas menggambarkan gaya kepemimpinan pemerintahan saat ini
+civicspace_youth_union;"Menurut kamu, apa yang membuat ruang sipil aman dan ramah bagi anak muda? 
+ (Pilih semua yang relevan) - Kebebasan untuk berserikat atau membentuk kelompok";character;FALSE;FALSE;2;NA, Kebebasan untuk berserikat atau membentuk kelompok
+civicspace_youth_gather;"Menurut kamu, apa yang membuat ruang sipil aman dan ramah bagi anak muda? 
+ (Pilih semua yang relevan) - Kebebasan untuk berkumpul secara damai tanpa pelecehan atau intimidasi";character;FALSE;FALSE;2;NA, Kebebasan untuk berkumpul secara damai tanpa pelecehan atau intimidasi
+civicspace_youth_express;"Menurut kamu, apa yang membuat ruang sipil aman dan ramah bagi anak muda? 
+ (Pilih semua yang relevan) - Kebebasan untuk mengekspresikan pendapat secara terbuka";character;FALSE;FALSE;2;NA, Kebebasan untuk mengekspresikan pendapat secara terbuka
+civicspace_youth_protect;"Menurut kamu, apa yang membuat ruang sipil aman dan ramah bagi anak muda? 
+ (Pilih semua yang relevan) - Perlindungan negara terhadap ancaman atau diskriminasi saat menggunakan kebebasan tersebut";character;FALSE;FALSE;2;NA, Perlindungan negara terhadap ancaman atau diskriminasi saat menggunakan kebebasan tersebut
+civicspace_youth_resource;"Menurut kamu, apa yang membuat ruang sipil aman dan ramah bagi anak muda? 
+ (Pilih semua yang relevan) - Akses terhadap informasi dan sumber daya";character;FALSE;FALSE;2;Akses terhadap informasi dan sumber daya, NA
+civicspace_youth_representation;"Menurut kamu, apa yang membuat ruang sipil aman dan ramah bagi anak muda? 
+ (Pilih semua yang relevan) - Representasi atau perwakilan dari pendapat yang beragam";character;FALSE;FALSE;2;Representasi atau perwakilan dari pendapat yang beragam, NA
+civicspace_youth_chal_intimidation;"Apa tantangan terbesar bagi anak muda dalam mengakses ruang sipil di wilayah kamu? 
+ (Pilih maksimal 3) - Ketakutan akan pelecehan atau intimidasi saat berkumpul secara damai";character;FALSE;FALSE;2;NA, Ketakutan akan pelecehan atau intimidasi saat berkumpul secara damai
+civicspace_youth_chal_ban;"Apa tantangan terbesar bagi anak muda dalam mengakses ruang sipil di wilayah kamu? 
+ (Pilih maksimal 3) - Pembatasan dalam membentuk atau bergabung dengan kelompok tertentu";character;FALSE;FALSE;2;NA, Pembatasan dalam membentuk atau bergabung dengan kelompok tertentu
+civicspace_youth_chal_censoring;"Apa tantangan terbesar bagi anak muda dalam mengakses ruang sipil di wilayah kamu? 
+ (Pilih maksimal 3) - Adanya perasaan tidak bebas dan takut dalam menyampaikan opini dan kritik di ruang terbuka seperti media sosial dan media lainnya";character;FALSE;FALSE;2;NA, Adanya perasaan tidak bebas dan takut dalam menyampaikan opini dan kritik di ruang terbuka seperti media sosial dan media lainnya
+civicspace_youth_chal_unprotection;"Apa tantangan terbesar bagi anak muda dalam mengakses ruang sipil di wilayah kamu? 
+ (Pilih maksimal 3) - Kurangnya perlindungan dari pemerintah saat menggunakan hak-hak anak muda";character;FALSE;FALSE;2;NA, Kurangnya perlindungan dari pemerintah saat menggunakan hak-hak anak muda
+civicspace_youth_chal_safespace;"Apa tantangan terbesar bagi anak muda dalam mengakses ruang sipil di wilayah kamu? 
+ (Pilih maksimal 3) - Tidak adanya ruang aman untuk berkumpul atau berorganisasi";character;FALSE;FALSE;2;NA, Tidak adanya ruang aman untuk berkumpul atau berorganisasi
+civicspace_youth_chal_discrimination;"Apa tantangan terbesar bagi anak muda dalam mengakses ruang sipil di wilayah kamu? 
+ (Pilih maksimal 3) - Diskriminasi berdasarkan gender, etnis, atau agama";character;FALSE;FALSE;2;NA, Diskriminasi berdasarkan gender, etnis, atau agama
+civicspace_youth_chal_resource;"Apa tantangan terbesar bagi anak muda dalam mengakses ruang sipil di wilayah kamu? 
+ (Pilih maksimal 3) - Akses terbatas ke sumber daya atau dukungan untuk kegiatan yang dipimpin oleh anak muda";character;FALSE;FALSE;2;Akses terbatas ke sumber daya atau dukungan untuk kegiatan yang dipimpin oleh anak muda, NA
+gov_response_humanrights;"Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:
+ (Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Isu kemanusiaan dan Hak Asasi Manusia";numeric;FALSE;FALSE;11;4, 5, 2001
+gov_response_environment;"Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:
+ (Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Perlindungan lingkungan hidup";numeric;FALSE;FALSE;11;4, 10, 2001
+gov_response_foodresource;"Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:
+ (Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Ketahanan pangan dan pengelolaan sumber daya alam";numeric;FALSE;FALSE;11;4, 5, 2009
+gov_response_vulnerabelpop;"Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:
+ (Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Perlindungan terhadap kelompok rentan";numeric;FALSE;FALSE;11;4, 2, 10
+gov_response_healthaccess;"Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:
+ (Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Akses dan layanan kesehatan";numeric;FALSE;FALSE;11;6, 10, 2007
+gov_response_eduaccess;"Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:
+ (Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Peningkatan akses dan kualitas pendidikan";numeric;FALSE;FALSE;11;6, 5, 10
+gov_response_poverty;"Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:
+ (Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Penanganan kemiskinan";numeric;FALSE;FALSE;11;6, 3, 10
+gov_response_inequality;"Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:
+ (Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Pengurangan ketimpangan sosial dan ekonomi";numeric;FALSE;FALSE;11;6, 3, 10
+gov_response_economicopp;"Gunakan slider di bawah ini untuk menilai seberapa responsifnya pemerintah dalam menangani isu-isu berikut:
+ (Skala: Tidak Responsif Sama Sekali 0 --- Sangat Responsif 10) - Kesempatan kerja dan pemberdayaan ekonomi";numeric;FALSE;FALSE;11;6, 3, 10
+elit_percep_national;"Apa persepsi kamu tentang elit politik nasional di Indonesia?
+ (Elit politik nasional melingkupi presiden, wakil presiden, menteri, anggota legisatif pusat, dan pimpinan partai politik)";ordered, factor;TRUE;TRUE;5;Netral, Tidak baik, Sangat tidak baik
+elit_percep_local;"Apa persepsi kamu tentang elit politik lokal di wilayah kamu?
+ (Elit politik lokal melingkupi gubernur, bupati, anggota legisatif provinsi dan kabupaten/kota, kepala dinas, dan pimpinan partai politik provinsi dan kabupaten/kota)";ordered, factor;TRUE;TRUE;5;Netral, Tidak baik, Sangat tidak baik
+issue_commited_voicing;Seberapa sering kamu menyuarakan pandangan kamu tentang isu sosial atau politik lewat media sosial?;ordered, factor;TRUE;TRUE;5;Kadang-kadang terlibat, Jarang terlibat, Sering terlibat
+issue_motiv_environment;"Isu apa yang membuat kamu rela mengorbankan uang dan waktu untuk mendukung atau memperjuangkannya?
+ (Pilih semua yang relevan) - Selected Choice - Perlindungan lingkungan hidup";character;FALSE;FALSE;2;Perlindungan lingkungan hidup, NA
+issue_motiv_foodresources;"Isu apa yang membuat kamu rela mengorbankan uang dan waktu untuk mendukung atau memperjuangkannya?
+ (Pilih semua yang relevan) - Selected Choice - Ketahanan pangan dan pengelolaan sumber daya alam";character;FALSE;FALSE;2;NA, Ketahanan pangan dan pengelolaan sumber daya alam
+issue_motiv_vulnerablepop;"Isu apa yang membuat kamu rela mengorbankan uang dan waktu untuk mendukung atau memperjuangkannya?
+ (Pilih semua yang relevan) - Selected Choice - Perlindungan terhadap kelompok rentan";character;FALSE;FALSE;2;Perlindungan terhadap kelompok rentan, NA
+issue_motiv_humanrights;"Isu apa yang membuat kamu rela mengorbankan uang dan waktu untuk mendukung atau memperjuangkannya?
+ (Pilih semua yang relevan) - Selected Choice - Isu kemanusiaan dan Hak Asasi Manusia";character;FALSE;FALSE;2;NA, Isu kemanusiaan dan Hak Asasi Manusia
+issue_motiv_healthaccess;"Isu apa yang membuat kamu rela mengorbankan uang dan waktu untuk mendukung atau memperjuangkannya?
+ (Pilih semua yang relevan) - Selected Choice - Akses dan layanan kesehatan";character;FALSE;FALSE;2;NA, Akses dan layanan kesehatan
+issue_motiv_educaccess;"Isu apa yang membuat kamu rela mengorbankan uang dan waktu untuk mendukung atau memperjuangkannya?
+ (Pilih semua yang relevan) - Selected Choice - Peningkatan akses dan kualitas pendidikan";character;FALSE;FALSE;2;NA, Peningkatan akses dan kualitas pendidikan
+issue_motiv_poverty;"Isu apa yang membuat kamu rela mengorbankan uang dan waktu untuk mendukung atau memperjuangkannya?
+ (Pilih semua yang relevan) - Selected Choice - Penanganan kemiskinan";character;FALSE;FALSE;2;NA, Penanganan kemiskinan
+issue_motiv_inequality;"Isu apa yang membuat kamu rela mengorbankan uang dan waktu untuk mendukung atau memperjuangkannya?
+ (Pilih semua yang relevan) - Selected Choice - Pengurangan ketimpangan sosial dan ekonomi";character;FALSE;FALSE;2;Pengurangan ketimpangan sosial dan ekonomi, NA
+issue_motiv_economicopp;"Isu apa yang membuat kamu rela mengorbankan uang dan waktu untuk mendukung atau memperjuangkannya?
+ (Pilih semua yang relevan) - Selected Choice - Kesempatan kerja dan pemberdayaan ekonomi";character;FALSE;FALSE;2;NA, Kesempatan kerja dan pemberdayaan ekonomi
+issue_motiv_other;"Isu apa yang membuat kamu rela mengorbankan uang dan waktu untuk mendukung atau memperjuangkannya?
+ (Pilih semua yang relevan) - Selected Choice - Lainnya (sebutkan)";character;FALSE;FALSE;2;NA, Lainnya (sebutkan)
+issue_motiv_text;"Isu apa yang membuat kamu rela mengorbankan uang dan waktu untuk mendukung atau memperjuangkannya?
+ (Pilih semua yang relevan) - Lainnya (sebutkan) - Teks";character;FALSE;FALSE;28;NA, Hu, Pemberdayaan dan perlindungan perempuan
+issue_commited_resources;Seberapa banyak uang, waktu, dan tenaga yang rela kamu korbankan untuk mendukung atau memperjuangkan isu yang kamu pedulikan tersebut?;numeric;FALSE;FALSE;7;40, 60, 20

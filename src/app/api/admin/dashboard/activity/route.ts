@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { initializeDatabase, db } from '@/lib/db';
-import { events, publications, discussions, eventRegistrations } from '@/lib/db/content-schema';
+import { events, publications, discussions, eventRegistrations, contactMessages, newsletterSubscriptions } from '@/lib/db/content-schema';
 import { getSessionUser } from '@/lib/auth-utils';
-import { desc, eq } from 'drizzle-orm';
+import { count, gte, lt, sql } from 'drizzle-orm';
 
 // Initialize database
 initializeDatabase();
@@ -24,6 +24,58 @@ async function verifyAdmin(request: NextRequest) {
   return user;
 }
 
+// Helper function to get date range for the last 6 months
+function getDateRange() {
+  const now = new Date();
+  const sixMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 6, 1);
+  return {
+    start: sixMonthsAgo.toISOString(),
+    end: now.toISOString()
+  };
+}
+
+// Helper function to generate date array for the last 6 months
+function generateDateArray() {
+  const dates = [];
+  const now = new Date();
+  
+  for (let i = 180; i >= 0; i--) {
+    const date = new Date(now);
+    date.setDate(date.getDate() - i);
+    dates.push({
+      date: date.toISOString().split('T')[0],
+      month: date.toLocaleDateString('id-ID', { month: 'short' }),
+      day: date.getDate(),
+      weekday: date.toLocaleDateString('id-ID', { weekday: 'short' })
+    });
+  }
+  
+  return dates;
+}
+
+// Simulate visitor data (in a real app, this would come from analytics)
+function generateVisitorData(dates: any[]) {
+  return dates.map(dateInfo => {
+    // Simulate realistic visitor patterns
+    const baseVisitors = 150;
+    const weekendMultiplier = dateInfo.weekday === 'Sab' || dateInfo.weekday === 'Min' ? 0.7 : 1;
+    const randomVariation = Math.random() * 100 - 50;
+    const seasonalTrend = Math.sin((dateInfo.day / 30) * Math.PI) * 50;
+    
+    const desktop = Math.max(0, Math.floor((baseVisitors + randomVariation + seasonalTrend) * weekendMultiplier));
+    const mobile = Math.max(0, Math.floor(desktop * (0.6 + Math.random() * 0.8)));
+    
+    return {
+      date: dateInfo.date,
+      desktop,
+      mobile,
+      total: desktop + mobile,
+      month: dateInfo.month,
+      day: dateInfo.day
+    };
+  });
+}
+
 export async function GET(request: NextRequest) {
   try {
     const user = await verifyAdmin(request);
@@ -31,107 +83,91 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Get recent events
-    const recentEvents = await db.select({
-      id: events.id,
-      title: events.title,
-      createdAt: events.createdAt,
-      slug: events.slug,
-    }).from(events).orderBy(desc(events.createdAt)).limit(5);
+    const { start, end } = getDateRange();
+    const dates = generateDateArray();
+    
+    // Generate visitor data
+    const visitorData = generateVisitorData(dates);
+    
+    // Get monthly content creation data
+    const monthlyData = [];
+    
+    for (let i = 5; i >= 0; i--) {
+      const monthStart = new Date();
+      monthStart.setMonth(monthStart.getMonth() - i, 1);
+      monthStart.setHours(0, 0, 0, 0);
+      
+      const monthEnd = new Date();
+      monthEnd.setMonth(monthEnd.getMonth() - i + 1, 1);
+      monthEnd.setHours(0, 0, 0, 0);
+      
+      const monthStartISO = monthStart.toISOString();
+      const monthEndISO = monthEnd.toISOString();
+      
+      // Count activities for this month
+      const [eventsCount] = await db.select({ count: count() })
+        .from(events)
+        .where(sql`${events.createdAt} >= ${monthStartISO} AND ${events.createdAt} < ${monthEndISO}`);
 
-    // Get recent publications
-    const recentPublications = await db.select({
-      id: publications.id,
-      title: publications.title,
-      createdAt: publications.createdAt,
-      slug: publications.slug,
-    }).from(publications).orderBy(desc(publications.createdAt)).limit(5);
+      const [publicationsCount] = await db.select({ count: count() })
+        .from(publications)
+        .where(sql`${publications.createdAt} >= ${monthStartISO} AND ${publications.createdAt} < ${monthEndISO}`);
 
-    // Get recent discussions
-    const recentDiscussions = await db.select({
-      id: discussions.id,
-      title: discussions.title,
-      createdAt: discussions.createdAt,
-      slug: discussions.slug,
-    }).from(discussions).orderBy(desc(discussions.createdAt)).limit(5);
+      const [discussionsCount] = await db.select({ count: count() })
+        .from(discussions)
+        .where(sql`${discussions.createdAt} >= ${monthStartISO} AND ${discussions.createdAt} < ${monthEndISO}`);
 
-    // Get recent registrations with event details
-    const recentRegistrations = await db.select({
-      id: eventRegistrations.id,
-      name: eventRegistrations.name,
-      createdAt: eventRegistrations.createdAt,
-      eventId: eventRegistrations.eventId,
-      eventTitle: events.title,
-    })
-    .from(eventRegistrations)
-    .leftJoin(events, eq(eventRegistrations.eventId, events.id))
-    .orderBy(desc(eventRegistrations.createdAt))
-    .limit(5);
+      const [registrationsCount] = await db.select({ count: count() })
+        .from(eventRegistrations)
+        .where(sql`${eventRegistrations.createdAt} >= ${monthStartISO} AND ${eventRegistrations.createdAt} < ${monthEndISO}`);
 
-    // Combine all activities
-    const activities: Array<{
-      id: number;
-      title: string;
-      type: string;
-      date: string;
-      slug?: string;
-      eventTitle?: string | null;
-    }> = [];
+      const [contactsCount] = await db.select({ count: count() })
+        .from(contactMessages)
+        .where(sql`${contactMessages.createdAt} >= ${monthStartISO} AND ${contactMessages.createdAt} < ${monthEndISO}`);
 
-    // Add events
-    recentEvents.forEach(event => {
-      activities.push({
-        id: event.id,
-        title: event.title,
-        type: 'event',
-        date: event.createdAt,
-        slug: event.slug,
+      const [subscriptionsCount] = await db.select({ count: count() })
+        .from(newsletterSubscriptions)
+        .where(sql`${newsletterSubscriptions.subscribedAt} >= ${monthStartISO} AND ${newsletterSubscriptions.subscribedAt} < ${monthEndISO}`);
+
+      monthlyData.push({
+        month: monthStart.toLocaleDateString('id-ID', { month: 'short', year: 'numeric' }),
+        events: eventsCount.count,
+        publications: publicationsCount.count,
+        discussions: discussionsCount.count,
+        registrations: registrationsCount.count,
+        contacts: contactsCount.count,
+        subscriptions: subscriptionsCount.count,
+        total: eventsCount.count + publicationsCount.count + discussionsCount.count + registrationsCount.count
       });
-    });
+    }
 
-    // Add publications
-    recentPublications.forEach(publication => {
-      activities.push({
-        id: publication.id,
-        title: publication.title,
-        type: 'publication',
-        date: publication.createdAt,
-        slug: publication.slug,
-      });
-    });
-
-    // Add discussions
-    recentDiscussions.forEach(discussion => {
-      activities.push({
-        id: discussion.id,
-        title: discussion.title,
-        type: 'discussion',
-        date: discussion.createdAt,
-        slug: discussion.slug,
-      });
-    });
-
-    // Add registrations
-    recentRegistrations.forEach(registration => {
-      activities.push({
-        id: registration.id,
-        title: registration.name,
-        type: 'registration',
-        date: registration.createdAt,
-        eventTitle: registration.eventTitle,
-      });
-    });
-
-    // Sort by date and take top 15
-    activities.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-    const topActivities = activities.slice(0, 15);
+    // Calculate summary statistics
+    const totalVisitors = visitorData.reduce((sum, day) => sum + day.total, 0);
+    const avgDailyVisitors = Math.round(totalVisitors / visitorData.length);
+    const maxDailyVisitors = Math.max(...visitorData.map(day => day.total));
+    const minDailyVisitors = Math.min(...visitorData.map(day => day.total));
+    
+    const totalActivities = monthlyData.reduce((sum, month) => sum + month.total, 0);
+    const avgMonthlyActivities = Math.round(totalActivities / monthlyData.length);
 
     return NextResponse.json({ 
       success: true, 
-      data: topActivities 
+      data: {
+        visitors: visitorData,
+        monthly: monthlyData,
+        summary: {
+          totalVisitors,
+          avgDailyVisitors,
+          maxDailyVisitors,
+          minDailyVisitors,
+          totalActivities,
+          avgMonthlyActivities,
+          timeRange: '6 bulan terakhir'
+        }
+      }
     });
   } catch (error) {
-    console.error('Error fetching recent activities:', error);
-    return NextResponse.json({ error: 'Failed to fetch recent activities' }, { status: 500 });
+    console.error('Error fetching activity data:', error);
+    return NextResponse.json({ error: 'Failed to fetch activity data' }, { status: 500 });
   }
 } 

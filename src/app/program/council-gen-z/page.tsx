@@ -8,11 +8,12 @@ const CouncilGenZPage = () => {
     <>
       {/* Hero Section */}
       <section 
-        className="relative py-32 text-center bg-primary text-black"
+        className="relative py-32 text-center text-black"
+        style={{ backgroundColor: '#59caf5' }}
       >
         <div className="relative container mx-auto px-4 z-10">
           <h1 className="text-4xl md:text-5xl font-bold mb-4 !text-white" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>{pageTitle}</h1>
-          <p className="text-lg md:text-xl text-[rgb(41,56,87/90%)] max-w-3xl mx-auto mb-6 !text-white">
+          <p className="text-lg md:text-xl max-w-3xl mx-auto mb-6 !text-white">
             Ruang Aspirasi Anak Muda Akan Krisis Iklim Untuk Prabowo-Gibran
           </p>
         </div>
@@ -25,7 +26,7 @@ const CouncilGenZPage = () => {
           <div className="flex flex-col md:flex-row items-center gap-8 md:gap-12">
             <div className="w-full md:w-1/2 md:order-last"> {/* Image on right */}
               <Image 
-                src="/images/program/DSC08852-a.jpg" // Use an existing image as placeholder
+                src="/images/bg/DSC00333.png" // Use an existing image as placeholder
                 alt="COGZ Participants"
                 width={500}
                 height={400}
@@ -55,7 +56,7 @@ const CouncilGenZPage = () => {
         <div className="flex flex-col md:flex-row items-start gap-8 md:gap-12 mb-16">
           <div className="w-full md:w-1/3">
             <Image 
-              src="/images/program/DSC08852-a.jpg" // Use an existing image as placeholder
+              src="/images/bg/DSC00101.png" // Use an existing image as placeholder
               alt="Kalimantan - Kota Berkelanjutan"
               width={500}
               height={400}
@@ -75,7 +76,7 @@ const CouncilGenZPage = () => {
         <div className="flex flex-col md:flex-row items-start gap-8 md:gap-12 mb-16">
           <div className="w-full md:w-1/3">
             <Image 
-              src="/images/program/DSC08852-a.jpg" // Use an existing image as placeholder
+              src="/images/bg/DSC00111.png" // Use an existing image as placeholder
               alt="Bandung - Transportasi Berkelanjutan"
               width={500}
               height={400}
@@ -96,7 +97,7 @@ const CouncilGenZPage = () => {
         <div className="flex flex-col md:flex-row items-start gap-8 md:gap-12 mb-16">
           <div className="w-full md:w-1/3">
             <Image 
-              src="/images/program/DSC08852-a.jpg" // Use an existing image as placeholder
+              src="/images/bg/DSC00186.png" // Use an existing image as placeholder
               alt="Jabodetabek - Pengelolaan Limbah Berkelanjutan"
               width={500}
               height={400}
@@ -117,7 +118,7 @@ const CouncilGenZPage = () => {
         <div className="flex flex-col md:flex-row items-start gap-8 md:gap-12 mb-16">
           <div className="w-full md:w-1/3">
             <Image 
-              src="/images/program/DSC08852-a.jpg" // Use an existing image as placeholder
+              src="/images/bg/DSC00176.png" // Use an existing image as placeholder
               alt="Yogyakarta - Pariwisata Berkelanjutan"
               width={500}
               height={400}
@@ -138,7 +139,7 @@ const CouncilGenZPage = () => {
         <div className="flex flex-col md:flex-row items-start gap-8 md:gap-12">
           <div className="w-full md:w-1/3">
             <Image 
-              src="/images/program/DSC08852-a.jpg" // Use an existing image as placeholder
+              src="/images/bg/DSC00187.png" // Use an existing image as placeholder
               alt="Sulawesi - Polusi Laut"
               width={500}
               height={400}
@@ -170,7 +171,7 @@ const CouncilGenZPage = () => {
             <div className="bg-white rounded-lg overflow-hidden shadow-md">
               <div className="relative h-64">
                 <Image 
-                  src="/images/program/DSC08852-a.jpg" // Use an existing image as placeholder
+                  src="/images/bg/DSC00208.png" // Use an existing image as placeholder
                   alt="Triana Krisandini Tandjung"
                   fill
                   className="object-cover"
@@ -203,7 +204,7 @@ const CouncilGenZPage = () => {
             <div className="bg-white rounded-lg overflow-hidden shadow-md">
               <div className="relative h-64">
                 <Image 
-                  src="/images/program/DSC08852-a.jpg" // Use an existing image as placeholder
+                  src="/images/bg/DSC00156.png" // Use an existing image as placeholder
                   alt="Faiz Arsyad"
                   fill
                   className="object-cover"
@@ -236,7 +237,7 @@ const CouncilGenZPage = () => {
             <div className="bg-white rounded-lg overflow-hidden shadow-md">
               <div className="relative h-64">
                 <Image 
-                  src="/images/program/DSC08852-a.jpg" // Use an existing image as placeholder
+                  src="/images/bg/DSC00173.png" // Use an existing image as placeholder
                   alt="Gemintang Kejora Mallarangeng"
                   fill
                   className="object-cover"
@@ -261,46 +262,6 @@ const CouncilGenZPage = () => {
                     <h4 className="font-semibold text-[rgb(41,56,87/90%)] mb-1">Limbah & Polusi Laut</h4>
                     <p className="text-[rgb(41,56,87/90%)] text-sm">Perlunya regulasi yang ketat terkait pengolahan limbah bagi setiap industri. Terus mengadvokasi para pebisnis dan elit politik di daerah terkait pentingnya menjaga ekosistem laut.</p>
                   </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Section 5: About GMP */}
-      <section className="container mx-auto px-4 py-16 max-w-6xl">
-        <div className="flex flex-col md:flex-row items-center gap-8 md:gap-12">
-          <div className="w-full md:w-1/2">
-            <Image 
-              src="/images/program/DSC08852-a.jpg" // Use an existing image as placeholder
-              alt="Tentang Generasi Melek Politik"
-              width={500}
-              height={400}
-              className="rounded-lg shadow-md object-cover w-full"
-            />
-          </div>
-          <div className="w-full md:w-1/2">
-            <h2 className="text-2xl md:text-3xl font-semibold text-primary mb-4" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>Tentang Generasi Melek Politik</h2>
-            <p className="text-[rgb(41,56,87/90%)] leading-relaxed">
-              Generasi Melek Politik adalah sebuah organisasi yang berfokus pada edukasi partisipasi politik anak muda, di bawah Yayasan Partisipasi Muda yang didirikan pada tahun 2017. Generasi Melek Politik memiliki tiga tujuan besar dalam mendorong keterlibatan generasi muda dalam ranah politik yaitu memberikan edukasi kepada anak muda tentang pentingnya partisipasi politik, menyiapkan pemimpin masa depan Indonesia menggunakan sesi pelatihan kebijakan publik, serta memberikan ruang inklusif bagi anak muda untuk bersuara dan berkontribusi dalam menentukan arahan kebijakan publik Indonesia bersama dengan politisi, pemerintah, dan aktor masyarakat sipil.
-            </p>
-            
-            <div className="mt-6 bg-gray-50 p-4 rounded-lg">
-              <h3 className="font-semibold text-primary mb-2">Narahubung</h3>
-              <div className="flex items-start gap-4">
-                <div className="w-16 h-16 relative">
-                  <Image 
-                    src="/images/program/DSC08852-a.jpg" // Use an existing image as placeholder
-                    alt="Alva Lazuardy"
-                    fill
-                    className="object-cover rounded-full"
-                  />
-                </div>
-                <div>
-                  <p className="font-semibold">Alva Lazuardy</p>
-                  <p className="text-sm text-[rgb(41,56,87/90%)]">Program Manager</p>
-                  <p className="text-sm text-[rgb(41,56,87/90%)]">0856-1601-406</p>
                 </div>
               </div>
             </div>

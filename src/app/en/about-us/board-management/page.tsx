@@ -42,8 +42,8 @@ const BoardManagementPage = () => {
                     <Image 
                         src={member.photo}
                         alt={member.name}
-                        layout="fill"
-                        objectFit="cover"
+                        fill
+                        style={{ objectFit: 'cover' }}
                         className="transition-all duration-300"
                     />
                 </div>
@@ -68,8 +68,8 @@ const BoardManagementPage = () => {
                         <Image 
                             src={member.photo}
                             alt={member.name}
-                            layout="fill"
-                            objectFit="cover"
+                            fill
+                            style={{ objectFit: 'cover' }}
                              className="transition-all duration-300"
                         />
                     </div>

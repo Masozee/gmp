@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { Figtree, Inter } from "next/font/google";
+import { Inter, Figtree } from "next/font/google";
+import { GeistSans } from 'geist/font/sans';
 import "./globals.css";
 import ConditionalNavbar from "./components/ConditionalNavbar";
 import ConditionalFooter from "./components/ConditionalFooter";
@@ -7,14 +8,16 @@ import ConditionalAccessibilityButton from "./components/ConditionalAccessibilit
 import ConditionalSkipLink from "./components/ConditionalSkipLink";
 import { AccessibilityProvider } from "@/lib/accessibility-context";
 
-const figtree = Figtree({
-  variable: "--font-figtree",
+const geist = GeistSans;
+
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
   display: "swap",
 });
 
-const inter = Inter({
-  variable: "--font-inter",
+const figtree = Figtree({
+  variable: "--font-figtree",
   subsets: ["latin"],
   display: "swap",
 });
@@ -31,7 +34,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "Yayasan Partisipasi Muda",
-    description: "Empowering Indonesian youth with political education",
+    description: "Yayasan Partisipasi Muda (YPM) adalah organisasi nonprofit yang memberdayakan orang muda untuk berpartisipasi secara bermakna",
     url: "https://partisipasimuda.org",
     siteName: "Yayasan Partisipasi Muda",
     locale: "id_ID",
@@ -59,7 +62,7 @@ export default function RootLayout({
         </style>
       </head>
       <body
-        className={`${figtree.variable} ${inter.variable} antialiased`}
+        className={`${geist.variable} ${inter.variable} ${figtree.variable} antialiased`}
         suppressHydrationWarning={true}
       >
         <AccessibilityProvider>

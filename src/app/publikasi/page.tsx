@@ -10,15 +10,21 @@ import { Button } from '@/components/ui/button'; // Assuming shadcn/ui Button
 interface Publication {
   id: number;
   title: string;
+  title_en: string | null;
   url: string;
+  slug_en: string | null;
   date: string;
   count: string;
   image: string | null;
   type: string; // Used for filtering
   pdf_url: string | null;
   author: string;
+  author_en: string | null;
   order: number;
   content: string;
+  content_en: string | null;
+  description: string | null;
+  description_en: string | null;
 }
 
 // Helper function to format dates as "05 Juni 2025" style
@@ -195,9 +201,9 @@ export default function PublikasiPage() {
               return (
                 <div 
                   key={slug} 
-                  className="flex flex-col overflow-hidden rounded-2xl shadow-lg bg-[#f06d98] transition-all duration-300 hover:bg-[#ffe066] hover:shadow-xl hover:-translate-y-1 active:bg-[#ffe066] focus:bg-[#ffe066] group"
+                  className="flex flex-col overflow-hidden rounded-2xl shadow-lg bg-[#f06d98] transition-all duration-300 hover:bg-[#ffe066] hover:shadow-xl active:bg-[#ffe066] focus:bg-[#ffe066] group"
                 >
-                  <div className="relative h-48 w-full overflow-hidden">
+                  <div className="relative h-64 w-full overflow-hidden">
                     {pub.image ? (
                       <Image
                         src={pub.image}
@@ -205,7 +211,7 @@ export default function PublikasiPage() {
                         layout="fill"
                         objectFit="cover"
                         unoptimized
-                        className="transition-transform duration-500 group-hover:scale-105"
+                        className=""
                       />
                     ) : (
                       <div className="flex h-full w-full items-center justify-center bg-gray-200 text-gray-500">
@@ -221,18 +227,13 @@ export default function PublikasiPage() {
                     
                     {/* Title second (as a link) */}
                     <Link href={`/publikasi/${slug}`}>
-                      <h2 className="mb-3 text-lg font-semibold text-white group-hover:text-black hover:underline" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>
+                      <h1 className=" text-lg font-semibold text-white group-hover:text-white hover:underline" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>
                         {pub.title}
-                      </h2>
+                      </h1>
                     </Link>
                     
-                    {/* Content snippet - takes remaining space */}
-                    <p className="mb-4 text-sm text-white line-clamp-3 group-hover:text-black flex-grow">
-                      {pub.content.substring(0, 150)}...
-                    </p>
-                    
                     {/* Date and view count at bottom - always at bottom */}
-                    <div className="mt-auto pt-3 border-t border-white/20 group-hover:border-black/20">
+                    <div className="mt-auto pt-4 border-t border-white/20 group-hover:border-white/20">
                       <div className="flex justify-between items-center text-xs">
                         {/* Date - formatted as dd/mmmm/yyyy */}
                         <p className="text-white group-hover:text-white">{formatPublicationDate(pub.date)}</p>

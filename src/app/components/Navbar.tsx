@@ -3,9 +3,9 @@
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import MobileMenu from './MobileMenu';
-import { Search, X, ArrowRight } from 'lucide-react';
+import { Search, X, ArrowRight, Globe } from 'lucide-react';
 
 interface SearchResult {
   id: number;
@@ -45,6 +45,30 @@ const Navbar = () => {
   const programTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
   const router = useRouter();
+  const pathname = usePathname();
+
+  // Language switching function
+  const switchLanguage = () => {
+    const currentPath = pathname;
+    if (currentPath.startsWith('/en')) {
+      // Switch to Indonesian - remove /en prefix
+      const newPath = currentPath.replace('/en', '') || '/';
+      router.push(newPath);
+    } else {
+      // Switch to English - add /en prefix
+      const newPath = `/en${currentPath}`;
+      router.push(newPath);
+    }
+  };
+
+  // Get current language
+  const currentLanguage = pathname.startsWith('/en') ? 'EN' : 'ID';
+
+  // Check if path is active
+  const isActive = (path: string) => {
+    if (path === '/') return pathname === '/';
+    return pathname.startsWith(path);
+  };
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -511,7 +535,7 @@ const Navbar = () => {
         }`}
         style={{ fontFamily: "'Inter', sans-serif" }}
       >
-        <div className="container mx-auto px-4 py-3 flex justify-between items-center max-w-7xl">
+        <div className="container mx-auto px-4 py-3 flex items-center max-w-7xl">
           <div className="flex items-center">
             <Link href="/" className="flex items-center">
               <Image
@@ -524,15 +548,19 @@ const Navbar = () => {
             </Link>
           </div>
           
-          <div className="hidden md:flex space-x-4 font-heading font-extrabold" style={{ fontFamily: "'Inter', sans-serif" }}>
+          <div className="hidden md:flex space-x-1 font-heading font-bold ml-8" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700 }}>
             {/* Tentang Kami Dropdown */}
             <div 
               className="relative group"
               onMouseEnter={handleTentangKamiEnter}
               onMouseLeave={handleTentangKamiLeave}
             >
-              <button className={`transition-colors flex items-center py-2 px-3 rounded-md font-extrabold ${
-                hasScrolled ? 'hover:bg-pink-500 hover:text-white text-gray-800' : 'hover:bg-pink-500 hover:text-white text-white'
+              <button className={`transition-all flex items-center py-2 px-2 font-bold relative ${
+                hasScrolled ? 'text-gray-800 hover:text-[#ffcb57]' : 'text-white hover:text-[#ffcb57]'
+              } ${
+                isActive('/tentang-kami') ? 'text-[#ffcb57]' : ''
+              } after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-1 after:bg-[#ffcb57] after:transition-all after:duration-300 hover:after:w-full ${
+                isActive('/tentang-kami') ? 'after:w-full' : ''
               }`}>
                 Tentang Kami
                 <svg className={`w-4 h-4 ml-1 transition-transform duration-200 ${isTentangKamiOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -547,13 +575,13 @@ const Navbar = () => {
                   onMouseEnter={handleTentangKamiEnter}
                   onMouseLeave={handleTentangKamiLeave}
                 >
-                  <Link href="/tentang-kami/tujuan" className="block px-4 py-2 text-gray-800 hover:bg-pink-500 hover:text-white transition-colors">
+                  <Link href="/tentang-kami/tujuan" className="block px-4 py-2 text-gray-800 hover:bg-[#ffcb57] hover:text-white transition-colors">
                     Tujuan Kami
                   </Link>
-                  <Link href="/tentang-kami/perjalanan" className="block px-4 py-2 text-gray-800 hover:bg-pink-500 hover:text-white transition-colors">
+                  <Link href="/tentang-kami/perjalanan" className="block px-4 py-2 text-gray-800 hover:bg-[#ffcb57] hover:text-white transition-colors">
                     Perjalanan Kami
                   </Link>
-                  <Link href="/tentang-kami/board-pengurus" className="block px-4 py-2 text-gray-800 hover:bg-pink-500 hover:text-white transition-colors">
+                  <Link href="/tentang-kami/board-pengurus" className="block px-4 py-2 text-gray-800 hover:bg-[#ffcb57] hover:text-white transition-colors">
                     Board dan Pengurus
                   </Link>
                 </div>
@@ -566,8 +594,12 @@ const Navbar = () => {
               onMouseEnter={handleProgramEnter}
               onMouseLeave={handleProgramLeave}
             >
-              <button className={`transition-colors flex items-center py-2 px-3 rounded-md font-extrabold ${
-                hasScrolled ? 'hover:bg-pink-500 hover:text-white text-gray-800' : 'hover:bg-pink-500 hover:text-white text-white'
+              <button className={`transition-all flex items-center py-2 px-2 font-bold relative ${
+                hasScrolled ? 'text-gray-800 hover:text-[#ffcb57]' : 'text-white hover:text-[#ffcb57]'
+              } ${
+                isActive('/program') ? 'text-[#ffcb57]' : ''
+              } after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-1 after:bg-[#ffcb57] after:transition-all after:duration-300 hover:after:w-full ${
+                isActive('/program') ? 'after:w-full' : ''
               }`}>
                 Program
                 <svg className={`w-4 h-4 ml-1 transition-transform duration-200 ${isProgramOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -578,71 +610,130 @@ const Navbar = () => {
               {/* Dropdown Menu */}
               {isProgramOpen && (
                 <div 
-                  className="absolute top-full left-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50"
+                  className="absolute top-full left-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50"
                   onMouseEnter={handleProgramEnter}
                   onMouseLeave={handleProgramLeave}
                 >
-                  <Link href="/program/diskusi" className="block px-4 py-2 text-gray-800 hover:bg-pink-500 hover:text-white transition-colors">
-                    Diskusi Publik
-                  </Link>
-                  <Link href="/program/temu-kandidat" className="block px-4 py-2 text-gray-800 hover:bg-pink-500 hover:text-white transition-colors">
-                    Temu Kandidat
-                  </Link>
-                  <Link href="/program/academia-politica" className="block px-4 py-2 text-gray-800 hover:bg-pink-500 hover:text-white transition-colors">
-                    Academia Politica
-                  </Link>
-                  <Link href="/program/council-gen-z" className="block px-4 py-2 text-gray-800 hover:bg-pink-500 hover:text-white transition-colors">
-                    Council Gen Z
-                  </Link>
-                  <Link href="/program/class-of-climate-leaders" className="block px-4 py-2 text-gray-800 hover:bg-pink-500 hover:text-white transition-colors">
-                    Class of Climate Leaders
-                  </Link>
+                  {/* Climate Change Category */}
+                  <div className="px-4 py-2">
+                    <div className="text-sm font-bold text-gray-800 uppercase tracking-wider mb-2">
+                      Climate Change
+                    </div>
+                    <Link href="/program/academia-politica" className="block px-2 py-1.5 text-gray-800 hover:bg-[#ffcb57] hover:text-white transition-colors rounded text-sm">
+                      Academia Politica
+                    </Link>
+                    <Link href="/program/council-gen-z" className="block px-2 py-1.5 text-gray-800 hover:bg-[#ffcb57] hover:text-white transition-colors rounded text-sm">
+                      Council Gen Z
+                    </Link>
+                    <Link href="/program/temu-kandidat" className="block px-2 py-1.5 text-gray-800 hover:bg-[#ffcb57] hover:text-white transition-colors rounded text-sm">
+                      Temu Kandidat
+                    </Link>
+                    <Link href="/program/class-of-climate-leaders" className="block px-2 py-1.5 text-gray-800 hover:bg-[#ffcb57] hover:text-white transition-colors rounded text-sm">
+                      Class of Climate Leaders
+                    </Link>
+                  </div>
+
+                  {/* Divider */}
+                  <div className="border-t border-gray-200 my-2"></div>
+
+                  {/* Civic Space Category */}
+                  <div className="px-4 py-2">
+                    <div className="text-sm font-bold text-gray-800 uppercase tracking-wider mb-2">
+                      Civic Space
+                    </div>
+                    <Link href="/ruang-sipil" className="block px-2 py-1.5 text-gray-800 hover:bg-[#ffcb57] hover:text-white transition-colors rounded text-sm">
+                      Riset
+                    </Link>
+                  </div>
+
+                  {/* Divider */}
+                  <div className="border-t border-gray-200 my-2"></div>
+
+                  {/* Youth Empowerment Category */}
+                  <div className="px-4 py-2">
+                    <div className="text-sm font-bold text-gray-800 uppercase tracking-wider mb-2">
+                      Youth Empowerment
+                    </div>
+                    <div className="flex items-center px-2 py-1.5 text-gray-400 cursor-not-allowed rounded text-sm">
+                      <span>HappyMind Activists</span>
+                      <span className="bg-red-500 text-white text-xs px-1.5 py-0.5 rounded-full font-bold ml-2">
+                        SEGERA
+                      </span>
+                    </div>
+                  </div>
+                  
                 </div>
               )}
             </div>
             
-            <Link href="/publikasi" className={`transition-colors py-2 px-3 rounded-md font-extrabold ${
-              hasScrolled ? 'hover:bg-pink-500 hover:text-white text-gray-800' : 'hover:bg-pink-500 hover:text-white text-white'
+            <Link href="/publikasi" className={`transition-all py-2 px-2 font-bold relative ${
+              hasScrolled ? 'text-gray-800 hover:text-[#ffcb57]' : 'text-white hover:text-[#ffcb57]'
+            } ${
+              isActive('/publikasi') ? 'text-[#ffcb57]' : ''
+            } after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-1 after:bg-[#ffcb57] after:transition-all after:duration-300 hover:after:w-full ${
+              isActive('/publikasi') ? 'after:w-full' : ''
             }`}>
               Publikasi
             </Link>
-            <Link href="/ruang-sipil" className={`transition-colors py-2 px-3 rounded-md font-extrabold ${
-              hasScrolled ? 'hover:bg-pink-500 hover:text-white text-gray-800' : 'hover:bg-pink-500 hover:text-white text-white'
+            <Link href="/ruang-sipil" className={`transition-all py-2 px-2 font-bold relative ${
+              hasScrolled ? 'text-gray-800 hover:text-[#ffcb57]' : 'text-white hover:text-[#ffcb57]'
+            } ${
+              isActive('/ruang-sipil') ? 'text-[#ffcb57]' : ''
+            } after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-1 after:bg-[#ffcb57] after:transition-all after:duration-300 hover:after:w-full ${
+              isActive('/ruang-sipil') ? 'after:w-full' : ''
             }`}>
-              Ruang Sipil
+              Laporan Ruang Sipil
+              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs px-1.5 py-0.5 rounded-full font-bold text-[10px] shadow-sm">
+                BARU
+              </span>
             </Link>
-            <Link href="/acara" className={`transition-colors py-2 px-3 rounded-md font-extrabold ${
-              hasScrolled ? 'hover:bg-pink-500 hover:text-white text-gray-800' : 'hover:bg-pink-500 hover:text-white text-white'
+            <Link href="/acara" className={`transition-all py-2 px-2 font-bold relative ${
+              hasScrolled ? 'text-gray-800 hover:text-[#ffcb57]' : 'text-white hover:text-[#ffcb57]'
+            } ${
+              isActive('/acara') ? 'text-[#ffcb57]' : ''
+            } after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-1 after:bg-[#ffcb57] after:transition-all after:duration-300 hover:after:w-full ${
+              isActive('/acara') ? 'after:w-full' : ''
             }`}>
               Acara
             </Link>
           </div>
           
-          <div className="flex items-center font-heading" style={{ fontFamily: "'Inter', sans-serif" }}>
-            <Link href="/donasi" className="bg-primary-dark hover:bg-pink-500 text-white px-5 py-2 rounded-full font-semibold transition h-10 flex items-center justify-center">
+          <div className="hidden md:flex items-center font-heading ml-auto" style={{ fontFamily: "'Inter', sans-serif" }}>
+            <Link href="/donasi" className="bg-primary-dark hover:bg-[#e5b64e] text-[#4c3c1a] hover:text-[#4c3c1a] px-5 py-2 rounded-full font-bold transition h-10 flex items-center justify-center text-sm">
               Dukung Kami
             </Link>
             
+            {/* Language Switcher */}
+            <button 
+              onClick={switchLanguage}
+              className="bg-primary-dark hover:bg-[#e5b64e] text-[#4c3c1a] hover:text-[#4c3c1a] w-10 h-10 rounded-full font-bold transition ml-4 flex items-center justify-center text-sm"
+              aria-label={`Switch to ${currentLanguage === 'EN' ? 'Indonesian' : 'English'}`}
+              title={`Switch to ${currentLanguage === 'EN' ? 'Indonesian' : 'English'}`}
+            >
+              {currentLanguage}
+            </button>
+            
             <button 
               onClick={toggleSearchForm}
-              className="bg-primary-dark hover:bg-pink-500 text-white w-10 h-10 rounded-full font-semibold transition ml-4 flex items-center justify-center"
+              className="bg-primary-dark hover:bg-[#e5b64e] text-[#4c3c1a] hover:text-[#4c3c1a] w-10 h-10 rounded-full font-bold transition ml-4 flex items-center justify-center text-sm"
               aria-label="Search"
             >
               <Search size={20} />
             </button>
-            
-            <button 
-              className={`ml-4 md:hidden transition-colors ${
-                hasScrolled ? 'text-gray-800' : 'text-white'
-              }`}
-              onClick={toggleMobileMenu}
-              aria-label="Toggle menu"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-6 h-6">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            </button>
           </div>
+          
+          {/* Mobile menu button */}
+          <button 
+            className={`ml-auto md:hidden transition-colors ${
+              hasScrolled ? 'text-gray-800' : 'text-white'
+            }`}
+            onClick={toggleMobileMenu}
+            aria-label="Toggle menu"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-6 h-6">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 6h18M7 12h10M3 18h18" />
+            </svg>
+          </button>
         </div>
       </nav>
     </>

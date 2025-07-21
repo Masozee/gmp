@@ -1,0 +1,128 @@
+[
+  {
+    "JUDUL":"Restrictions on freedom of speech or criticism of government",
+    "DATA":"Perceived Leadership Characteristics Affecting Civic Space",
+    "Count":274,
+    "Percentage":54.26
+  },
+  {
+    "JUDUL":"Use of security forces to intimidate or disperse peaceful protests",
+    "DATA":"Perceived Leadership Characteristics Affecting Civic Space",
+    "Count":231,
+    "Percentage":45.74
+  },
+  {
+    "JUDUL":"Restrictions on press freedom and access to independent information",
+    "DATA":"Perceived Leadership Characteristics Affecting Civic Space",
+    "Count":173,
+    "Percentage":34.26
+  },
+  {
+    "JUDUL":"Restrictions on freedom to associate and form organizations",
+    "DATA":"Perceived Leadership Characteristics Affecting Civic Space",
+    "Count":96,
+    "Percentage":19.01
+  },
+  {
+    "JUDUL":"Use of legal mechanisms to suppress activists or opposition groups",
+    "DATA":"Perceived Leadership Characteristics Affecting Civic Space",
+    "Count":217,
+    "Percentage":42.97
+  },
+  {
+    "JUDUL":"Decision-making power concentrated in the hands of a few leaders",
+    "DATA":"Perceived Leadership Characteristics Affecting Civic Space",
+    "Count":204,
+    "Percentage":40.4
+  },
+  {
+    "JUDUL":"Lack of transparency or accountability in decision-making",
+    "DATA":"Perceived Leadership Characteristics Affecting Civic Space",
+    "Count":275,
+    "Percentage":54.46
+  },
+  {
+    "JUDUL":"I do not think the above characteristics describe the current government",
+    "DATA":"Perceived Leadership Characteristics Affecting Civic Space",
+    "Count":61,
+    "Percentage":12.08
+  },
+  {
+    "JUDUL":"Freedom to associate or form groups",
+    "DATA":"Key Factors for a Safe and Youth-Friendly Civic Space",
+    "Count":259,
+    "Percentage":51.29
+  },
+  {
+    "JUDUL":"Freedom to gather peacefully",
+    "DATA":"Key Factors for a Safe and Youth-Friendly Civic Space",
+    "Count":298,
+    "Percentage":59.01
+  },
+  {
+    "JUDUL":"Freedom to express opinions openly",
+    "DATA":"Key Factors for a Safe and Youth-Friendly Civic Space",
+    "Count":382,
+    "Percentage":75.64
+  },
+  {
+    "JUDUL":"State protection from threats or discrimination",
+    "DATA":"Key Factors for a Safe and Youth-Friendly Civic Space",
+    "Count":306,
+    "Percentage":60.59
+  },
+  {
+    "JUDUL":"Access to information and resources",
+    "DATA":"Key Factors for a Safe and Youth-Friendly Civic Space",
+    "Count":259,
+    "Percentage":51.29
+  },
+  {
+    "JUDUL":"Representation of diverse perspectives",
+    "DATA":"Key Factors for a Safe and Youth-Friendly Civic Space",
+    "Count":218,
+    "Percentage":43.17
+  },
+  {
+    "JUDUL":"Fear of harassment or intimidation when gathering peacefully",
+    "DATA":"Challenges for Youth in Accessing Civic Space",
+    "Count":184,
+    "Percentage":36.0
+  },
+  {
+    "JUDUL":"Restrictions on forming or joining certain groups",
+    "DATA":"Challenges for Youth in Accessing Civic Space",
+    "Count":98,
+    "Percentage":19.0
+  },
+  {
+    "JUDUL":"Feeling unsafe or afraid to express opinions and criticism in open spaces like social media",
+    "DATA":"Challenges for Youth in Accessing Civic Space",
+    "Count":373,
+    "Percentage":74.0
+  },
+  {
+    "JUDUL":"Lack of government protection when exercising youth rights",
+    "DATA":"Challenges for Youth in Accessing Civic Space",
+    "Count":212,
+    "Percentage":42.0
+  },
+  {
+    "JUDUL":"No safe spaces for gathering or organizing",
+    "DATA":"Challenges for Youth in Accessing Civic Space",
+    "Count":80,
+    "Percentage":16.0
+  },
+  {
+    "JUDUL":"Discrimination based on gender, ethnicity, or religion",
+    "DATA":"Challenges for Youth in Accessing Civic Space",
+    "Count":124,
+    "Percentage":25.0
+  },
+  {
+    "JUDUL":"Limited access to resources or support for youth-led activities",
+    "DATA":"Challenges for Youth in Accessing Civic Space",
+    "Count":164,
+    "Percentage":32.0
+  }
+]

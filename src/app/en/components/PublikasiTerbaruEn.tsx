@@ -81,17 +81,16 @@ const PublikasiTerbaruEn = ({ publikasi }: PublikasiTerbaruEnProps) => {
   return (
     <section className="py-16 bg-gray-50">
       <div className="container mx-auto px-4 max-w-7xl">
-        <h2 className="text-3xl font-bold text-center mb-4 text-gray-900">Latest Publications</h2>
+        <h2 className="text-3xl font-bold text-center mb-4 text-main">Latest Publications</h2>
         <p className="text-lg text-center mb-12 text-gray-600 max-w-3xl mx-auto">
         See our latest publications on the issues we fight for.
         </p>
         
         <div className="grid md:grid-cols-3 gap-8">
           {displayPublikasi.map((item) => (
-            <Link 
+            <div 
               key={item.url} 
-              href={`/en/publications/${item.url}`} 
-              className="bg-[#f06d98] overflow-hidden shadow-xl rounded-2xl group hover:bg-[#ffe066] active:bg-[#ffe066] focus:bg-[#ffe066] transition-all duration-300"
+              className="bg-[#f06d98] overflow-hidden shadow-xl rounded-2xl group hover:bg-[#d86288] transition-all duration-300"
             >
               <div className="relative h-56">
                 <PlaceholderImage 
@@ -103,21 +102,27 @@ const PublikasiTerbaruEn = ({ publikasi }: PublikasiTerbaruEnProps) => {
               <div className="p-6">
                 <div className="flex justify-between items-center mb-2">
                   {item.category && (
-                    <span className="text-sm text-white font-medium group-hover:text-black group-active:text-black group-focus:text-black">
+                    <span className="text-sm text-white font-medium">
                       {item.category}
                     </span>
                   )}
-                  <span className="text-sm text-pink-100 group-hover:text-black group-active:text-black group-focus:text-black">
+                  <span className="text-sm text-white">
                     {formatDate(item.date)}
                   </span>
                 </div>
-                <h3 className="text-xl font-bold mb-2 text-white group-hover:text-black group-active:text-black group-focus:text-black">{item.title}</h3>
-                <button className="mt-3 px-4 py-2 rounded-full bg-[#ffe066] text-black font-medium group-hover:bg-[#f06d98] group-hover:text-white transition-colors duration-300">
-                  Read More
-                </button>
+                <Link href={`/en/publikasi/${item.url}`}>
+                  <h3 className="text-xl font-bold mb-2 text-white cursor-pointer hover:underline">{item.title}</h3>
+                </Link>
               </div>
-            </Link>
+            </div>
           ))}
+        </div>
+        
+        <div className="text-center mt-10">
+          <Link href="/en/publikasi" 
+            className="inline-block bg-primary-dark hover:bg-[#e5b64e] text-[#4c3c1a] hover:text-[#4c3c1a] rounded-full px-6 py-3 font-medium transition">
+            View All Publications
+          </Link>
         </div>
       </div>
     </section>

@@ -19,7 +19,7 @@ const EngagementBannerEn = () => {
               transition={{ duration: 0.6 }}
               viewport={{ once: true, amount: 0.3 }}
             >
-              Join young people who have participated in democracy and made change
+              You can also participate!
             </motion.h2>
             <motion.p 
               className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto text-white"
@@ -28,7 +28,9 @@ const EngagementBannerEn = () => {
               transition={{ duration: 0.6, delay: 0.2 }}
               viewport={{ once: true, amount: 0.3 }}
             >
-              We transform passion into real action for a sustainable future, by nurturing local young leaders to create real change in their communities.
+              Support Indonesian youth participation in important issues such as climate change, democracy, and mental health.
+              
+              <br />How? Through donations, sharing knowledge, or providing activity spaces.
             </motion.p>
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
@@ -39,10 +41,10 @@ const EngagementBannerEn = () => {
               viewport={{ once: true, amount: 0.3 }}
             >
               <Link 
-                href="/en/stories" 
-                className="bg-primary text-black hover:bg-primary-dark px-8 py-3 rounded-full font-bold text-lg inline-block"
+                href="/en/donate" 
+                className="bg-primary-dark hover:bg-[#e5b64e] text-[#4c3c1a] hover:text-[#4c3c1a] px-8 py-3 rounded-full font-bold text-lg inline-block transition"
               >
-                Read Their Stories
+                Participate Now!
               </Link>
             </motion.div>
           </motion.div>

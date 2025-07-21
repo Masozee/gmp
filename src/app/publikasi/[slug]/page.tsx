@@ -1,26 +1,36 @@
 import React from 'react';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
-import Link from 'next/link'; // Import Link for related publications
-import publicationsData from '@/data/publikasi.json'; // Rename import for clarity
+import Link from 'next/link';
 import { slugify, parseIndonesianDate } from '@/lib/utils';
-import type { Metadata /*, ResolvingMetadata*/ } from 'next';
+import type { Metadata } from 'next';
 import PublicationClientComponent from './PublicationClientComponent';
+import { db } from '@/lib/db';
+import { publications } from '@/lib/db/content-schema';
+import { eq } from 'drizzle-orm';
 
 // Define a type for the publication data
 interface Publication {
+  id: number;
   title: string;
-  url: string;
+  title_en: string | null;
+  slug: string;
+  slug_en: string | null;
   date: string;
-  count: string; // Assuming count is a string based on JSON
-  image: string | null;
+  count: string;
+  image_url: string | null;
   type: string;
   pdf_url: string | null;
   content: string;
+  content_en: string | null;
+  author: string;
+  author_en: string | null;
+  description: string | null;
+  description_en: string | null;
+  order: number;
+  createdAt: string;
+  updatedAt: string;
 }
-
-// Cast the imported data to the defined type
-const publications: Publication[] = publicationsData as Publication[];
 
 // Define the PageProps interface matching Next.js 15 type definition
 interface PageProps {
@@ -29,8 +39,34 @@ interface PageProps {
 }
 
 // Find publication by slug
-function getPublicationBySlug(slug: string): Publication | undefined {
-  return publications.find((pub) => slugify(pub.title) === slug);
+async function getPublicationBySlug(slug: string): Promise<Publication | undefined> {
+  try {
+    const result = await db
+      .select()
+      .from(publications)
+      .where(eq(publications.slug, slug))
+      .limit(1);
+    
+    return result[0];
+  } catch (error) {
+    console.error('Error fetching publication:', error);
+    return undefined;
+  }
+}
+
+// Get all publications for related items and static params
+async function getAllPublications(): Promise<Publication[]> {
+  try {
+    const result = await db
+      .select()
+      .from(publications)
+      .orderBy(publications.order);
+    
+    return result;
+  } catch (error) {
+    console.error('Error fetching publications:', error);
+    return [];
+  }
 }
 
 // Format date to DD MMMM YYYY format
@@ -73,19 +109,24 @@ function formatPublicationDate(dateString: string): string {
 
 // Generate static paths for all publications
 export async function generateStaticParams() {
-  return publications.map((pub) => ({
-    slug: slugify(pub.title),
-  }));
+  try {
+    const allPublications = await getAllPublications();
+    return allPublications.map((pub) => ({
+      slug: pub.slug,
+    }));
+  } catch (error) {
+    console.error('Error generating static params:', error);
+    return [];
+  }
 }
 
 // Generate dynamic metadata
 export async function generateMetadata(
-  { params }: PageProps,
-  /* parent: ResolvingMetadata */
+  { params }: PageProps
 ): Promise<Metadata> {
   const resolvedParams = await params;
   const slug = resolvedParams.slug;
-  const publication = getPublicationBySlug(slug);
+  const publication = await getPublicationBySlug(slug);
 
   if (!publication) {
     return {
@@ -94,18 +135,21 @@ export async function generateMetadata(
   }
 
   const parsedDate = parseIndonesianDate(publication.date);
+  
+  // Get description from description field or content fallback
+  const description = publication.description || publication.content.substring(0, 160);
 
   const metadata: Metadata = {
     title: `${publication.title} | Publikasi | Partisipasi Muda`,
-    description: publication.content.substring(0, 160),
+    description: description,
     openGraph: {
       title: publication.title,
-      description: publication.content.substring(0, 160),
-      images: publication.image ? [publication.image] : [],
+      description: description,
+      images: publication.image_url ? [publication.image_url] : [],
       url: `/publikasi/${slug}`,
       type: 'article',
       // Add publishedTime directly if date is valid and type is article
-      ...(parsedDate && { article: { published_time: parsedDate.toISOString() } }), // Use published_time for article
+      ...(parsedDate && { article: { published_time: parsedDate.toISOString() } }),
     },
   };
 
@@ -142,15 +186,16 @@ function cleanAndFormatPublicationContent(content: string, title: string, date: 
 export default async function PublicationDetailPage({ params }: PageProps) {
   const resolvedParams = await params;
   const currentSlug = resolvedParams.slug;
-  const publication = getPublicationBySlug(currentSlug);
+  const publication = await getPublicationBySlug(currentSlug);
 
   if (!publication) {
     notFound();
   }
 
   // Find related publications (exclude current one, take first 3)
-  const relatedPublications = publications
-    .filter((pub) => slugify(pub.title) !== currentSlug)
+  const allPublications = await getAllPublications();
+  const relatedPublications = allPublications
+    .filter((pub) => pub.slug !== currentSlug)
     .slice(0, 3);
 
   return (
@@ -165,21 +210,21 @@ export default async function PublicationDetailPage({ params }: PageProps) {
 
       {/* Main Content Section */}
       <section className="container mx-auto px-4 py-8 md:py-12 max-w-7xl">
-        <article className="prose prose-lg mx-auto max-w-4xl lg:prose-xl">
-          {publication.image && (
+        <article className="prose prose-lg mx-auto max-w-4xl lg:prose-xl prose-p:text-justify">
+          {publication.image_url && (
             <div className="relative my-8 h-64 w-full md:h-96">
               <Image
-                src={publication.image}
+                src={publication.image_url}
                 alt={`Featured image for ${publication.title}`}
-                layout="fill"
-                objectFit="contain"
+                fill
+                style={{ objectFit: 'contain' }}
                 unoptimized
                 priority
               />
             </div>
           )}
 
-          <div className="whitespace-pre-line">
+          <div className="whitespace-pre-line text-justify leading-relaxed !text-justify">
             {cleanAndFormatPublicationContent(publication.content, publication.title, publication.date)}
           </div>
 
@@ -205,19 +250,18 @@ export default async function PublicationDetailPage({ params }: PageProps) {
             </h2>
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
               {relatedPublications.map((relatedPub) => {
-                const relatedSlug = slugify(relatedPub.title);
                 return (
                   <div 
-                    key={relatedSlug} 
+                    key={relatedPub.slug} 
                     className="flex flex-col overflow-hidden rounded-2xl shadow-lg bg-[#f06d98] transition-all duration-300 hover:bg-[#ffe066] hover:shadow-xl hover:-translate-y-1 active:bg-[#ffe066] focus:bg-[#ffe066] group"
                   >
                     <div className="relative h-48 w-full overflow-hidden">
-                      {relatedPub.image ? (
+                      {relatedPub.image_url ? (
                         <Image
-                          src={relatedPub.image}
+                          src={relatedPub.image_url}
                           alt={relatedPub.title}
-                          layout="fill"
-                          objectFit="cover"
+                          fill
+                          style={{ objectFit: 'cover' }}
                           unoptimized
                           className="transition-transform duration-500 group-hover:scale-105"
                         />
@@ -234,7 +278,7 @@ export default async function PublicationDetailPage({ params }: PageProps) {
                       </span>
                       
                       {/* Title second (as a link) */}
-                      <Link href={`/publikasi/${relatedSlug}`}>
+                      <Link href={`/publikasi/${relatedPub.slug}`}>
                         <h3 className="mb-3 text-lg font-semibold text-white group-hover:text-black hover:underline" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>
                           {relatedPub.title}
                         </h3>

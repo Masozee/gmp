@@ -1,11 +1,7 @@
-import { initializeDatabase } from '../src/lib/db';
 import { createUser } from '../src/lib/auth-utils';
 
 async function initDB() {
-  console.log('Initializing database...');
-  
-  // Initialize database and run migrations
-  initializeDatabase();
+  console.log('Initializing database with default admin user...');
   
   try {
     // Create default admin user

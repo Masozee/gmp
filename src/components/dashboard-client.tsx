@@ -5,7 +5,7 @@ import { TrendingDownIcon, TrendingUpIcon, CalendarIcon, BookOpenIcon, UsersIcon
 import { Badge } from "@/components/ui/badge";
 import { Card, CardDescription, CardFooter, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { DashboardChart } from "./dashboard-chart";
+import { ActivityChart } from "./activity-chart";
 import { RecentActivity } from "./recent-activity";
 
 interface DashboardStats {
@@ -96,7 +96,7 @@ export function DashboardClient() {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 px-4 lg:px-6">
         {[...Array(6)].map((_, i) => (
-          <Card key={i} className="shadow-xs bg-gradient-to-t from-primary/5 to-card">
+                      <Card key={i} className="shadow-sm bg-white border">
             <CardHeader className="relative">
               <Skeleton className="h-4 w-24" />
               <Skeleton className="h-8 w-16" />
@@ -187,40 +187,43 @@ export function DashboardClient() {
   ];
 
   return (
-    <div className="space-y-8 p-6">
+    <div className="space-y-8 p-8">
       {/* Header */}
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Dashboard</h1>
-        <p className="text-sm text-muted-foreground">
-          Overview konten dan aktivitas website
+      <div className="p-6 rounded-xl border bg-white">
+        <h1 className="text-3xl font-bold tracking-tight text-gray-800">Dashboard Admin</h1>
+        <p className="text-lg mt-2 text-gray-600">
+          Overview konten dan aktivitas website Partisipasi Muda
         </p>
       </div>
 
-      {/* Key Metrics - Only 4 main ones */}
+      {/* Key Metrics - Enhanced with better visibility */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {cards.slice(0, 4).map((card, index) => {
           const trend = formatTrend(card.trend);
           const IconComponent = card.icon;
           
           return (
-            <Card key={index} className="border-0 shadow-sm">
+            <Card key={index} className="border shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1 bg-white">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
-                  <div className="space-y-2">
-                    <p className="text-sm font-medium text-muted-foreground">
+                  <div className="space-y-3">
+                    <p className="text-sm font-semibold uppercase tracking-wide text-gray-600">
                       {card.title}
                     </p>
-                    <p className="text-2xl font-bold">
+                    <p className="text-3xl font-black text-gray-800">
                       {formatNumber(card.value)}
                     </p>
-                    <div className={`flex items-center gap-1 text-xs ${trend.color}`}>
-                      <trend.icon className="h-3 w-3" />
+                    <div className={`flex items-center gap-2 text-sm font-medium px-3 py-1 rounded-full ${trend.variant === 'default' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                      <trend.icon className="h-4 w-4" />
                       <span>{trend.value} bulan ini</span>
                     </div>
                   </div>
-                  <div className={`p-3 rounded-full bg-muted`}>
-                    <IconComponent className={`h-6 w-6 ${card.color}`} />
+                  <div className="p-4 rounded-xl bg-slate-100 border">
+                    <IconComponent className="h-8 w-8 text-slate-600" />
                   </div>
+                </div>
+                <div className="mt-4 pt-4 border-t border-gray-200">
+                  <p className="text-xs font-medium text-gray-600">{card.subtitle}</p>
                 </div>
               </CardContent>
             </Card>
@@ -231,82 +234,166 @@ export function DashboardClient() {
       {/* Main Content Area */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left side - Chart */}
-        <div className="lg:col-span-2">
-          <DashboardChart />
+        <div className="lg:col-span-2 space-y-6">
+          <ActivityChart />
+          
+          {/* Content Status Section */}
+          <Card className="border shadow-sm bg-white">
+            <CardHeader className="pb-4 bg-slate-50 rounded-t-lg border-b">
+              <CardTitle className="text-xl font-bold text-gray-800">Status Konten</CardTitle>
+              <p className="text-gray-600 text-sm">Ringkasan status semua konten aktif</p>
+            </CardHeader>
+            <CardContent className="p-6">
+              <div className="grid grid-cols-2 gap-6">
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between p-4 rounded-lg border bg-blue-50">
+                    <div className="flex items-center gap-3">
+                      <CalendarIcon className="h-5 w-5 text-blue-600" />
+                      <span className="font-semibold text-blue-800">Acara Aktif</span>
+                    </div>
+                    <span className="text-xl font-bold text-blue-800">{stats?.events.active || 0}</span>
+                  </div>
+                  
+                  <div className="flex items-center justify-between p-4 rounded-lg border bg-green-50">
+                    <div className="flex items-center gap-3">
+                      <BookOpenIcon className="h-5 w-5 text-green-600" />
+                      <span className="font-semibold text-green-800">Publikasi Aktif</span>
+                    </div>
+                    <span className="text-xl font-bold text-green-800">{stats?.publications.active || 0}</span>
+                  </div>
+                </div>
+                
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between p-4 rounded-lg border bg-purple-50">
+                    <div className="flex items-center gap-3">
+                      <MessageSquareIcon className="h-5 w-5 text-purple-600" />
+                      <span className="font-semibold text-purple-800">Diskusi Aktif</span>
+                    </div>
+                    <span className="text-xl font-bold text-purple-800">{stats?.discussions.active || 0}</span>
+                  </div>
+                  
+                  <div className="flex items-center justify-between p-4 rounded-lg border bg-orange-50">
+                    <div className="flex items-center gap-3">
+                      <BriefcaseIcon className="h-5 w-5 text-orange-600" />
+                      <span className="font-semibold text-orange-800">Karir Aktif</span>
+                    </div>
+                    <span className="text-xl font-bold text-orange-800">{stats?.careers.active || 0}</span>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Monthly Progress */}
+              <div className="mt-6 pt-6 border-t">
+                <h4 className="text-lg font-bold mb-4 text-gray-800">Progress Bulan Ini</h4>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div className="text-center p-3 rounded-lg bg-gray-50 border">
+                    <p className="text-2xl font-bold text-gray-800">{stats?.events.thisMonth || 0}</p>
+                    <p className="text-sm font-medium text-gray-600">Acara Baru</p>
+                  </div>
+                  <div className="text-center p-3 rounded-lg bg-gray-50 border">
+                    <p className="text-2xl font-bold text-gray-800">{stats?.publications.thisMonth || 0}</p>
+                    <p className="text-sm font-medium text-gray-600">Publikasi Baru</p>
+                  </div>
+                  <div className="text-center p-3 rounded-lg bg-gray-50 border">
+                    <p className="text-2xl font-bold text-gray-800">{stats?.discussions.thisMonth || 0}</p>
+                    <p className="text-sm font-medium text-gray-600">Diskusi Baru</p>
+                  </div>
+                  <div className="text-center p-3 rounded-lg bg-gray-50 border">
+                    <p className="text-2xl font-bold text-gray-800">{stats?.careers.thisMonth || 0}</p>
+                    <p className="text-sm font-medium text-gray-600">Karir Baru</p>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Right side - Quick Actions + Mini Stats */}
         <div className="space-y-6">
-          {/* Quick Actions */}
-          <Card className="border-0 shadow-sm">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-lg">Aksi Cepat</CardTitle>
+          {/* Quick Actions - Enhanced */}
+          <Card className="border shadow-sm bg-white">
+            <CardHeader className="pb-4 bg-slate-50 rounded-t-lg border-b">
+              <CardTitle className="text-xl font-bold text-gray-800">Aksi Cepat</CardTitle>
+              <p className="text-gray-600 text-sm">Buat konten baru dengan cepat</p>
             </CardHeader>
-            <CardContent className="space-y-3">
+            <CardContent className="space-y-4 p-6">
               <a
                 href="/admin/acara/create"
-                className="flex items-center gap-3 p-3 rounded-lg hover:bg-muted/50 transition-colors group"
+                className="flex items-center gap-4 p-4 rounded-xl bg-white border transition-all duration-300 group shadow-sm hover:shadow-md hover:bg-blue-50"
               >
-                <div className="p-2 rounded-md bg-blue-100 text-blue-600 group-hover:bg-blue-200 transition-colors">
-                  <CalendarIcon className="h-4 w-4" />
+                <div className="p-3 rounded-full group-hover:scale-110 transition-all duration-300 bg-blue-100 text-blue-600">
+                  <CalendarIcon className="h-5 w-5" />
                 </div>
-                <span className="text-sm font-medium">Tambah Acara</span>
+                <div>
+                  <span className="text-base font-semibold text-gray-800">Tambah Acara</span>
+                  <p className="text-sm text-gray-600">Buat acara baru</p>
+                </div>
               </a>
               <a
                 href="/admin/publikasi/create"
-                className="flex items-center gap-3 p-3 rounded-lg hover:bg-muted/50 transition-colors group"
+                className="flex items-center gap-4 p-4 rounded-xl bg-white border transition-all duration-300 group shadow-sm hover:shadow-md hover:bg-green-50"
               >
-                <div className="p-2 rounded-md bg-green-100 text-green-600 group-hover:bg-green-200 transition-colors">
-                  <BookOpenIcon className="h-4 w-4" />
+                <div className="p-3 rounded-full group-hover:scale-110 transition-all duration-300 bg-green-100 text-green-600">
+                  <BookOpenIcon className="h-5 w-5" />
                 </div>
-                <span className="text-sm font-medium">Tambah Publikasi</span>
+                <div>
+                  <span className="text-base font-semibold text-gray-800">Tambah Publikasi</span>
+                  <p className="text-sm text-gray-600">Tulis artikel atau riset</p>
+                </div>
               </a>
               <a
                 href="/admin/program/diskusi/create"
-                className="flex items-center gap-3 p-3 rounded-lg hover:bg-muted/50 transition-colors group"
+                className="flex items-center gap-4 p-4 rounded-xl bg-white border transition-all duration-300 group shadow-sm hover:shadow-md hover:bg-purple-50"
               >
-                <div className="p-2 rounded-md bg-purple-100 text-purple-600 group-hover:bg-purple-200 transition-colors">
-                  <MessageSquareIcon className="h-4 w-4" />
+                <div className="p-3 rounded-full group-hover:scale-110 transition-all duration-300 bg-purple-100 text-purple-600">
+                  <MessageSquareIcon className="h-5 w-5" />
                 </div>
-                <span className="text-sm font-medium">Tambah Diskusi</span>
+                <div>
+                  <span className="text-base font-semibold text-gray-800">Tambah Diskusi</span>
+                  <p className="text-sm text-gray-600">Buat topik diskusi</p>
+                </div>
               </a>
               <a
                 href="/admin/karir/create"
-                className="flex items-center gap-3 p-3 rounded-lg hover:bg-muted/50 transition-colors group"
+                className="flex items-center gap-4 p-4 rounded-xl bg-white border transition-all duration-300 group shadow-sm hover:shadow-md hover:bg-orange-50"
               >
-                <div className="p-2 rounded-md bg-orange-100 text-orange-600 group-hover:bg-orange-200 transition-colors">
-                  <BriefcaseIcon className="h-4 w-4" />
+                <div className="p-3 rounded-full group-hover:scale-110 transition-all duration-300 bg-orange-100 text-orange-600">
+                  <BriefcaseIcon className="h-5 w-5" />
                 </div>
-                <span className="text-sm font-medium">Tambah Karir</span>
+                <div>
+                  <span className="text-base font-semibold text-gray-800">Tambah Karir</span>
+                  <p className="text-sm text-gray-600">Posting lowongan kerja</p>
+                </div>
               </a>
             </CardContent>
           </Card>
 
-          {/* Additional Stats */}
-          <Card className="border-0 shadow-sm">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-lg">Statistik Lainnya</CardTitle>
+          {/* Additional Stats - Enhanced */}
+          <Card className="border shadow-sm bg-white">
+            <CardHeader className="pb-4 bg-slate-50 rounded-t-lg border-b">
+              <CardTitle className="text-xl font-bold text-gray-800">Statistik Lainnya</CardTitle>
+              <p className="text-gray-600 text-sm">Metrik penting website</p>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-5 p-6">
               {cards.slice(4).map((card, index) => {
                 const trend = formatTrend(card.trend);
                 const IconComponent = card.icon;
                 
                 return (
-                  <div key={index} className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className={`p-2 rounded-md bg-muted`}>
-                        <IconComponent className={`h-4 w-4 ${card.color}`} />
+                  <div key={index} className="flex items-center justify-between p-4 bg-white rounded-lg border hover:shadow-md transition-all duration-300">
+                    <div className="flex items-center gap-4">
+                      <div className="p-3 rounded-full bg-slate-100 border">
+                        <IconComponent className="h-5 w-5 text-slate-600" />
                       </div>
                       <div>
-                        <p className="text-sm font-medium">{card.title}</p>
-                        <p className="text-xs text-muted-foreground">
+                        <p className="text-base font-semibold text-gray-800">{card.title}</p>
+                        <p className="text-sm font-medium text-gray-600">
                           {formatNumber(card.value)} total
                         </p>
                       </div>
                     </div>
-                    <div className={`flex items-center gap-1 text-xs ${trend.color}`}>
-                      <trend.icon className="h-3 w-3" />
+                    <div className={`flex items-center gap-2 text-sm font-medium px-3 py-2 rounded-full border ${trend.variant === 'default' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                      <trend.icon className="h-4 w-4" />
                       <span>{trend.value}</span>
                     </div>
                   </div>

@@ -1,7 +1,7 @@
 import { initializeDatabase, db } from '../src/lib/db';
 import { 
   events, publications, partners, careers, testimonials, 
-  discussions, boardMembers, organizationStaff 
+  discussions, boardMembers, organizationStaff, homepageSlides
 } from '../src/lib/db/content-schema';
 
 // Import JSON data
@@ -47,11 +47,11 @@ async function seedDatabase() {
         enDescription: event.en_description,
         image: event.image,
         category: event.category,
-        isPaid: event.isPaid,
-        price: event.price,
+        isPaid: false,
+        price: null,
         isRegistrationOpen: event.isRegistrationOpen,
-        capacity: event.capacity,
-        registeredCount: event.registeredCount,
+        capacity: 100, // Default capacity
+        registeredCount: 0,
       }).onConflictDoNothing();
     }
     console.log(`✅ Seeded ${eventsData.length} events`);
@@ -162,6 +162,49 @@ async function seedDatabase() {
       }).onConflictDoNothing();
     }
     console.log(`✅ Seeded ${staffData.length} organization staff`);
+
+    // Seed Homepage Slides
+    console.log('Seeding homepage slides...');
+    const initialSlides = [
+      {
+        type: 'map' as const,
+        order: 1,
+        title: null,
+        subtitle: null,
+        description: null,
+        image: null,
+        buttonText: null,
+        buttonLink: null,
+        isActive: true,
+      },
+      {
+        type: 'image' as const,
+        order: 2,
+        title: 'Membangun Generasi Pembawa Perubahan',
+        subtitle: 'Yayasan Partisipasi Muda',
+        description: 'Memberdayakan anak muda Indonesia untuk berpartisipasi aktif dalam demokrasi dan perumusan kebijakan publik melalui pendidikan politik yang menyenangkan dan relevan.',
+        image: '/images/bg/creative-christians-HN6uXG7GzTE-unsplash.jpg',
+        buttonText: 'Pelajari Lebih Lanjut',
+        buttonLink: '/tentang-kami/tujuan',
+        isActive: true,
+      },
+      {
+        type: 'image' as const,
+        order: 3,
+        title: 'Academia Politica',
+        subtitle: 'Generasi Melek Politik',
+        description: 'Sebuah lokakarya berbasis role-playing yang membekali peserta dengan pemahaman mendalam tentang kepemimpinan, pembuatan kebijakan, dan advokasi iklim.',
+        image: '/images/bg/duy-pham-Cecb0_8Hx-o-unsplash.jpg',
+        buttonText: 'Lihat Program Kami',
+        buttonLink: '/program/academia-politica',
+        isActive: true,
+      },
+    ];
+
+    for (const slide of initialSlides) {
+      await db.insert(homepageSlides).values(slide).onConflictDoNothing();
+    }
+    console.log(`✅ Seeded ${initialSlides.length} homepage slides`);
 
     console.log('\n🎉 Database seeding completed successfully!');
     

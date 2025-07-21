@@ -1,46 +1,30 @@
-import { createServerClient } from '@supabase/ssr';
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import type { CookieOptions } from '@supabase/ssr';
 
 export async function middleware(request: NextRequest) {
-  const res = NextResponse.next();
   const pathname = request.nextUrl.pathname;
   
-  // Create a Supabase client configured to use cookies
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        get: (name: string) => request.cookies.get(name)?.value,
-        set: (name: string, value: string, options: CookieOptions) => {
-          res.cookies.set({ name, value, ...options });
-        },
-        remove: (name: string, options: CookieOptions) => {
-          res.cookies.set({ name, value: '', ...options });
-        },
-      },
-    }
-  );
+  // Get session ID from cookies
+  const sessionId = request.cookies.get('session')?.value;
   
-  // Refresh session if expired - required for Server Components
-  const { data: { session } } = await supabase.auth.getSession();
+  // Simple session check - just verify cookie exists
+  // Full validation will happen in the actual page/API route
+  const hasSession = !!sessionId;
   
-  // 1. If the user is on the login page and is already authenticated
+  // 1. If the user is on the login page and has a session cookie
   // redirect them to the admin dashboard
-  if (session && pathname === '/login') {
+  if (hasSession && pathname === '/login') {
     return NextResponse.redirect(new URL('/admin', request.url));
   }
   
-  // 2. If the user is trying to access any admin page and is not authenticated
+  // 2. If the user is trying to access any admin page and has no session cookie
   // redirect them to the login page
-  if (!session && pathname.startsWith('/admin')) {
+  if (!hasSession && pathname.startsWith('/admin')) {
     const redirectUrl = new URL('/login', request.url);
     return NextResponse.redirect(redirectUrl);
   }
   
-  return res;
+  return NextResponse.next();
 }
 
 export const config = {

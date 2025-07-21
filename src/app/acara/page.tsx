@@ -87,6 +87,17 @@ export default function AcaraPage() {
     if (isNaN(day) || isNaN(year) || month === undefined) return null;
     return new Date(year, month, day);
   };
+
+  // Helper function to check if event has passed
+  const isEventPassed = (dateString: string): boolean => {
+    const eventDate = parseIndonesianDate(dateString);
+    if (!eventDate) return false;
+    
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    return eventDate < today;
+  };
   
   const categories = ['all', ...new Set(events.map(event => event.category.toLowerCase()))];
 
@@ -199,30 +210,44 @@ export default function AcaraPage() {
               </div>
             ) : (
               <div className="space-y-8">
-                {filteredEvents.map(event => (
-                  <div key={event.id} className="flex flex-col sm:flex-row bg-white rounded-lg shadow-sm overflow-hidden">
-                    {/* Event Image */}
-                    <div className="sm:w-1/3 relative">
-                      <img
-                        src={event.image || '/images/default-event.jpg'}
-                        alt={event.title}
-                        className="w-full h-full object-cover"
-                      />
-                      <div className="absolute top-2 left-2 flex gap-2">
-                        <span className="text-xs font-semibold rounded-full px-2 py-0.5 bg-[#ffe066] text-black">
-                          Gratis
-                        </span>
-                        <span className="text-xs font-semibold bg-[#ffe066] text-black rounded-full px-2 py-0.5">
-                          {event.category}
-                        </span>
+                {filteredEvents.map(event => {
+                  const isPassed = isEventPassed(event.date);
+                  
+                  return (
+                    <div key={event.id} className="flex flex-col sm:flex-row bg-white rounded-lg shadow-sm overflow-hidden">
+                      {/* Event Image */}
+                      <div className="sm:w-1/3 relative">
+                        <img
+                          src={event.image || '/images/default-event.jpg'}
+                          alt={event.title}
+                          className={`w-full h-full object-cover transition-all duration-300 ${
+                            isPassed ? 'grayscale opacity-75' : ''
+                          }`}
+                        />
+                        <div className="absolute top-2 left-2 flex gap-2">
+                          {isPassed && (
+                            <span className="text-xs font-semibold rounded-full px-2 py-0.5 bg-red-600 text-white">
+                              SELESAI
+                            </span>
+                          )}
+                          <span className="text-xs font-semibold rounded-full px-2 py-0.5 bg-[#ffe066] text-black">
+                            Gratis
+                          </span>
+                          <span className="text-xs font-semibold bg-[#ffe066] text-black rounded-full px-2 py-0.5">
+                            {event.category}
+                          </span>
+                        </div>
                       </div>
-                    </div>
                     
-                    {/* Event Content */}
-                    <div className="p-6 sm:w-2/3 flex flex-col">
-                      <h3 className="text-xl font-bold mb-2 text-gray-800" style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>
-                        {event.title}
-                      </h3>
+                      {/* Event Content */}
+                      <div className="p-6 sm:w-2/3 flex flex-col">
+                        <h3 className={`text-xl font-bold mb-2 transition-all duration-300 ${
+                          isPassed 
+                            ? 'text-gray-500' 
+                            : 'text-gray-800'
+                        }`} style={{ fontFamily: "'Inter', sans-serif", fontWeight: 800 }}>
+                          {isPassed ? '[CLOSED] ' : ''}{event.title}
+                        </h3>
                       
                       <div className="text-sm text-gray-600 mb-4">
                         <div className="flex items-center mb-1">
@@ -269,10 +294,11 @@ export default function AcaraPage() {
                         >
                           Lebih Lanjut
                         </Link>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </div>

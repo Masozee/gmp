@@ -30,5 +30,13 @@
     "school": "Universitas Mulawarman, Samarinda, Kalimantan Timur",
     "image": "/images/testimonials/jumpa.png",
     "quote": "Saya senang bisa bergabung dengan komunitas yang memperhatikan pendidikan politik anak muda. Di YPM, kami diberi ruang untuk berpendapat tanpa takut salah."
+  },
+  {
+    "id": 5,
+    "name": "Sidney Azarya Zefanya Pattikawa",
+    "age": 17,
+    "school": "SMKN 1 Ambon, Maluku",
+    "image": "/images/testimonials/sidney.png",
+    "quote": "Saya harap Academia Politica ini menjadi sebuah perubahan untuk orang muda khususnya di Ambon. Mudah-mudahan tingkat literasi dalam isu perubahan iklim di Kota Ambon jadi lebih baik."
   }
 ] 

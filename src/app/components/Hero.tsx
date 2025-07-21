@@ -52,7 +52,7 @@ const Hero = () => {
           >
             <Link 
               href="/tentang-kami/tujuan"
-              className="bg-primary text-black hover:bg-pink-500 hover:text-white px-8 py-3 rounded-full font-bold text-lg inline-block transition duration-300 ease-in-out"
+              className="bg-primary text-white hover:bg-pink-500 px-8 py-3 rounded-full font-bold text-lg inline-block transition duration-300 ease-in-out"
             >
               Pelajari Lebih Lanjut
             </Link>

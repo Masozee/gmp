@@ -44,31 +44,62 @@ const sectionVariants = {
   }
 };
 
+interface HomeData {
+  slides: any[];
+  partners: any[];
+  latestPublikasi: Publikasi[];
+  upcomingEvents: any[];
+}
+
 export default function Home() {
-  const [latestPublikasi, setLatestPublikasi] = useState<Publikasi[]>([]);
+  const [homeData, setHomeData] = useState<HomeData>({
+    slides: [],
+    partners: [],
+    latestPublikasi: [],
+    upcomingEvents: []
+  });
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Fetch publikasi data from an API endpoint
-    async function fetchPublikasi() {
+    // Fetch all home data from the home API endpoint
+    async function fetchHomeData() {
       try {
-        const response = await fetch('/api/publikasi');
+        const response = await fetch('/api/home');
         if (!response.ok) {
-          throw new Error('Failed to fetch publikasi data');
+          throw new Error('Failed to fetch home data');
         }
-        const data = await response.json();
-        setLatestPublikasi(data);
+        const result = await response.json();
+        setHomeData(result.data);
       } catch (error) {
-        console.error('Error fetching publikasi:', error);
-        setLatestPublikasi([]);
+        console.error('Error fetching home data:', error);
+        setHomeData({
+          slides: [],
+          partners: [],
+          latestPublikasi: [],
+          upcomingEvents: []
+        });
+      } finally {
+        setLoading(false);
       }
     }
 
-    fetchPublikasi();
+    fetchHomeData();
   }, []);
+
+  if (loading) {
+    return (
+      <main className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-pink-600 mb-2"></div>
+          <p className="text-gray-500">Loading...</p>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className="min-h-screen">
-      <VerticalSlideshow />
+      <VerticalSlideshow slides={homeData.slides} />
       
       <motion.div
         initial="hidden"
@@ -76,7 +107,7 @@ export default function Home() {
         viewport={{ once: true, amount: 0.1 }}
         variants={sectionVariants}
       >
-        <Partners />
+        <Partners partners={homeData.partners} />
       </motion.div>
       
       <motion.div
@@ -103,7 +134,7 @@ export default function Home() {
         viewport={{ once: true, amount: 0.1 }}
         variants={sectionVariants}
       >
-        <PublikasiTerbaru publikasi={latestPublikasi} /> 
+        <PublikasiTerbaru publikasi={homeData.latestPublikasi} /> 
       </motion.div>
       
       <motion.div
@@ -121,7 +152,7 @@ export default function Home() {
         viewport={{ once: true, amount: 0.1 }}
         variants={sectionVariants}
       >
-        <UpcomingEvents />
+        <UpcomingEvents events={homeData.upcomingEvents} />
       </motion.div>
     </main>
   );

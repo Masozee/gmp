@@ -18,6 +18,9 @@ const TestimonialsCarouselEn = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const carouselRef = useRef<HTMLDivElement>(null);
   const autoScrollRef = useRef<NodeJS.Timeout | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
+  const [touchStartX, setTouchStartX] = useState(0);
+  const [touchEndX, setTouchEndX] = useState(0);
   
   // Auto-scroll functionality wrapped in useCallback
   const startAutoScroll = useCallback(() => {
@@ -46,6 +49,59 @@ const TestimonialsCarouselEn = () => {
   const handleMouseLeave = () => {
     startAutoScroll();
   };
+
+  // Detect mobile device
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768 || 'ontouchstart' in window);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // Touch handlers for mobile swipe
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchStartX(e.targetTouches[0].clientX);
+    // Pause auto-scroll on touch
+    if (autoScrollRef.current) {
+      clearInterval(autoScrollRef.current);
+    }
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    setTouchEndX(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStartX || !touchEndX) {
+      // Resume auto-scroll
+      startAutoScroll();
+      return;
+    }
+    
+    const distance = touchStartX - touchEndX;
+    const isLeftSwipe = distance > 50;
+    const isRightSwipe = distance < -50;
+
+    if (isLeftSwipe) {
+      // Swipe left - next slide
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % testimonials.length);
+    }
+    if (isRightSwipe) {
+      // Swipe right - previous slide
+      setCurrentIndex((prevIndex) => 
+        prevIndex === 0 ? testimonials.length - 1 : prevIndex - 1
+      );
+    }
+
+    // Resume auto-scroll after touch interaction
+    setTimeout(() => {
+      startAutoScroll();
+    }, 1000);
+  };
   
   // Get testimonials for current view (4 at a time, looping through all)
   const getVisibleTestimonials = () => {
@@ -61,13 +117,16 @@ const TestimonialsCarouselEn = () => {
     <section className="py-16 bg-white">
       <div className="container mx-auto px-4">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold mb-10 text-gray-900 text-center">What Those Impacted Say</h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-10 text-main text-center">What Those Impacted Say</h2>
           
           <div 
             className="relative"
             ref={carouselRef}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
           >
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
               {getVisibleTestimonials().map((testimonial) => (

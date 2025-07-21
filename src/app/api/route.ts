@@ -1,6 +1,10 @@
 import { Hono } from 'hono';
 import { handle } from 'hono/vercel';
-import { supabase } from '@/app/lib/supabase';
+import { initializeDatabase, db } from '@/lib/db';
+import { users } from '@/lib/db/schema';
+
+// Initialize database on startup
+initializeDatabase();
 
 // Create a Hono instance
 const app = new Hono().basePath('/api');
@@ -15,15 +19,13 @@ app.get('/', (c) => {
 
 // User API endpoints
 app.get('/users', async (c) => {
-  const { data, error } = await supabase
-    .from('users')
-    .select('*');
-
-  if (error) {
-    return c.json({ error: error.message }, 500);
+  try {
+    const allUsers = await db.select().from(users);
+    return c.json({ data: allUsers });
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    return c.json({ error: 'Failed to fetch users' }, 500);
   }
-
-  return c.json({ data });
 });
 
 // Export the handle function

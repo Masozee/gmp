@@ -15,7 +15,7 @@ interface PastEvent {
 
 // Define the PageProps interface matching Next.js 15 type definition
 interface PageProps {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }
 
 // Remove data reading functions
@@ -33,7 +33,8 @@ export async function generateStaticParams() {
 
 // Page component (Server Component) - Using explicit Props type
 export default async function DiskusiDetailPage({ params }: PageProps) {
-  const slug = params.slug;
+  const resolvedParams = await params;
+  const slug = resolvedParams.slug;
 
   // Read and parse the JSON file
   const filePath = path.join(process.cwd(), 'src', 'data', 'diskusi.json');
